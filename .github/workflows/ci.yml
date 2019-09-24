@@ -29,3 +29,10 @@ jobs:
           yarn lint
         env:
           CI: true
+
+      - name: Test bin script
+        run: |
+          node lib/index.js -h
+          node lib/index.js deploy -h
+          node lib/index.js start -h
+          node lib/index.js upload -h
