@@ -1,8 +1,32 @@
 {
   "name": "aws-simple",
   "version": "0.0.0",
+  "description": "Nothing to see here, yet.",
+  "keywords": [
+    "apigateway",
+    "aws",
+    "cdk",
+    "cloudformation",
+    "deploy",
+    "deployment",
+    "lambda",
+    "s3",
+    "serverless"
+  ],
+  "bugs": {
+    "url": "https://github.com/clebert/aws-simple/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/clebert/aws-simple.git"
+  },
   "license": "MIT",
   "author": "Clemens Akens <clebert@me.com>",
+  "files": [
+    "lib"
+  ],
+  "types": "lib/index.d.ts",
+  "bin": "lib/index.js",
   "scripts": {
     "precompile": "rm -rf lib/",
     "compile": "tsc",
