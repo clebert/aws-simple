@@ -1,5 +1,7 @@
 # aws-simple
 
+![](https://github.com/clebert/aws-simple/workflows/CI/badge.svg)
+
 Nothing to see here, yet.
 
 ---
