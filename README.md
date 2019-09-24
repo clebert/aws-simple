@@ -2,7 +2,8 @@
 
 ![][ci-badge]
 
-Nothing to see here, yet.
+A Node.js interface for **AWS** that allows easy configuration, development, and
+deployment of **simple** web projects.
 
 ## Motivation
 

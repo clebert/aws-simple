@@ -81,14 +81,21 @@ function handleError(error: Error): void {
   process.exit(1);
 }
 
+// tslint:disable-next-line: no-require-imports no-var-requires
+const {description} = require('../package.json');
+
 try {
   const argv = describeUploadCommand(
     describeStartCommand(
-      describeDeployCommand(yargs.usage('Usage: $0 <command> [options]'))
-        .help('h')
-        .alias('h', 'help')
-        .detectLocale(false)
-        .demandCommand()
+      describeDeployCommand(
+        yargs
+          .usage('Usage: $0 <command> [options]')
+          .help('h')
+          .alias('h', 'help')
+          .detectLocale(false)
+          .demandCommand()
+          .epilogue(description)
+      )
     )
   ).argv;
 
