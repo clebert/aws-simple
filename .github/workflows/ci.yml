@@ -3,7 +3,6 @@ on: [push, pull_request]
 
 jobs:
   main:
-    name: Build and publish
     runs-on: ubuntu-latest
 
     strategy:
@@ -36,10 +35,3 @@ jobs:
           node lib/index.js create -h
           node lib/index.js start -h
           node lib/index.js upload -h
-
-      - name: Publish to npm
-        if:
-          matrix.node-version == '12.x' && github.event_name == 'release' &&
-          github.event.action == 'created'
-        run: |
-          echo Hello, World!

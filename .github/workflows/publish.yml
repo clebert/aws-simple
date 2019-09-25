@@ -1,0 +1,26 @@
+name: Publish
+on:
+  release:
+    types: [published]
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Compile sources
+        run: yarn compile
+
+      - name: Publish to npm
+        run: echo Hello, World!
