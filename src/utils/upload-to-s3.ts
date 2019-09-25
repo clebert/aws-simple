@@ -10,9 +10,7 @@ import Listr from 'listr';
 import mimeTypes from 'mime-types';
 import * as path from 'path';
 import joinUrl from 'url-join';
-import {StackConfig} from '..';
-import {OutputId} from '../constants/output-id';
-import {ResourceId} from '../constants/resource-id';
+import {AppConfig, OutputIds, ResourceIds} from './app-config';
 import {getFilenames} from './get-filenames';
 
 export interface AwsConfig {
@@ -28,24 +26,24 @@ async function getCredentials(profile: string): Promise<Credentials> {
 }
 
 async function getStackOutputs(
-  stackId: string,
+  resourceIds: ResourceIds,
   clientConfig: CloudFormation.ClientConfiguration
 ): Promise<CloudFormation.Outputs | undefined> {
   const cloudFormation = new CloudFormation(clientConfig);
 
   const result = await cloudFormation
-    .describeStacks({StackName: ResourceId.forStack(stackId)})
+    .describeStacks({StackName: resourceIds.stack})
     .promise();
 
   return result.Stacks && result.Stacks[0].Outputs;
 }
 
 function getRestApiUrl(
-  stackId: string,
+  outputIds: OutputIds,
   stackOutputs: CloudFormation.Outputs
 ): string {
   const stackOutput = stackOutputs.find(
-    ({ExportName}) => ExportName === OutputId.forRestApiUrl(stackId)
+    ({ExportName}) => ExportName === outputIds.restApiUrl
   );
 
   const outputValue = stackOutput && stackOutput.OutputValue;
@@ -58,11 +56,11 @@ function getRestApiUrl(
 }
 
 function getS3BucketName(
-  stackId: string,
+  outputIds: OutputIds,
   stackOutputs: CloudFormation.Outputs
 ): string {
   const stackOutput = stackOutputs.find(
-    ({ExportName}) => ExportName === OutputId.forS3BucketName(stackId)
+    ({ExportName}) => ExportName === outputIds.s3BucketName
   );
 
   const outputValue = stackOutput && stackOutput.OutputValue;
@@ -75,24 +73,24 @@ function getS3BucketName(
 }
 
 export async function uploadToS3(
-  stackConfig: StackConfig,
+  appConfig: AppConfig,
   awsConfig: AwsConfig
 ): Promise<void> {
-  const {stackId, customDomainConfig, s3Configs = []} = stackConfig;
+  const {outputIds, resourceIds, stackConfig} = appConfig;
+  const {customDomainConfig, s3Configs = []} = stackConfig;
   const {profile, region} = awsConfig;
   const clientConfig = {credentials: await getCredentials(profile), region};
-  const s3 = new S3(clientConfig);
-  const stackOutputs = await getStackOutputs(stackId, clientConfig);
+  const stackOutputs = await getStackOutputs(resourceIds, clientConfig);
 
   if (!stackOutputs) {
-    throw new Error(`Stack not found: ${stackId}`);
+    throw new Error(`Stack not found.`);
   }
 
-  const s3BucketName = getS3BucketName(stackId, stackOutputs);
+  const s3BucketName = getS3BucketName(outputIds, stackOutputs);
 
   const createUrl = () => {
     if (!customDomainConfig) {
-      return getRestApiUrl(stackId, stackOutputs);
+      return getRestApiUrl(outputIds, stackOutputs);
     }
 
     const {hostedZoneName, aliasRecordName} = customDomainConfig;
@@ -104,6 +102,7 @@ export async function uploadToS3(
 
   const url = createUrl();
   const listrTasks: Listr.ListrTask[] = [];
+  const s3 = new S3(clientConfig);
 
   for (const s3Config of s3Configs) {
     const {type, publicPath, bucketPath = publicPath} = s3Config;

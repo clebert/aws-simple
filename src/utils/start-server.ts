@@ -2,7 +2,7 @@ import compression from 'compression';
 import express from 'express';
 import lambdaLocal from 'lambda-local';
 import {format} from 'winston';
-import {StackConfig} from '..';
+import {AppConfig} from './app-config';
 import {serveLocalLambda} from './serve-local-lambda';
 import {serveLocalS3} from './serve-local-s3';
 
@@ -28,14 +28,14 @@ function suppressLambdaResultLogging(): void {
 }
 
 export function startServer(
-  stackConfig: StackConfig,
+  appConfig: AppConfig,
   serverConfig: ServerConfig
 ): void {
   const {
     minimumCompressionSize,
     lambdaConfigs = [],
     s3Configs = []
-  } = stackConfig;
+  } = appConfig.stackConfig;
 
   const {port, cached, verbose} = serverConfig;
 

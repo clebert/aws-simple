@@ -1,9 +1,9 @@
 import {Argv} from 'yargs';
-import {Defaults} from '../constants/defaults';
+import {Defaults} from '../defaults';
+import {AppConfig} from '../utils/app-config';
 import {createLambdaIntegration} from '../utils/create-lambda-integration';
 import {createS3Integration} from '../utils/create-s3-integration';
 import {createStack} from '../utils/create-stack';
-import {loadStackConfig} from '../utils/load-stack-config';
 
 export interface CreateArgv {
   readonly _: ['create'];
@@ -27,12 +27,17 @@ export function isCreateArgv(argv: {_: string[]}): argv is CreateArgv {
 }
 
 export function create(argv: CreateArgv): void {
-  const stackConfig = loadStackConfig(argv.config);
-  const {stackId, lambdaConfigs = [], s3Configs = [], customHook} = stackConfig;
-  const resources = createStack(stackConfig);
+  const appConfig = AppConfig.load(argv.config);
+  const resources = createStack(appConfig);
+
+  const {
+    lambdaConfigs = [],
+    s3Configs = [],
+    customHook
+  } = appConfig.stackConfig;
 
   for (const lambdaConfig of lambdaConfigs) {
-    createLambdaIntegration(stackId, resources, lambdaConfig);
+    createLambdaIntegration(resources, appConfig, lambdaConfig);
   }
 
   for (const s3Config of s3Configs) {

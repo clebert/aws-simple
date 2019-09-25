@@ -1,6 +1,6 @@
 import {Argv} from 'yargs';
-import {Defaults} from '../constants/defaults';
-import {loadStackConfig} from '../utils/load-stack-config';
+import {Defaults} from '../defaults';
+import {AppConfig} from '../utils/app-config';
 import {startServer} from '../utils/start-server';
 
 export interface StartArgv {
@@ -42,5 +42,5 @@ export function isStartArgv(argv: {_: string[]}): argv is StartArgv {
 export function start(argv: StartArgv): void {
   const {config, port, cached, verbose} = argv;
 
-  startServer(loadStackConfig(config), {port, cached, verbose});
+  startServer(AppConfig.load(config), {port, cached, verbose});
 }

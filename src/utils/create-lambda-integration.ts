@@ -3,12 +3,12 @@ import {Code, Function as Lambda, Runtime} from '@aws-cdk/aws-lambda';
 import {Duration} from '@aws-cdk/core';
 import * as path from 'path';
 import {LambdaConfig, Resources} from '..';
-import {Defaults} from '../constants/defaults';
-import {ResourceId} from '../constants/resource-id';
+import {Defaults} from '../defaults';
+import {AppConfig} from './app-config';
 
 export function createLambdaIntegration(
-  stackId: string,
   resources: Resources,
+  appConfig: AppConfig,
   lambdaConfig: LambdaConfig
 ): void {
   const {stack, restApi} = resources;
@@ -30,7 +30,7 @@ export function createLambdaIntegration(
     new LambdaIntegration(
       new Lambda(
         stack,
-        ResourceId.forLambda(stackId, path.join(publicPath, httpMethod)),
+        `${appConfig.resourceIds.lambda}${path.join(publicPath, httpMethod)}`,
         {
           runtime: Runtime.NODEJS_10_X,
           code: Code.fromAsset(path.dirname(localPath)),

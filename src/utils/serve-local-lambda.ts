@@ -2,7 +2,7 @@ import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import express from 'express';
 import lambdaLocal from 'lambda-local';
 import {LambdaConfig, LambdaHttpMethod} from '..';
-import {Defaults} from '../constants/defaults';
+import {Defaults} from '../defaults';
 
 function getHeadersFromRequest(
   req: express.Request

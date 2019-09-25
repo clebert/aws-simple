@@ -52,12 +52,12 @@ policy:
     {
       "Effect": "Allow",
       "Action": ["lambda:*"],
-      "Resource": "arn:aws:lambda:*:*:function:mystack-*"
+      "Resource": "arn:aws:lambda:*:*:function:myapp-*"
     },
     {
       "Effect": "Allow",
       "Action": ["iam:*"],
-      "Resource": "arn:aws:iam::*:role/mystack-*"
+      "Resource": "arn:aws:iam::*:role/myapp-*"
     },
     {
       "Effect": "Allow",
@@ -73,8 +73,9 @@ policy:
 }
 ```
 
-_Note: Please replace the stack ID (`mystack`) with your own. All resources
-created with CloudFormation will have this stack ID as prefix._
+_Note: Please replace the app name (`myapp`) with your own. All resources
+created with CloudFormation have the app name combined with the stack ID as a
+prefix for their own ID such as `myapp-mystack-resource-s3-bucket`._
 
 ### Create AWS CLI profile
 
@@ -88,7 +89,7 @@ Then set up the AWS CLI profile using the access key from the AWS IAM user you
 just created:
 
 ```
-aws configure --profile johndoe
+aws configure --profile clebert
 ```
 
 ```
@@ -98,7 +99,7 @@ Default region name [None]: eu-central-1
 Default output format [None]: json
 ```
 
-_Note: Please replace the profile (`johndoe`) and also the region
+_Note: Please replace the profile (`clebert`) and also the region
 (`eu-central-1`) if necessary._
 
 ### Create Config File
@@ -109,6 +110,7 @@ file:
 
 ```js
 exports.default = {
+  appName: 'myapp',
   stackId: 'mystack',
   s3Configs: [
     {
@@ -130,6 +132,7 @@ exports.default = {
  * @type {import('aws-simple').StackConfig}
  */
 exports.default = {
+  appName: 'myapp',
   stackId: 'mystack'
 };
 ```
@@ -142,7 +145,7 @@ Before you can use the AWS CDK you must bootstrap your AWS environment to create
 the infrastructure that the AWS CDK CLI needs to deploy your AWS CDK app:
 
 ```
-yarn cdk bootstrap --app 'yarn aws-simple create' --profile johndoe
+yarn cdk bootstrap --app 'yarn aws-simple create' --profile clebert
 ```
 
 _Note: This command only needs to be executed once. For more information see
@@ -151,20 +154,24 @@ _Note: This command only needs to be executed once. For more information see
 ### Deploy Stack to AWS
 
 ```
-yarn cdk deploy --app 'yarn aws-simple create' --profile johndoe
+yarn cdk deploy --app 'yarn aws-simple create' --profile clebert
 ```
 
 ```
-yarn aws-simple upload --profile johndoe --region eu-central-1
+yarn aws-simple upload --profile clebert --region eu-central-1
 ```
+
+_Note: Different stack IDs allow multiple stacks of the same app to be deployed
+simultaneously. For example, the `aliasRecordName` in the `customDomainConfig`
+can be used to give each stack its own URL._
 
 #### `package.json` Scripts Example
 
 ```json
 {
   "scripts": {
-    "deploy": "cdk deploy --app 'yarn aws-simple create' --profile johndoe",
-    "postdeploy": "aws-simple upload --profile johndoe --region eu-central-1"
+    "deploy": "cdk deploy --app 'yarn aws-simple create' --profile clebert",
+    "postdeploy": "aws-simple upload --profile clebert --region eu-central-1"
   }
 }
 ```

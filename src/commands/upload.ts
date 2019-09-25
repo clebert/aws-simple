@@ -1,6 +1,6 @@
 import {Argv} from 'yargs';
-import {Defaults} from '../constants/defaults';
-import {loadStackConfig} from '../utils/load-stack-config';
+import {Defaults} from '../defaults';
+import {AppConfig} from '../utils/app-config';
 import {uploadToS3} from '../utils/upload-to-s3';
 
 export interface UploadArgv {
@@ -37,5 +37,5 @@ export function isUploadArgv(argv: {_: string[]}): argv is UploadArgv {
 export async function upload(argv: UploadArgv): Promise<void> {
   const {config, profile, region} = argv;
 
-  await uploadToS3(loadStackConfig(config), {profile, region});
+  await uploadToS3(AppConfig.load(config), {profile, region});
 }

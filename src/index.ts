@@ -65,6 +65,7 @@ export interface Resources {
 export type CustomHook = (resources: Resources) => void;
 
 export interface StackConfig {
+  readonly appName: string;
   readonly stackId: string;
   readonly customDomainConfig?: CustomDomainConfig;
   readonly binaryMediaTypes?: string[];
