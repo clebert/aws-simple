@@ -20,8 +20,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: |
-          yarn install
+        run: yarn install
 
       - name: Run CI checks
         run: |
@@ -39,6 +38,8 @@ jobs:
           node lib/index.js upload -h
 
       - name: Publish to npm
-        if: github.event_name == 'release' && github.event.action == 'published'
+        if:
+          matrix.node-version == 12.x && github.event_name == 'release' &&
+          github.event.action == 'created'
         run: |
           echo Hello, World!
