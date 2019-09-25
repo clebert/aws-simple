@@ -165,6 +165,9 @@ up manually with the AWS CDK/SDK.
 npm version 1.0.0 && git push --follow-tags
 ```
 
+After a new release has been created by pushing the tag, it must be published
+via the GitHub UI. This triggers the final publication to npm.
+
 ---
 
 Copyright (c) 2019, Clemens Akens. Released under the terms of the [MIT
