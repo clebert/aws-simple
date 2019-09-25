@@ -157,6 +157,14 @@ for the time being.
 I deliberately kept it simple. A project with a more complex setup should be set
 up manually with the AWS CDK/SDK.
 
+## Development
+
+### Publish a New Release
+
+```
+npm version 1.0.0 && git push --follow-tags
+```
+
 ---
 
 Copyright (c) 2019, Clemens Akens. Released under the terms of the [MIT

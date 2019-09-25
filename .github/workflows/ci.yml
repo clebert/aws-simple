@@ -2,7 +2,8 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  build:
+  main:
+    name: Build and publish
     runs-on: ubuntu-latest
 
     strategy:
@@ -36,3 +37,8 @@ jobs:
           node lib/index.js create -h
           node lib/index.js start -h
           node lib/index.js upload -h
+
+      - name: Publish to npm
+        if: github.event_name == 'release' && github.event.action == 'published'
+        run: |
+          echo Hello, World!
