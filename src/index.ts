@@ -85,8 +85,8 @@ function handleError(error: Error): void {
 const {description} = require('../package.json');
 
 try {
-  const argv = describeUploadCommand(
-    describeStartCommand(
+  const argv = describeStartCommand(
+    describeUploadCommand(
       describeDeployCommand(
         yargs
           .usage('Usage: $0 <command> [options]')

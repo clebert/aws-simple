@@ -133,8 +133,8 @@ Usage: aws-simple <command> [options]
 
 Commands:
   aws-simple deploy [options]  Deploy stack with CloudFormation
-  aws-simple start [options]   Start local DEV server
   aws-simple upload [options]  Upload files to S3
+  aws-simple start [options]   Start local DEV server
 
 Options:
   --version   Show version number                                      [boolean]
