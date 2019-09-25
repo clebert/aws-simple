@@ -145,6 +145,9 @@ the infrastructure that the AWS CDK CLI needs to deploy your AWS CDK app:
 yarn cdk bootstrap --app 'yarn aws-simple create' --profile johndoe
 ```
 
+_Note: This command only needs to be executed once. For more information see
+[here][cdk-guide]._
+
 ### Deploy Stack to AWS
 
 ```
@@ -155,11 +158,27 @@ yarn cdk deploy --app 'yarn aws-simple create' --profile johndoe
 yarn aws-simple upload --profile johndoe --region eu-central-1
 ```
 
+#### `package.json` Scripts Example
+
+```json
+{
+  "scripts": {
+    "deploy": "cdk deploy --app 'yarn aws-simple create' --profile johndoe",
+    "postdeploy": "aws-simple upload --profile johndoe --region eu-central-1"
+  }
+}
+```
+
 ### Start Local DEV Server
 
 ```
 yarn aws-simple start --port 1985 --cached
 ```
+
+_Note: If a bundler such as Parcel or Webpack is used, its watcher must be
+started in addition to the DEV server._
+
+_When changing the `aws-simple` config file, the DEV server must be restarted._
 
 ## CLI Usage
 
@@ -192,6 +211,7 @@ via the GitHub UI. This triggers the final publication to npm.
 Copyright (c) 2019, Clemens Akens. Released under the terms of the [MIT
 License][license].
 
+[cdk-guide]: https://docs.aws.amazon.com/cdk/latest/guide/tools.html
 [ci-badge]: https://github.com/clebert/aws-simple/workflows/CI/badge.svg
 [license]: https://github.com/clebert/aws-simple/blob/master/LICENSE
 [stack-config-type]:
