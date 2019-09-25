@@ -80,8 +80,5 @@
     "ts-config": "^20.10.0",
     "tslint": "^5.20.0",
     "typescript": "^3.6.3"
-  },
-  "peerDependencies": {
-    "winston": "^3.2.1"
   }
 }

@@ -1,7 +1,7 @@
 {
   "extends": ["ts-config"],
   "rules": {
-    "no-implicit-dependencies": [true, ["aws-lambda"]],
+    "no-implicit-dependencies": [true, ["aws-lambda", "winston"]],
     "number-literal-format": false
   }
 }
