@@ -37,9 +37,7 @@ export class AppConfig {
       const stackConfig = require(absoluteConfigFilename).default;
 
       if (!isStackConfig(stackConfig)) {
-        throw new Error(
-          `The specified config file has no valid default export: ${absoluteConfigFilename}`
-        );
+        throw new Error('No valid default export found.');
       }
 
       return new AppConfig(stackConfig);
