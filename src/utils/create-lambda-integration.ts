@@ -6,7 +6,7 @@ import {LambdaConfig, Resources} from '..';
 import {Defaults} from '../constants/defaults';
 import {ResourceId} from '../constants/resource-id';
 
-export function deployLambdaIntegration(
+export function createLambdaIntegration(
   stackId: string,
   resources: Resources,
   lambdaConfig: LambdaConfig

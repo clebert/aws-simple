@@ -2,8 +2,8 @@
 
 ![][ci-badge]
 
-A Node.js interface for **AWS** that allows easy configuration, development, and
-deployment of **simple** web projects.
+A Node.js interface for **AWS** that allows easy configuration and deployment of
+**simple** web projects.
 
 ## Getting Started
 
@@ -107,13 +107,13 @@ Before you can use the AWS CDK you must bootstrap your AWS environment to create
 the infrastructure that the AWS CDK CLI needs to deploy your AWS CDK app:
 
 ```
-yarn cdk bootstrap --app 'yarn aws-simple deploy' --profile johndoe
+yarn cdk bootstrap --app 'yarn aws-simple create' --profile johndoe
 ```
 
 ### Deploy Stack to AWS
 
 ```
-yarn cdk deploy --app 'yarn aws-simple deploy' --profile johndoe
+yarn cdk deploy --app 'yarn aws-simple create' --profile johndoe
 ```
 
 ```
@@ -132,7 +132,7 @@ yarn aws-simple start --port 1985 --cached
 Usage: aws-simple <command> [options]
 
 Commands:
-  aws-simple deploy [options]  Deploy stack with CloudFormation
+  aws-simple create [options]  Create a stack using the CDK
   aws-simple upload [options]  Upload files to S3
   aws-simple start [options]   Start local DEV server
 

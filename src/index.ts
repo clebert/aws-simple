@@ -5,7 +5,7 @@ import {Role} from '@aws-cdk/aws-iam';
 import {Bucket} from '@aws-cdk/aws-s3';
 import {Stack} from '@aws-cdk/core';
 import yargs from 'yargs';
-import {deploy, describeDeployCommand, isDeployArgv} from './commands/deploy';
+import {create, describeCreateCommand, isCreateArgv} from './commands/create';
 import {describeStartCommand, isStartArgv, start} from './commands/start';
 import {describeUploadCommand, isUploadArgv, upload} from './commands/upload';
 
@@ -62,7 +62,7 @@ export interface Resources {
   readonly s3IntegrationRole: Role;
 }
 
-export type DeploymentHook = (resources: Resources) => void;
+export type CustomHook = (resources: Resources) => void;
 
 export interface StackConfig {
   readonly stackId: string;
@@ -72,7 +72,7 @@ export interface StackConfig {
   readonly loggingLevel?: LoggingLevel;
   readonly lambdaConfigs?: LambdaConfig[];
   readonly s3Configs?: S3Config[];
-  readonly deploymentHook?: DeploymentHook;
+  readonly customHook?: CustomHook;
 }
 
 function handleError(error: Error): void {
@@ -87,7 +87,7 @@ const {description} = require('../package.json');
 try {
   const argv = describeStartCommand(
     describeUploadCommand(
-      describeDeployCommand(
+      describeCreateCommand(
         yargs
           .usage('Usage: $0 <command> [options]')
           .help('h')
@@ -99,8 +99,8 @@ try {
     )
   ).argv;
 
-  if (isDeployArgv(argv)) {
-    deploy(argv);
+  if (isCreateArgv(argv)) {
+    create(argv);
   } else if (isStartArgv(argv)) {
     start(argv);
   } else if (isUploadArgv(argv)) {

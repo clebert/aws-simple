@@ -97,7 +97,7 @@ function createStageOptions(
   };
 }
 
-export function deployStack(stackConfig: StackConfig): Resources {
+export function createStack(stackConfig: StackConfig): Resources {
   const {
     stackId,
     customDomainConfig,

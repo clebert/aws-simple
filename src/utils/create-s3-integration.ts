@@ -7,7 +7,7 @@ import {
 import * as path from 'path';
 import {Resources, S3Config} from '..';
 
-export function deployS3Integration(
+export function createS3Integration(
   resources: Resources,
   s3Config: S3Config
 ): void {
