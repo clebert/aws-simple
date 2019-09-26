@@ -34,6 +34,9 @@ export function describeStartCommand(yargs: Argv): Argv {
       .describe('verbose', 'Enable logging of successful Lambda results')
       .boolean('verbose')
       .default('verbose', false)
+
+      .example('$0 start', '')
+      .example('$0 start --port 1985 --cached', '')
   );
 }
 

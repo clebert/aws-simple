@@ -240,6 +240,10 @@ Options:
                                       [string] [default: "aws-simple.config.js"]
   --stack-id  Optional overwriting of the stack ID declared in the config file
                                                                         [string]
+
+Examples:
+  cdk deploy --app 'aws-simple create' --profile clebert
+  cdk deploy --app 'aws-simple create --stack-id stage' --profile clebert
 ```
 
 ### Upload files to S3
@@ -259,6 +263,10 @@ Options:
   --region    The AWS region                                 [string] [required]
   --stack-id  Optional overwriting of the stack ID declared in the config file
                                                                         [string]
+
+Examples:
+  aws-simple upload --profile clebert --region eu-central-1
+  aws-simple upload --profile clebert --region eu-central-1 --stack-id stage
 ```
 
 ### Start local DEV server
@@ -278,6 +286,10 @@ Options:
                                                       [boolean] [default: false]
   --verbose   Enable logging of successful Lambda results
                                                       [boolean] [default: false]
+
+Examples:
+  aws-simple start
+  aws-simple start --port 1985 --cached
 ```
 
 ## Development

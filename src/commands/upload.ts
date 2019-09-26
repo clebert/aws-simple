@@ -34,6 +34,13 @@ export function describeUploadCommand(yargs: Argv): Argv {
         'Optional overwriting of the stack ID declared in the config file'
       )
       .string('stack-id')
+
+      .example('$0 upload --profile clebert --region eu-central-1', '')
+
+      .example(
+        '$0 upload --profile clebert --region eu-central-1 --stack-id stage',
+        ''
+      )
   );
 }
 

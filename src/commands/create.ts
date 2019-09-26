@@ -26,6 +26,13 @@ export function describeCreateCommand(yargs: Argv): Argv {
           'Optional overwriting of the stack ID declared in the config file'
         )
         .string('stack-id')
+
+        .example("cdk deploy --app '$0 create' --profile clebert", '')
+
+        .example(
+          "cdk deploy --app '$0 create --stack-id stage' --profile clebert",
+          ''
+        )
   );
 }
 
