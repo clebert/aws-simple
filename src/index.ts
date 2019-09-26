@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import 'source-map-support/register';
+
 import {RestApi} from '@aws-cdk/aws-apigateway';
 import {Role} from '@aws-cdk/aws-iam';
 import {Bucket} from '@aws-cdk/aws-s3';

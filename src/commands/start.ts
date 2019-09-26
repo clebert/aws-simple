@@ -1,7 +1,9 @@
+import {fork} from 'child_process';
+import {watch} from 'chokidar';
+import * as path from 'path';
 import {Argv} from 'yargs';
 import {Defaults} from '../defaults';
 import {AppConfig} from '../utils/app-config';
-import {startServer} from '../utils/start-server';
 
 export interface StartArgv {
   readonly _: ['start'];
@@ -42,5 +44,37 @@ export function isStartArgv(argv: {_: string[]}): argv is StartArgv {
 export function start(argv: StartArgv): void {
   const {config, port, cached, verbose} = argv;
 
-  startServer(AppConfig.load(config), {port, cached, verbose});
+  const {lambdaConfigs = [], s3Configs = []} = AppConfig.load(
+    config
+  ).stackConfig;
+
+  const localPaths = [...lambdaConfigs, ...s3Configs].map(
+    ({localPath}) => localPath
+  );
+
+  const startServer = () => {
+    const args = ['--config', config, '--port', String(port)];
+
+    if (cached) {
+      args.push('--cached');
+    }
+
+    if (verbose) {
+      args.push('--verbose');
+    }
+
+    const modulePath = path.join(__dirname, '../utils/start-server.js');
+
+    return fork(modulePath, args, {stdio: 'inherit'});
+  };
+
+  let serverProcess = startServer();
+
+  watch(localPaths).on('change', () => {
+    console.info(`Restarting DEV server...`);
+
+    serverProcess.kill();
+
+    serverProcess = startServer();
+  });
 }

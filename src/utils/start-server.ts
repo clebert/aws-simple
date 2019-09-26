@@ -1,15 +1,28 @@
+import 'source-map-support/register';
+
 import compression from 'compression';
 import express from 'express';
 import lambdaLocal from 'lambda-local';
 import {format} from 'winston';
+import yargs from 'yargs';
 import {AppConfig} from './app-config';
 import {serveLocalLambda} from './serve-local-lambda';
 import {serveLocalS3} from './serve-local-s3';
 
-export interface ServerConfig {
+interface Argv {
+  readonly config: string;
   readonly port: number;
-  readonly cached: boolean;
-  readonly verbose: boolean;
+  readonly cached?: boolean;
+  readonly verbose?: boolean;
+}
+
+// tslint:disable-next-line: no-any
+function isArgv(value: any): value is Argv {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  return typeof value.config === 'string' && typeof value.port === 'number';
 }
 
 function suppressLambdaResultLogging(): void {
@@ -27,17 +40,18 @@ function suppressLambdaResultLogging(): void {
   );
 }
 
-export function startServer(
-  appConfig: AppConfig,
-  serverConfig: ServerConfig
-): void {
+function startServer(argv: unknown): void {
+  if (!isArgv(argv)) {
+    throw new Error('Illegal arguments received.');
+  }
+
+  const {config, port, cached, verbose} = argv;
+
   const {
     minimumCompressionSize,
     lambdaConfigs = [],
     s3Configs = []
-  } = appConfig.stackConfig;
-
-  const {port, cached, verbose} = serverConfig;
+  } = AppConfig.load(config).stackConfig;
 
   if (!verbose) {
     suppressLambdaResultLogging();
@@ -50,7 +64,7 @@ export function startServer(
   }
 
   for (const lambdaConfig of lambdaConfigs) {
-    serveLocalLambda(app, lambdaConfig, cached);
+    serveLocalLambda(app, lambdaConfig, Boolean(cached));
   }
 
   for (const s3Config of s3Configs) {
@@ -61,3 +75,14 @@ export function startServer(
     console.info(`Started DEV server: http://localhost:${port}`);
   });
 }
+
+startServer(
+  yargs
+    .detectLocale(false)
+    .string('config')
+    .demandOption('config')
+    .number('port')
+    .demandOption('port')
+    .boolean('cached')
+    .boolean('verbose').argv
+);
