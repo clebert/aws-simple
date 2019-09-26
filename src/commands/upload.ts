@@ -8,6 +8,7 @@ export interface UploadArgv {
   readonly config: string;
   readonly profile: string;
   readonly region: string;
+  readonly stackId?: string;
 }
 
 export function describeUploadCommand(yargs: Argv): Argv {
@@ -27,6 +28,12 @@ export function describeUploadCommand(yargs: Argv): Argv {
       .describe('region', 'The AWS region')
       .string('region')
       .demandOption('region')
+
+      .describe(
+        'stack-id',
+        'Optional overwriting of the stack ID declared in the config file'
+      )
+      .string('stack-id')
   );
 }
 
@@ -35,7 +42,7 @@ export function isUploadArgv(argv: {_: string[]}): argv is UploadArgv {
 }
 
 export async function upload(argv: UploadArgv): Promise<void> {
-  const {config, profile, region} = argv;
+  const {config, profile, region, stackId} = argv;
 
-  await uploadToS3(AppConfig.load(config), {profile, region});
+  await uploadToS3(AppConfig.load(config, stackId), {profile, region});
 }

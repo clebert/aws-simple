@@ -8,6 +8,7 @@ import {createStack} from '../utils/create-stack';
 export interface CreateArgv {
   readonly _: ['create'];
   readonly config: string;
+  readonly stackId?: string;
 }
 
 export function describeCreateCommand(yargs: Argv): Argv {
@@ -19,6 +20,12 @@ export function describeCreateCommand(yargs: Argv): Argv {
         .describe('config', 'The path to the config file')
         .string('config')
         .default('config', Defaults.configFilename)
+
+        .describe(
+          'stack-id',
+          'Optional overwriting of the stack ID declared in the config file'
+        )
+        .string('stack-id')
   );
 }
 
@@ -27,7 +34,7 @@ export function isCreateArgv(argv: {_: string[]}): argv is CreateArgv {
 }
 
 export function create(argv: CreateArgv): void {
-  const appConfig = AppConfig.load(argv.config);
+  const appConfig = AppConfig.load(argv.config, argv.stackId);
   const resources = createStack(appConfig);
 
   const {

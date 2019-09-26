@@ -30,7 +30,7 @@ function isStackConfig(value: any): value is StackConfig {
 }
 
 export class AppConfig {
-  public static load(configFilename: string): AppConfig {
+  public static load(configFilename: string, stackId?: string): AppConfig {
     const absoluteConfigFilename = path.resolve(configFilename);
 
     try {
@@ -40,7 +40,7 @@ export class AppConfig {
         throw new Error('No valid default export found.');
       }
 
-      return new AppConfig(stackConfig);
+      return new AppConfig(stackId ? {...stackConfig, stackId} : stackConfig);
     } catch (error) {
       throw new Error(
         `The specified config file cannot be loaded: ${absoluteConfigFilename}\nCause: ${error.message}`
