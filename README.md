@@ -12,6 +12,13 @@ domain and optional alias record, make static files available via S3 and e.g.
 provision a BFF (Backend for Frontend) via Lambda. In addition, a local DEV
 server can be started to emulate the resulting AWS infrastructure.
 
+### aws-simple-example
+
+For a quick impression, an [example project][aws-simple-example] is available
+that consists essentially of a React component that retrieves text from a Lambda
+BFF (Backend for Frontend) using a `React.useEffect` hook and displays it.
+Parcel is used for bundling and TypeScript as language.
+
 ## Motivation
 
 In my job I mainly build frontend web applications for existing backend/CMS
@@ -235,6 +242,7 @@ via the GitHub UI. This triggers the final publication to npm.
 Copyright (c) 2019, Clemens Akens. Released under the terms of the [MIT
 License][license].
 
+[aws-simple-example]: https://github.com/clebert/aws-simple-example
 [cdk-guide]: https://docs.aws.amazon.com/cdk/latest/guide/tools.html
 [ci-badge]: https://github.com/clebert/aws-simple/workflows/CI/badge.svg
 [license]: https://github.com/clebert/aws-simple/blob/master/LICENSE
