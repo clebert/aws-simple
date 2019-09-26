@@ -200,6 +200,10 @@ can be used to give each stack its own URL._
 }
 ```
 
+_Note: In a CI pipeline the `deploy` script should be called with the additional
+argument `--require-approval never`, e.g.
+`yarn deploy --require-approval never`._
+
 ### Start Local DEV Server
 
 ```
