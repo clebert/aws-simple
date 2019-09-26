@@ -226,6 +226,60 @@ Options:
   -h, --help  Show help                                                [boolean]
 ```
 
+### Create a stack using the CDK
+
+```
+aws-simple create [options]
+
+Create a stack using the CDK
+
+Options:
+  --version   Show version number                                      [boolean]
+  -h, --help  Show help                                                [boolean]
+  --config    The path to the config file
+                                      [string] [default: "aws-simple.config.js"]
+  --stack-id  Optional overwriting of the stack ID declared in the config file
+                                                                        [string]
+```
+
+### Upload files to S3
+
+```
+aws-simple upload [options]
+
+Upload files to S3
+
+Options:
+  --version   Show version number                                      [boolean]
+  -h, --help  Show help                                                [boolean]
+  --config    The path to the config file
+                                      [string] [default: "aws-simple.config.js"]
+  --profile   The AWS profile name as set in the shared credentials file
+                                                             [string] [required]
+  --region    The AWS region                                 [string] [required]
+  --stack-id  Optional overwriting of the stack ID declared in the config file
+                                                                        [string]
+```
+
+### Start local DEV server
+
+```
+aws-simple start [options]
+
+Start local DEV server
+
+Options:
+  --version   Show version number                                      [boolean]
+  -h, --help  Show help                                                [boolean]
+  --config    The path to the config file
+                                      [string] [default: "aws-simple.config.js"]
+  --port      The port to listen on                     [number] [default: 3000]
+  --cached    Enable caching of successful Lambda results per request URL
+                                                      [boolean] [default: false]
+  --verbose   Enable logging of successful Lambda results
+                                                      [boolean] [default: false]
+```
+
 ## Development
 
 ### Publish a New Release
