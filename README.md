@@ -317,4 +317,4 @@ License][license].
 [ci-badge]: https://github.com/clebert/aws-simple/workflows/CI/badge.svg
 [license]: https://github.com/clebert/aws-simple/blob/master/LICENSE
 [stack-config-type]:
-  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L67
+  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L69
