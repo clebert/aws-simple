@@ -93,10 +93,27 @@ aws configure --profile clebert
 ```
 
 ```
-AWS Access Key ID [None]: XXXXXXXXXXXXXXXXXXXX
-AWS Secret Access Key [None]: YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+AWS Access Key ID [None]: ********************
+AWS Secret Access Key [None]: ****************************************
 Default region name [None]: eu-central-1
 Default output format [None]: json
+```
+
+As an alternative to using the `aws` CLI, the following files can also be
+created manually:
+
+```
+cat ~/.aws/credentials
+[clebert]
+aws_access_key_id = ********************
+aws_secret_access_key = ****************************************
+```
+
+```
+cat ~/.aws/config
+[profile clebert]
+output = json
+region = eu-central-1
 ```
 
 _Note: Please replace the profile (`clebert`) and also the region
