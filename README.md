@@ -5,6 +5,14 @@
 A Node.js interface for **AWS** that allows easy configuration and deployment of
 **simple** web projects.
 
+## Contents
+
+- [Quick Overview](https://github.com/clebert/aws-simple#quick-overview)
+- [Motivation](https://github.com/clebert/aws-simple#motivation)
+- [Getting Started](https://github.com/clebert/aws-simple#getting-started)
+- [CLI Usage](https://github.com/clebert/aws-simple#cli-usage)
+- [Development](https://github.com/clebert/aws-simple#development)
+
 ## Quick Overview
 
 `aws-simple` allows you to easily create and deploy an API Gateway with a custom
