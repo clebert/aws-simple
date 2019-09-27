@@ -20,7 +20,7 @@ domain and optional alias record, host static web resources via S3, and
 provision public backend APIs via Lambda. In addition, a local DEV server can be
 started to emulate the resulting AWS infrastructure.
 
-### aws-simple-example
+### 👀aws-simple-example
 
 For a quick impression, an [example project][aws-simple-example] is available
 that consists essentially of a React component that retrieves text from a Lambda
