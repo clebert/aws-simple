@@ -25,9 +25,9 @@ In my job I mainly build frontend web applications for existing backend/CMS
 systems. Since many of the frontend tech stacks are similar again and again, I
 created an abstraction for the AWS CDK/SDK for a faster and easier setup.
 
-Since existing backend/CMS systems are used, there is rarely a need for own
-persistence layers. Therefore, setting these up is not part of this abstraction
-for the time being.
+Since existing backend/CMS systems are used, an additional persistence layer is
+rarely required. Therefore, setting up such a layer (e.g. with Amazon DynamoDB)
+is [currently not supported][dynamo-db-issue].
 
 I deliberately kept it simple. A project with a more complex setup should be set
 up manually with the AWS CDK/SDK.
@@ -325,4 +325,5 @@ License][license].
 [aws-simple-example]: https://github.com/clebert/aws-simple-example
 [cdk-guide]: https://docs.aws.amazon.com/cdk/latest/guide/tools.html
 [ci-badge]: https://github.com/clebert/aws-simple/workflows/CI/badge.svg
+[dynamo-db-issue]: https://github.com/clebert/aws-simple/issues/12
 [license]: https://github.com/clebert/aws-simple/blob/master/LICENSE
