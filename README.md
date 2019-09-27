@@ -16,8 +16,8 @@ server can be started to emulate the resulting AWS infrastructure.
 
 For a quick impression, an [example project][aws-simple-example] is available
 that consists essentially of a React component that retrieves text from a Lambda
-BFF (Backend for Frontend) using a `React.useEffect` hook and displays it.
-Parcel is used for bundling and TypeScript as language.
+BFF using a `React.useEffect` hook and displays it. Parcel is used for bundling
+and TypeScript as language.
 
 ## Motivation
 
@@ -178,9 +178,13 @@ _Note: This command only needs to be executed once. For more information see
 
 ### Deploy Stack to AWS
 
+Create a stack using the CDK:
+
 ```
 yarn cdk deploy --app 'yarn aws-simple create' --profile clebert
 ```
+
+Upload files to S3:
 
 ```
 yarn aws-simple upload --profile clebert --region eu-central-1
