@@ -8,16 +8,16 @@ A Node.js interface for **AWS** that allows easy configuration and deployment of
 ## Quick Overview
 
 `aws-simple` allows you to easily create and deploy an API Gateway with a custom
-domain and optional alias record, make static files available via S3 and e.g.
-provision a BFF (Backend for Frontend) via Lambda. In addition, a local DEV
-server can be started to emulate the resulting AWS infrastructure.
+domain and optional alias record, host static web resources via S3, and
+provision public backend APIs via Lambda. In addition, a local DEV server can be
+started to emulate the resulting AWS infrastructure.
 
 ### aws-simple-example
 
 For a quick impression, an [example project][aws-simple-example] is available
 that consists essentially of a React component that retrieves text from a Lambda
-BFF using a `React.useEffect` hook and displays it. Parcel is used for bundling
-and TypeScript as language.
+function using a `React.useEffect` hook and displays it. Parcel is used for
+bundling and TypeScript as language.
 
 ## Motivation
 
