@@ -2,7 +2,7 @@ import {readdirSync} from 'fs';
 import * as path from 'path';
 import {S3Config} from '..';
 
-export function getFilenames(s3Config: S3Config): string[] {
+export function getAbsoluteFilenames(s3Config: S3Config): string[] {
   const {type, localPath} = s3Config;
 
   const relativeFilenames =

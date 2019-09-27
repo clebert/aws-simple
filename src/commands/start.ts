@@ -2,8 +2,8 @@ import {fork} from 'child_process';
 import {watch} from 'chokidar';
 import * as path from 'path';
 import {Argv} from 'yargs';
-import {Defaults} from '../defaults';
-import {AppConfig} from '../utils/app-config';
+import {defaults} from '../defaults';
+import {loadAppConfig} from '../utils/load-app-config';
 
 export interface StartArgv {
   readonly _: ['start'];
@@ -18,7 +18,7 @@ export function describeStartCommand(yargs: Argv): Argv {
     args
       .describe('config', 'The path to the config file')
       .string('config')
-      .default('config', Defaults.configFilename)
+      .default('config', defaults.configFilename)
 
       .describe('port', 'The port to listen on')
       .number('port')
@@ -46,10 +46,8 @@ export function isStartArgv(argv: {_: string[]}): argv is StartArgv {
 
 export function start(argv: StartArgv): void {
   const {config, port, cached, verbose} = argv;
-
-  const {lambdaConfigs = [], s3Configs = []} = AppConfig.load(
-    config
-  ).stackConfig;
+  const {stackConfig = {}} = loadAppConfig(config);
+  const {lambdaConfigs = [], s3Configs = []} = stackConfig;
 
   const localPaths = [...lambdaConfigs, ...s3Configs].map(
     ({localPath}) => localPath
@@ -66,7 +64,7 @@ export function start(argv: StartArgv): void {
       args.push('--verbose');
     }
 
-    const modulePath = path.join(__dirname, '../utils/start-server.js');
+    const modulePath = path.join(__dirname, '../utils/express/start-server.js');
 
     return fork(modulePath, args, {stdio: 'inherit'});
   };

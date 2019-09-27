@@ -57,18 +57,16 @@ export interface S3Config {
   readonly responseHeaders?: S3ResponseHeaders;
 }
 
-export interface Resources {
+export interface Deployment {
   readonly stack: Stack;
   readonly restApi: RestApi;
   readonly s3Bucket: Bucket;
   readonly s3IntegrationRole: Role;
 }
 
-export type CustomHook = (resources: Resources) => void;
+export type CustomHook = (deployment: Deployment) => void;
 
 export interface StackConfig {
-  readonly appName: string;
-  readonly stackId: string;
   readonly customDomainConfig?: CustomDomainConfig;
   readonly binaryMediaTypes?: string[];
   readonly minimumCompressionSize?: number;
@@ -76,6 +74,12 @@ export interface StackConfig {
   readonly lambdaConfigs?: LambdaConfig[];
   readonly s3Configs?: S3Config[];
   readonly customHook?: CustomHook;
+}
+
+export interface AppConfig {
+  readonly appName: string;
+  readonly stackName: string;
+  readonly stackConfig?: StackConfig;
 }
 
 function handleError(error: Error): void {

@@ -1,8 +1,8 @@
 import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import express from 'express';
 import lambdaLocal from 'lambda-local';
-import {LambdaConfig, LambdaHttpMethod} from '..';
-import {Defaults} from '../defaults';
+import {LambdaConfig, LambdaHttpMethod} from '../..';
+import {defaults} from '../../defaults';
 
 function getHeadersFromRequest(
   req: express.Request
@@ -61,8 +61,8 @@ function createLambdaRequestHandler(
 
   const {
     localPath,
-    handler = Defaults.lambdaHandler,
-    timeoutInSeconds = Defaults.lambdaTimeoutInSeconds,
+    handler = defaults.lambdaHandler,
+    timeoutInSeconds = defaults.lambdaTimeoutInSeconds,
     environment
   } = lambdaConfig;
 

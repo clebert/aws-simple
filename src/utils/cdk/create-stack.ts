@@ -3,6 +3,7 @@ import {
   MethodDeploymentOptions,
   MethodLoggingLevel,
   RestApi,
+  RestApiProps,
   StageOptions
 } from '@aws-cdk/aws-apigateway';
 import {Certificate} from '@aws-cdk/aws-certificatemanager';
@@ -17,8 +18,15 @@ import {ApiGateway} from '@aws-cdk/aws-route53-targets';
 import {Bucket} from '@aws-cdk/aws-s3';
 import {App, CfnOutput, Duration, Stack} from '@aws-cdk/core';
 import * as path from 'path';
-import {CustomDomainConfig, LambdaConfig, LoggingLevel, Resources} from '..';
-import {AppConfig, ResourceIds} from './app-config';
+import {
+  AppConfig,
+  CustomDomainConfig,
+  Deployment,
+  LambdaConfig,
+  LoggingLevel,
+  StackConfig
+} from '../..';
+import {DeploymentDescriptor, ResourceIds} from '../deployment-descriptor';
 
 function createDomainNameOptions(
   resourceIds: ResourceIds,
@@ -90,9 +98,11 @@ function createStageOptions(
   };
 }
 
-export function createStack(appConfig: AppConfig): Resources {
-  const {outputIds, resourceIds, stackConfig} = appConfig;
-
+function createRestApiProps(
+  resourceIds: ResourceIds,
+  stack: Stack,
+  stackConfig: StackConfig
+): RestApiProps {
   const {
     customDomainConfig,
     binaryMediaTypes,
@@ -101,16 +111,47 @@ export function createStack(appConfig: AppConfig): Resources {
     lambdaConfigs = []
   } = stackConfig;
 
-  const stack = new Stack(new App(), resourceIds.stack);
-
-  const restApi = new RestApi(stack, resourceIds.restApi, {
+  return {
     domainName:
       customDomainConfig &&
       createDomainNameOptions(resourceIds, stack, customDomainConfig),
     binaryMediaTypes,
     minimumCompressionSize,
     deployOptions: createStageOptions(lambdaConfigs, loggingLevel)
+  };
+}
+
+function createARecord(
+  resourceIds: ResourceIds,
+  stack: Stack,
+  restApi: RestApi,
+  customDomainConfig: CustomDomainConfig
+): void {
+  const {hostedZoneId, hostedZoneName, aliasRecordName} = customDomainConfig;
+
+  const aRecord = new ARecord(stack, resourceIds.aRecord, {
+    zone: HostedZone.fromHostedZoneAttributes(stack, resourceIds.zone, {
+      hostedZoneId,
+      zoneName: hostedZoneName
+    }),
+    recordName: aliasRecordName,
+    target: RecordTarget.fromAlias(new ApiGateway(restApi))
   });
+
+  aRecord.node.addDependency(restApi);
+}
+
+export function createStack(appConfig: AppConfig): Deployment {
+  const {outputIds, resourceIds} = new DeploymentDescriptor(appConfig);
+  const {stackConfig = {}} = appConfig;
+
+  const stack = new Stack(new App(), resourceIds.stack);
+
+  const restApi = new RestApi(
+    stack,
+    resourceIds.restApi,
+    createRestApiProps(resourceIds, stack, stackConfig)
+  );
 
   const restApiUrlOutput = new CfnOutput(stack, resourceIds.restApiUrlOutput, {
     value: restApi.url,
@@ -119,19 +160,8 @@ export function createStack(appConfig: AppConfig): Resources {
 
   restApiUrlOutput.node.addDependency(restApi);
 
-  if (customDomainConfig && customDomainConfig.aliasRecordName) {
-    const {hostedZoneId, hostedZoneName, aliasRecordName} = customDomainConfig;
-
-    const aRecord = new ARecord(stack, resourceIds.aRecord, {
-      zone: HostedZone.fromHostedZoneAttributes(stack, resourceIds.zone, {
-        hostedZoneId,
-        zoneName: hostedZoneName
-      }),
-      recordName: aliasRecordName,
-      target: RecordTarget.fromAlias(new ApiGateway(restApi))
-    });
-
-    aRecord.node.addDependency(restApi);
+  if (stackConfig.customDomainConfig) {
+    createARecord(resourceIds, stack, restApi, stackConfig.customDomainConfig);
   }
 
   const s3Bucket = new Bucket(stack, resourceIds.s3Bucket, {

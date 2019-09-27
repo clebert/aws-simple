@@ -81,8 +81,8 @@ policy:
 ```
 
 _Note: Please replace the app name (`myapp`) with your own. All resources
-created with CloudFormation have the app name combined with the stack ID as a
-prefix for their own ID such as `myapp-mystack-resource-s3-bucket`._
+created with CloudFormation have the app name combined with the stack name as a
+prefix for their ID such as `myapp-mystack-resource-s3-bucket`._
 
 ### Create AWS CLI profile
 
@@ -129,21 +129,23 @@ _Note: Please replace the profile (`clebert`) and also the region
 ### Create Config File
 
 Create a top-level configuration file called `aws-simple.config.js` in your
-project. The following describes a very simple stack including a static HTML
-file:
+project. The following describes a very simple app consisting of a single static
+HTML file:
 
 ```js
 exports.default = {
   appName: 'myapp',
-  stackId: 'mystack',
-  s3Configs: [
-    {
-      type: 'file',
-      publicPath: '/',
-      localPath: 'dist/app/index.html',
-      bucketPath: 'index.html'
-    }
-  ]
+  stackName: 'mystack',
+  stackConfig: {
+    s3Configs: [
+      {
+        type: 'file',
+        publicPath: '/',
+        localPath: 'dist/app/index.html',
+        bucketPath: 'index.html'
+      }
+    ]
+  }
 };
 ```
 
@@ -153,15 +155,15 @@ exports.default = {
 // @ts-check
 
 /**
- * @type {import('aws-simple').StackConfig}
+ * @type {import('aws-simple').AppConfig}
  */
 exports.default = {
   appName: 'myapp',
-  stackId: 'mystack'
+  stackName: 'mystack'
 };
 ```
 
-_Note: The `StackConfig` interface can be viewed [here][stack-config-type]._
+_Note: The `AppConfig` interface can be viewed [here][app-config-interface]._
 
 ### Bootstrap AWS Environment
 
@@ -185,9 +187,9 @@ yarn cdk deploy --app 'yarn aws-simple create' --profile clebert
 yarn aws-simple upload --profile clebert --region eu-central-1
 ```
 
-_Note: Different stack IDs allow multiple stacks of the same app to be deployed
-simultaneously. For example, the `aliasRecordName` in the `customDomainConfig`
-can be used to give each stack its own URL._
+_Note: Different stack names allow multiple stacks of the same app to be
+deployed simultaneously. For example, the `aliasRecordName` in the
+`customDomainConfig` can be used to give each stack its own URL._
 
 #### `package.json` Scripts Example
 
@@ -228,6 +230,9 @@ Commands:
 Options:
   --version   Show version number                                      [boolean]
   -h, --help  Show help                                                [boolean]
+
+A Node.js interface for AWS that allows easy configuration and deployment of
+simple web projects.
 ```
 
 ### Create a stack using the CDK
@@ -238,16 +243,16 @@ aws-simple create [options]
 Create a stack using the CDK
 
 Options:
-  --version   Show version number                                      [boolean]
-  -h, --help  Show help                                                [boolean]
-  --config    The path to the config file
+  --version     Show version number                                    [boolean]
+  -h, --help    Show help                                              [boolean]
+  --config      The path to the config file
                                       [string] [default: "aws-simple.config.js"]
-  --stack-id  Optional overwriting of the stack ID declared in the config file
-                                                                        [string]
+  --stack-name  Optional overwriting of the stack name declared in the config
+                file                                                    [string]
 
 Examples:
   cdk deploy --app 'aws-simple create' --profile clebert
-  cdk deploy --app 'aws-simple create --stack-id stage' --profile clebert
+  cdk deploy --app 'aws-simple create --stack-name stage' --profile clebert
 ```
 
 ### Upload files to S3
@@ -258,19 +263,19 @@ aws-simple upload [options]
 Upload files to S3
 
 Options:
-  --version   Show version number                                      [boolean]
-  -h, --help  Show help                                                [boolean]
-  --config    The path to the config file
+  --version     Show version number                                    [boolean]
+  -h, --help    Show help                                              [boolean]
+  --config      The path to the config file
                                       [string] [default: "aws-simple.config.js"]
-  --profile   The AWS profile name as set in the shared credentials file
+  --profile     The AWS profile name as set in the shared credentials file
                                                              [string] [required]
-  --region    The AWS region                                 [string] [required]
-  --stack-id  Optional overwriting of the stack ID declared in the config file
-                                                                        [string]
+  --region      The AWS region                               [string] [required]
+  --stack-name  Optional overwriting of the stack name declared in the config
+                file                                                    [string]
 
 Examples:
   aws-simple upload --profile clebert --region eu-central-1
-  aws-simple upload --profile clebert --region eu-central-1 --stack-id stage
+  aws-simple upload --profile clebert --region eu-central-1 --stack-name stage
 ```
 
 ### Start local DEV server
@@ -312,9 +317,9 @@ via the GitHub UI. This triggers the final publication to npm.
 Copyright (c) 2019, Clemens Akens. Released under the terms of the [MIT
 License][license].
 
+[app-config-interface]:
+  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L79
 [aws-simple-example]: https://github.com/clebert/aws-simple-example
 [cdk-guide]: https://docs.aws.amazon.com/cdk/latest/guide/tools.html
 [ci-badge]: https://github.com/clebert/aws-simple/workflows/CI/badge.svg
 [license]: https://github.com/clebert/aws-simple/blob/master/LICENSE
-[stack-config-type]:
-  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L69

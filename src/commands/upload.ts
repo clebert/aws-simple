@@ -1,14 +1,14 @@
 import {Argv} from 'yargs';
-import {Defaults} from '../defaults';
-import {AppConfig} from '../utils/app-config';
-import {uploadToS3} from '../utils/upload-to-s3';
+import {defaults} from '../defaults';
+import {loadAppConfig} from '../utils/load-app-config';
+import {uploadToS3} from '../utils/sdk/upload-to-s3';
 
 export interface UploadArgv {
   readonly _: ['upload'];
   readonly config: string;
   readonly profile: string;
   readonly region: string;
-  readonly stackId?: string;
+  readonly stackName?: string;
 }
 
 export function describeUploadCommand(yargs: Argv): Argv {
@@ -16,7 +16,7 @@ export function describeUploadCommand(yargs: Argv): Argv {
     args
       .describe('config', 'The path to the config file')
       .string('config')
-      .default('config', Defaults.configFilename)
+      .default('config', defaults.configFilename)
 
       .describe(
         'profile',
@@ -30,15 +30,15 @@ export function describeUploadCommand(yargs: Argv): Argv {
       .demandOption('region')
 
       .describe(
-        'stack-id',
-        'Optional overwriting of the stack ID declared in the config file'
+        'stack-name',
+        'Optional overwriting of the stack name declared in the config file'
       )
-      .string('stack-id')
+      .string('stack-name')
 
       .example('$0 upload --profile clebert --region eu-central-1', '')
 
       .example(
-        '$0 upload --profile clebert --region eu-central-1 --stack-id stage',
+        '$0 upload --profile clebert --region eu-central-1 --stack-name stage',
         ''
       )
   );
@@ -49,7 +49,7 @@ export function isUploadArgv(argv: {_: string[]}): argv is UploadArgv {
 }
 
 export async function upload(argv: UploadArgv): Promise<void> {
-  const {config, profile, region, stackId} = argv;
+  const {config, profile, region, stackName} = argv;
 
-  await uploadToS3(AppConfig.load(config, stackId), {profile, region});
+  await uploadToS3(loadAppConfig(config, stackName), {profile, region});
 }
