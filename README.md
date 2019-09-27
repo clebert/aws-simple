@@ -128,9 +128,10 @@ _Note: Please replace the profile (`clebert`) and also the region
 
 ### Create Config File
 
-Create a top-level configuration file called `aws-simple.config.js` in your
-project. The following config describes a simple app consisting of a single
-static HTML file:
+Create a top-level config file called `aws-simple.config.js` in your project.
+
+For example, the following app config describes a simple app consisting of a
+single static HTML file:
 
 ```js
 exports.default = {
