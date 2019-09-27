@@ -18,21 +18,22 @@ import {ApiGateway} from '@aws-cdk/aws-route53-targets';
 import {Bucket} from '@aws-cdk/aws-s3';
 import {App, CfnOutput, Duration, Stack} from '@aws-cdk/core';
 import * as path from 'path';
-import {
-  AppConfig,
-  CustomDomainConfig,
-  Deployment,
-  LambdaConfig,
-  LoggingLevel,
-  StackConfig
-} from '../..';
-import {DeploymentDescriptor, ResourceIds} from '../deployment-descriptor';
+import {Deployment} from '../..';
+import {DeploymentDescriptor} from '../deployment-descriptor';
 
 function createDomainNameOptions(
-  resourceIds: ResourceIds,
-  stack: Stack,
-  customDomainConfig: CustomDomainConfig
+  deploymentDescriptor: DeploymentDescriptor,
+  stack: Stack
 ): DomainNameOptions | undefined {
+  const {
+    appConfig: {customDomainConfig},
+    resourceIds
+  } = deploymentDescriptor;
+
+  if (!customDomainConfig) {
+    return;
+  }
+
   const {certificateArn, hostedZoneName, aliasRecordName} = customDomainConfig;
 
   return {
@@ -48,9 +49,12 @@ function createDomainNameOptions(
 }
 
 function createStageOptions(
-  lambdaConfigs: LambdaConfig[],
-  loggingLevel: LoggingLevel | undefined
+  deploymentDescriptor: DeploymentDescriptor
 ): StageOptions {
+  const {
+    appConfig: {loggingLevel, lambdaConfigs = []}
+  } = deploymentDescriptor;
+
   const restApiMethodOptions: Record<string, MethodDeploymentOptions> = {};
 
   let rootCachingEnabled = false;
@@ -99,34 +103,35 @@ function createStageOptions(
 }
 
 function createRestApiProps(
-  resourceIds: ResourceIds,
-  stack: Stack,
-  stackConfig: StackConfig
+  deploymentDescriptor: DeploymentDescriptor,
+  stack: Stack
 ): RestApiProps {
   const {
-    customDomainConfig,
-    binaryMediaTypes,
-    minimumCompressionSize,
-    loggingLevel,
-    lambdaConfigs = []
-  } = stackConfig;
+    appConfig: {binaryMediaTypes, minimumCompressionSize}
+  } = deploymentDescriptor;
 
   return {
-    domainName:
-      customDomainConfig &&
-      createDomainNameOptions(resourceIds, stack, customDomainConfig),
+    domainName: createDomainNameOptions(deploymentDescriptor, stack),
     binaryMediaTypes,
     minimumCompressionSize,
-    deployOptions: createStageOptions(lambdaConfigs, loggingLevel)
+    deployOptions: createStageOptions(deploymentDescriptor)
   };
 }
 
 function createARecord(
-  resourceIds: ResourceIds,
+  deploymentDescriptor: DeploymentDescriptor,
   stack: Stack,
-  restApi: RestApi,
-  customDomainConfig: CustomDomainConfig
+  restApi: RestApi
 ): void {
+  const {
+    appConfig: {customDomainConfig},
+    resourceIds
+  } = deploymentDescriptor;
+
+  if (!customDomainConfig) {
+    return;
+  }
+
   const {hostedZoneId, hostedZoneName, aliasRecordName} = customDomainConfig;
 
   const aRecord = new ARecord(stack, resourceIds.aRecord, {
@@ -141,16 +146,16 @@ function createARecord(
   aRecord.node.addDependency(restApi);
 }
 
-export function createStack(appConfig: AppConfig): Deployment {
-  const {outputIds, resourceIds} = new DeploymentDescriptor(appConfig);
-  const {stackConfig = {}} = appConfig;
-
+export function createStack(
+  deploymentDescriptor: DeploymentDescriptor
+): Deployment {
+  const {outputIds, resourceIds} = deploymentDescriptor;
   const stack = new Stack(new App(), resourceIds.stack);
 
   const restApi = new RestApi(
     stack,
     resourceIds.restApi,
-    createRestApiProps(resourceIds, stack, stackConfig)
+    createRestApiProps(deploymentDescriptor, stack)
   );
 
   const restApiUrlOutput = new CfnOutput(stack, resourceIds.restApiUrlOutput, {
@@ -160,9 +165,7 @@ export function createStack(appConfig: AppConfig): Deployment {
 
   restApiUrlOutput.node.addDependency(restApi);
 
-  if (stackConfig.customDomainConfig) {
-    createARecord(resourceIds, stack, restApi, stackConfig.customDomainConfig);
-  }
+  createARecord(deploymentDescriptor, stack, restApi);
 
   const s3Bucket = new Bucket(stack, resourceIds.s3Bucket, {
     publicReadAccess: false

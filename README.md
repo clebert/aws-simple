@@ -136,16 +136,14 @@ HTML file:
 exports.default = {
   appName: 'myapp',
   stackName: 'mystack',
-  stackConfig: {
-    s3Configs: [
-      {
-        type: 'file',
-        publicPath: '/',
-        localPath: 'dist/app/index.html',
-        bucketPath: 'index.html'
-      }
-    ]
-  }
+  s3Configs: [
+    {
+      type: 'file',
+      publicPath: '/',
+      localPath: 'dist/app/index.html',
+      bucketPath: 'index.html'
+    }
+  ]
 };
 ```
 
@@ -318,7 +316,7 @@ Copyright (c) 2019, Clemens Akens. Released under the terms of the [MIT
 License][license].
 
 [app-config-interface]:
-  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L79
+  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L69
 [aws-simple-example]: https://github.com/clebert/aws-simple-example
 [cdk-guide]: https://docs.aws.amazon.com/cdk/latest/guide/tools.html
 [ci-badge]: https://github.com/clebert/aws-simple/workflows/CI/badge.svg

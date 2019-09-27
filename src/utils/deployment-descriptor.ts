@@ -20,15 +20,10 @@ export interface ResourceIds {
 }
 
 export class DeploymentDescriptor {
-  public readonly appName: string;
-  public readonly stackName: string;
   public readonly outputIds: OutputIds;
   public readonly resourceIds: ResourceIds;
 
-  public constructor(appConfig: AppConfig) {
-    this.appName = appConfig.appName;
-    this.stackName = appConfig.stackName;
-
+  public constructor(public readonly appConfig: AppConfig) {
     this.outputIds = {
       restApiUrl: this.createOutputId('rest-api-url'),
       s3BucketName: this.createOutputId('s3-bucket-name')
@@ -50,10 +45,14 @@ export class DeploymentDescriptor {
   }
 
   public createOutputId(exportName: string): string {
-    return `${this.appName}-${this.stackName}-output-${exportName}`;
+    const {appName, stackName} = this.appConfig;
+
+    return `${appName}-${stackName}-output-${exportName}`;
   }
 
   public createResourceId(resourceName: string): string {
-    return `${this.appName}-${this.stackName}-resource-${resourceName}`;
+    const {appName, stackName} = this.appConfig;
+
+    return `${appName}-${stackName}-resource-${resourceName}`;
   }
 }

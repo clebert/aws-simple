@@ -1,5 +1,6 @@
 import {Argv} from 'yargs';
 import {defaults} from '../defaults';
+import {DeploymentDescriptor} from '../utils/deployment-descriptor';
 import {loadAppConfig} from '../utils/load-app-config';
 import {uploadToS3} from '../utils/sdk/upload-to-s3';
 
@@ -51,5 +52,9 @@ export function isUploadArgv(argv: {_: string[]}): argv is UploadArgv {
 export async function upload(argv: UploadArgv): Promise<void> {
   const {config, profile, region, stackName} = argv;
 
-  await uploadToS3(loadAppConfig(config, stackName), {profile, region});
+  const deploymentDescriptor = new DeploymentDescriptor(
+    loadAppConfig(config, stackName)
+  );
+
+  await uploadToS3(deploymentDescriptor, {profile, region});
 }

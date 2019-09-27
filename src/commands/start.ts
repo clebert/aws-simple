@@ -46,8 +46,7 @@ export function isStartArgv(argv: {_: string[]}): argv is StartArgv {
 
 export function start(argv: StartArgv): void {
   const {config, port, cached, verbose} = argv;
-  const {stackConfig = {}} = loadAppConfig(config);
-  const {lambdaConfigs = [], s3Configs = []} = stackConfig;
+  const {lambdaConfigs = [], s3Configs = []} = loadAppConfig(config);
 
   const localPaths = [...lambdaConfigs, ...s3Configs].map(
     ({localPath}) => localPath

@@ -43,13 +43,12 @@ export function isCreateArgv(argv: {_: string[]}): argv is CreateArgv {
 
 export function create(argv: CreateArgv): void {
   const appConfig = loadAppConfig(argv.config, argv.stackName);
-  const deployment = createStack(appConfig);
   const deploymentDescriptor = new DeploymentDescriptor(appConfig);
-  const {stackConfig = {}} = appConfig;
-  const {lambdaConfigs = [], s3Configs = [], customHook} = stackConfig;
+  const deployment = createStack(deploymentDescriptor);
+  const {lambdaConfigs = [], s3Configs = [], customHook} = appConfig;
 
   for (const lambdaConfig of lambdaConfigs) {
-    createLambdaIntegration(deployment, deploymentDescriptor, lambdaConfig);
+    createLambdaIntegration(deploymentDescriptor, deployment, lambdaConfig);
   }
 
   for (const s3Config of s3Configs) {

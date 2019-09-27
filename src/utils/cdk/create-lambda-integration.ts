@@ -7,8 +7,8 @@ import {defaults} from '../../defaults';
 import {DeploymentDescriptor} from '../deployment-descriptor';
 
 export function createLambdaIntegration(
-  deployment: Deployment,
   deploymentDescriptor: DeploymentDescriptor,
+  deployment: Deployment,
   lambdaConfig: LambdaConfig
 ): void {
   const {stack, restApi} = deployment;

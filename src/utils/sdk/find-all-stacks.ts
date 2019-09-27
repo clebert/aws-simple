@@ -22,6 +22,6 @@ export async function findAllStacks(
   } while (stackDescriptions.NextToken);
 
   return stacks.filter(({StackName}) =>
-    StackName.startsWith(deploymentDescriptor.appName)
+    StackName.startsWith(deploymentDescriptor.appConfig.appName)
   );
 }

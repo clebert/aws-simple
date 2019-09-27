@@ -4,7 +4,6 @@ import Listr from 'listr';
 import mimeTypes from 'mime-types';
 import * as path from 'path';
 import joinUrl from 'url-join';
-import {AppConfig} from '../..';
 import {DeploymentDescriptor} from '../deployment-descriptor';
 import {getAbsoluteFilenames} from '../get-absolute-filenames';
 import {SdkConfig, createClientConfig} from './create-client-config';
@@ -12,16 +11,17 @@ import {findStack} from './find-stack';
 import {getStackOutputs} from './get-stack-outputs';
 
 export async function uploadToS3(
-  appConfig: AppConfig,
+  dseploymentDescriptor: DeploymentDescriptor,
   sdkConfig: SdkConfig
 ): Promise<void> {
-  const dseploymentDescriptor = new DeploymentDescriptor(appConfig);
   const clientConfig = await createClientConfig(sdkConfig);
   const cloudFormation = new CloudFormation(clientConfig);
   const stack = await findStack(dseploymentDescriptor, cloudFormation);
   const stackOutputs = getStackOutputs(dseploymentDescriptor, stack);
-  const {stackConfig = {}} = appConfig;
-  const {customDomainConfig, s3Configs = []} = stackConfig;
+
+  const {
+    appConfig: {customDomainConfig, s3Configs = []}
+  } = dseploymentDescriptor;
 
   const createUrl = () => {
     if (!customDomainConfig) {

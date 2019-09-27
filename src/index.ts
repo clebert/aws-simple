@@ -66,7 +66,9 @@ export interface Deployment {
 
 export type CustomHook = (deployment: Deployment) => void;
 
-export interface StackConfig {
+export interface AppConfig {
+  readonly appName: string;
+  readonly stackName: string;
   readonly customDomainConfig?: CustomDomainConfig;
   readonly binaryMediaTypes?: string[];
   readonly minimumCompressionSize?: number;
@@ -74,12 +76,6 @@ export interface StackConfig {
   readonly lambdaConfigs?: LambdaConfig[];
   readonly s3Configs?: S3Config[];
   readonly customHook?: CustomHook;
-}
-
-export interface AppConfig {
-  readonly appName: string;
-  readonly stackName: string;
-  readonly stackConfig?: StackConfig;
 }
 
 function handleError(error: Error): void {

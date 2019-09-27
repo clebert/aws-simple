@@ -46,13 +46,12 @@ function startServer(argv: unknown): void {
   }
 
   const {config, port, cached, verbose} = argv;
-  const {stackConfig = {}} = loadAppConfig(config);
 
   const {
     minimumCompressionSize,
     lambdaConfigs = [],
     s3Configs = []
-  } = stackConfig;
+  } = loadAppConfig(config);
 
   if (!verbose) {
     suppressLambdaResultLogging();
