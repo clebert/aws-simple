@@ -1,8 +1,8 @@
 import {Argv} from 'yargs';
+import {createLambdaIntegration} from '../cdk/create-lambda-integration';
+import {createS3Integration} from '../cdk/create-s3-integration';
+import {createStack} from '../cdk/create-stack';
 import {defaults} from '../defaults';
-import {createLambdaIntegration} from '../utils/cdk/create-lambda-integration';
-import {createS3Integration} from '../utils/cdk/create-s3-integration';
-import {createStack} from '../utils/cdk/create-stack';
 import {DeploymentDescriptor} from '../utils/deployment-descriptor';
 import {loadAppConfig} from '../utils/load-app-config';
 

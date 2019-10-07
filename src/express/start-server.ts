@@ -5,7 +5,7 @@ import express from 'express';
 import lambdaLocal from 'lambda-local';
 import {format} from 'winston';
 import yargs from 'yargs';
-import {loadAppConfig} from '../load-app-config';
+import {loadAppConfig} from '../utils/load-app-config';
 import {serveLocalLambda} from './serve-local-lambda';
 import {serveLocalS3} from './serve-local-s3';
 

@@ -1,7 +1,7 @@
 import express from 'express';
 import * as path from 'path';
-import {S3Config} from '../..';
-import {getAbsoluteFilenames} from '../get-absolute-filenames';
+import {S3Config} from '..';
+import {getAbsoluteFilenames} from '../utils/get-absolute-filenames';
 
 export function serveLocalS3(app: express.Express, s3Config: S3Config): void {
   const {type, publicPath, responseHeaders = {}} = s3Config;

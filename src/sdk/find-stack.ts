@@ -1,5 +1,5 @@
 import {CloudFormation} from 'aws-sdk';
-import {DeploymentDescriptor} from '../deployment-descriptor';
+import {DeploymentDescriptor} from '../utils/deployment-descriptor';
 
 export async function findStack(
   deploymentDescriptor: DeploymentDescriptor,

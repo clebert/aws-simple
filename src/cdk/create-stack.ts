@@ -18,8 +18,8 @@ import {ApiGateway} from '@aws-cdk/aws-route53-targets';
 import {Bucket} from '@aws-cdk/aws-s3';
 import {App, CfnOutput, Duration, Stack} from '@aws-cdk/core';
 import * as path from 'path';
-import {Deployment} from '../..';
-import {DeploymentDescriptor} from '../deployment-descriptor';
+import {Deployment} from '..';
+import {DeploymentDescriptor} from '../utils/deployment-descriptor';
 
 function createDomainNameOptions(
   deploymentDescriptor: DeploymentDescriptor,

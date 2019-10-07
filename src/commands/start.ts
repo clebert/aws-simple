@@ -63,7 +63,7 @@ export function start(argv: StartArgv): void {
       args.push('--verbose');
     }
 
-    const modulePath = path.join(__dirname, '../utils/express/start-server.js');
+    const modulePath = path.join(__dirname, '../express/start-server.js');
 
     return fork(modulePath, args, {stdio: 'inherit'});
   };

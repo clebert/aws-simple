@@ -1,8 +1,8 @@
 import {Argv} from 'yargs';
 import {defaults} from '../defaults';
+import {uploadToS3} from '../sdk/upload-to-s3';
 import {DeploymentDescriptor} from '../utils/deployment-descriptor';
 import {loadAppConfig} from '../utils/load-app-config';
-import {uploadToS3} from '../utils/sdk/upload-to-s3';
 
 export interface UploadArgv {
   readonly _: ['upload'];

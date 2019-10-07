@@ -1,10 +1,19 @@
-import {LambdaIntegration} from '@aws-cdk/aws-apigateway';
+import {LambdaIntegration, RestApi} from '@aws-cdk/aws-apigateway';
+import {Role} from '@aws-cdk/aws-iam';
 import {Code, Function as Lambda, Runtime} from '@aws-cdk/aws-lambda';
-import {Duration} from '@aws-cdk/core';
+import {Bucket} from '@aws-cdk/aws-s3';
+import {Duration, Stack} from '@aws-cdk/core';
 import * as path from 'path';
-import {Deployment, LambdaConfig} from '../..';
-import {defaults} from '../../defaults';
-import {DeploymentDescriptor} from '../deployment-descriptor';
+import {LambdaConfig} from '..';
+import {defaults} from '../defaults';
+import {DeploymentDescriptor} from '../utils/deployment-descriptor';
+
+export interface Deployment {
+  readonly stack: Stack;
+  readonly restApi: RestApi;
+  readonly s3Bucket: Bucket;
+  readonly s3IntegrationRole: Role;
+}
 
 export function createLambdaIntegration(
   deploymentDescriptor: DeploymentDescriptor,

@@ -2,14 +2,13 @@
 
 import 'source-map-support/register';
 
-import {RestApi} from '@aws-cdk/aws-apigateway';
-import {Role} from '@aws-cdk/aws-iam';
-import {Bucket} from '@aws-cdk/aws-s3';
-import {Stack} from '@aws-cdk/core';
 import yargs from 'yargs';
+import {Deployment} from './cdk/create-lambda-integration';
 import {create, describeCreateCommand, isCreateArgv} from './commands/create';
 import {describeStartCommand, isStartArgv, start} from './commands/start';
 import {describeUploadCommand, isUploadArgv, upload} from './commands/upload';
+
+export {Deployment};
 
 export interface CustomDomainConfig {
   readonly certificateArn: string;
@@ -55,13 +54,6 @@ export interface S3Config {
   readonly localPath: string;
   readonly bucketPath?: string;
   readonly responseHeaders?: S3ResponseHeaders;
-}
-
-export interface Deployment {
-  readonly stack: Stack;
-  readonly restApi: RestApi;
-  readonly s3Bucket: Bucket;
-  readonly s3IntegrationRole: Role;
 }
 
 export type CustomHook = (deployment: Deployment) => void;

@@ -5,7 +5,7 @@ import {
   MethodResponse
 } from '@aws-cdk/aws-apigateway';
 import * as path from 'path';
-import {Deployment, S3Config} from '../..';
+import {Deployment, S3Config} from '..';
 
 export function createS3Integration(
   deployment: Deployment,
