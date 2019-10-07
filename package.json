@@ -30,6 +30,7 @@
   "scripts": {
     "precompile": "rm -rf lib/",
     "compile": "tsc",
+    "postcompile": "chmod +x lib/index.js",
     "format": "prettier --write '**/*.{js,json,md,ts,yml}'",
     "lint": "tslint --project . --format stylish",
     "prestart": "run-s compile",
