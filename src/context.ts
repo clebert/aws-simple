@@ -1,4 +1,4 @@
-import {AppConfig} from '..';
+import {AppConfig} from '.';
 
 export interface OutputIds {
   readonly restApiUrl: string;
@@ -19,7 +19,7 @@ export interface ResourceIds {
   readonly zone: string;
 }
 
-export class DeploymentDescriptor {
+export class Context {
   public readonly outputIds: OutputIds;
   public readonly resourceIds: ResourceIds;
 
@@ -44,13 +44,13 @@ export class DeploymentDescriptor {
     };
   }
 
-  public createOutputId(exportName: string): string {
+  private createOutputId(exportName: string): string {
     const {appName, stackName} = this.appConfig;
 
     return `${appName}-${stackName}-output-${exportName}`;
   }
 
-  public createResourceId(resourceName: string): string {
+  private createResourceId(resourceName: string): string {
     const {appName, stackName} = this.appConfig;
 
     return `${appName}-${stackName}-resource-${resourceName}`;

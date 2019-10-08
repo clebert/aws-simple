@@ -4,14 +4,14 @@ import 'source-map-support/register';
 
 import compose from 'compose-function';
 import yargs from 'yargs';
-import {Deployment} from './cdk/create-lambda-integration';
+import {Resources} from './cdk/create-resources';
 import {create} from './commands/create';
 import {list} from './commands/list';
 import {start} from './commands/start';
 import {tag} from './commands/tag';
 import {upload} from './commands/upload';
 
-export {Deployment};
+export {Resources};
 
 export interface CustomDomainConfig {
   readonly certificateArn: string;
@@ -59,7 +59,7 @@ export interface S3Config {
   readonly responseHeaders?: S3ResponseHeaders;
 }
 
-export type CustomHook = (deployment: Deployment) => void;
+export type CustomHook = (resources: Resources) => void;
 
 export interface AppConfig {
   readonly appName: string;
@@ -80,10 +80,10 @@ function handleError(error: Error): void {
   process.exit(1);
 }
 
-// tslint:disable-next-line: no-require-imports no-var-requires
-const {description} = require('../package.json');
-
 try {
+  // tslint:disable-next-line: no-require-imports no-var-requires
+  const {description} = require('../package.json');
+
   const argv = compose(
     tag.describe,
     list.describe,

@@ -1,7 +1,7 @@
 import {Argv} from 'yargs';
+import {Context} from '../context';
 import {defaults} from '../defaults';
 import {listAllStacks} from '../sdk/list-all-stacks';
-import {DeploymentDescriptor} from '../utils/deployment-descriptor';
 import {loadAppConfig} from '../utils/load-app-config';
 
 export interface ListArgv {
@@ -12,9 +12,9 @@ export interface ListArgv {
 
 export async function list(argv: ListArgv): Promise<void> {
   const {config, profile} = argv;
-  const deploymentDescriptor = new DeploymentDescriptor(loadAppConfig(config));
+  const context = new Context(loadAppConfig(config));
 
-  await listAllStacks(deploymentDescriptor, profile);
+  await listAllStacks(context, profile);
 }
 
 list.describe = (yargs: Argv) =>

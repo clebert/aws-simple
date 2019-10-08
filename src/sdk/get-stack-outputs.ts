@@ -1,5 +1,5 @@
 import {CloudFormation} from 'aws-sdk';
-import {DeploymentDescriptor} from '../utils/deployment-descriptor';
+import {Context} from '../context';
 
 export interface StackOutputs {
   readonly restApiUrl: string;
@@ -24,10 +24,10 @@ function getStackOutput(
 }
 
 export function getStackOutputs(
-  deploymentDescriptor: DeploymentDescriptor,
+  context: Context,
   stack: CloudFormation.Stack
 ): StackOutputs {
-  const {outputIds} = deploymentDescriptor;
+  const {outputIds} = context;
 
   return {
     restApiUrl: getStackOutput(stack, outputIds.restApiUrl),

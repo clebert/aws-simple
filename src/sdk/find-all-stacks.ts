@@ -1,8 +1,8 @@
 import {CloudFormation} from 'aws-sdk';
-import {DeploymentDescriptor} from '../utils/deployment-descriptor';
+import {Context} from '../context';
 
 export async function findAllStacks(
-  deploymentDescriptor: DeploymentDescriptor,
+  context: Context,
   cloudFormation: CloudFormation
 ): Promise<CloudFormation.Stack[]> {
   const stacks: CloudFormation.Stack[] = [];
@@ -22,6 +22,6 @@ export async function findAllStacks(
   } while (stackDescriptions.NextToken);
 
   return stacks.filter(({StackName}) =>
-    StackName.startsWith(deploymentDescriptor.appConfig.appName)
+    StackName.startsWith(context.appConfig.appName)
   );
 }

@@ -1,7 +1,7 @@
 import {CloudFormation} from 'aws-sdk';
 import chalk from 'chalk';
 import createUi from 'cliui';
-import {DeploymentDescriptor} from '../utils/deployment-descriptor';
+import {Context} from '../context';
 import {createClientConfig} from './create-client-config';
 import {findAllStacks} from './find-all-stacks';
 
@@ -19,16 +19,16 @@ function compareLastUpdatedTimes(
 }
 
 export async function listAllStacks(
-  deploymentDescriptor: DeploymentDescriptor,
+  context: Context,
   profile: string
 ): Promise<void> {
   const clientConfig = await createClientConfig(
     profile,
-    deploymentDescriptor.appConfig.region
+    context.appConfig.region
   );
 
   const cloudFormation = new CloudFormation(clientConfig);
-  const stacks = await findAllStacks(deploymentDescriptor, cloudFormation);
+  const stacks = await findAllStacks(context, cloudFormation);
 
   for (const stack of stacks.sort(compareLastUpdatedTimes)) {
     if (stack.DeletionTime) {

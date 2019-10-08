@@ -1,7 +1,7 @@
 import {Argv} from 'yargs';
+import {Context} from '../context';
 import {defaults} from '../defaults';
 import {addTag} from '../sdk/add-tag';
-import {DeploymentDescriptor} from '../utils/deployment-descriptor';
 import {loadAppConfig} from '../utils/load-app-config';
 
 export interface TagArgv {
@@ -14,12 +14,9 @@ export interface TagArgv {
 
 export async function tag(argv: TagArgv): Promise<void> {
   const {config, profile, tagName, stackName} = argv;
+  const context = new Context(loadAppConfig(config, stackName));
 
-  const deploymentDescriptor = new DeploymentDescriptor(
-    loadAppConfig(config, stackName)
-  );
-
-  await addTag(deploymentDescriptor, profile, tagName);
+  await addTag(context, profile, tagName);
 }
 
 tag.describe = (yargs: Argv) =>

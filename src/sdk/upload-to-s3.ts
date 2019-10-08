@@ -4,28 +4,28 @@ import Listr from 'listr';
 import mimeTypes from 'mime-types';
 import * as path from 'path';
 import joinUrl from 'url-join';
-import {DeploymentDescriptor} from '../utils/deployment-descriptor';
-import {getAbsoluteFilenames} from '../utils/get-absolute-filenames';
+import {Context} from '../context';
+import {resolveFilenames} from '../utils/resolve-filenames';
 import {createClientConfig} from './create-client-config';
 import {findStack} from './find-stack';
 import {getStackOutputs} from './get-stack-outputs';
 
 export async function uploadToS3(
-  deploymentDescriptor: DeploymentDescriptor,
+  context: Context,
   profile: string
 ): Promise<void> {
   const clientConfig = await createClientConfig(
     profile,
-    deploymentDescriptor.appConfig.region
+    context.appConfig.region
   );
 
   const cloudFormation = new CloudFormation(clientConfig);
-  const stack = await findStack(deploymentDescriptor, cloudFormation);
-  const stackOutputs = getStackOutputs(deploymentDescriptor, stack);
+  const stack = await findStack(context, cloudFormation);
+  const stackOutputs = getStackOutputs(context, stack);
 
   const {
     appConfig: {customDomainConfig, s3Configs = []}
-  } = deploymentDescriptor;
+  } = context;
 
   const createUrl = () => {
     if (!customDomainConfig) {
@@ -46,7 +46,7 @@ export async function uploadToS3(
   for (const s3Config of s3Configs) {
     const {type, publicPath, bucketPath = publicPath} = s3Config;
 
-    for (const filename of getAbsoluteFilenames(s3Config)) {
+    for (const filename of resolveFilenames(s3Config)) {
       listrTasks.push({
         title: `Uploading file: ${filename}`,
         task: async (_, listrTask) => {

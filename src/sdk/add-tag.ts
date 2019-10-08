@@ -1,28 +1,28 @@
 import {CloudFormation} from 'aws-sdk';
-import {DeploymentDescriptor} from '../utils/deployment-descriptor';
+import {Context} from '../context';
 import {createClientConfig} from './create-client-config';
 import {findStack} from './find-stack';
 
 export async function addTag(
-  deploymentDescriptor: DeploymentDescriptor,
+  context: Context,
   profile: string,
   tagName: string
 ): Promise<void> {
   const clientConfig = await createClientConfig(
     profile,
-    deploymentDescriptor.appConfig.region
+    context.appConfig.region
   );
 
   const cloudFormation = new CloudFormation(clientConfig);
 
   const {Capabilities, Parameters, Tags = []} = await findStack(
-    deploymentDescriptor,
+    context,
     cloudFormation
   );
 
   await cloudFormation
     .updateStack({
-      StackName: deploymentDescriptor.resourceIds.stack,
+      StackName: context.resourceIds.stack,
       UsePreviousTemplate: true,
       Capabilities,
       Parameters,
@@ -37,7 +37,7 @@ export async function addTag(
 
   await cloudFormation
     .waitFor('stackUpdateComplete', {
-      StackName: deploymentDescriptor.resourceIds.stack,
+      StackName: context.resourceIds.stack,
       $waiter: {
         delay: delayInSeconds,
         maxAttempts: totalDurationInSeconds / delayInSeconds

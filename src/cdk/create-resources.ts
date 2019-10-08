@@ -18,17 +18,23 @@ import {ApiGateway} from '@aws-cdk/aws-route53-targets';
 import {Bucket} from '@aws-cdk/aws-s3';
 import {App, CfnOutput, Duration, Stack} from '@aws-cdk/core';
 import * as path from 'path';
-import {Deployment} from '..';
-import {DeploymentDescriptor} from '../utils/deployment-descriptor';
+import {Context} from '../context';
+
+export interface Resources {
+  readonly stack: Stack;
+  readonly restApi: RestApi;
+  readonly s3Bucket: Bucket;
+  readonly s3IntegrationRole: Role;
+}
 
 function createDomainNameOptions(
-  deploymentDescriptor: DeploymentDescriptor,
+  context: Context,
   stack: Stack
 ): DomainNameOptions | undefined {
   const {
     appConfig: {customDomainConfig},
     resourceIds
-  } = deploymentDescriptor;
+  } = context;
 
   if (!customDomainConfig) {
     return;
@@ -48,12 +54,10 @@ function createDomainNameOptions(
   };
 }
 
-function createStageOptions(
-  deploymentDescriptor: DeploymentDescriptor
-): StageOptions {
+function createStageOptions(context: Context): StageOptions {
   const {
     appConfig: {loggingLevel, lambdaConfigs = []}
-  } = deploymentDescriptor;
+  } = context;
 
   const restApiMethodOptions: Record<string, MethodDeploymentOptions> = {};
 
@@ -102,31 +106,24 @@ function createStageOptions(
   };
 }
 
-function createRestApiProps(
-  deploymentDescriptor: DeploymentDescriptor,
-  stack: Stack
-): RestApiProps {
+function createRestApiProps(context: Context, stack: Stack): RestApiProps {
   const {
     appConfig: {binaryMediaTypes, minimumCompressionSize}
-  } = deploymentDescriptor;
+  } = context;
 
   return {
-    domainName: createDomainNameOptions(deploymentDescriptor, stack),
+    domainName: createDomainNameOptions(context, stack),
     binaryMediaTypes,
     minimumCompressionSize,
-    deployOptions: createStageOptions(deploymentDescriptor)
+    deployOptions: createStageOptions(context)
   };
 }
 
-function createARecord(
-  deploymentDescriptor: DeploymentDescriptor,
-  stack: Stack,
-  restApi: RestApi
-): void {
+function createARecord(context: Context, stack: Stack, restApi: RestApi): void {
   const {
     appConfig: {customDomainConfig},
     resourceIds
-  } = deploymentDescriptor;
+  } = context;
 
   if (!customDomainConfig) {
     return;
@@ -146,16 +143,14 @@ function createARecord(
   aRecord.node.addDependency(restApi);
 }
 
-export function createStack(
-  deploymentDescriptor: DeploymentDescriptor
-): Deployment {
-  const {outputIds, resourceIds} = deploymentDescriptor;
+export function createResources(context: Context): Resources {
+  const {outputIds, resourceIds} = context;
   const stack = new Stack(new App(), resourceIds.stack);
 
   const restApi = new RestApi(
     stack,
     resourceIds.restApi,
-    createRestApiProps(deploymentDescriptor, stack)
+    createRestApiProps(context, stack)
   );
 
   const restApiUrlOutput = new CfnOutput(stack, resourceIds.restApiUrlOutput, {
@@ -165,7 +160,7 @@ export function createStack(
 
   restApiUrlOutput.node.addDependency(restApi);
 
-  createARecord(deploymentDescriptor, stack, restApi);
+  createARecord(context, stack, restApi);
 
   const s3Bucket = new Bucket(stack, resourceIds.s3Bucket, {
     publicReadAccess: false

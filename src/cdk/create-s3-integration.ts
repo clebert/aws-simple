@@ -5,13 +5,14 @@ import {
   MethodResponse
 } from '@aws-cdk/aws-apigateway';
 import * as path from 'path';
-import {Deployment, S3Config} from '..';
+import {S3Config} from '..';
+import {Resources} from './create-resources';
 
 export function createS3Integration(
-  deployment: Deployment,
+  resources: Resources,
   s3Config: S3Config
 ): void {
-  const {restApi, s3Bucket, s3IntegrationRole} = deployment;
+  const {restApi, s3Bucket, s3IntegrationRole} = resources;
   const {type, publicPath, bucketPath = publicPath, responseHeaders} = s3Config;
 
   const s3IntegrationResponseParameters: Record<string, string> = {

@@ -1,11 +1,11 @@
 import {CloudFormation} from 'aws-sdk';
-import {DeploymentDescriptor} from '../utils/deployment-descriptor';
+import {Context} from '../context';
 
 export async function findStack(
-  deploymentDescriptor: DeploymentDescriptor,
+  context: Context,
   cloudFormation: CloudFormation
 ): Promise<CloudFormation.Stack> {
-  const {resourceIds} = deploymentDescriptor;
+  const {resourceIds} = context;
 
   const result = await cloudFormation
     .describeStacks({StackName: resourceIds.stack})

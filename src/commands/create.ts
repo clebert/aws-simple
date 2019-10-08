@@ -1,9 +1,9 @@
 import {Argv} from 'yargs';
 import {createLambdaIntegration} from '../cdk/create-lambda-integration';
+import {createResources} from '../cdk/create-resources';
 import {createS3Integration} from '../cdk/create-s3-integration';
-import {createStack} from '../cdk/create-stack';
+import {Context} from '../context';
 import {defaults} from '../defaults';
-import {DeploymentDescriptor} from '../utils/deployment-descriptor';
 import {loadAppConfig} from '../utils/load-app-config';
 
 export interface CreateArgv {
@@ -14,20 +14,20 @@ export interface CreateArgv {
 
 export function create(argv: CreateArgv): void {
   const appConfig = loadAppConfig(argv.config, argv.stackName);
-  const deploymentDescriptor = new DeploymentDescriptor(appConfig);
-  const deployment = createStack(deploymentDescriptor);
+  const context = new Context(appConfig);
+  const resources = createResources(context);
   const {lambdaConfigs = [], s3Configs = [], customHook} = appConfig;
 
   for (const lambdaConfig of lambdaConfigs) {
-    createLambdaIntegration(deploymentDescriptor, deployment, lambdaConfig);
+    createLambdaIntegration(context, resources, lambdaConfig);
   }
 
   for (const s3Config of s3Configs) {
-    createS3Integration(deployment, s3Config);
+    createS3Integration(resources, s3Config);
   }
 
   if (customHook) {
-    customHook(deployment);
+    customHook(resources);
   }
 }
 
