@@ -12,35 +12,6 @@ export interface CreateArgv {
   readonly stackName?: string;
 }
 
-export function describeCreateCommand(yargs: Argv): Argv {
-  return yargs.command(
-    'create [options]',
-    'Create a stack using the CDK',
-    args =>
-      args
-        .describe('config', 'The path to the config file')
-        .string('config')
-        .default('config', defaults.configFilename)
-
-        .describe(
-          'stack-name',
-          'Optional overwriting of the stack name declared in the config file'
-        )
-        .string('stack-name')
-
-        .example("cdk deploy --app '$0 create' --profile clebert", '')
-
-        .example(
-          "cdk deploy --app '$0 create --stack-name stage' --profile clebert",
-          ''
-        )
-  );
-}
-
-export function isCreateArgv(argv: {_: string[]}): argv is CreateArgv {
-  return argv._[0] === 'create';
-}
-
 export function create(argv: CreateArgv): void {
   const appConfig = loadAppConfig(argv.config, argv.stackName);
   const deploymentDescriptor = new DeploymentDescriptor(appConfig);
@@ -59,3 +30,27 @@ export function create(argv: CreateArgv): void {
     customHook(deployment);
   }
 }
+
+create.describe = (yargs: Argv) =>
+  yargs.command('create [options]', 'Create a stack using the CDK', args =>
+    args
+      .describe('config', 'The path to the config file')
+      .string('config')
+      .default('config', defaults.configFilename)
+
+      .describe(
+        'stack-name',
+        'Optional overwriting of the stack name declared in the config file'
+      )
+      .string('stack-name')
+
+      .example("cdk deploy --app '$0 create' --profile clebert", '')
+
+      .example(
+        "cdk deploy --app '$0 create --stack-name stage' --profile clebert",
+        ''
+      )
+  );
+
+create.matches = (argv: {_: string[]}): argv is CreateArgv =>
+  argv._[0] === 'create';

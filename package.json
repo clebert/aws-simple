@@ -66,6 +66,7 @@
     "chalk": "^2.4.2",
     "chokidar": "^3.1.1",
     "cliui": "^5.0.0",
+    "compose-function": "^3.0.3",
     "compression": "^1.7.4",
     "express": "^4.17.1",
     "lambda-local": "^1.6.3",
@@ -78,6 +79,7 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.32",
+    "@types/compose-function": "^0.0.30",
     "@types/compression": "^1.0.1",
     "@types/express": "^4.17.1",
     "@types/listr": "^0.14.2",

@@ -12,8 +12,18 @@ export interface TagArgv {
   readonly stackName?: string;
 }
 
-export function describeTagCommand(yargs: Argv): Argv {
-  return yargs.command('tag [options]', 'Tag a deployed stack', args =>
+export async function tag(argv: TagArgv): Promise<void> {
+  const {config, profile, tagName, stackName} = argv;
+
+  const deploymentDescriptor = new DeploymentDescriptor(
+    loadAppConfig(config, stackName)
+  );
+
+  await addTag(deploymentDescriptor, profile, tagName);
+}
+
+tag.describe = (yargs: Argv) =>
+  yargs.command('tag [options]', 'Tag a deployed stack', args =>
     args
       .describe('config', 'The path to the config file')
       .string('config')
@@ -39,18 +49,5 @@ export function describeTagCommand(yargs: Argv): Argv {
       .example('$0 tag --profile clebert --tag-name foo', '')
       .example('$0 tag --profile clebert --tag-name foo --stack-name stage', '')
   );
-}
 
-export function isTagArgv(argv: {_: string[]}): argv is TagArgv {
-  return argv._[0] === 'tag';
-}
-
-export async function tag(argv: TagArgv): Promise<void> {
-  const {config, profile, tagName, stackName} = argv;
-
-  const deploymentDescriptor = new DeploymentDescriptor(
-    loadAppConfig(config, stackName)
-  );
-
-  await addTag(deploymentDescriptor, profile, tagName);
-}
+tag.matches = (argv: {_: string[]}): argv is TagArgv => argv._[0] === 'tag';

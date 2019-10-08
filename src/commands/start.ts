@@ -13,37 +13,6 @@ export interface StartArgv {
   readonly verbose: boolean;
 }
 
-export function describeStartCommand(yargs: Argv): Argv {
-  return yargs.command('start [options]', 'Start local DEV server', args =>
-    args
-      .describe('config', 'The path to the config file')
-      .string('config')
-      .default('config', defaults.configFilename)
-
-      .describe('port', 'The port to listen on')
-      .number('port')
-      .default('port', 3000)
-
-      .describe(
-        'cached',
-        'Enable caching of successful Lambda results per request URL'
-      )
-      .boolean('cached')
-      .default('cached', false)
-
-      .describe('verbose', 'Enable logging of successful Lambda results')
-      .boolean('verbose')
-      .default('verbose', false)
-
-      .example('$0 start', '')
-      .example('$0 start --port 1985 --cached', '')
-  );
-}
-
-export function isStartArgv(argv: {_: string[]}): argv is StartArgv {
-  return argv._[0] === 'start';
-}
-
 export function start(argv: StartArgv): void {
   const {config, port, cached, verbose} = argv;
   const {lambdaConfigs = [], s3Configs = []} = loadAppConfig(config);
@@ -78,3 +47,32 @@ export function start(argv: StartArgv): void {
     serverProcess = startServer();
   });
 }
+
+start.describe = (yargs: Argv) =>
+  yargs.command('start [options]', 'Start local DEV server', args =>
+    args
+      .describe('config', 'The path to the config file')
+      .string('config')
+      .default('config', defaults.configFilename)
+
+      .describe('port', 'The port to listen on')
+      .number('port')
+      .default('port', 3000)
+
+      .describe(
+        'cached',
+        'Enable caching of successful Lambda results per request URL'
+      )
+      .boolean('cached')
+      .default('cached', false)
+
+      .describe('verbose', 'Enable logging of successful Lambda results')
+      .boolean('verbose')
+      .default('verbose', false)
+
+      .example('$0 start', '')
+      .example('$0 start --port 1985 --cached', '')
+  );
+
+start.matches = (argv: {_: string[]}): argv is StartArgv =>
+  argv._[0] === 'start';

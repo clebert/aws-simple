@@ -10,8 +10,15 @@ export interface ListArgv {
   readonly profile: string;
 }
 
-export function describeListCommand(yargs: Argv): Argv {
-  return yargs.command('list [options]', 'List all deployed stacks', args =>
+export async function list(argv: ListArgv): Promise<void> {
+  const {config, profile} = argv;
+  const deploymentDescriptor = new DeploymentDescriptor(loadAppConfig(config));
+
+  await listAllStacks(deploymentDescriptor, profile);
+}
+
+list.describe = (yargs: Argv) =>
+  yargs.command('list [options]', 'List all deployed stacks', args =>
     args
       .describe('config', 'The path to the config file')
       .string('config')
@@ -26,15 +33,5 @@ export function describeListCommand(yargs: Argv): Argv {
 
       .example('$0 list --profile clebert', '')
   );
-}
 
-export function isListArgv(argv: {_: string[]}): argv is ListArgv {
-  return argv._[0] === 'list';
-}
-
-export async function list(argv: ListArgv): Promise<void> {
-  const {config, profile} = argv;
-  const deploymentDescriptor = new DeploymentDescriptor(loadAppConfig(config));
-
-  await listAllStacks(deploymentDescriptor, profile);
-}
+list.matches = (argv: {_: string[]}): argv is ListArgv => argv._[0] === 'list';

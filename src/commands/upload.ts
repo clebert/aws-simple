@@ -11,8 +11,18 @@ export interface UploadArgv {
   readonly stackName?: string;
 }
 
-export function describeUploadCommand(yargs: Argv): Argv {
-  return yargs.command('upload [options]', 'Upload files to S3', args =>
+export async function upload(argv: UploadArgv): Promise<void> {
+  const {config, profile, stackName} = argv;
+
+  const deploymentDescriptor = new DeploymentDescriptor(
+    loadAppConfig(config, stackName)
+  );
+
+  await uploadToS3(deploymentDescriptor, profile);
+}
+
+upload.describe = (yargs: Argv) =>
+  yargs.command('upload [options]', 'Upload files to S3', args =>
     args
       .describe('config', 'The path to the config file')
       .string('config')
@@ -34,18 +44,6 @@ export function describeUploadCommand(yargs: Argv): Argv {
       .example('$0 upload --profile clebert', '')
       .example('$0 upload --profile clebert --stack-name stage', '')
   );
-}
 
-export function isUploadArgv(argv: {_: string[]}): argv is UploadArgv {
-  return argv._[0] === 'upload';
-}
-
-export async function upload(argv: UploadArgv): Promise<void> {
-  const {config, profile, stackName} = argv;
-
-  const deploymentDescriptor = new DeploymentDescriptor(
-    loadAppConfig(config, stackName)
-  );
-
-  await uploadToS3(deploymentDescriptor, profile);
-}
+upload.matches = (argv: {_: string[]}): argv is UploadArgv =>
+  argv._[0] === 'upload';

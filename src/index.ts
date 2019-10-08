@@ -2,13 +2,14 @@
 
 import 'source-map-support/register';
 
+import compose from 'compose-function';
 import yargs from 'yargs';
 import {Deployment} from './cdk/create-lambda-integration';
-import {create, describeCreateCommand, isCreateArgv} from './commands/create';
-import {describeListCommand, isListArgv, list} from './commands/list';
-import {describeStartCommand, isStartArgv, start} from './commands/start';
-import {describeTagCommand, isTagArgv, tag} from './commands/tag';
-import {describeUploadCommand, isUploadArgv, upload} from './commands/upload';
+import {create} from './commands/create';
+import {list} from './commands/list';
+import {start} from './commands/start';
+import {tag} from './commands/tag';
+import {upload} from './commands/upload';
 
 export {Deployment};
 
@@ -83,33 +84,31 @@ function handleError(error: Error): void {
 const {description} = require('../package.json');
 
 try {
-  const argv = describeTagCommand(
-    describeListCommand(
-      describeStartCommand(
-        describeUploadCommand(
-          describeCreateCommand(
-            yargs
-              .usage('Usage: $0 <command> [options]')
-              .help('h')
-              .alias('h', 'help')
-              .detectLocale(false)
-              .demandCommand()
-              .epilogue(description)
-          )
-        )
-      )
-    )
+  const argv = compose(
+    tag.describe,
+    list.describe,
+    start.describe,
+    upload.describe,
+    create.describe
+  )(
+    yargs
+      .usage('Usage: $0 <command> [options]')
+      .help('h')
+      .alias('h', 'help')
+      .detectLocale(false)
+      .demandCommand()
+      .epilogue(description)
   ).argv;
 
-  if (isCreateArgv(argv)) {
+  if (create.matches(argv)) {
     create(argv);
-  } else if (isUploadArgv(argv)) {
+  } else if (upload.matches(argv)) {
     upload(argv).catch(handleError);
-  } else if (isStartArgv(argv)) {
+  } else if (start.matches(argv)) {
     start(argv);
-  } else if (isListArgv(argv)) {
+  } else if (list.matches(argv)) {
     list(argv).catch(handleError);
-  } else if (isTagArgv(argv)) {
+  } else if (tag.matches(argv)) {
     tag(argv).catch(handleError);
   }
 } catch (error) {
