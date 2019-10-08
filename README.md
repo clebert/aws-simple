@@ -20,7 +20,7 @@ domain and optional alias record, host static web resources via S3, and
 provision public backend APIs via Lambda. In addition, a local DEV server can be
 started to emulate the resulting AWS infrastructure.
 
-### 👀 aws-simple-example
+### aws-simple-example
 
 For a quick impression, an [example project][aws-simple-example] is available
 that consists essentially of a React component that retrieves text from a Lambda
@@ -92,7 +92,7 @@ _Note: Please replace the app name (`myapp`) with your own. All resources
 created with CloudFormation have the app name combined with the stack name as a
 prefix for their ID such as `myapp-mystack-resource-s3-bucket`._
 
-### Create AWS CLI profile
+### Create AWS CLI Profile
 
 Install the `aws` CLI, e.g. with:
 
@@ -156,7 +156,7 @@ exports.default = {
 };
 ```
 
-#### Use TypeScript for auto-completion support
+#### Use TypeScript For Auto-Completion Support
 
 ```js
 // @ts-check
@@ -184,7 +184,7 @@ yarn cdk bootstrap --app 'yarn aws-simple create' --profile clebert
 _Note: This command only needs to be executed once. For more information see
 [here][cdk-guide]._
 
-### Deploy Stack to AWS
+### Deploy Stack To AWS
 
 Create a stack using the CDK:
 
@@ -246,7 +246,7 @@ A Node.js interface for AWS that allows easy configuration and deployment of
 simple web projects.
 ```
 
-### Create a stack using the CDK
+### Create A Stack Using The CDK
 
 ```
 aws-simple create [options]
@@ -266,7 +266,7 @@ Examples:
   cdk deploy --app 'aws-simple create --stack-name stage' --profile clebert
 ```
 
-### Upload files to S3
+### Upload Files To S3
 
 ```
 aws-simple upload [options]
@@ -289,7 +289,7 @@ Examples:
   aws-simple upload --profile clebert --region eu-central-1 --stack-name stage
 ```
 
-### Start local DEV server
+### Start Local DEV Server
 
 ```
 aws-simple start [options]
@@ -312,9 +312,29 @@ Examples:
   aws-simple start --port 1985 --cached
 ```
 
+### List All Deployed Stacks
+
+```
+aws-simple list [options]
+
+List all deployed stacks
+
+Options:
+  --version   Show version number                                      [boolean]
+  -h, --help  Show help                                                [boolean]
+  --config    The path to the config file
+                                      [string] [default: "aws-simple.config.js"]
+  --profile   The AWS profile name as set in the shared credentials file
+                                                             [string] [required]
+  --region    The AWS region                                 [string] [required]
+
+Examples:
+  aws-simple list --profile clebert --region eu-central-1
+```
+
 ## Development
 
-### Publish a New Release
+### Publish A New Release
 
 ```
 npm version 1.0.0 && git push --follow-tags

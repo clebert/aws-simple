@@ -30,6 +30,7 @@
   "scripts": {
     "precompile": "rm -rf lib/",
     "compile": "tsc",
+    "postcompile": "chmod +x lib/index.js",
     "format": "prettier --write '**/*.{js,json,md,ts,yml}'",
     "lint": "tslint --project . --format stylish",
     "prestart": "run-s compile",
@@ -62,7 +63,9 @@
     "@aws-cdk/region-info": "^1.9.0",
     "aws-cdk": "^1.9.0",
     "aws-sdk": "^2.535.0",
+    "chalk": "^2.4.2",
     "chokidar": "^3.1.1",
+    "cliui": "^5.0.0",
     "compression": "^1.7.4",
     "express": "^4.17.1",
     "lambda-local": "^1.6.3",

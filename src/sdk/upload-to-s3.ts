@@ -11,17 +11,17 @@ import {findStack} from './find-stack';
 import {getStackOutputs} from './get-stack-outputs';
 
 export async function uploadToS3(
-  dseploymentDescriptor: DeploymentDescriptor,
+  deploymentDescriptor: DeploymentDescriptor,
   sdkConfig: SdkConfig
 ): Promise<void> {
   const clientConfig = await createClientConfig(sdkConfig);
   const cloudFormation = new CloudFormation(clientConfig);
-  const stack = await findStack(dseploymentDescriptor, cloudFormation);
-  const stackOutputs = getStackOutputs(dseploymentDescriptor, stack);
+  const stack = await findStack(deploymentDescriptor, cloudFormation);
+  const stackOutputs = getStackOutputs(deploymentDescriptor, stack);
 
   const {
     appConfig: {customDomainConfig, s3Configs = []}
-  } = dseploymentDescriptor;
+  } = deploymentDescriptor;
 
   const createUrl = () => {
     if (!customDomainConfig) {

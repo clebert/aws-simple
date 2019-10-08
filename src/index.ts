@@ -5,6 +5,7 @@ import 'source-map-support/register';
 import yargs from 'yargs';
 import {Deployment} from './cdk/create-lambda-integration';
 import {create, describeCreateCommand, isCreateArgv} from './commands/create';
+import {describeListCommand, isListArgv, list} from './commands/list';
 import {describeStartCommand, isStartArgv, start} from './commands/start';
 import {describeUploadCommand, isUploadArgv, upload} from './commands/upload';
 
@@ -80,26 +81,30 @@ function handleError(error: Error): void {
 const {description} = require('../package.json');
 
 try {
-  const argv = describeStartCommand(
-    describeUploadCommand(
-      describeCreateCommand(
-        yargs
-          .usage('Usage: $0 <command> [options]')
-          .help('h')
-          .alias('h', 'help')
-          .detectLocale(false)
-          .demandCommand()
-          .epilogue(description)
+  const argv = describeListCommand(
+    describeStartCommand(
+      describeUploadCommand(
+        describeCreateCommand(
+          yargs
+            .usage('Usage: $0 <command> [options]')
+            .help('h')
+            .alias('h', 'help')
+            .detectLocale(false)
+            .demandCommand()
+            .epilogue(description)
+        )
       )
     )
   ).argv;
 
   if (isCreateArgv(argv)) {
     create(argv);
-  } else if (isStartArgv(argv)) {
-    start(argv);
   } else if (isUploadArgv(argv)) {
     upload(argv).catch(handleError);
+  } else if (isStartArgv(argv)) {
+    start(argv);
+  } else if (isListArgv(argv)) {
+    list(argv).catch(handleError);
   }
 } catch (error) {
   handleError(error);
