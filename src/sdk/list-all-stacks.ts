@@ -45,9 +45,7 @@ export async function listAllStacks(
     ui.div(
       {text: StackName, padding},
       {text: getLastUpdatedTime(stack).toString(), padding},
-      Tags && Tags.length > 0
-        ? Tags.map(({Key, Value}) => `${Key}=${Value}`).join(', ')
-        : ''
+      Tags && Tags.length > 0 ? Tags.map(({Key}) => Key).join(', ') : ''
     );
 
     console.info(ui.toString());

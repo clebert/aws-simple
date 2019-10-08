@@ -7,6 +7,7 @@ import {Deployment} from './cdk/create-lambda-integration';
 import {create, describeCreateCommand, isCreateArgv} from './commands/create';
 import {describeListCommand, isListArgv, list} from './commands/list';
 import {describeStartCommand, isStartArgv, start} from './commands/start';
+import {describeTagCommand, isTagArgv, tag} from './commands/tag';
 import {describeUploadCommand, isUploadArgv, upload} from './commands/upload';
 
 export {Deployment};
@@ -81,17 +82,19 @@ function handleError(error: Error): void {
 const {description} = require('../package.json');
 
 try {
-  const argv = describeListCommand(
-    describeStartCommand(
-      describeUploadCommand(
-        describeCreateCommand(
-          yargs
-            .usage('Usage: $0 <command> [options]')
-            .help('h')
-            .alias('h', 'help')
-            .detectLocale(false)
-            .demandCommand()
-            .epilogue(description)
+  const argv = describeTagCommand(
+    describeListCommand(
+      describeStartCommand(
+        describeUploadCommand(
+          describeCreateCommand(
+            yargs
+              .usage('Usage: $0 <command> [options]')
+              .help('h')
+              .alias('h', 'help')
+              .detectLocale(false)
+              .demandCommand()
+              .epilogue(description)
+          )
         )
       )
     )
@@ -105,6 +108,8 @@ try {
     start(argv);
   } else if (isListArgv(argv)) {
     list(argv).catch(handleError);
+  } else if (isTagArgv(argv)) {
+    tag(argv).catch(handleError);
   }
 } catch (error) {
   handleError(error);
