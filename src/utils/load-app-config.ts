@@ -8,7 +8,9 @@ function isAppConfig(value: any): value is AppConfig {
   }
 
   return (
-    typeof value.appName === 'string' && typeof value.stackName === 'string'
+    typeof value.appName === 'string' &&
+    typeof value.stackName === 'string' &&
+    typeof value.region === 'string'
   );
 }
 
