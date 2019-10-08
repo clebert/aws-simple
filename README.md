@@ -237,6 +237,7 @@ Commands:
   aws-simple create [options]  Create a stack using the CDK
   aws-simple upload [options]  Upload files to S3
   aws-simple start [options]   Start local DEV server
+  aws-simple list [options]    List all deployed stacks
 
 Options:
   --version   Show version number                                      [boolean]
