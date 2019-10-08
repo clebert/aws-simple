@@ -192,6 +192,9 @@ Create a stack using the CDK:
 yarn cdk deploy --app 'yarn aws-simple create' --profile clebert
 ```
 
+_Caution: Re-deploying an already deployed stack (so a stack with the same name)
+will remove all tags set with `aws-simple tag [options]`._
+
 Upload files to S3:
 
 ```
