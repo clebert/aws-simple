@@ -5,7 +5,7 @@ import {DeploymentDescriptor} from '../utils/deployment-descriptor';
 import {loadAppConfig} from '../utils/load-app-config';
 
 export interface ListArgv {
-  readonly _: ['upload'];
+  readonly _: ['list'];
   readonly config: string;
   readonly profile: string;
   readonly region: string;
