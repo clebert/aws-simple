@@ -8,7 +8,6 @@ export interface ListArgv {
   readonly _: ['list'];
   readonly config: string;
   readonly profile: string;
-  readonly region: string;
 }
 
 export function describeListCommand(yargs: Argv): Argv {
@@ -25,11 +24,7 @@ export function describeListCommand(yargs: Argv): Argv {
       .string('profile')
       .demandOption('profile')
 
-      .describe('region', 'The AWS region')
-      .string('region')
-      .demandOption('region')
-
-      .example('$0 list --profile clebert --region eu-central-1', '')
+      .example('$0 list --profile clebert', '')
   );
 }
 
@@ -38,8 +33,8 @@ export function isListArgv(argv: {_: string[]}): argv is ListArgv {
 }
 
 export async function list(argv: ListArgv): Promise<void> {
-  const {config, profile, region} = argv;
+  const {config, profile} = argv;
   const deploymentDescriptor = new DeploymentDescriptor(loadAppConfig(config));
 
-  await listAllStacks(deploymentDescriptor, {profile, region});
+  await listAllStacks(deploymentDescriptor, profile);
 }

@@ -1,14 +1,18 @@
 import {CloudFormation} from 'aws-sdk';
 import {DeploymentDescriptor} from '../utils/deployment-descriptor';
-import {SdkConfig, createClientConfig} from './create-client-config';
+import {createClientConfig} from './create-client-config';
 import {findStack} from './find-stack';
 
 export async function addTag(
   deploymentDescriptor: DeploymentDescriptor,
-  sdkConfig: SdkConfig,
+  profile: string,
   tagName: string
 ): Promise<void> {
-  const clientConfig = await createClientConfig(sdkConfig);
+  const clientConfig = await createClientConfig(
+    profile,
+    deploymentDescriptor.appConfig.region
+  );
+
   const cloudFormation = new CloudFormation(clientConfig);
 
   const {Capabilities, Parameters, Tags = []} = await findStack(

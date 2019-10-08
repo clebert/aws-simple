@@ -145,6 +145,7 @@ single static HTML file:
 exports.default = {
   appName: 'myapp',
   stackName: 'mystack',
+  region: 'eu-central-1',
   s3Configs: [
     {
       type: 'file',
@@ -166,7 +167,8 @@ exports.default = {
  */
 exports.default = {
   appName: 'myapp',
-  stackName: 'mystack'
+  stackName: 'mystack',
+  region: 'eu-central-1'
 };
 ```
 
@@ -198,7 +200,7 @@ will remove all tags set with `aws-simple tag [options]`._
 Upload files to S3:
 
 ```
-yarn aws-simple upload --profile clebert --region eu-central-1
+yarn aws-simple upload --profile clebert
 ```
 
 _Note: Different stack names allow multiple stacks of the same app to be
@@ -211,7 +213,7 @@ deployed simultaneously. For example, the `aliasRecordName` in the
 {
   "scripts": {
     "deploy": "cdk deploy --app 'yarn aws-simple create' --profile clebert",
-    "postdeploy": "aws-simple upload --profile clebert --region eu-central-1"
+    "postdeploy": "aws-simple upload --profile clebert"
   }
 }
 ```
@@ -285,13 +287,12 @@ Options:
                                       [string] [default: "aws-simple.config.js"]
   --profile     The AWS profile name as set in the shared credentials file
                                                              [string] [required]
-  --region      The AWS region                               [string] [required]
   --stack-name  Optional overwriting of the stack name declared in the config
                 file                                                    [string]
 
 Examples:
-  aws-simple upload --profile clebert --region eu-central-1
-  aws-simple upload --profile clebert --region eu-central-1 --stack-name stage
+  aws-simple upload --profile clebert
+  aws-simple upload --profile clebert --stack-name stage
 ```
 
 ### Start Local DEV Server
@@ -331,10 +332,9 @@ Options:
                                       [string] [default: "aws-simple.config.js"]
   --profile   The AWS profile name as set in the shared credentials file
                                                              [string] [required]
-  --region    The AWS region                                 [string] [required]
 
 Examples:
-  aws-simple list --profile clebert --region eu-central-1
+  aws-simple list --profile clebert
 ```
 
 ### Tag A Deployed Stack
@@ -351,15 +351,13 @@ Options:
                                       [string] [default: "aws-simple.config.js"]
   --profile     The AWS profile name as set in the shared credentials file
                                                              [string] [required]
-  --region      The AWS region                               [string] [required]
   --tag-name    The tag name                                 [string] [required]
   --stack-name  Optional overwriting of the stack name declared in the config
                 file                                                    [string]
 
 Examples:
-  aws-simple tag --profile clebert --region eu-central-1 --tag-name foo
-  aws-simple tag --profile clebert --region eu-central-1 --tag-name foo
-  --stack-name stage
+  aws-simple tag --profile clebert --tag-name foo
+  aws-simple tag --profile clebert --tag-name foo --stack-name stage
 ```
 
 ## Development

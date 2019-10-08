@@ -6,15 +6,19 @@ import * as path from 'path';
 import joinUrl from 'url-join';
 import {DeploymentDescriptor} from '../utils/deployment-descriptor';
 import {getAbsoluteFilenames} from '../utils/get-absolute-filenames';
-import {SdkConfig, createClientConfig} from './create-client-config';
+import {createClientConfig} from './create-client-config';
 import {findStack} from './find-stack';
 import {getStackOutputs} from './get-stack-outputs';
 
 export async function uploadToS3(
   deploymentDescriptor: DeploymentDescriptor,
-  sdkConfig: SdkConfig
+  profile: string
 ): Promise<void> {
-  const clientConfig = await createClientConfig(sdkConfig);
+  const clientConfig = await createClientConfig(
+    profile,
+    deploymentDescriptor.appConfig.region
+  );
+
   const cloudFormation = new CloudFormation(clientConfig);
   const stack = await findStack(deploymentDescriptor, cloudFormation);
   const stackOutputs = getStackOutputs(deploymentDescriptor, stack);

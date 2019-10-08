@@ -63,6 +63,7 @@ export type CustomHook = (deployment: Deployment) => void;
 export interface AppConfig {
   readonly appName: string;
   readonly stackName: string;
+  readonly region: string;
   readonly customDomainConfig?: CustomDomainConfig;
   readonly binaryMediaTypes?: string[];
   readonly minimumCompressionSize?: number;

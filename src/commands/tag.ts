@@ -8,7 +8,6 @@ export interface TagArgv {
   readonly _: ['tag'];
   readonly config: string;
   readonly profile: string;
-  readonly region: string;
   readonly tagName: string;
   readonly stackName?: string;
 }
@@ -27,10 +26,6 @@ export function describeTagCommand(yargs: Argv): Argv {
       .string('profile')
       .demandOption('profile')
 
-      .describe('region', 'The AWS region')
-      .string('region')
-      .demandOption('region')
-
       .describe('tag-name', 'The tag name')
       .string('tag-name')
       .demandOption('tag-name')
@@ -41,15 +36,8 @@ export function describeTagCommand(yargs: Argv): Argv {
       )
       .string('stack-name')
 
-      .example(
-        '$0 tag --profile clebert --region eu-central-1 --tag-name foo',
-        ''
-      )
-
-      .example(
-        '$0 tag --profile clebert --region eu-central-1 --tag-name foo --stack-name stage',
-        ''
-      )
+      .example('$0 tag --profile clebert --tag-name foo', '')
+      .example('$0 tag --profile clebert --tag-name foo --stack-name stage', '')
   );
 }
 
@@ -58,11 +46,11 @@ export function isTagArgv(argv: {_: string[]}): argv is TagArgv {
 }
 
 export async function tag(argv: TagArgv): Promise<void> {
-  const {config, profile, region, tagName, stackName} = argv;
+  const {config, profile, tagName, stackName} = argv;
 
   const deploymentDescriptor = new DeploymentDescriptor(
     loadAppConfig(config, stackName)
   );
 
-  await addTag(deploymentDescriptor, {profile, region}, tagName);
+  await addTag(deploymentDescriptor, profile, tagName);
 }
