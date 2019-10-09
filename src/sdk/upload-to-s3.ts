@@ -15,7 +15,7 @@ export async function uploadToS3(
   profile: string
 ): Promise<void> {
   const {
-    appConfig: {region, customDomainConfig, s3Configs = []}
+    appConfig: {stackName, region, customDomainConfig, s3Configs = []}
   } = context;
 
   const clientConfig = await createClientConfig(profile, region);
@@ -28,10 +28,10 @@ export async function uploadToS3(
       return stackOutputs.restApiUrl;
     }
 
-    const {hostedZoneName, aliasRecordName} = customDomainConfig;
+    const {hostedZoneName, getAliasRecordName} = customDomainConfig;
 
-    return aliasRecordName
-      ? `https://${aliasRecordName}.${hostedZoneName}`
+    return getAliasRecordName
+      ? `https://${getAliasRecordName(stackName)}.${hostedZoneName}`
       : `https://${hostedZoneName}`;
   };
 

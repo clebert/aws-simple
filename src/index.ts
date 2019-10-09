@@ -17,7 +17,7 @@ export interface CustomDomainConfig {
   readonly certificateArn: string;
   readonly hostedZoneId: string;
   readonly hostedZoneName: string;
-  readonly aliasRecordName?: string;
+  readonly getAliasRecordName?: (stackName: string) => string;
 }
 
 export type LoggingLevel = 'OFF' | 'ERROR' | 'INFO';

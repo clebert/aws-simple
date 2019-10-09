@@ -204,7 +204,7 @@ yarn aws-simple upload --profile clebert
 ```
 
 _Note: Different stack names allow multiple stacks of the same app to be
-deployed simultaneously. For example, the `aliasRecordName` in the
+deployed simultaneously. For example, the `getAliasRecordName` function in the
 `customDomainConfig` can be used to give each stack its own URL._
 
 #### `package.json` Scripts Example

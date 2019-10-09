@@ -32,7 +32,7 @@ function createDomainNameOptions(
   stack: Stack
 ): DomainNameOptions | undefined {
   const {
-    appConfig: {customDomainConfig},
+    appConfig: {stackName, customDomainConfig},
     resourceIds
   } = context;
 
@@ -40,11 +40,15 @@ function createDomainNameOptions(
     return;
   }
 
-  const {certificateArn, hostedZoneName, aliasRecordName} = customDomainConfig;
+  const {
+    certificateArn,
+    hostedZoneName,
+    getAliasRecordName
+  } = customDomainConfig;
 
   return {
-    domainName: aliasRecordName
-      ? `${aliasRecordName}.${hostedZoneName}`
+    domainName: getAliasRecordName
+      ? `${getAliasRecordName(stackName)}.${hostedZoneName}`
       : hostedZoneName,
     certificate: Certificate.fromCertificateArn(
       stack,
@@ -121,7 +125,7 @@ function createRestApiProps(context: Context, stack: Stack): RestApiProps {
 
 function createARecord(context: Context, stack: Stack, restApi: RestApi): void {
   const {
-    appConfig: {customDomainConfig},
+    appConfig: {stackName, customDomainConfig},
     resourceIds
   } = context;
 
@@ -129,14 +133,14 @@ function createARecord(context: Context, stack: Stack, restApi: RestApi): void {
     return;
   }
 
-  const {hostedZoneId, hostedZoneName, aliasRecordName} = customDomainConfig;
+  const {hostedZoneId, hostedZoneName, getAliasRecordName} = customDomainConfig;
 
   const aRecord = new ARecord(stack, resourceIds.aRecord, {
     zone: HostedZone.fromHostedZoneAttributes(stack, resourceIds.zone, {
       hostedZoneId,
       zoneName: hostedZoneName
     }),
-    recordName: aliasRecordName,
+    recordName: getAliasRecordName && getAliasRecordName(stackName),
     target: RecordTarget.fromAlias(new ApiGateway(restApi))
   });
 
