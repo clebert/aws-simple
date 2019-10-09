@@ -44,6 +44,18 @@ export class Context {
     };
   }
 
+  public parseStackName(id: string): string {
+    const {appName} = this.appConfig;
+    const regExp = new RegExp(`^${appName}-(.*)-(?:output|resource)-.+`);
+    const result = regExp.exec(id);
+
+    if (!result) {
+      console.warn('Unable to parse stack name from ID:', id);
+    }
+
+    return result ? result[1] : id;
+  }
+
   private createOutputId(exportName: string): string {
     const {appName, stackName} = this.appConfig;
 

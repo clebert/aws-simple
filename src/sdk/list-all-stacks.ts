@@ -39,7 +39,7 @@ export async function listAllStacks(
     const padding: [number, number, number, number] = [0, 1, 0, 0];
 
     ui.div(
-      {text: chalk.bold('Stack ID'), border: true, padding},
+      {text: chalk.bold('Stack Name'), border: true, padding},
       {text: chalk.bold('Last Updated'), border: true, padding},
       {text: chalk.bold('Tags'), border: true}
     );
@@ -47,7 +47,7 @@ export async function listAllStacks(
     const {StackName, Tags} = stack;
 
     ui.div(
-      {text: StackName, padding},
+      {text: context.parseStackName(StackName), padding},
       {text: getLastUpdatedTime(stack).toString(), padding},
       Tags && Tags.length > 0 ? Tags.map(({Key}) => Key).join(', ') : ''
     );

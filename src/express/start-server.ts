@@ -72,7 +72,7 @@ function startServer(argv: unknown): void {
   }
 
   app.listen(port, () => {
-    console.info(`Started DEV server: http://localhost:${port}`);
+    console.info('Started DEV server:', `http://localhost:${port}`);
   });
 }
 
