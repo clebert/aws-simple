@@ -8,11 +8,8 @@ export async function addTag(
   profile: string,
   tagName: string
 ): Promise<void> {
-  const clientConfig = await createClientConfig(
-    profile,
-    context.appConfig.region
-  );
-
+  const {appConfig, resourceIds} = context;
+  const clientConfig = await createClientConfig(profile, appConfig.region);
   const cloudFormation = new CloudFormation(clientConfig);
 
   const {Capabilities, Parameters, Tags = []} = await findStack(
@@ -22,7 +19,7 @@ export async function addTag(
 
   await cloudFormation
     .updateStack({
-      StackName: context.resourceIds.stack,
+      StackName: resourceIds.stack,
       UsePreviousTemplate: true,
       Capabilities,
       Parameters,
@@ -37,7 +34,7 @@ export async function addTag(
 
   await cloudFormation
     .waitFor('stackUpdateComplete', {
-      StackName: context.resourceIds.stack,
+      StackName: resourceIds.stack,
       $waiter: {
         delay: delayInSeconds,
         maxAttempts: totalDurationInSeconds / delayInSeconds

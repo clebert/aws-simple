@@ -14,18 +14,14 @@ export async function uploadToS3(
   context: Context,
   profile: string
 ): Promise<void> {
-  const clientConfig = await createClientConfig(
-    profile,
-    context.appConfig.region
-  );
+  const {
+    appConfig: {region, customDomainConfig, s3Configs = []}
+  } = context;
 
+  const clientConfig = await createClientConfig(profile, region);
   const cloudFormation = new CloudFormation(clientConfig);
   const stack = await findStack(context, cloudFormation);
   const stackOutputs = getStackOutputs(context, stack);
-
-  const {
-    appConfig: {customDomainConfig, s3Configs = []}
-  } = context;
 
   const createUrl = () => {
     if (!customDomainConfig) {
