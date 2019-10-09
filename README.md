@@ -3,7 +3,7 @@
 ![][ci-badge]
 
 A Node.js interface for **AWS** that allows easy configuration and deployment of
-**simple** web projects.
+**simple** web apps.
 
 ## Contents
 
@@ -22,23 +22,23 @@ started to emulate the resulting AWS infrastructure.
 
 ### aws-simple-example
 
-For a quick impression, an [example project][aws-simple-example] is available
-that consists essentially of a React component that retrieves text from a Lambda
+For a quick impression, an [example app][aws-simple-example] is available that
+consists essentially of a React component that retrieves text from a Lambda
 function using a `React.useEffect` hook and displays it. Parcel is used for
 bundling and TypeScript as language.
 
 ## Motivation
 
-In my job I mainly build frontend web applications for existing backend/CMS
-systems. Since many of the frontend tech stacks are similar again and again, I
-created an abstraction for the AWS CDK/SDK for a faster and easier setup.
+In my job I mainly build web apps on top of existing backend/CMS systems. Since
+many of the frontend tech stacks are similar again and again, I created an
+abstraction for the AWS CDK/SDK for a faster and easier setup.
 
 Since existing backend/CMS systems are used, an additional persistence layer is
 rarely required. Therefore, setting up such a layer (e.g. with Amazon DynamoDB)
 is [currently not supported][dynamo-db-issue].
 
-I deliberately kept it simple. A project with a more complex setup should be set
-up manually with the AWS CDK/SDK.
+I deliberately kept it simple. An app with a more complex setup should be set up
+manually with the AWS CDK/SDK.
 
 ## Getting Started
 
@@ -136,7 +136,7 @@ _Note: Please replace the profile (`clebert`) and also the region
 
 ### Create Config File
 
-Create a top-level config file called `aws-simple.config.js` in your project.
+Create a top-level config file called `aws-simple.config.js`.
 
 For example, the following app config describes a simple app consisting of a
 single static HTML file:
@@ -250,7 +250,7 @@ Options:
   -h, --help  Show help                                                [boolean]
 
 A Node.js interface for AWS that allows easy configuration and deployment of
-simple web projects.
+simple web apps.
 ```
 
 ### Create A Stack Using The CDK
@@ -377,7 +377,7 @@ Copyright (c) 2019, Clemens Akens. Released under the terms of the [MIT
 License][license].
 
 [app-config-interface]:
-  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L69
+  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L64
 [aws-simple-example]: https://github.com/clebert/aws-simple-example
 [cdk-guide]: https://docs.aws.amazon.com/cdk/latest/guide/tools.html
 [ci-badge]: https://github.com/clebert/aws-simple/workflows/CI/badge.svg

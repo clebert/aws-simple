@@ -1,7 +1,7 @@
 {
   "name": "aws-simple",
   "version": "0.0.8",
-  "description": "A Node.js interface for AWS that allows easy configuration and deployment of simple web projects.",
+  "description": "A Node.js interface for AWS that allows easy configuration and deployment of simple web apps.",
   "keywords": [
     "apigateway",
     "aws",
