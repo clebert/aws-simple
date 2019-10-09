@@ -3,7 +3,7 @@ import {Context} from './context';
 describe('Context', () => {
   const context = new Context({
     appName: 'app1',
-    stackName: 'foo',
+    defaultStackName: 'foo',
     region: 'unknown'
   });
 

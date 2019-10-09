@@ -13,7 +13,7 @@ export interface UploadArgv {
 
 export async function upload(argv: UploadArgv): Promise<void> {
   const {config, profile, stackName} = argv;
-  const context = new Context(loadAppConfig(config, stackName));
+  const context = new Context(loadAppConfig(config), stackName);
 
   await uploadToS3(context, profile);
 }
@@ -34,7 +34,7 @@ upload.describe = (yargs: Argv) =>
 
       .describe(
         'stack-name',
-        'Optional overwriting of the stack name declared in the config file'
+        'The stack name to be used instead of the default one declared in the config file'
       )
       .string('stack-name')
 

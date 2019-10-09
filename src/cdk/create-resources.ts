@@ -32,7 +32,8 @@ function createDomainNameOptions(
   stack: Stack
 ): DomainNameOptions | undefined {
   const {
-    appConfig: {stackName, customDomainConfig},
+    appConfig: {customDomainConfig},
+    stackName,
     resourceIds
   } = context;
 
@@ -125,7 +126,8 @@ function createRestApiProps(context: Context, stack: Stack): RestApiProps {
 
 function createARecord(context: Context, stack: Stack, restApi: RestApi): void {
   const {
-    appConfig: {stackName, customDomainConfig},
+    appConfig: {customDomainConfig},
+    stackName,
     resourceIds
   } = context;
 

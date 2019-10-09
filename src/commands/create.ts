@@ -13,8 +13,8 @@ export interface CreateArgv {
 }
 
 export function create(argv: CreateArgv): void {
-  const appConfig = loadAppConfig(argv.config, argv.stackName);
-  const context = new Context(appConfig);
+  const appConfig = loadAppConfig(argv.config);
+  const context = new Context(appConfig, argv.stackName);
   const resources = createResources(context);
   const {lambdaConfigs = [], s3Configs = [], customHook} = appConfig;
 
@@ -40,7 +40,7 @@ create.describe = (yargs: Argv) =>
 
       .describe(
         'stack-name',
-        'Optional overwriting of the stack name declared in the config file'
+        'The stack name to be used instead of the default one declared in the config file'
       )
       .string('stack-name')
 

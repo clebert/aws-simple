@@ -5,7 +5,7 @@
  */
 exports.default = {
   appName: 'aws-simple',
-  stackName: 'test',
+  defaultStackName: 'test',
   region: 'eu-central-1',
   s3Configs: [
     {

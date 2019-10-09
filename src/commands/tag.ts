@@ -14,7 +14,7 @@ export interface TagArgv {
 
 export async function tag(argv: TagArgv): Promise<void> {
   const {config, profile, tagName, stackName} = argv;
-  const context = new Context(loadAppConfig(config, stackName));
+  const context = new Context(loadAppConfig(config), stackName);
 
   await addTag(context, profile, tagName);
 }
@@ -39,7 +39,7 @@ tag.describe = (yargs: Argv) =>
 
       .describe(
         'stack-name',
-        'Optional overwriting of the stack name declared in the config file'
+        'The stack name to be used instead of the default one declared in the config file'
       )
       .string('stack-name')
 

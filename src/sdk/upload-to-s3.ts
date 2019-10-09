@@ -15,7 +15,8 @@ export async function uploadToS3(
   profile: string
 ): Promise<void> {
   const {
-    appConfig: {stackName, region, customDomainConfig, s3Configs = []}
+    appConfig: {region, customDomainConfig, s3Configs = []},
+    stackName
   } = context;
 
   const clientConfig = await createClientConfig(profile, region);

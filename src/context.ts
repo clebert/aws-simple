@@ -19,11 +19,27 @@ export interface ResourceIds {
   readonly zone: string;
 }
 
+function assertName(value: string, valueName: string): void {
+  const regExp = /^[a-z0-9-]+$/;
+
+  if (!regExp.test(value)) {
+    throw new Error(
+      `The specified ${valueName} (${value}) contains invalid characters. It should match the following pattern: ${regExp.toString()}`
+    );
+  }
+}
+
 export class Context {
   public readonly outputIds: OutputIds;
   public readonly resourceIds: ResourceIds;
 
-  public constructor(public readonly appConfig: AppConfig) {
+  public constructor(
+    public readonly appConfig: AppConfig,
+    public readonly stackName: string = appConfig.defaultStackName
+  ) {
+    assertName(appConfig.appName, 'app name');
+    assertName(stackName, 'stack name');
+
     this.outputIds = {
       restApiUrl: this.createOutputId('rest-api-url'),
       s3BucketName: this.createOutputId('s3-bucket-name')
@@ -57,14 +73,14 @@ export class Context {
   }
 
   private createOutputId(exportName: string): string {
-    const {appName, stackName} = this.appConfig;
+    const {appName} = this.appConfig;
 
-    return `${appName}-${stackName}-output-${exportName}`;
+    return `${appName}-${this.stackName}-output-${exportName}`;
   }
 
   private createResourceId(resourceName: string): string {
-    const {appName, stackName} = this.appConfig;
+    const {appName} = this.appConfig;
 
-    return `${appName}-${stackName}-resource-${resourceName}`;
+    return `${appName}-${this.stackName}-resource-${resourceName}`;
   }
 }

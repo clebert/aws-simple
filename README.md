@@ -144,7 +144,7 @@ single static HTML file:
 ```js
 exports.default = {
   appName: 'myapp',
-  stackName: 'mystack',
+  defaultStackName: 'mystack',
   region: 'eu-central-1',
   s3Configs: [
     {
@@ -167,7 +167,7 @@ exports.default = {
  */
 exports.default = {
   appName: 'myapp',
-  stackName: 'mystack',
+  defaultStackName: 'mystack',
   region: 'eu-central-1'
 };
 ```
@@ -265,8 +265,8 @@ Options:
   -h, --help    Show help                                              [boolean]
   --config      The path to the config file
                                       [string] [default: "aws-simple.config.js"]
-  --stack-name  Optional overwriting of the stack name declared in the config
-                file                                                    [string]
+  --stack-name  The stack name to be used instead of the default one declared in
+                the config file                                         [string]
 
 Examples:
   cdk deploy --app 'aws-simple create' --profile clebert
@@ -287,8 +287,8 @@ Options:
                                       [string] [default: "aws-simple.config.js"]
   --profile     The AWS profile name as set in the shared credentials file
                                                              [string] [required]
-  --stack-name  Optional overwriting of the stack name declared in the config
-                file                                                    [string]
+  --stack-name  The stack name to be used instead of the default one declared in
+                the config file                                         [string]
 
 Examples:
   aws-simple upload --profile clebert
@@ -352,8 +352,8 @@ Options:
   --profile     The AWS profile name as set in the shared credentials file
                                                              [string] [required]
   --tag-name    The tag name                                 [string] [required]
-  --stack-name  Optional overwriting of the stack name declared in the config
-                file                                                    [string]
+  --stack-name  The stack name to be used instead of the default one declared in
+                the config file                                         [string]
 
 Examples:
   aws-simple tag --profile clebert --tag-name foo
