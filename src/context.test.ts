@@ -16,20 +16,24 @@ describe('Context', () => {
       expect(context.parseStackName('app1-bar-resource-any')).toBe('bar');
     });
 
-    it('returns the given unparsable ID', () => {
-      expect(context.parseStackName('app2-bar-output-any')).toBe(
-        'app2-bar-output-any'
+    it('throws an error', () => {
+      expect(() => context.parseStackName('app2-bar-output-any')).toThrowError(
+        'Unable to parse stack name from ID: app2-bar-output-any'
       );
 
-      expect(context.parseStackName('app2-bar-resource-any')).toBe(
-        'app2-bar-resource-any'
+      expect(() =>
+        context.parseStackName('app2-bar-resource-any')
+      ).toThrowError(
+        'Unable to parse stack name from ID: app2-bar-resource-any'
       );
 
-      expect(context.parseStackName('app1-bar-unknown-any')).toBe(
-        'app1-bar-unknown-any'
+      expect(() => context.parseStackName('app1-bar-unknown-any')).toThrowError(
+        'Unable to parse stack name from ID: app1-bar-unknown-any'
       );
 
-      expect(context.parseStackName('')).toBe('');
+      expect(() => context.parseStackName('')).toThrowError(
+        'Unable to parse stack name from ID: '
+      );
     });
   });
 });

@@ -60,16 +60,20 @@ export class Context {
     };
   }
 
+  public deriveNewContext(stackName: string): Context {
+    return new Context(this.appConfig, stackName);
+  }
+
   public parseStackName(id: string): string {
     const {appName} = this.appConfig;
     const regExp = new RegExp(`^${appName}-(.*)-(?:output|resource)-.+`);
     const result = regExp.exec(id);
 
     if (!result) {
-      console.warn('Unable to parse stack name from ID:', id);
+      throw new Error(`'Unable to parse stack name from ID: ${id}`);
     }
 
-    return result ? result[1] : id;
+    return result[1];
   }
 
   private createOutputId(exportName: string): string {

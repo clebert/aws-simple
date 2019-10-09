@@ -8,13 +8,14 @@ export async function listAllStacks(
   context: Context,
   profile: string
 ): Promise<void> {
-  const clientConfig = await createClientConfig(
-    profile,
-    context.appConfig.region
-  );
-
+  const {appName, region} = context.appConfig;
+  const clientConfig = await createClientConfig(profile, region);
   const cloudFormation = new CloudFormation(clientConfig);
   const stacks = await findAllStacks(context, cloudFormation);
 
-  printStacksTable(context, stacks.filter(({DeletionTime}) => !DeletionTime));
+  if (stacks.length === 0) {
+    console.info(`No stacks found of app: ${appName}`);
+  } else {
+    printStacksTable(context, stacks.filter(({DeletionTime}) => !DeletionTime));
+  }
 }

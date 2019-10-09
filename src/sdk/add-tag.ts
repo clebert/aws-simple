@@ -1,4 +1,5 @@
 import {CloudFormation} from 'aws-sdk';
+import Listr from 'listr';
 import {Context} from '../context';
 import {createClientConfig} from './create-client-config';
 import {findStack} from './find-stack';
@@ -27,18 +28,28 @@ export async function addTag(
     })
     .promise();
 
-  console.info('Waiting for the stack update to be completed...');
+  await new Listr(
+    [
+      {
+        title: 'Completing stack update',
+        task: async (_, listrTask) => {
+          try {
+            await cloudFormation
+              .waitFor('stackUpdateComplete', {
+                StackName: resourceIds.stack,
+                $waiter: {delay: 5, maxAttempts: 60}
+              })
+              .promise();
 
-  const delayInSeconds = 5;
-  const totalDurationInSeconds = 60 * 5;
+            listrTask.title = 'Successfully completed stack update';
+          } catch (error) {
+            listrTask.title = 'Error while completing stack update';
 
-  await cloudFormation
-    .waitFor('stackUpdateComplete', {
-      StackName: resourceIds.stack,
-      $waiter: {
-        delay: delayInSeconds,
-        maxAttempts: totalDurationInSeconds / delayInSeconds
+            throw error;
+          }
+        }
       }
-    })
-    .promise();
+    ],
+    {exitOnError: false}
+  ).run();
 }

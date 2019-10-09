@@ -5,6 +5,7 @@ import 'source-map-support/register';
 import compose from 'compose-function';
 import yargs from 'yargs';
 import {Resources} from './cdk/create-resources';
+import {cleanUp} from './commands/clean-up';
 import {create} from './commands/create';
 import {list} from './commands/list';
 import {start} from './commands/start';
@@ -85,6 +86,7 @@ try {
   const {description} = require('../package.json');
 
   const argv = compose(
+    cleanUp.describe,
     tag.describe,
     list.describe,
     start.describe,
@@ -110,6 +112,8 @@ try {
     list(argv).catch(handleError);
   } else if (tag.matches(argv)) {
     tag(argv).catch(handleError);
+  } else if (cleanUp.matches(argv)) {
+    cleanUp(argv).catch(handleError);
   }
 } catch (error) {
   handleError(error);

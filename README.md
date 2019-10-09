@@ -239,11 +239,12 @@ _When changing the `aws-simple` config file, the DEV server must be restarted._
 Usage: aws-simple <command> [options]
 
 Commands:
-  aws-simple create [options]  Create a stack using the CDK
-  aws-simple upload [options]  Upload files to S3
-  aws-simple start [options]   Start local DEV server
-  aws-simple list [options]    List all deployed stacks
-  aws-simple tag [options]     Tag a deployed stack
+  aws-simple create [options]    Create a stack using the CDK
+  aws-simple upload [options]    Upload files to S3
+  aws-simple start [options]     Start local DEV server
+  aws-simple list [options]      List all deployed stacks
+  aws-simple tag [options]       Tag a deployed stack
+  aws-simple clean-up [options]  Clean up old deployed stacks
 
 Options:
   --version   Show version number                                      [boolean]
@@ -356,8 +357,35 @@ Options:
                 the config file                                         [string]
 
 Examples:
-  aws-simple tag --profile clebert --tag-name foo
-  aws-simple tag --profile clebert --tag-name foo --stack-name stage
+  aws-simple tag --profile clebert --tag-name released
+  aws-simple tag --profile clebert --tag-name released --stack-name stage
+```
+
+### Clean Up Old Deployed Stacks
+
+```
+aws-simple clean-up [options]
+
+Clean up old deployed stacks
+
+Options:
+  --version   Show version number                                      [boolean]
+  -h, --help  Show help                                                [boolean]
+  --config    The path to the config file
+                                      [string] [default: "aws-simple.config.js"]
+  --profile   The AWS profile name as set in the shared credentials file
+                                                             [string] [required]
+  --max-age   The maximum age (in days) of a stack, all older stacks will be
+              deleted                                     [number] [default: 30]
+  --preserve  Optional tag names that prevent a stack from being deleted
+              regardless of its age                                      [array]
+  --yes       The confirmation message will automatically be answered with Yes
+                                                      [boolean] [default: false]
+
+Examples:
+  aws-simple clean-up --profile clebert
+  aws-simple clean-up --profile clebert --max-age 14 --preserve released
+  aws-simple clean-up --profile clebert --preserve released protected
 ```
 
 ## Development
@@ -377,7 +405,7 @@ Copyright (c) 2019, Clemens Akens. Released under the terms of the [MIT
 License][license].
 
 [app-config-interface]:
-  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L64
+  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L65
 [aws-simple-example]: https://github.com/clebert/aws-simple-example
 [cdk-guide]: https://docs.aws.amazon.com/cdk/latest/guide/tools.html
 [ci-badge]: https://github.com/clebert/aws-simple/workflows/CI/badge.svg

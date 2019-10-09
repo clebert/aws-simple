@@ -43,8 +43,12 @@ tag.describe = (yargs: Argv) =>
       )
       .string('stack-name')
 
-      .example('$0 tag --profile clebert --tag-name foo', '')
-      .example('$0 tag --profile clebert --tag-name foo --stack-name stage', '')
+      .example('$0 tag --profile clebert --tag-name released', '')
+
+      .example(
+        '$0 tag --profile clebert --tag-name released --stack-name stage',
+        ''
+      )
   );
 
 tag.matches = (argv: {_: string[]}): argv is TagArgv => argv._[0] === 'tag';

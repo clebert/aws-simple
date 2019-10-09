@@ -8,7 +8,7 @@ function compareAge(
   stack1: CloudFormation.Stack,
   stack2: CloudFormation.Stack
 ): number {
-  return getAgeInDays(stack2.CreationTime) - getAgeInDays(stack1.CreationTime);
+  return getAgeInDays(stack1.CreationTime) - getAgeInDays(stack2.CreationTime);
 }
 
 export function printStacksTable(

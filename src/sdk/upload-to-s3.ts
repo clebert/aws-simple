@@ -60,13 +60,13 @@ export async function uploadToS3(
               })
               .promise();
 
-            listrTask.title = `Uploaded file: ${joinUrl(
+            listrTask.title = `Successfully uploaded file: ${joinUrl(
               url,
               publicPath,
               type === 'folder' ? path.basename(filename) : ''
             )}`;
           } catch (error) {
-            listrTask.title = error.message;
+            listrTask.title = `Error while uploading file: ${filename}`;
 
             throw error;
           }
@@ -75,5 +75,5 @@ export async function uploadToS3(
     }
   }
 
-  await new Listr(listrTasks, {concurrent: true}).run();
+  await new Listr(listrTasks, {concurrent: true, exitOnError: true}).run();
 }
