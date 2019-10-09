@@ -7,25 +7,29 @@ describe('Context', () => {
     region: 'unknown'
   });
 
-  it('#parseStackName()', () => {
-    expect(context.parseStackName('app1-foo-output-any')).toBe('foo');
-    expect(context.parseStackName('app1-foo-resource-any')).toBe('foo');
+  describe('#parseStackName()', () => {
+    it('returns the parsed stack name', () => {
+      expect(context.parseStackName('app1-foo-output-any')).toBe('foo');
+      expect(context.parseStackName('app1-foo-resource-any')).toBe('foo');
 
-    expect(context.parseStackName('app1-bar-output-any')).toBe('bar');
-    expect(context.parseStackName('app1-bar-resource-any')).toBe('bar');
+      expect(context.parseStackName('app1-bar-output-any')).toBe('bar');
+      expect(context.parseStackName('app1-bar-resource-any')).toBe('bar');
+    });
 
-    expect(context.parseStackName('app2-bar-output-any')).toBe(
-      'app2-bar-output-any'
-    );
+    it('returns the given unparsable ID', () => {
+      expect(context.parseStackName('app2-bar-output-any')).toBe(
+        'app2-bar-output-any'
+      );
 
-    expect(context.parseStackName('app2-bar-resource-any')).toBe(
-      'app2-bar-resource-any'
-    );
+      expect(context.parseStackName('app2-bar-resource-any')).toBe(
+        'app2-bar-resource-any'
+      );
 
-    expect(context.parseStackName('app1-bar-unknown-any')).toBe(
-      'app1-bar-unknown-any'
-    );
+      expect(context.parseStackName('app1-bar-unknown-any')).toBe(
+        'app1-bar-unknown-any'
+      );
 
-    expect(context.parseStackName('')).toBe('');
+      expect(context.parseStackName('')).toBe('');
+    });
   });
 });

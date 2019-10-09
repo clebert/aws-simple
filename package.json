@@ -35,7 +35,7 @@
     "lint": "tslint --project . --format stylish",
     "prestart": "run-s compile",
     "start": "node ./lib/index.js start",
-    "test": "jest --verbose"
+    "test": "jest --silent --verbose"
   },
   "dependencies": {
     "@aws-cdk/assets": "^1.9.0",
