@@ -44,10 +44,10 @@ manually with the AWS CDK/SDK.
 
 ### Install
 
-Install `aws-simple` as development dependency, e.g. with:
+Install `aws-simple` and `aws-cdk` as development dependencies, e.g. with:
 
 ```
-yarn add --dev aws-simple
+yarn add --dev aws-simple aws-cdk
 ```
 
 ### Create An AWS IAM User
