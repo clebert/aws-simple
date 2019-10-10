@@ -174,6 +174,141 @@ exports.default = {
 
 _Note: The `AppConfig` interface can be viewed [here][app-config-interface]._
 
+#### Example Configuration Of A Custom Domain
+
+In order to use a custom domain, a certificate and a hosted zone must be created
+manually. The custom domain is then configured as follows:
+
+```js
+exports.default = {
+  /* ... */
+  customDomainConfig: {
+    certificateArn:
+      'arn:aws:acm:eu-central-1:************:certificate/********-****-****-****-************',
+    hostedZoneId: '**************',
+    hostedZoneName: 'example.com',
+    getAliasRecordName: stackName => stackName
+  }
+};
+```
+
+_Note: Different stack names allow multiple stacks of the same app to be
+deployed simultaneously. In this case the optional `getAliasRecordName` function
+is used to give each stack its own URL, for example `mystack.example.com`._
+
+#### Example Configuration Of A Lambda Function
+
+In the following, a Lambda function is configured that can be reached under the
+URL `mystack.example.com/endpoint` with a GET request:
+
+```js
+exports.default = {
+  /* ... */
+  lambdaConfigs: [
+    {
+      httpMethod: 'GET',
+      publicPath: '/endpoint',
+      localPath: 'path/to/lambda.js',
+      memorySize: 3008,
+      timeoutInSeconds: 30,
+      environment: {KEY: 'value'},
+      cachingEnabled: true,
+      cacheTtlInSeconds: 600,
+      acceptedParameters: {
+        foo: {},
+        bar: {cached: true},
+        baz: {required: true},
+        qux: {cached: true, required: true}
+      }
+    }
+  ]
+};
+```
+
+The contents of file `path/to/lambda.js` could look like this:
+
+```js
+async function handler() {
+  return {
+    statusCode: 200,
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify('Hello, World!')
+  };
+}
+
+exports.handler = handler;
+```
+
+If the export of the Lambda function module has a different name than `handler`,
+this must be explicitly specified in the Lambda configuration:
+
+```js
+exports.default = {
+  /* ... */
+  lambdaConfigs: [
+    {
+      /* ... */
+      handler: 'myHandler'
+    }
+  ]
+};
+```
+
+_Note: If external node modules are to be referenced in the Lambda function
+module, it must be bundled with a bundler such as Webpack (in this case you have
+to set the target to node: `{target: 'node'}`) to create a single JavaScript
+bundle._
+
+#### Example Configuration Of An S3 File
+
+In the following, an S3 file is configured that can be reached under the URL
+`mystack.example.com/` with a GET request:
+
+```js
+exports.default = {
+  /* ... */
+  s3Configs: [
+    {
+      type: 'file',
+      publicPath: '/',
+      localPath: 'path/to/file.html',
+      bucketPath: '/lsg/index.html'
+    }
+  ]
+};
+```
+
+_Note: The file specified under the local path is loaded into the S3 bucket
+associated with the stack using the `aws-simple upload [options]` command. The
+optionally specified bucket path or the public path is used as the S3 key._
+
+#### Example Configuration Of An S3 Folder
+
+In the following an S3 folder is configured, whose contained files are
+accessible under the URL `mystack.example.com/assets/*` with a GET request:
+
+```js
+exports.default = {
+  /* ... */
+  s3Configs: [
+    {
+      type: 'folder',
+      publicPath: '/assets',
+      localPath: 'path/to/folder',
+      responseHeaders: {
+        accessControlAllowOrigin: '*',
+        cacheControl: 'max-age=157680000'
+      }
+    }
+  ]
+};
+```
+
+_Note: All files contained in the folder specified under the local path are
+loaded into the S3 bucket associated with the stack using the
+`aws-simple upload [options]` command. Nested folders are ignored! Thus a
+separate S3 Config must be created for each nested folder._
+
 ### Bootstrap AWS Environment
 
 Before you can use the AWS CDK you must bootstrap your AWS environment to create
@@ -202,10 +337,6 @@ Upload files to S3:
 ```
 yarn aws-simple upload --profile clebert
 ```
-
-_Note: Different stack names allow multiple stacks of the same app to be
-deployed simultaneously. For example, the `getAliasRecordName` function in the
-`customDomainConfig` can be used to give each stack its own URL._
 
 #### `package.json` Scripts Example
 
@@ -309,9 +440,9 @@ Options:
   --config    The path to the config file
                                       [string] [default: "aws-simple.config.js"]
   --port      The port to listen on                     [number] [default: 3000]
-  --cached    Enable caching of successful Lambda results per request URL
-                                                      [boolean] [default: false]
-  --verbose   Enable logging of successful Lambda results
+  --cached    Enable caching of successful Lambda function results per request
+              URL                                     [boolean] [default: false]
+  --verbose   Enable logging of successful Lambda function results
                                                       [boolean] [default: false]
 
 Examples:
@@ -413,7 +544,7 @@ Copyright (c) 2019, Clemens Akens. Released under the terms of the [MIT
 License][license].
 
 [app-config-interface]:
-  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L65
+  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L72
 [aws-simple-example]: https://github.com/clebert/aws-simple-example
 [cdk-guide]: https://docs.aws.amazon.com/cdk/latest/guide/tools.html
 [ci-badge]: https://github.com/clebert/aws-simple/workflows/CI/badge.svg

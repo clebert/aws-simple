@@ -61,12 +61,15 @@ start.describe = (yargs: Argv) =>
 
       .describe(
         'cached',
-        'Enable caching of successful Lambda results per request URL'
+        'Enable caching of successful Lambda function results per request URL'
       )
       .boolean('cached')
       .default('cached', false)
 
-      .describe('verbose', 'Enable logging of successful Lambda results')
+      .describe(
+        'verbose',
+        'Enable logging of successful Lambda function results'
+      )
       .boolean('verbose')
       .default('verbose', false)
 
