@@ -136,7 +136,9 @@ _Note: Please replace the profile (`clebert`) and also the region
 
 ### Create A Config File
 
-Create a top-level config file called `aws-simple.config.js`.
+To use the `aws-simple` CLI you have to create a top-level JavaScript config
+module named `aws-simple.config.js` which exports an object compatible to the
+[`AppConfig` interface][app-config-interface].
 
 For example, the following app config describes a simple app consisting of a
 single static HTML file:
@@ -157,6 +159,11 @@ exports.default = {
 };
 ```
 
+_Note: Different stack names allow multiple stacks of the same app to be
+deployed simultaneously. The specified default stack name can be overwritten
+with most `aws-simple <command> [options]` CLI commands using the `--stack-name`
+CLI option._
+
 #### Use TypeScript For Auto-Completion Support
 
 ```js
@@ -171,8 +178,6 @@ exports.default = {
   region: 'eu-central-1'
 };
 ```
-
-_Note: The `AppConfig` interface can be viewed [here][app-config-interface]._
 
 #### Example Configuration Of A Custom Domain
 
@@ -272,16 +277,16 @@ exports.default = {
       type: 'file',
       publicPath: '/',
       localPath: 'path/to/file.html',
-      bucketPath: 'path/to/file.html'
+      bucketPath: 'file.html'
     }
   ]
 };
 ```
 
 _Note: The file specified under the local path is loaded into the S3 bucket
-associated with the stack using the `aws-simple upload [options]` command. The
-optionally specified bucket path or, if not specified, the public path is used
-as the S3 object key._
+associated with the stack using the `aws-simple upload [options]` CLI command.
+The optionally specified bucket path or, if not specified, the public path is
+used as the S3 object key._
 
 #### Example Configuration Of An S3 Folder
 
