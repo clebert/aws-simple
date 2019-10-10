@@ -48,7 +48,7 @@ function startServer(argv: unknown): void {
   const {config, port, cached, verbose} = argv;
 
   const {
-    minimumCompressionSize,
+    minimumCompressionSizeInBytes,
     lambdaConfigs = [],
     s3Configs = []
   } = loadAppConfig(config);
@@ -59,8 +59,8 @@ function startServer(argv: unknown): void {
 
   const app = express();
 
-  if (typeof minimumCompressionSize === 'number') {
-    app.use(compression({threshold: minimumCompressionSize}));
+  if (typeof minimumCompressionSizeInBytes === 'number') {
+    app.use(compression({threshold: minimumCompressionSizeInBytes}));
   }
 
   for (const lambdaConfig of lambdaConfigs) {

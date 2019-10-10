@@ -70,7 +70,7 @@ export interface AppConfig {
   readonly region: string;
   readonly customDomainConfig?: CustomDomainConfig;
   readonly binaryMediaTypes?: string[];
-  readonly minimumCompressionSize?: number;
+  readonly minimumCompressionSizeInBytes?: number;
   readonly loggingLevel?: LoggingLevel;
   readonly lambdaConfigs?: LambdaConfig[];
   readonly s3Configs?: S3Config[];

@@ -364,7 +364,7 @@ You can enable compression for an API as follows:
 ```js
 exports.default = {
   /* ... */
-  minimumCompressionSize: 1000
+  minimumCompressionSizeInBytes: 1000
 };
 ```
 

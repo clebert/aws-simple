@@ -113,13 +113,13 @@ function createStageOptions(context: Context): StageOptions {
 
 function createRestApiProps(context: Context, stack: Stack): RestApiProps {
   const {
-    appConfig: {binaryMediaTypes, minimumCompressionSize}
+    appConfig: {binaryMediaTypes, minimumCompressionSizeInBytes}
   } = context;
 
   return {
     domainName: createDomainNameOptions(context, stack),
     binaryMediaTypes,
-    minimumCompressionSize,
+    minimumCompressionSize: minimumCompressionSizeInBytes,
     deployOptions: createStageOptions(context)
   };
 }
