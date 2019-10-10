@@ -55,7 +55,7 @@ function getRouterMatcher(
 
 function createLambdaRequestHandler(
   lambdaConfig: LambdaConfig,
-  cached: boolean
+  useCache: boolean
 ): express.RequestHandler {
   const cachedResults = new Map<string, APIGatewayProxyResult>();
 
@@ -82,11 +82,11 @@ function createLambdaRequestHandler(
           }
         }));
 
-      if (cached) {
+      const {headers, statusCode, body} = result;
+
+      if (useCache && statusCode === 200) {
         cachedResults.set(req.url, result);
       }
-
-      const {headers, statusCode, body} = result;
 
       if (headers) {
         for (const key of Object.keys(headers)) {
@@ -104,12 +104,12 @@ function createLambdaRequestHandler(
 export function serveLocalLambda(
   app: express.Express,
   lambdaConfig: LambdaConfig,
-  cached: boolean
+  useCache: boolean
 ): void {
   const {httpMethod, publicPath} = lambdaConfig;
 
   getRouterMatcher(app, httpMethod)(
     publicPath,
-    createLambdaRequestHandler(lambdaConfig, cached)
+    createLambdaRequestHandler(lambdaConfig, useCache)
   );
 }
