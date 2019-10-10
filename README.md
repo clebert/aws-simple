@@ -136,8 +136,8 @@ _Note: Please replace the profile (`clebert`) and also the region
 
 ### Create A Config File
 
-To use the `aws-simple` CLI you have to create a top-level JavaScript config
-module named `aws-simple.config.js` which exports an object compatible to the
+To use the `aws-simple` CLI you have to create a top-level node module config
+file named `aws-simple.config.js` which exports an object compatible to the
 [`AppConfig` interface][app-config-interface].
 
 For example, the following app config describes a simple app consisting of a
@@ -182,7 +182,7 @@ exports.default = {
 #### Example Configuration Of A Custom Domain
 
 In order to use a custom domain, a certificate and a hosted zone must be created
-manually. The custom domain is then configured as follows:
+manually. You can then configure the custom domain as follows:
 
 ```js
 exports.default = {
@@ -203,8 +203,8 @@ is used to give each stack its own URL, for example `mystack.example.com`._
 
 #### Example Configuration Of A Lambda Function
 
-In the following, a Lambda function is configured that can be reached under the
-URL `mystack.example.com/endpoint` with a GET request:
+You can configure a Lambda function that can be accessed via GET request at the
+URL `mystack.example.com/endpoint` as follows:
 
 ```js
 exports.default = {
@@ -244,8 +244,8 @@ async function handler() {
 exports.handler = handler;
 ```
 
-If the export of the Lambda function module has a different name than `handler`,
-this must be explicitly specified in the Lambda configuration:
+If the export of the Lambda function node module has a different name than
+`handler`, this must be explicitly specified in the Lambda configuration:
 
 ```js
 exports.default = {
@@ -259,15 +259,15 @@ exports.default = {
 };
 ```
 
-_Note: If external node modules are to be referenced in the Lambda function
+_Note: If external node modules are to be referenced in the Lambda function node
 module, it must be bundled with a bundler such as Webpack (in this case you have
-to set the target to node: `{target: 'node'}`) to create a single JavaScript
+to set the target to node: `{target: 'node'}`) to create a single node module
 bundle._
 
 #### Example Configuration Of An S3 File
 
-In the following, an S3 file is configured that can be reached under the URL
-`mystack.example.com/` with a GET request:
+You can configure an S3 file that can be accessed via GET request at the URL
+`mystack.example.com/` as follows:
 
 ```js
 exports.default = {
@@ -290,8 +290,8 @@ used as the S3 object key._
 
 #### Example Configuration Of An S3 Folder
 
-In the following an S3 folder is configured, whose contained files are
-accessible under the URL `mystack.example.com/assets/*` with a GET request:
+You can configure an S3 folder whose contained files can be accessed via GET
+request at the URL `mystack.example.com/assets/*` as follows:
 
 ```js
 exports.default = {
@@ -314,6 +314,56 @@ _Note: All files contained in the folder specified under the local path are
 loaded into the S3 bucket associated with the stack using the
 `aws-simple upload [options]` command. Nested folders are ignored! Thus a
 separate S3 Config must be created for each nested folder._
+
+#### Dynamic Setting Of Config Properties
+
+Since the config file is a node module, individual properties can also be set
+dynamically. An example would be to set the AWS region by reading an ENV
+variable:
+
+```js
+exports.default = {
+  /* ... */
+  region: process.env.AWS_DEFAULT_REGION || 'eu-central-1'
+};
+```
+
+Another example is to set the default stack name based on the current hash or
+tag:
+
+```js
+const {isTagDirty, short, tag} = require('git-rev-sync');
+
+exports.default = {
+  /* ... */
+  defaultStackName: isTagDirty()
+    ? short(undefined, 8)
+    : tag().replace(/\./g, '-')
+};
+```
+
+#### Enable Binary Support
+
+You can specify media types (e.g. `image/png`, `application/octet-stream`, etc.)
+to be treated as binary as follows:
+
+```js
+exports.default = {
+  /* ... */
+  binaryMediaTypes: ['font/woff2']
+};
+```
+
+#### Enable Payload Compression
+
+You can enable compression for an API as follows:
+
+```js
+exports.default = {
+  /* ... */
+  minimumCompressionSize: 1000
+};
+```
 
 ### Bootstrap Your AWS Environment
 
