@@ -4,15 +4,12 @@ import 'source-map-support/register';
 
 import compose from 'compose-function';
 import yargs from 'yargs';
-import {Resources} from './cdk/create-resources';
 import {cleanUp} from './commands/clean-up';
 import {create} from './commands/create';
 import {list} from './commands/list';
 import {start} from './commands/start';
 import {tag} from './commands/tag';
 import {upload} from './commands/upload';
-
-export {Resources};
 
 export interface CustomDomainConfig {
   readonly certificateArn: string;
@@ -67,8 +64,6 @@ export interface S3Config {
   readonly responseHeaders?: S3ResponseHeaders;
 }
 
-export type CustomHook = (resources: Resources) => void;
-
 export interface AppConfig {
   readonly appName: string;
   readonly defaultStackName: string;
@@ -79,7 +74,6 @@ export interface AppConfig {
   readonly loggingLevel?: LoggingLevel;
   readonly lambdaConfigs?: LambdaConfig[];
   readonly s3Configs?: S3Config[];
-  readonly customHook?: CustomHook;
 }
 
 function handleError(error: Error): void {

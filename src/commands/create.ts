@@ -16,7 +16,7 @@ export function create(argv: CreateArgv): void {
   const appConfig = loadAppConfig(argv.config);
   const context = new Context(appConfig, argv.stackName);
   const resources = createResources(context);
-  const {lambdaConfigs = [], s3Configs = [], customHook} = appConfig;
+  const {lambdaConfigs = [], s3Configs = []} = appConfig;
 
   for (const lambdaConfig of lambdaConfigs) {
     createLambdaIntegration(context, resources, lambdaConfig);
@@ -24,10 +24,6 @@ export function create(argv: CreateArgv): void {
 
   for (const s3Config of s3Configs) {
     createS3Integration(resources, s3Config);
-  }
-
-  if (customHook) {
-    customHook(resources);
   }
 }
 
