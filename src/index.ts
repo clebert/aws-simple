@@ -31,7 +31,7 @@ export type LambdaHttpMethod =
   | 'PUT';
 
 export interface LambdaParameterOptions {
-  readonly cached?: boolean;
+  readonly isCacheKey?: boolean;
   readonly required?: boolean;
 }
 

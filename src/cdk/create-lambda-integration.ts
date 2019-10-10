@@ -46,7 +46,7 @@ export function createLambdaIntegration(
       ),
       {
         cacheKeyParameters: Object.keys(acceptedParameters)
-          .filter(parameterName => acceptedParameters[parameterName].cached)
+          .filter(parameterName => acceptedParameters[parameterName].isCacheKey)
           .map(parameterName => `method.request.querystring.${parameterName}`)
       }
     ),

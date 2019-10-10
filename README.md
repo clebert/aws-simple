@@ -224,9 +224,9 @@ exports.default = {
       cacheTtlInSeconds: 600,
       acceptedParameters: {
         foo: {},
-        bar: {cached: true},
+        bar: {isCacheKey: true},
         baz: {required: true},
-        qux: {cached: true, required: true}
+        qux: {isCacheKey: true, required: true}
       }
     }
   ]
