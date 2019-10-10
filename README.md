@@ -166,6 +166,9 @@ CLI option._
 
 #### Use TypeScript For Auto-Completion Support
 
+TypeScript 2.3 and later support type-checking in `*.js` files by adding a
+`// @ts-check` comment to them:
+
 ```js
 // @ts-check
 
