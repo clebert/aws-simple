@@ -24,7 +24,7 @@ export async function uploadToS3(
   const stack = await findStack(context, cloudFormation);
   const stackOutputs = getStackOutputs(context, stack);
 
-  const createUrl = () => {
+  const createBaseUrl = () => {
     if (!customDomainConfig) {
       return stackOutputs.restApiUrl;
     }
@@ -36,7 +36,7 @@ export async function uploadToS3(
       : `https://${hostedZoneName}`;
   };
 
-  const url = createUrl();
+  const baseUrl = createBaseUrl();
   const listrTasks: Listr.ListrTask[] = [];
   const s3 = new S3(clientConfig);
 
@@ -60,11 +60,12 @@ export async function uploadToS3(
               })
               .promise();
 
-            listrTask.title = `Successfully uploaded file: ${joinUrl(
-              url,
-              publicPath,
-              type === 'folder' ? path.basename(filename) : ''
-            )}`;
+            const url =
+              type === 'file'
+                ? joinUrl(baseUrl, publicPath)
+                : joinUrl(baseUrl, publicPath, path.basename(filename));
+
+            listrTask.title = `Successfully uploaded file: ${url}`;
           } catch (error) {
             listrTask.title = `Error while uploading file: ${filename}`;
 
