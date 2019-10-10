@@ -50,7 +50,7 @@ Install `aws-simple` as development dependency, e.g. with:
 yarn add --dev aws-simple
 ```
 
-### Create AWS IAM User
+### Create An AWS IAM User
 
 Create an AWS IAM user with programmatic access and the following attached
 policy:
@@ -92,7 +92,7 @@ _Note: Please replace the app name (`myapp`) with your own. All resources
 created with CloudFormation have the app name combined with the stack name as a
 prefix for their ID such as `myapp-mystack-resource-s3-bucket`._
 
-### Create AWS CLI Profile
+### Create An AWS CLI Profile
 
 Install the `aws` CLI, e.g. with:
 
@@ -134,7 +134,7 @@ region = eu-central-1
 _Note: Please replace the profile (`clebert`) and also the region
 (`eu-central-1`) if necessary._
 
-### Create Config File
+### Create A Config File
 
 Create a top-level config file called `aws-simple.config.js`.
 
@@ -272,7 +272,7 @@ exports.default = {
       type: 'file',
       publicPath: '/',
       localPath: 'path/to/file.html',
-      bucketPath: '/lsg/index.html'
+      bucketPath: 'path/to/file.html'
     }
   ]
 };
@@ -280,7 +280,8 @@ exports.default = {
 
 _Note: The file specified under the local path is loaded into the S3 bucket
 associated with the stack using the `aws-simple upload [options]` command. The
-optionally specified bucket path or the public path is used as the S3 key._
+optionally specified bucket path or, if not specified, the public path is used
+as the S3 object key._
 
 #### Example Configuration Of An S3 Folder
 
@@ -309,7 +310,7 @@ loaded into the S3 bucket associated with the stack using the
 `aws-simple upload [options]` command. Nested folders are ignored! Thus a
 separate S3 Config must be created for each nested folder._
 
-### Bootstrap AWS Environment
+### Bootstrap Your AWS Environment
 
 Before you can use the AWS CDK you must bootstrap your AWS environment to create
 the infrastructure that the AWS CDK CLI needs to deploy your AWS CDK app:
@@ -321,7 +322,7 @@ yarn cdk bootstrap --app 'yarn aws-simple create' --profile clebert
 _Note: This command only needs to be executed once. For more information see
 [here][cdk-guide]._
 
-### Deploy Stack To AWS
+### Deploy A Stack To AWS
 
 Create a stack using the CDK:
 
@@ -353,7 +354,7 @@ _Note: In a CI pipeline the `deploy` script should be called with the additional
 argument `--require-approval never`, e.g.
 `yarn deploy --require-approval never`._
 
-### Start Local DEV Server
+### Start A Local DEV Server
 
 ```
 yarn aws-simple start --port 1985 --cached
