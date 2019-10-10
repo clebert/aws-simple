@@ -393,7 +393,15 @@ Examples:
 ### Publish A New Release
 
 ```
-npm version 1.0.0 && git push --follow-tags
+yarn release patch
+```
+
+```
+yarn release minor
+```
+
+```
+yarn release major
 ```
 
 After a new release has been created by pushing the tag, it must be published
