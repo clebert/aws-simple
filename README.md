@@ -603,7 +603,7 @@ Copyright (c) 2019, Clemens Akens. Released under the terms of the [MIT
 License][license].
 
 [app-config-interface]:
-  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L72
+  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L67
 [aws-simple-example]: https://github.com/clebert/aws-simple-example
 [cdk-guide]: https://docs.aws.amazon.com/cdk/latest/guide/tools.html
 [ci-badge]: https://github.com/clebert/aws-simple/workflows/CI/badge.svg
