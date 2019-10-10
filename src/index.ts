@@ -33,6 +33,11 @@ export type LambdaHttpMethod =
   | 'POST'
   | 'PUT';
 
+export interface LambdaParameterOptions {
+  readonly cached?: boolean;
+  readonly required?: boolean;
+}
+
 export interface LambdaConfig {
   readonly httpMethod: LambdaHttpMethod;
   readonly publicPath: string;
@@ -43,8 +48,10 @@ export interface LambdaConfig {
   readonly environment?: {readonly [key: string]: string};
   readonly cachingEnabled?: boolean;
   readonly cacheTtlInSeconds?: number;
-  readonly cacheKeyParameters?: string[];
-  readonly requiredParameters?: string[];
+
+  readonly acceptedParameters?: {
+    readonly [parameterName: string]: LambdaParameterOptions;
+  };
 }
 
 export interface S3ResponseHeaders {

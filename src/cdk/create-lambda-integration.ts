@@ -23,8 +23,7 @@ export function createLambdaIntegration(
     memorySize = defaults.lambdaMemorySize,
     timeoutInSeconds = defaults.lambdaTimeoutInSeconds,
     environment,
-    cacheKeyParameters,
-    requiredParameters
+    acceptedParameters = {}
   } = lambdaConfig;
 
   restApi.root.resourceForPath(publicPath).addMethod(
@@ -45,23 +44,23 @@ export function createLambdaIntegration(
           environment
         }
       ),
-      {cacheKeyParameters}
+      {
+        cacheKeyParameters: Object.keys(acceptedParameters)
+          .filter(parameterName => acceptedParameters[parameterName].cached)
+          .map(parameterName => `method.request.querystring.${parameterName}`)
+      }
     ),
     {
-      requestParameters:
-        cacheKeyParameters &&
-        cacheKeyParameters.reduce<Record<string, boolean>>(
-          (parameters, parameter) => {
-            parameters[
-              `method.request.querystring.${parameter}`
-            ] = requiredParameters
-              ? requiredParameters.includes(parameter)
-              : false;
+      requestParameters: Object.keys(acceptedParameters).reduce(
+        (requestParameters, parameterName) => {
+          requestParameters[
+            `method.request.querystring.${parameterName}`
+          ] = Boolean(acceptedParameters[parameterName].required);
 
-            return parameters;
-          },
-          {}
-        )
+          return requestParameters;
+        },
+        {} as Record<string, boolean>
+      )
     }
   );
 }
