@@ -6,13 +6,10 @@ import {listAllStacks} from '../sdk/list-all-stacks';
 export interface ListArgv {
   readonly _: ['list'];
   readonly config: string;
-  readonly profile?: string;
 }
 
 export async function list(argv: ListArgv): Promise<void> {
-  const {config, profile} = argv;
-
-  await listAllStacks(Context.load(config, {profile}));
+  await listAllStacks(Context.load(argv.config));
 }
 
 list.describe = (yargs: Argv) =>
@@ -21,12 +18,6 @@ list.describe = (yargs: Argv) =>
       .describe('config', 'The path to the config file')
       .string('config')
       .default('config', defaults.configFilename)
-
-      .describe(
-        'profile',
-        'An AWS profile name as set in the shared credentials file'
-      )
-      .string('profile')
 
       .example('npx $0 list', '')
   );

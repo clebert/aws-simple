@@ -44,7 +44,7 @@ manually with the AWS CDK/SDK.
 
 ### Install
 
-Install `aws-simple` and `aws-cdk` as development dependencies, e.g. with:
+You need to install `aws-simple` and `aws-cdk` as dependencies, e.g. with:
 
 ```
 yarn add --dev aws-simple aws-cdk
@@ -56,8 +56,8 @@ npm install --save-dev aws-simple aws-cdk
 
 ### Create An AWS IAM User
 
-Create an AWS IAM user with programmatic access and the following attached
-policy:
+You need to create an AWS IAM user with programmatic access and the following
+attached policy:
 
 ```json
 {
@@ -96,16 +96,16 @@ _Note: Please replace the app name (`myapp`) with your own. All resources
 created with CloudFormation have the app name combined with the stack name as a
 prefix for their ID such as `myapp-mystack-resource-s3-bucket`._
 
-### Create An AWS CLI Profile
+### Optional: Create An AWS Profile
 
-Install the `aws` CLI, e.g. with:
+You can install the `aws` CLI, e.g. with:
 
 ```
 brew install awscli
 ```
 
-Then set up the AWS CLI profile using the access key from the AWS IAM user you
-just created:
+You can then set up the AWS profile using the credentials from the AWS IAM user
+you just created:
 
 ```
 aws configure
@@ -118,8 +118,8 @@ Default region name [None]: eu-central-1
 Default output format [None]: json
 ```
 
-As an alternative to using the `aws` CLI, the following files can also be
-created manually:
+As an alternative to using the `aws` CLI, you can create the following files
+manually:
 
 ```
 cat ~/.aws/credentials
@@ -135,9 +135,27 @@ output = json
 region = eu-central-1
 ```
 
-_Note: If no AWS CLI profile is configured, `aws-simple` will try to read the
-credentials from the following two environment variables `AWS_ACCESS_KEY_ID` and
-`AWS_SECRET_ACCESS_KEY`._
+### Set The AWS Profile
+
+The following two environment variables `AWS_PROFILE` and `AWS_DEFAULT_PROFILE`
+are evaluated in the specified order. If neither of the two environment
+variables is set, the `default` profile is used.
+
+### Set The AWS Credentials
+
+The following two environment variables `AWS_ACCESS_KEY_ID` and
+`AWS_SECRET_ACCESS_KEY` are evaluated. If these are not set, an attempt is made
+to read the credentials from the AWS shared credentials file using the AWS
+profile. The default location of the file (`~/.aws/credentials`) can be
+overwritten by setting the environment variable `AWS_SHARED_CREDENTIALS_FILE`.
+
+### Set The AWS Region
+
+The following two environment variables `AWS_REGION` and `AWS_DEFAULT_REGION`
+are evaluated in the specified order. If neither of the two environment
+variables is set, an attempt is made to read the region from the AWS config file
+using the AWS profile. The default location of the file (`~/.aws/config`) can be
+overwritten by setting the environment variable `AWS_CONFIG_FILE`.
 
 ### Create A Config File
 
@@ -152,7 +170,6 @@ single static HTML file:
 exports.default = {
   appName: 'myapp',
   defaultStackName: 'mystack',
-  region: 'eu-central-1',
   s3Configs: [
     {
       type: 'file',
@@ -182,8 +199,7 @@ TypeScript 2.3 and later support type-checking in `*.js` files by adding a
  */
 exports.default = {
   appName: 'myapp',
-  defaultStackName: 'mystack',
-  region: 'eu-central-1'
+  defaultStackName: 'mystack'
 };
 ```
 
@@ -330,21 +346,11 @@ loaded into the S3 bucket associated with the stack using the
 `aws-simple upload [options]` command. Nested folders are ignored! Thus a
 separate S3 Config must be created for each nested folder._
 
-#### Dynamic Setting Of Config Properties
+#### Dynamically Set Config Properties
 
 Since the config file is a node module, individual properties can also be set
-dynamically. An example would be to set the AWS region by reading an ENV
-variable:
-
-```js
-exports.default = {
-  /* ... */
-  region: process.env.AWS_DEFAULT_REGION || 'eu-central-1'
-};
-```
-
-Another example is to set the default stack name based on the current hash or
-tag:
+dynamically. For example, you can set the default stack name based on the
+current hash or tag:
 
 ```js
 const {isTagDirty, short, tag} = require('git-rev-sync');
@@ -400,8 +406,8 @@ Create a stack using the CDK:
 npx cdk deploy --app 'npx aws-simple create'
 ```
 
-_Caution: Re-deploying an already deployed stack (so a stack with the same name)
-will remove all tags set with `aws-simple tag [options]`._
+**Caution:** Re-deploying an already deployed stack (so a stack with the same
+name) will remove all tags set with `aws-simple tag [options]`.
 
 Upload files to S3:
 
@@ -430,10 +436,9 @@ argument `--require-approval never`, e.g.
 npx aws-simple start --port 1985 --cached
 ```
 
-_Note: If a bundler such as Parcel or Webpack is used, its watcher must be
+_Note: When changing the `aws-simple` config file, the DEV server must be
+restarted. If a bundler such as Parcel or Webpack is used, its watcher must be
 started in addition to the DEV server._
-
-_When changing the `aws-simple` config file, the DEV server must be restarted._
 
 ## CLI Usage
 
@@ -443,7 +448,7 @@ Usage: aws-simple <command> [options]
 Commands:
   aws-simple create [options]    Create a stack using the CDK
   aws-simple upload [options]    Upload files to S3
-  aws-simple start [options]     Start local DEV server
+  aws-simple start [options]     Start a local DEV server
   aws-simple list [options]      List all deployed stacks
   aws-simple tag [options]       Tag a deployed stack
   aws-simple clean-up [options]  Clean up old deployed stacks
@@ -488,8 +493,6 @@ Options:
   -h, --help    Show help                                              [boolean]
   --config      The path to the config file
                                       [string] [default: "aws-simple.config.js"]
-  --profile     An AWS profile name as set in the shared credentials file
-                                                                        [string]
   --stack-name  The stack name to be used instead of the default one declared in
                 the config file                                         [string]
 
@@ -498,12 +501,12 @@ Examples:
   npx aws-simple upload --stack-name stage
 ```
 
-### Start Local DEV Server
+### Start A Local DEV Server
 
 ```
 aws-simple start [options]
 
-Start local DEV server
+Start a local DEV server
 
 Options:
   --version   Show version number                                      [boolean]
@@ -533,7 +536,6 @@ Options:
   -h, --help  Show help                                                [boolean]
   --config    The path to the config file
                                       [string] [default: "aws-simple.config.js"]
-  --profile   An AWS profile name as set in the shared credentials file [string]
 
 Examples:
   npx aws-simple list
@@ -552,8 +554,6 @@ Options:
   --config      The path to the config file
                                       [string] [default: "aws-simple.config.js"]
   --tag-name    The tag name                                 [string] [required]
-  --profile     An AWS profile name as set in the shared credentials file
-                                                                        [string]
   --stack-name  The stack name to be used instead of the default one declared in
                 the config file                                         [string]
 
@@ -580,7 +580,6 @@ Options:
               regardless of its age                                      [array]
   --yes       The confirmation message will automatically be answered with Yes
                                                       [boolean] [default: false]
-  --profile   An AWS profile name as set in the shared credentials file [string]
 
 Examples:
   npx aws-simple clean-up

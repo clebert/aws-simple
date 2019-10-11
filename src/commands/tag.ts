@@ -7,14 +7,13 @@ export interface TagArgv {
   readonly _: ['tag'];
   readonly config: string;
   readonly tagName: string;
-  readonly profile?: string;
   readonly stackName?: string;
 }
 
 export async function tag(argv: TagArgv): Promise<void> {
-  const {config, profile, tagName, stackName} = argv;
+  const {config, tagName, stackName} = argv;
 
-  await addTag(Context.load(config, {profile, stackName}), tagName);
+  await addTag(Context.load(config, stackName), tagName);
 }
 
 tag.describe = (yargs: Argv) =>
@@ -27,12 +26,6 @@ tag.describe = (yargs: Argv) =>
       .describe('tag-name', 'The tag name')
       .string('tag-name')
       .demandOption('tag-name')
-
-      .describe(
-        'profile',
-        'An AWS profile name as set in the shared credentials file'
-      )
-      .string('profile')
 
       .describe(
         'stack-name',

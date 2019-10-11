@@ -5,8 +5,7 @@ import {createClientConfig} from './create-client-config';
 import {findAllStacks} from './find-all-stacks';
 
 export async function listAllStacks(context: Context): Promise<void> {
-  const clientConfig = await createClientConfig(context);
-  const cloudFormation = new CloudFormation(clientConfig);
+  const cloudFormation = new CloudFormation(await createClientConfig());
   const stacks = await findAllStacks(context, cloudFormation);
 
   if (stacks.length === 0) {

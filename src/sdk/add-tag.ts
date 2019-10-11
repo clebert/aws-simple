@@ -5,8 +5,7 @@ import {createClientConfig} from './create-client-config';
 import {findStack} from './find-stack';
 
 export async function addTag(context: Context, tagName: string): Promise<void> {
-  const clientConfig = await createClientConfig(context);
-  const cloudFormation = new CloudFormation(clientConfig);
+  const cloudFormation = new CloudFormation(await createClientConfig());
 
   const {Capabilities, Parameters, Tags = []} = await findStack(
     context,

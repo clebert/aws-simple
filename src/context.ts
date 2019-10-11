@@ -1,11 +1,6 @@
 import path from 'path';
 import {AppConfig} from '.';
 
-export interface ContextOptions {
-  readonly profile?: string;
-  readonly stackName?: string;
-}
-
 export type ExportName = 'rest-api-url' | 's3-bucket-name';
 
 export type ResourceName =
@@ -39,16 +34,12 @@ function isAppConfig(value: any): value is AppConfig {
 
   return (
     typeof value.appName === 'string' &&
-    typeof value.defaultStackName === 'string' &&
-    typeof value.region === 'string'
+    typeof value.defaultStackName === 'string'
   );
 }
 
 export class Context {
-  public static load(
-    configFilename: string,
-    options?: ContextOptions
-  ): Context {
+  public static load(configFilename: string, stackName?: string): Context {
     const absoluteConfigFilename = path.resolve(configFilename);
 
     try {
@@ -58,7 +49,7 @@ export class Context {
         throw new Error('No valid default export found.');
       }
 
-      return new Context(appConfig, options);
+      return new Context(appConfig, stackName);
     } catch (error) {
       throw new Error(
         `The specified config file cannot be loaded: ${absoluteConfigFilename}\nCause: ${error.message}`
@@ -66,24 +57,16 @@ export class Context {
     }
   }
 
-  public readonly profile: string | undefined;
-  public readonly stackName: string;
-
   public constructor(
     public readonly appConfig: AppConfig,
-    options: ContextOptions = {}
+    public readonly stackName: string = appConfig.defaultStackName
   ) {
-    const {profile, stackName = appConfig.defaultStackName} = options;
-
-    this.profile = profile;
-    this.stackName = stackName;
-
     assertName(appConfig.appName, 'app name');
     assertName(stackName, 'stack name');
   }
 
   public deriveNewContext(stackName: string): Context {
-    return new Context(this.appConfig, {profile: this.profile, stackName});
+    return new Context(this.appConfig, stackName);
   }
 
   public getOutputId(exportName: ExportName): string {

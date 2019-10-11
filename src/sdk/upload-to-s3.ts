@@ -16,7 +16,7 @@ export async function uploadToS3(context: Context): Promise<void> {
     stackName
   } = context;
 
-  const clientConfig = await createClientConfig(context);
+  const clientConfig = await createClientConfig();
   const cloudFormation = new CloudFormation(clientConfig);
   const stack = await findStack(context, cloudFormation);
   const stackOutputs = getStackOutputs(context, stack);

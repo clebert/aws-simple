@@ -13,7 +13,7 @@ export interface CreateArgv {
 
 export function create(argv: CreateArgv): void {
   const {config, stackName} = argv;
-  const context = Context.load(config, {stackName});
+  const context = Context.load(config, stackName);
   const resources = createResources(context);
   const {lambdaConfigs = [], s3Configs = []} = context.appConfig;
 

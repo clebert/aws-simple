@@ -1,30 +1,17 @@
 import {
   CloudFormation,
   CredentialProviderChain,
-  Credentials,
   EnvironmentCredentials,
   SharedIniFileCredentials
 } from 'aws-sdk';
-import {Context} from '../context';
 
-async function getCredentials(
-  profile: string | undefined
-): Promise<Credentials> {
-  const providers = [() => new SharedIniFileCredentials({profile})];
+export async function createClientConfig(): Promise<
+  CloudFormation.ClientConfiguration
+> {
+  const credentialProviderChain = new CredentialProviderChain([
+    () => new EnvironmentCredentials('AWS'), // AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+    () => new SharedIniFileCredentials()
+  ]);
 
-  if (!profile) {
-    providers.unshift(() => new EnvironmentCredentials('AWS'));
-  }
-
-  const credentialProviderChain = new CredentialProviderChain(providers);
-
-  return credentialProviderChain.resolvePromise();
-}
-
-export async function createClientConfig(
-  context: Context
-): Promise<CloudFormation.ClientConfiguration> {
-  const {region} = context.appConfig;
-
-  return {credentials: await getCredentials(context.profile), region};
+  return {credentials: await credentialProviderChain.resolvePromise()};
 }

@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import './init-aws-sdk';
+
 import 'source-map-support/register';
 
 import compose from 'compose-function';
@@ -84,7 +86,6 @@ export interface S3Config {
 export interface AppConfig {
   readonly appName: string;
   readonly defaultStackName: string;
-  readonly region: string;
   readonly customDomainConfig?: CustomDomainConfig;
   readonly binaryMediaTypes?: string[];
   readonly minimumCompressionSizeInBytes?: number;

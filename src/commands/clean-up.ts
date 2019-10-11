@@ -9,13 +9,12 @@ export interface CleanUpArgv {
   readonly maxAge: number;
   readonly preserve?: string[];
   readonly yes: boolean;
-  readonly profile?: string;
 }
 
 export async function cleanUp(argv: CleanUpArgv): Promise<void> {
-  const {config, profile, maxAge, preserve = [], yes} = argv;
+  const {config, maxAge, preserve = [], yes} = argv;
 
-  await cleanUpStacks(Context.load(config, {profile}), {
+  await cleanUpStacks(Context.load(config), {
     maxAgeInDays: maxAge,
     tagNamesToPreserve: preserve,
     autoConfirm: yes
@@ -48,12 +47,6 @@ cleanUp.describe = (yargs: Argv) =>
       )
       .boolean('yes')
       .default('yes', false)
-
-      .describe(
-        'profile',
-        'An AWS profile name as set in the shared credentials file'
-      )
-      .string('profile')
 
       .example('npx $0 clean-up', '')
       .example('npx $0 clean-up --max-age 14 --preserve release', '')

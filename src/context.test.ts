@@ -1,11 +1,7 @@
 import {Context} from './context';
 
 describe('Context', () => {
-  const context = new Context({
-    appName: 'app1',
-    defaultStackName: 'foo',
-    region: 'unknown'
-  });
+  const context = new Context({appName: 'app1', defaultStackName: 'foo'});
 
   describe('#parseStackName()', () => {
     it('returns the parsed stack name', () => {

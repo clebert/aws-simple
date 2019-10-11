@@ -75,7 +75,7 @@ export async function cleanUpStacks(
   context: Context,
   config: CleanUpAllStacksConfig
 ): Promise<void> {
-  const clientConfig = await createClientConfig(context);
+  const clientConfig = await createClientConfig();
   const cloudFormation = new CloudFormation(clientConfig);
   const stacks = await findAllStacks(context, cloudFormation);
 

@@ -49,7 +49,7 @@ export function start(argv: StartArgv): void {
 }
 
 start.describe = (yargs: Argv) =>
-  yargs.command('start [options]', 'Start local DEV server', args =>
+  yargs.command('start [options]', 'Start a local DEV server', args =>
     args
       .describe('config', 'The path to the config file')
       .string('config')

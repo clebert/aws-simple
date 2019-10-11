@@ -6,14 +6,13 @@ import {uploadToS3} from '../sdk/upload-to-s3';
 export interface UploadArgv {
   readonly _: ['upload'];
   readonly config: string;
-  readonly profile?: string;
   readonly stackName?: string;
 }
 
 export async function upload(argv: UploadArgv): Promise<void> {
-  const {config, profile, stackName} = argv;
+  const {config, stackName} = argv;
 
-  await uploadToS3(Context.load(config, {profile, stackName}));
+  await uploadToS3(Context.load(config, stackName));
 }
 
 upload.describe = (yargs: Argv) =>
@@ -22,12 +21,6 @@ upload.describe = (yargs: Argv) =>
       .describe('config', 'The path to the config file')
       .string('config')
       .default('config', defaults.configFilename)
-
-      .describe(
-        'profile',
-        'An AWS profile name as set in the shared credentials file'
-      )
-      .string('profile')
 
       .describe(
         'stack-name',
