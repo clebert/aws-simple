@@ -12,7 +12,7 @@ export function createLambdaIntegration(
   resources: Resources,
   lambdaConfig: LambdaConfig
 ): void {
-  const {stackName, resourceIds} = context;
+  const {stackName} = context;
   const {stack, restApi} = resources;
 
   const {
@@ -31,7 +31,10 @@ export function createLambdaIntegration(
     new LambdaIntegration(
       new Lambda(
         stack,
-        `${resourceIds.lambda}${path.join(publicPath, httpMethod)}`,
+        `${context.getResourceId('lambda')}${path.join(
+          publicPath,
+          httpMethod
+        )}`,
         {
           runtime: Runtime.NODEJS_10_X,
           code: Code.fromAsset(path.dirname(localPath)),

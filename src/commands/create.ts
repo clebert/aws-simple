@@ -4,7 +4,6 @@ import {createResources} from '../cdk/create-resources';
 import {createS3Integration} from '../cdk/create-s3-integration';
 import {Context} from '../context';
 import {defaults} from '../defaults';
-import {loadAppConfig} from '../utils/load-app-config';
 
 export interface CreateArgv {
   readonly _: ['create'];
@@ -13,10 +12,10 @@ export interface CreateArgv {
 }
 
 export function create(argv: CreateArgv): void {
-  const appConfig = loadAppConfig(argv.config);
-  const context = new Context(appConfig, argv.stackName);
+  const {config, stackName} = argv;
+  const context = Context.load(config, {stackName});
   const resources = createResources(context);
-  const {lambdaConfigs = [], s3Configs = []} = appConfig;
+  const {lambdaConfigs = [], s3Configs = []} = context.appConfig;
 
   for (const lambdaConfig of lambdaConfigs) {
     createLambdaIntegration(context, resources, lambdaConfig);
@@ -40,12 +39,8 @@ create.describe = (yargs: Argv) =>
       )
       .string('stack-name')
 
-      .example("cdk deploy --app '$0 create' --profile clebert", '')
-
-      .example(
-        "cdk deploy --app '$0 create --stack-name stage' --profile clebert",
-        ''
-      )
+      .example("npx cdk deploy --app 'npx $0 create'", '')
+      .example("npx cdk deploy --app 'npx $0 create --stack-name stage'", '')
   );
 
 create.matches = (argv: {_: string[]}): argv is CreateArgv =>

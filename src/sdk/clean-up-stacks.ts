@@ -73,11 +73,9 @@ async function deleteStack(
 
 export async function cleanUpStacks(
   context: Context,
-  profile: string,
   config: CleanUpAllStacksConfig
 ): Promise<void> {
-  const {appName, region} = context.appConfig;
-  const clientConfig = await createClientConfig(profile, region);
+  const clientConfig = await createClientConfig(context);
   const cloudFormation = new CloudFormation(clientConfig);
   const stacks = await findAllStacks(context, cloudFormation);
 
@@ -86,7 +84,9 @@ export async function cleanUpStacks(
   );
 
   if (expiredStacks.length === 0) {
-    console.info(`No stacks found to delete of app: ${appName}`);
+    console.info(
+      `No stacks found to delete of app: ${context.appConfig.appName}`
+    );
 
     return;
   }

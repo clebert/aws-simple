@@ -2,20 +2,18 @@ import {Argv} from 'yargs';
 import {Context} from '../context';
 import {defaults} from '../defaults';
 import {uploadToS3} from '../sdk/upload-to-s3';
-import {loadAppConfig} from '../utils/load-app-config';
 
 export interface UploadArgv {
   readonly _: ['upload'];
   readonly config: string;
-  readonly profile: string;
+  readonly profile?: string;
   readonly stackName?: string;
 }
 
 export async function upload(argv: UploadArgv): Promise<void> {
   const {config, profile, stackName} = argv;
-  const context = new Context(loadAppConfig(config), stackName);
 
-  await uploadToS3(context, profile);
+  await uploadToS3(Context.load(config, {profile, stackName}));
 }
 
 upload.describe = (yargs: Argv) =>
@@ -27,10 +25,9 @@ upload.describe = (yargs: Argv) =>
 
       .describe(
         'profile',
-        'The AWS profile name as set in the shared credentials file'
+        'An AWS profile name as set in the shared credentials file'
       )
       .string('profile')
-      .demandOption('profile')
 
       .describe(
         'stack-name',
@@ -38,8 +35,8 @@ upload.describe = (yargs: Argv) =>
       )
       .string('stack-name')
 
-      .example('$0 upload --profile clebert', '')
-      .example('$0 upload --profile clebert --stack-name stage', '')
+      .example('npx $0 upload', '')
+      .example('npx $0 upload --stack-name stage', '')
   );
 
 upload.matches = (argv: {_: string[]}): argv is UploadArgv =>

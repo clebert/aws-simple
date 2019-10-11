@@ -50,6 +50,10 @@ Install `aws-simple` and `aws-cdk` as development dependencies, e.g. with:
 yarn add --dev aws-simple aws-cdk
 ```
 
+```
+npm install --save-dev aws-simple aws-cdk
+```
+
 ### Create An AWS IAM User
 
 Create an AWS IAM user with programmatic access and the following attached
@@ -104,7 +108,7 @@ Then set up the AWS CLI profile using the access key from the AWS IAM user you
 just created:
 
 ```
-aws configure --profile clebert
+aws configure
 ```
 
 ```
@@ -119,20 +123,21 @@ created manually:
 
 ```
 cat ~/.aws/credentials
-[clebert]
+[default]
 aws_access_key_id = ********************
 aws_secret_access_key = ****************************************
 ```
 
 ```
 cat ~/.aws/config
-[profile clebert]
+[default]
 output = json
 region = eu-central-1
 ```
 
-_Note: Please replace the profile (`clebert`) and also the region
-(`eu-central-1`) if necessary._
+_Note: If no AWS CLI profile is configured, `aws-simple` will try to read the
+credentials from the following two environment variables `AWS_ACCESS_KEY_ID` and
+`AWS_SECRET_ACCESS_KEY`._
 
 ### Create A Config File
 
@@ -381,7 +386,7 @@ Before you can use the AWS CDK you must bootstrap your AWS environment to create
 the infrastructure that the AWS CDK CLI needs to deploy your AWS CDK app:
 
 ```
-yarn cdk bootstrap --app 'yarn aws-simple create' --profile clebert
+npx cdk bootstrap --app 'npx aws-simple create'
 ```
 
 _Note: This command only needs to be executed once. For more information see
@@ -392,7 +397,7 @@ _Note: This command only needs to be executed once. For more information see
 Create a stack using the CDK:
 
 ```
-yarn cdk deploy --app 'yarn aws-simple create' --profile clebert
+npx cdk deploy --app 'npx aws-simple create'
 ```
 
 _Caution: Re-deploying an already deployed stack (so a stack with the same name)
@@ -401,7 +406,7 @@ will remove all tags set with `aws-simple tag [options]`._
 Upload files to S3:
 
 ```
-yarn aws-simple upload --profile clebert
+npx aws-simple upload
 ```
 
 #### `package.json` Scripts Example
@@ -409,20 +414,20 @@ yarn aws-simple upload --profile clebert
 ```json
 {
   "scripts": {
-    "deploy": "cdk deploy --app 'yarn aws-simple create' --profile clebert",
-    "postdeploy": "aws-simple upload --profile clebert"
+    "deploy": "cdk deploy --app 'npx aws-simple create'",
+    "postdeploy": "aws-simple upload"
   }
 }
 ```
 
 _Note: In a CI pipeline the `deploy` script should be called with the additional
 argument `--require-approval never`, e.g.
-`yarn deploy --require-approval never`._
+`npm run deploy --require-approval never`._
 
 ### Start A Local DEV Server
 
 ```
-yarn aws-simple start --port 1985 --cached
+npx aws-simple start --port 1985 --cached
 ```
 
 _Note: If a bundler such as Parcel or Webpack is used, its watcher must be
@@ -467,8 +472,8 @@ Options:
                 the config file                                         [string]
 
 Examples:
-  cdk deploy --app 'aws-simple create' --profile clebert
-  cdk deploy --app 'aws-simple create --stack-name stage' --profile clebert
+  npx cdk deploy --app 'npx aws-simple create'
+  npx cdk deploy --app 'npx aws-simple create --stack-name stage'
 ```
 
 ### Upload Files To S3
@@ -483,14 +488,14 @@ Options:
   -h, --help    Show help                                              [boolean]
   --config      The path to the config file
                                       [string] [default: "aws-simple.config.js"]
-  --profile     The AWS profile name as set in the shared credentials file
-                                                             [string] [required]
+  --profile     An AWS profile name as set in the shared credentials file
+                                                                        [string]
   --stack-name  The stack name to be used instead of the default one declared in
                 the config file                                         [string]
 
 Examples:
-  aws-simple upload --profile clebert
-  aws-simple upload --profile clebert --stack-name stage
+  npx aws-simple upload
+  npx aws-simple upload --stack-name stage
 ```
 
 ### Start Local DEV Server
@@ -512,8 +517,8 @@ Options:
                                                       [boolean] [default: false]
 
 Examples:
-  aws-simple start
-  aws-simple start --port 1985 --cached
+  npx aws-simple start
+  npx aws-simple start --port 1985 --cached
 ```
 
 ### List All Deployed Stacks
@@ -528,11 +533,10 @@ Options:
   -h, --help  Show help                                                [boolean]
   --config    The path to the config file
                                       [string] [default: "aws-simple.config.js"]
-  --profile   The AWS profile name as set in the shared credentials file
-                                                             [string] [required]
+  --profile   An AWS profile name as set in the shared credentials file [string]
 
 Examples:
-  aws-simple list --profile clebert
+  npx aws-simple list
 ```
 
 ### Tag A Deployed Stack
@@ -547,15 +551,15 @@ Options:
   -h, --help    Show help                                              [boolean]
   --config      The path to the config file
                                       [string] [default: "aws-simple.config.js"]
-  --profile     The AWS profile name as set in the shared credentials file
-                                                             [string] [required]
   --tag-name    The tag name                                 [string] [required]
+  --profile     An AWS profile name as set in the shared credentials file
+                                                                        [string]
   --stack-name  The stack name to be used instead of the default one declared in
                 the config file                                         [string]
 
 Examples:
-  aws-simple tag --profile clebert --tag-name release
-  aws-simple tag --profile clebert --tag-name release --stack-name stage
+  npx aws-simple tag --tag-name release
+  npx aws-simple tag --tag-name release --stack-name stage
 ```
 
 ### Clean Up Old Deployed Stacks
@@ -570,18 +574,17 @@ Options:
   -h, --help  Show help                                                [boolean]
   --config    The path to the config file
                                       [string] [default: "aws-simple.config.js"]
-  --profile   The AWS profile name as set in the shared credentials file
-                                                             [string] [required]
   --max-age   The maximum age (in days) of a stack, all older stacks will be
               deleted                                     [number] [default: 30]
   --preserve  Optional tag names that prevent a stack from being deleted
               regardless of its age                                      [array]
   --yes       The confirmation message will automatically be answered with Yes
                                                       [boolean] [default: false]
+  --profile   An AWS profile name as set in the shared credentials file [string]
 
 Examples:
-  aws-simple clean-up --profile clebert
-  aws-simple clean-up --profile clebert --max-age 14 --preserve release
+  npx aws-simple clean-up
+  npx aws-simple clean-up --max-age 14 --preserve release
 ```
 
 ## Development

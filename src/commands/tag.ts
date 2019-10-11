@@ -2,21 +2,19 @@ import {Argv} from 'yargs';
 import {Context} from '../context';
 import {defaults} from '../defaults';
 import {addTag} from '../sdk/add-tag';
-import {loadAppConfig} from '../utils/load-app-config';
 
 export interface TagArgv {
   readonly _: ['tag'];
   readonly config: string;
-  readonly profile: string;
   readonly tagName: string;
+  readonly profile?: string;
   readonly stackName?: string;
 }
 
 export async function tag(argv: TagArgv): Promise<void> {
   const {config, profile, tagName, stackName} = argv;
-  const context = new Context(loadAppConfig(config), stackName);
 
-  await addTag(context, profile, tagName);
+  await addTag(Context.load(config, {profile, stackName}), tagName);
 }
 
 tag.describe = (yargs: Argv) =>
@@ -26,16 +24,15 @@ tag.describe = (yargs: Argv) =>
       .string('config')
       .default('config', defaults.configFilename)
 
-      .describe(
-        'profile',
-        'The AWS profile name as set in the shared credentials file'
-      )
-      .string('profile')
-      .demandOption('profile')
-
       .describe('tag-name', 'The tag name')
       .string('tag-name')
       .demandOption('tag-name')
+
+      .describe(
+        'profile',
+        'An AWS profile name as set in the shared credentials file'
+      )
+      .string('profile')
 
       .describe(
         'stack-name',
@@ -43,12 +40,8 @@ tag.describe = (yargs: Argv) =>
       )
       .string('stack-name')
 
-      .example('$0 tag --profile clebert --tag-name release', '')
-
-      .example(
-        '$0 tag --profile clebert --tag-name release --stack-name stage',
-        ''
-      )
+      .example('npx $0 tag --tag-name release', '')
+      .example('npx $0 tag --tag-name release --stack-name stage', '')
   );
 
 tag.matches = (argv: {_: string[]}): argv is TagArgv => argv._[0] === 'tag';

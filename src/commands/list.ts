@@ -2,19 +2,17 @@ import {Argv} from 'yargs';
 import {Context} from '../context';
 import {defaults} from '../defaults';
 import {listAllStacks} from '../sdk/list-all-stacks';
-import {loadAppConfig} from '../utils/load-app-config';
 
 export interface ListArgv {
   readonly _: ['list'];
   readonly config: string;
-  readonly profile: string;
+  readonly profile?: string;
 }
 
 export async function list(argv: ListArgv): Promise<void> {
   const {config, profile} = argv;
-  const context = new Context(loadAppConfig(config));
 
-  await listAllStacks(context, profile);
+  await listAllStacks(Context.load(config, {profile}));
 }
 
 list.describe = (yargs: Argv) =>
@@ -26,12 +24,11 @@ list.describe = (yargs: Argv) =>
 
       .describe(
         'profile',
-        'The AWS profile name as set in the shared credentials file'
+        'An AWS profile name as set in the shared credentials file'
       )
       .string('profile')
-      .demandOption('profile')
 
-      .example('$0 list --profile clebert', '')
+      .example('npx $0 list', '')
   );
 
 list.matches = (argv: {_: string[]}): argv is ListArgv => argv._[0] === 'list';

@@ -2,8 +2,8 @@ import {fork} from 'child_process';
 import {watch} from 'chokidar';
 import * as path from 'path';
 import {Argv} from 'yargs';
+import {Context} from '../context';
 import {defaults} from '../defaults';
-import {loadAppConfig} from '../utils/load-app-config';
 
 export interface StartArgv {
   readonly _: ['start'];
@@ -15,7 +15,7 @@ export interface StartArgv {
 
 export function start(argv: StartArgv): void {
   const {config, port, cached, verbose} = argv;
-  const {lambdaConfigs = [], s3Configs = []} = loadAppConfig(config);
+  const {lambdaConfigs = [], s3Configs = []} = Context.load(config).appConfig;
 
   const localPaths = [...lambdaConfigs, ...s3Configs].map(
     ({localPath}) => localPath
@@ -73,8 +73,8 @@ start.describe = (yargs: Argv) =>
       .boolean('verbose')
       .default('verbose', false)
 
-      .example('$0 start', '')
-      .example('$0 start --port 1985 --cached', '')
+      .example('npx $0 start', '')
+      .example('npx $0 start --port 1985 --cached', '')
   );
 
 start.matches = (argv: {_: string[]}): argv is StartArgv =>

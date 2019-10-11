@@ -5,7 +5,7 @@ import express from 'express';
 import lambdaLocal from 'lambda-local';
 import {format} from 'winston';
 import yargs from 'yargs';
-import {loadAppConfig} from '../utils/load-app-config';
+import {Context} from '../context';
 import {serveLocalLambda} from './serve-local-lambda';
 import {serveLocalS3} from './serve-local-s3';
 
@@ -51,7 +51,7 @@ function startServer(argv: unknown): void {
     minimumCompressionSizeInBytes,
     lambdaConfigs = [],
     s3Configs = []
-  } = loadAppConfig(config);
+  } = Context.load(config).appConfig;
 
   if (!verbose) {
     suppressLambdaResultLogging();

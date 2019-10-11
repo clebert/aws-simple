@@ -10,16 +10,13 @@ import {createClientConfig} from './create-client-config';
 import {findStack} from './find-stack';
 import {getStackOutputs} from './get-stack-outputs';
 
-export async function uploadToS3(
-  context: Context,
-  profile: string
-): Promise<void> {
+export async function uploadToS3(context: Context): Promise<void> {
   const {
-    appConfig: {region, customDomainConfig, s3Configs = []},
+    appConfig: {customDomainConfig, s3Configs = []},
     stackName
   } = context;
 
-  const clientConfig = await createClientConfig(profile, region);
+  const clientConfig = await createClientConfig(context);
   const cloudFormation = new CloudFormation(clientConfig);
   const stack = await findStack(context, cloudFormation);
   const stackOutputs = getStackOutputs(context, stack);

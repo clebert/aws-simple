@@ -4,13 +4,8 @@ import {Context} from '../context';
 import {createClientConfig} from './create-client-config';
 import {findStack} from './find-stack';
 
-export async function addTag(
-  context: Context,
-  profile: string,
-  tagName: string
-): Promise<void> {
-  const {appConfig, resourceIds} = context;
-  const clientConfig = await createClientConfig(profile, appConfig.region);
+export async function addTag(context: Context, tagName: string): Promise<void> {
+  const clientConfig = await createClientConfig(context);
   const cloudFormation = new CloudFormation(clientConfig);
 
   const {Capabilities, Parameters, Tags = []} = await findStack(
@@ -20,7 +15,7 @@ export async function addTag(
 
   await cloudFormation
     .updateStack({
-      StackName: resourceIds.stack,
+      StackName: context.getResourceId('stack'),
       UsePreviousTemplate: true,
       Capabilities,
       Parameters,
@@ -36,7 +31,7 @@ export async function addTag(
           try {
             await cloudFormation
               .waitFor('stackUpdateComplete', {
-                StackName: resourceIds.stack,
+                StackName: context.getResourceId('stack'),
                 $waiter: {delay: 5, maxAttempts: 60}
               })
               .promise();

@@ -1,23 +1,25 @@
+import path from 'path';
 import {AppConfig} from '.';
 
-export interface OutputIds {
-  readonly restApiUrl: string;
-  readonly s3BucketName: string;
+export interface ContextOptions {
+  readonly profile?: string;
+  readonly stackName?: string;
 }
 
-export interface ResourceIds {
-  readonly aRecord: string;
-  readonly certificate: string;
-  readonly lambda: string;
-  readonly restApi: string;
-  readonly restApiUrlOutput: string;
-  readonly s3Bucket: string;
-  readonly s3BucketNameOutput: string;
-  readonly s3IntegrationPolicy: string;
-  readonly s3IntegrationRole: string;
-  readonly stack: string;
-  readonly zone: string;
-}
+export type ExportName = 'rest-api-url' | 's3-bucket-name';
+
+export type ResourceName =
+  | 'a-record'
+  | 'certificate'
+  | 'lambda'
+  | 'rest-api'
+  | 'rest-api-url-output'
+  | 's3-bucket'
+  | 's3-bucket-name-output'
+  | 's3-integration-policy'
+  | 's3-integration-role'
+  | 'stack'
+  | 'zone';
 
 function assertName(value: string, valueName: string): void {
   const regExp = /^[a-z0-9-]+$/;
@@ -29,44 +31,74 @@ function assertName(value: string, valueName: string): void {
   }
 }
 
+// tslint:disable-next-line: no-any
+function isAppConfig(value: any): value is AppConfig {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  return (
+    typeof value.appName === 'string' &&
+    typeof value.defaultStackName === 'string' &&
+    typeof value.region === 'string'
+  );
+}
+
 export class Context {
-  public readonly outputIds: OutputIds;
-  public readonly resourceIds: ResourceIds;
+  public static load(
+    configFilename: string,
+    options?: ContextOptions
+  ): Context {
+    const absoluteConfigFilename = path.resolve(configFilename);
+
+    try {
+      const appConfig = require(absoluteConfigFilename).default;
+
+      if (!isAppConfig(appConfig)) {
+        throw new Error('No valid default export found.');
+      }
+
+      return new Context(appConfig, options);
+    } catch (error) {
+      throw new Error(
+        `The specified config file cannot be loaded: ${absoluteConfigFilename}\nCause: ${error.message}`
+      );
+    }
+  }
+
+  public readonly profile: string | undefined;
+  public readonly stackName: string;
 
   public constructor(
     public readonly appConfig: AppConfig,
-    public readonly stackName: string = appConfig.defaultStackName
+    options: ContextOptions = {}
   ) {
+    const {profile, stackName = appConfig.defaultStackName} = options;
+
+    this.profile = profile;
+    this.stackName = stackName;
+
     assertName(appConfig.appName, 'app name');
     assertName(stackName, 'stack name');
-
-    this.outputIds = {
-      restApiUrl: this.createOutputId('rest-api-url'),
-      s3BucketName: this.createOutputId('s3-bucket-name')
-    };
-
-    this.resourceIds = {
-      aRecord: this.createResourceId('a-record'),
-      certificate: this.createResourceId('certificate'),
-      lambda: this.createResourceId('lambda'),
-      restApi: this.createResourceId('rest-api'),
-      restApiUrlOutput: this.createResourceId('rest-api-url-output'),
-      s3Bucket: this.createResourceId('s3-bucket'),
-      s3BucketNameOutput: this.createResourceId('s3-bucket-name-output'),
-      s3IntegrationPolicy: this.createResourceId('s3-integration-policy'),
-      s3IntegrationRole: this.createResourceId('s3-integration-role'),
-      stack: this.createResourceId('stack'),
-      zone: this.createResourceId('zone')
-    };
   }
 
   public deriveNewContext(stackName: string): Context {
-    return new Context(this.appConfig, stackName);
+    return new Context(this.appConfig, {profile: this.profile, stackName});
+  }
+
+  public getOutputId(exportName: ExportName): string {
+    return `${this.appConfig.appName}-${this.stackName}-output-${exportName}`;
+  }
+
+  public getResourceId(resourceName: ResourceName): string {
+    return `${this.appConfig.appName}-${this.stackName}-resource-${resourceName}`;
   }
 
   public parseStackName(id: string): string {
-    const {appName} = this.appConfig;
-    const regExp = new RegExp(`^${appName}-(.*)-(?:output|resource)-.+`);
+    const regExp = new RegExp(
+      `^${this.appConfig.appName}-(.*)-(?:output|resource)-.+`
+    );
+
     const result = regExp.exec(id);
 
     if (!result) {
@@ -74,17 +106,5 @@ export class Context {
     }
 
     return result[1];
-  }
-
-  private createOutputId(exportName: string): string {
-    const {appName} = this.appConfig;
-
-    return `${appName}-${this.stackName}-output-${exportName}`;
-  }
-
-  private createResourceId(resourceName: string): string {
-    const {appName} = this.appConfig;
-
-    return `${appName}-${this.stackName}-resource-${resourceName}`;
   }
 }

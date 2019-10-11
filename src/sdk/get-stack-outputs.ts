@@ -27,10 +27,8 @@ export function getStackOutputs(
   context: Context,
   stack: CloudFormation.Stack
 ): StackOutputs {
-  const {outputIds} = context;
-
   return {
-    restApiUrl: getStackOutput(stack, outputIds.restApiUrl),
-    s3BucketName: getStackOutput(stack, outputIds.s3BucketName)
+    restApiUrl: getStackOutput(stack, context.getOutputId('rest-api-url')),
+    s3BucketName: getStackOutput(stack, context.getOutputId('s3-bucket-name'))
   };
 }

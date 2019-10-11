@@ -33,8 +33,7 @@ function createDomainNameOptions(
 ): DomainNameOptions | undefined {
   const {
     appConfig: {customDomainConfig},
-    stackName,
-    resourceIds
+    stackName
   } = context;
 
   if (!customDomainConfig) {
@@ -53,7 +52,7 @@ function createDomainNameOptions(
       : hostedZoneName,
     certificate: Certificate.fromCertificateArn(
       stack,
-      resourceIds.certificate,
+      context.getResourceId('certificate'),
       certificateArn
     )
   };
@@ -127,8 +126,7 @@ function createRestApiProps(context: Context, stack: Stack): RestApiProps {
 function createARecord(context: Context, stack: Stack, restApi: RestApi): void {
   const {
     appConfig: {customDomainConfig},
-    stackName,
-    resourceIds
+    stackName
   } = context;
 
   if (!customDomainConfig) {
@@ -137,11 +135,12 @@ function createARecord(context: Context, stack: Stack, restApi: RestApi): void {
 
   const {hostedZoneId, hostedZoneName, getAliasRecordName} = customDomainConfig;
 
-  const aRecord = new ARecord(stack, resourceIds.aRecord, {
-    zone: HostedZone.fromHostedZoneAttributes(stack, resourceIds.zone, {
-      hostedZoneId,
-      zoneName: hostedZoneName
-    }),
+  const aRecord = new ARecord(stack, context.getResourceId('a-record'), {
+    zone: HostedZone.fromHostedZoneAttributes(
+      stack,
+      context.getResourceId('zone'),
+      {hostedZoneId, zoneName: hostedZoneName}
+    ),
     recordName: getAliasRecordName && getAliasRecordName(stackName),
     target: RecordTarget.fromAlias(new ApiGateway(restApi))
   });
@@ -150,43 +149,48 @@ function createARecord(context: Context, stack: Stack, restApi: RestApi): void {
 }
 
 export function createResources(context: Context): Resources {
-  const {outputIds, resourceIds} = context;
-  const stack = new Stack(new App(), resourceIds.stack);
+  const stack = new Stack(new App(), context.getResourceId('stack'));
 
   const restApi = new RestApi(
     stack,
-    resourceIds.restApi,
+    context.getResourceId('rest-api'),
     createRestApiProps(context, stack)
   );
 
-  const restApiUrlOutput = new CfnOutput(stack, resourceIds.restApiUrlOutput, {
-    value: restApi.url,
-    exportName: outputIds.restApiUrl
-  });
+  const restApiUrlOutput = new CfnOutput(
+    stack,
+    context.getResourceId('rest-api-url-output'),
+    {value: restApi.url, exportName: context.getOutputId('rest-api-url')}
+  );
 
   restApiUrlOutput.node.addDependency(restApi);
 
   createARecord(context, stack, restApi);
 
-  const s3Bucket = new Bucket(stack, resourceIds.s3Bucket, {
+  const s3Bucket = new Bucket(stack, context.getResourceId('s3-bucket'), {
     publicReadAccess: false
   });
 
   const s3BucketNameOutput = new CfnOutput(
     stack,
-    resourceIds.s3BucketNameOutput,
-    {value: s3Bucket.bucketName, exportName: outputIds.s3BucketName}
+    context.getResourceId('s3-bucket-name-output'),
+    {
+      value: s3Bucket.bucketName,
+      exportName: context.getOutputId('s3-bucket-name')
+    }
   );
 
   s3BucketNameOutput.node.addDependency(s3Bucket);
 
-  const s3IntegrationRole = new Role(stack, resourceIds.s3IntegrationRole, {
-    assumedBy: new ServicePrincipal('apigateway.amazonaws.com')
-  });
+  const s3IntegrationRole = new Role(
+    stack,
+    context.getResourceId('s3-integration-role'),
+    {assumedBy: new ServicePrincipal('apigateway.amazonaws.com')}
+  );
 
   const s3IntegrationPolicy = new Policy(
     stack,
-    resourceIds.s3IntegrationPolicy,
+    context.getResourceId('s3-integration-policy'),
     {
       statements: [new PolicyStatement({actions: ['s3:*'], resources: ['*']})],
       roles: [s3IntegrationRole]

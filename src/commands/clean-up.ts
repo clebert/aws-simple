@@ -2,22 +2,20 @@ import {Argv} from 'yargs';
 import {Context} from '../context';
 import {defaults} from '../defaults';
 import {cleanUpStacks} from '../sdk/clean-up-stacks';
-import {loadAppConfig} from '../utils/load-app-config';
 
 export interface CleanUpArgv {
   readonly _: ['clean-up'];
   readonly config: string;
-  readonly profile: string;
   readonly maxAge: number;
   readonly preserve?: string[];
   readonly yes: boolean;
+  readonly profile?: string;
 }
 
 export async function cleanUp(argv: CleanUpArgv): Promise<void> {
   const {config, profile, maxAge, preserve = [], yes} = argv;
-  const context = new Context(loadAppConfig(config));
 
-  await cleanUpStacks(context, profile, {
+  await cleanUpStacks(Context.load(config, {profile}), {
     maxAgeInDays: maxAge,
     tagNamesToPreserve: preserve,
     autoConfirm: yes
@@ -30,13 +28,6 @@ cleanUp.describe = (yargs: Argv) =>
       .describe('config', 'The path to the config file')
       .string('config')
       .default('config', defaults.configFilename)
-
-      .describe(
-        'profile',
-        'The AWS profile name as set in the shared credentials file'
-      )
-      .string('profile')
-      .demandOption('profile')
 
       .describe(
         'max-age',
@@ -58,12 +49,14 @@ cleanUp.describe = (yargs: Argv) =>
       .boolean('yes')
       .default('yes', false)
 
-      .example('$0 clean-up --profile clebert', '')
-
-      .example(
-        '$0 clean-up --profile clebert --max-age 14 --preserve release',
-        ''
+      .describe(
+        'profile',
+        'An AWS profile name as set in the shared credentials file'
       )
+      .string('profile')
+
+      .example('npx $0 clean-up', '')
+      .example('npx $0 clean-up --max-age 14 --preserve release', '')
   );
 
 cleanUp.matches = (argv: {_: string[]}): argv is CleanUpArgv =>

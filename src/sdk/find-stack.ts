@@ -5,16 +5,14 @@ export async function findStack(
   context: Context,
   cloudFormation: CloudFormation
 ): Promise<CloudFormation.Stack> {
-  const {resourceIds} = context;
-
   const result = await cloudFormation
-    .describeStacks({StackName: resourceIds.stack})
+    .describeStacks({StackName: context.getResourceId('stack')})
     .promise();
 
   const stack = result.Stacks && result.Stacks[0];
 
   if (!stack) {
-    throw new Error(`Stack not found: ${resourceIds.stack}`);
+    throw new Error(`Stack not found: ${context.getResourceId('stack')}`);
   }
 
   return stack;
