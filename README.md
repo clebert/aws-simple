@@ -190,15 +190,16 @@ with most `aws-simple` CLI commands using the `--stack-name` CLI option._
 
 ### Bootstrap Your AWS Environment
 
-Before you can use the AWS CDK you must bootstrap your AWS environment to create
-the infrastructure that the AWS CDK CLI needs to deploy your AWS CDK app:
+Before you can use the AWS CDK you must
+[bootstrap your AWS environment](https://docs.aws.amazon.com/cdk/latest/guide/tools.html)
+to create the infrastructure that the AWS CDK CLI needs to deploy your AWS CDK
+app:
 
 ```
 npx cdk bootstrap --app 'npx aws-simple create'
 ```
 
-_Note: This command only needs to be executed once. For more information see
-[here](https://docs.aws.amazon.com/cdk/latest/guide/tools.html)._
+_Note: This command only needs to be executed once._
 
 ### Start A Local DEV Server
 
@@ -264,9 +265,9 @@ exports.default = {
 ### Example Configuration Of A Custom Domain
 
 In order to use a custom domain,
-[a certificate](https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html)
+[a public certificate](https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html)
 and
-[a hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/CreatingHostedZone.html)
+[a public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/CreatingHostedZone.html)
 must be created manually. You can then configure the custom domain as follows:
 
 ```js
