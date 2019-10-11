@@ -1,6 +1,6 @@
 # aws-simple
 
-![][ci-badge]
+![](https://github.com/clebert/aws-simple/workflows/CI/badge.svg)
 
 A Node.js interface for **AWS** that allows easy configuration and deployment of
 **simple** web apps.
@@ -23,7 +23,8 @@ started to emulate the resulting AWS infrastructure.
 
 ### aws-simple-example
 
-For a quick impression, an [example app][aws-simple-example] is available that
+For a quick impression, an
+[example app](https://github.com/clebert/aws-simple-example) is available that
 consists essentially of a React component that retrieves text from a Lambda
 function using a `React.useEffect` hook and displays it. Parcel is used for
 bundling and TypeScript as language.
@@ -36,7 +37,7 @@ abstraction for the AWS CDK/SDK for a faster and easier setup.
 
 Since existing backend/CMS systems are used, an additional persistence layer is
 rarely required. Therefore, setting up such a layer (e.g. with Amazon DynamoDB)
-is [currently not supported][dynamo-db-issue].
+is [currently not supported](https://github.com/clebert/aws-simple/issues/12).
 
 I deliberately kept it simple. An app with a more complex setup should be set up
 manually with the AWS CDK/SDK.
@@ -57,8 +58,9 @@ npm install --save-dev aws-simple aws-cdk
 
 ### Create An AWS IAM User
 
-You need to create an AWS IAM user with programmatic access and the following
-attached policy:
+You need to
+[create an AWS IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html)
+with programmatic access and the following attached policy:
 
 ```json
 {
@@ -162,7 +164,7 @@ overwritten by setting the environment variable `AWS_CONFIG_FILE`.
 
 To use the `aws-simple` CLI you have to create a top-level node module config
 file named `aws-simple.config.js` which exports an object compatible to the
-[`AppConfig` interface][app-config-interface].
+[`AppConfig` interface](https://github.com/clebert/aws-simple/blob/master/src/index.ts#L86).
 
 For example, the following app config describes a simple app consisting of a
 single static HTML file:
@@ -196,7 +198,7 @@ npx cdk bootstrap --app 'npx aws-simple create'
 ```
 
 _Note: This command only needs to be executed once. For more information see
-[here][cdk-guide]._
+[here](https://docs.aws.amazon.com/cdk/latest/guide/tools.html)._
 
 ### Start A Local DEV Server
 
@@ -261,8 +263,11 @@ exports.default = {
 
 ### Example Configuration Of A Custom Domain
 
-In order to use a custom domain, a certificate and a hosted zone must be created
-manually. You can then configure the custom domain as follows:
+In order to use a custom domain,
+[a certificate](https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html)
+and
+[a hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/CreatingHostedZone.html)
+must be created manually. You can then configure the custom domain as follows:
 
 ```js
 exports.default = {
@@ -609,13 +614,5 @@ via the GitHub UI. This triggers the final publication to npm.
 
 ---
 
-Copyright (c) 2019, Clemens Akens. Released under the terms of the [MIT
-License][license].
-
-[app-config-interface]:
-  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L86
-[aws-simple-example]: https://github.com/clebert/aws-simple-example
-[cdk-guide]: https://docs.aws.amazon.com/cdk/latest/guide/tools.html
-[ci-badge]: https://github.com/clebert/aws-simple/workflows/CI/badge.svg
-[dynamo-db-issue]: https://github.com/clebert/aws-simple/issues/12
-[license]: https://github.com/clebert/aws-simple/blob/master/LICENSE
+Copyright (c) 2019, Clemens Akens. Released under the terms of the
+[MIT License](https://github.com/clebert/aws-simple/blob/master/LICENSE).
