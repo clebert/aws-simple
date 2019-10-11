@@ -64,7 +64,7 @@ function startServer(argv: unknown): void {
   }
 
   for (const lambdaConfig of lambdaConfigs) {
-    serveLocalLambda(app, lambdaConfig, Boolean(cached));
+    serveLocalLambda(app, port, lambdaConfig, Boolean(cached));
   }
 
   for (const s3Config of s3Configs) {

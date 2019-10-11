@@ -12,7 +12,7 @@ export function createLambdaIntegration(
   resources: Resources,
   lambdaConfig: LambdaConfig
 ): void {
-  const {resourceIds} = context;
+  const {stackName, resourceIds} = context;
   const {stack, restApi} = resources;
 
   const {
@@ -22,8 +22,8 @@ export function createLambdaIntegration(
     handler = defaults.lambdaHandler,
     memorySize = defaults.lambdaMemorySize,
     timeoutInSeconds = defaults.lambdaTimeoutInSeconds,
-    environment,
-    acceptedParameters = {}
+    acceptedParameters = {},
+    getEnvironment
   } = lambdaConfig;
 
   restApi.root.resourceForPath(publicPath).addMethod(
@@ -41,7 +41,8 @@ export function createLambdaIntegration(
           )}.${handler}`,
           timeout: Duration.seconds(timeoutInSeconds),
           memorySize,
-          environment
+          environment:
+            getEnvironment && getEnvironment({type: 'aws', stackName})
         }
       ),
       {

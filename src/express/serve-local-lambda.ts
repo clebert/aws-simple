@@ -54,6 +54,7 @@ function getRouterMatcher(
 }
 
 function createLambdaRequestHandler(
+  port: number,
   lambdaConfig: LambdaConfig,
   useCache: boolean
 ): express.RequestHandler {
@@ -63,7 +64,7 @@ function createLambdaRequestHandler(
     localPath,
     handler = defaults.lambdaHandler,
     timeoutInSeconds = defaults.lambdaTimeoutInSeconds,
-    environment
+    getEnvironment
   } = lambdaConfig;
 
   return async (req, res) => {
@@ -74,7 +75,7 @@ function createLambdaRequestHandler(
           lambdaPath: localPath,
           lambdaHandler: handler,
           timeoutMs: timeoutInSeconds * 1000,
-          environment,
+          environment: getEnvironment && getEnvironment({type: 'dev', port}),
           event: {
             ...getHeadersFromRequest(req),
             path: req.path,
@@ -103,6 +104,7 @@ function createLambdaRequestHandler(
 
 export function serveLocalLambda(
   app: express.Express,
+  port: number,
   lambdaConfig: LambdaConfig,
   useCache: boolean
 ): void {
@@ -110,6 +112,6 @@ export function serveLocalLambda(
 
   getRouterMatcher(app, httpMethod)(
     publicPath,
-    createLambdaRequestHandler(lambdaConfig, useCache)
+    createLambdaRequestHandler(port, lambdaConfig, useCache)
   );
 }

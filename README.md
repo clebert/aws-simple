@@ -217,9 +217,10 @@ exports.default = {
       httpMethod: 'GET',
       publicPath: '/endpoint',
       localPath: 'path/to/lambda.js',
+
+      // Optional example properties
       memorySize: 3008,
       timeoutInSeconds: 30,
-      environment: {KEY: 'value'},
       cachingEnabled: true,
       cacheTtlInSeconds: 600,
       acceptedParameters: {
@@ -227,7 +228,13 @@ exports.default = {
         bar: {isCacheKey: true},
         baz: {required: true},
         qux: {isCacheKey: true, required: true}
-      }
+      },
+      getEnvironment: runtime => ({
+        BASE_URL:
+          runtime.type === 'dev'
+            ? `http://localhost:${runtime.port}`
+            : `https://${runtime.stackName}.example.com`
+      })
     }
   ]
 };

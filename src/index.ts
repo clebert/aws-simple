@@ -35,6 +35,26 @@ export interface LambdaParameterOptions {
   readonly required?: boolean;
 }
 
+export interface LambdaAcceptedParameters {
+  readonly [parameterName: string]: LambdaParameterOptions;
+}
+
+export interface LambdaAwsRuntime {
+  readonly type: 'aws';
+  readonly stackName: string;
+}
+
+export interface LambdaDevRuntime {
+  readonly type: 'dev';
+  readonly port: number;
+}
+
+export type LambdaRuntime = LambdaAwsRuntime | LambdaDevRuntime;
+
+export interface LambdaEnvironment {
+  readonly [variableName: string]: string;
+}
+
 export interface LambdaConfig {
   readonly httpMethod: LambdaHttpMethod;
   readonly publicPath: string;
@@ -42,13 +62,10 @@ export interface LambdaConfig {
   readonly handler?: string;
   readonly memorySize?: number;
   readonly timeoutInSeconds?: number;
-  readonly environment?: {readonly [key: string]: string};
   readonly cachingEnabled?: boolean;
   readonly cacheTtlInSeconds?: number;
-
-  readonly acceptedParameters?: {
-    readonly [parameterName: string]: LambdaParameterOptions;
-  };
+  readonly acceptedParameters?: LambdaAcceptedParameters;
+  readonly getEnvironment?: (runtime: LambdaRuntime) => LambdaEnvironment;
 }
 
 export interface S3ResponseHeaders {
