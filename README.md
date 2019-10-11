@@ -554,8 +554,8 @@ Options:
                 the config file                                         [string]
 
 Examples:
-  aws-simple tag --profile clebert --tag-name released
-  aws-simple tag --profile clebert --tag-name released --stack-name stage
+  aws-simple tag --profile clebert --tag-name release
+  aws-simple tag --profile clebert --tag-name release --stack-name stage
 ```
 
 ### Clean Up Old Deployed Stacks
@@ -581,8 +581,7 @@ Options:
 
 Examples:
   aws-simple clean-up --profile clebert
-  aws-simple clean-up --profile clebert --max-age 14 --preserve released
-  aws-simple clean-up --profile clebert --preserve released protected
+  aws-simple clean-up --profile clebert --max-age 14 --preserve release
 ```
 
 ## Development

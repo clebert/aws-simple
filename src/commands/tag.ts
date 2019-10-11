@@ -43,10 +43,10 @@ tag.describe = (yargs: Argv) =>
       )
       .string('stack-name')
 
-      .example('$0 tag --profile clebert --tag-name released', '')
+      .example('$0 tag --profile clebert --tag-name release', '')
 
       .example(
-        '$0 tag --profile clebert --tag-name released --stack-name stage',
+        '$0 tag --profile clebert --tag-name release --stack-name stage',
         ''
       )
   );

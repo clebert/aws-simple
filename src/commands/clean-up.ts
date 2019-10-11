@@ -61,12 +61,7 @@ cleanUp.describe = (yargs: Argv) =>
       .example('$0 clean-up --profile clebert', '')
 
       .example(
-        '$0 clean-up --profile clebert --max-age 14 --preserve released',
-        ''
-      )
-
-      .example(
-        '$0 clean-up --profile clebert --preserve released protected',
+        '$0 clean-up --profile clebert --max-age 14 --preserve release',
         ''
       )
   );
