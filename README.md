@@ -10,6 +10,7 @@ A Node.js interface for **AWS** that allows easy configuration and deployment of
 - [Quick Overview](https://github.com/clebert/aws-simple#quick-overview)
 - [Motivation](https://github.com/clebert/aws-simple#motivation)
 - [Getting Started](https://github.com/clebert/aws-simple#getting-started)
+- [Configuration](https://github.com/clebert/aws-simple#configuration)
 - [CLI Usage](https://github.com/clebert/aws-simple#cli-usage)
 - [Development](https://github.com/clebert/aws-simple#development)
 
@@ -42,7 +43,7 @@ manually with the AWS CDK/SDK.
 
 ## Getting Started
 
-### Install
+### Install Dependencies
 
 You need to install `aws-simple` and `aws-cdk` as dependencies, e.g. with:
 
@@ -183,10 +184,65 @@ exports.default = {
 
 _Note: Different stack names allow multiple stacks of the same app to be
 deployed simultaneously. The specified default stack name can be overwritten
-with most `aws-simple <command> [options]` CLI commands using the `--stack-name`
-CLI option._
+with most `aws-simple` CLI commands using the `--stack-name` CLI option._
 
-#### Use TypeScript For Auto-Completion Support
+### Bootstrap Your AWS Environment
+
+Before you can use the AWS CDK you must bootstrap your AWS environment to create
+the infrastructure that the AWS CDK CLI needs to deploy your AWS CDK app:
+
+```
+npx cdk bootstrap --app 'npx aws-simple create'
+```
+
+_Note: This command only needs to be executed once. For more information see
+[here][cdk-guide]._
+
+### Start A Local DEV Server
+
+```
+npx aws-simple start --port 1985 --cached
+```
+
+_Note: When changing the `aws-simple` config file, the DEV server must be
+restarted. If a bundler such as Parcel or Webpack is used, its watcher must be
+started in addition to the DEV server._
+
+### Deploy A Stack To AWS
+
+Create a stack using the CDK:
+
+```
+npx cdk deploy --app 'npx aws-simple create'
+```
+
+**Caution:** Re-deploying an already deployed stack (so a stack with the same
+name) will remove all tags set with `aws-simple tag [options]`.
+
+Upload files to S3:
+
+```
+npx aws-simple upload
+```
+
+Example `package.json` scripts:
+
+```json
+{
+  "scripts": {
+    "deploy": "cdk deploy --app 'npx aws-simple create'",
+    "postdeploy": "aws-simple upload"
+  }
+}
+```
+
+_Note: In a CI pipeline the `deploy` script should be called with the additional
+argument `--require-approval never`, e.g.
+`npm run deploy --require-approval never`._
+
+## Configuration
+
+### Use TypeScript For Auto-Completion Support
 
 TypeScript 2.3 and later support type-checking in `*.js` files by adding a
 `// @ts-check` comment to them:
@@ -203,7 +259,7 @@ exports.default = {
 };
 ```
 
-#### Example Configuration Of A Custom Domain
+### Example Configuration Of A Custom Domain
 
 In order to use a custom domain, a certificate and a hosted zone must be created
 manually. You can then configure the custom domain as follows:
@@ -225,7 +281,7 @@ _Note: Different stack names allow multiple stacks of the same app to be
 deployed simultaneously. In this case the optional `getAliasRecordName` function
 is used to give each stack its own URL, for example `mystack.example.com`._
 
-#### Example Configuration Of A Lambda Function
+### Example Configuration Of A Lambda Function
 
 You can configure a Lambda function that can be accessed via GET request at the
 URL `mystack.example.com/endpoint` as follows:
@@ -295,7 +351,7 @@ module, it must be bundled with a bundler such as Webpack (in this case you have
 to set the target to node: `{target: 'node'}`) to create a single node module
 bundle._
 
-#### Example Configuration Of An S3 File
+### Example Configuration Of An S3 File
 
 You can configure an S3 file that can be accessed via GET request at the URL
 `mystack.example.com/` as follows:
@@ -319,7 +375,7 @@ associated with the stack using the `aws-simple upload [options]` CLI command.
 The optionally specified bucket path or, if not specified, the public path is
 used as the S3 object key._
 
-#### Example Configuration Of An S3 Folder
+### Example Configuration Of An S3 Folder
 
 You can configure an S3 folder whose contained files can be accessed via GET
 request at the URL `mystack.example.com/assets/*` as follows:
@@ -346,7 +402,7 @@ loaded into the S3 bucket associated with the stack using the
 `aws-simple upload [options]` command. Nested folders are ignored! Thus a
 separate S3 Config must be created for each nested folder._
 
-#### Dynamically Set Config Properties
+### Dynamically Set Config Properties
 
 Since the config file is a node module, individual properties can also be set
 dynamically. For example, you can set the default stack name based on the
@@ -363,7 +419,7 @@ exports.default = {
 };
 ```
 
-#### Enable Binary Support
+### Enable Binary Support
 
 You can specify media types (e.g. `image/png`, `application/octet-stream`, etc.)
 to be treated as binary as follows:
@@ -375,7 +431,7 @@ exports.default = {
 };
 ```
 
-#### Enable Payload Compression
+### Enable Payload Compression
 
 You can enable compression for an API as follows:
 
@@ -385,60 +441,6 @@ exports.default = {
   minimumCompressionSizeInBytes: 1000
 };
 ```
-
-### Bootstrap Your AWS Environment
-
-Before you can use the AWS CDK you must bootstrap your AWS environment to create
-the infrastructure that the AWS CDK CLI needs to deploy your AWS CDK app:
-
-```
-npx cdk bootstrap --app 'npx aws-simple create'
-```
-
-_Note: This command only needs to be executed once. For more information see
-[here][cdk-guide]._
-
-### Deploy A Stack To AWS
-
-Create a stack using the CDK:
-
-```
-npx cdk deploy --app 'npx aws-simple create'
-```
-
-**Caution:** Re-deploying an already deployed stack (so a stack with the same
-name) will remove all tags set with `aws-simple tag [options]`.
-
-Upload files to S3:
-
-```
-npx aws-simple upload
-```
-
-#### `package.json` Scripts Example
-
-```json
-{
-  "scripts": {
-    "deploy": "cdk deploy --app 'npx aws-simple create'",
-    "postdeploy": "aws-simple upload"
-  }
-}
-```
-
-_Note: In a CI pipeline the `deploy` script should be called with the additional
-argument `--require-approval never`, e.g.
-`npm run deploy --require-approval never`._
-
-### Start A Local DEV Server
-
-```
-npx aws-simple start --port 1985 --cached
-```
-
-_Note: When changing the `aws-simple` config file, the DEV server must be
-restarted. If a bundler such as Parcel or Webpack is used, its watcher must be
-started in addition to the DEV server._
 
 ## CLI Usage
 
@@ -611,7 +613,7 @@ Copyright (c) 2019, Clemens Akens. Released under the terms of the [MIT
 License][license].
 
 [app-config-interface]:
-  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L67
+  https://github.com/clebert/aws-simple/blob/master/src/index.ts#L86
 [aws-simple-example]: https://github.com/clebert/aws-simple-example
 [cdk-guide]: https://docs.aws.amazon.com/cdk/latest/guide/tools.html
 [ci-badge]: https://github.com/clebert/aws-simple/workflows/CI/badge.svg
