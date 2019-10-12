@@ -43,7 +43,7 @@ export async function start(argv: StartArgv): Promise<void> {
   let serverProcess = startServer();
 
   watch(localPaths).on('change', () => {
-    console.info(`Restarting DEV server...`);
+    console.info(new Date().toLocaleTimeString(), 'Restarting DEV server...');
 
     serverProcess.kill();
 
