@@ -529,14 +529,14 @@ Options:
                                       [string] [default: "aws-simple.config.js"]
   --port      The port to listen on if available, otherwise listen on a random
               port                                      [number] [default: 3000]
-  --cached    Enable caching of successful Lambda function results per request
-              URL                                     [boolean] [default: false]
+  --cache     Enable caching of successful caching-enabled Lambda function
+              results per request URL                 [boolean] [default: false]
   --verbose   Enable logging of successful Lambda function results
                                                       [boolean] [default: false]
 
 Examples:
   npx aws-simple start
-  npx aws-simple start --port 3001 --cached
+  npx aws-simple start --port 3001 --cache
 ```
 
 ### List All Deployed Stacks

@@ -64,6 +64,7 @@ function createLambdaRequestHandler(
     localPath,
     handler = defaults.lambdaHandler,
     timeoutInSeconds = defaults.lambdaTimeoutInSeconds,
+    cachingEnabled,
     getEnvironment
   } = lambdaConfig;
 
@@ -85,7 +86,7 @@ function createLambdaRequestHandler(
 
       const {headers, statusCode, body} = result;
 
-      if (useCache && statusCode === 200) {
+      if (useCache && cachingEnabled && statusCode === 200) {
         cachedResults.set(req.url, result);
       }
 

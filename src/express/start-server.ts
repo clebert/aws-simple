@@ -12,7 +12,7 @@ import {serveLocalS3} from './serve-local-s3';
 interface Argv {
   readonly config: string;
   readonly port: number;
-  readonly cached?: boolean;
+  readonly cache?: boolean;
   readonly verbose?: boolean;
 }
 
@@ -45,7 +45,7 @@ function startServer(argv: unknown): void {
     throw new Error('Illegal arguments received.');
   }
 
-  const {config, port, cached, verbose} = argv;
+  const {config, port, cache, verbose} = argv;
 
   const {
     minimumCompressionSizeInBytes,
@@ -64,7 +64,7 @@ function startServer(argv: unknown): void {
   }
 
   for (const lambdaConfig of lambdaConfigs) {
-    serveLocalLambda(app, port, lambdaConfig, Boolean(cached));
+    serveLocalLambda(app, port, lambdaConfig, Boolean(cache));
   }
 
   for (const s3Config of s3Configs) {
@@ -83,6 +83,6 @@ startServer(
     .demandOption('config')
     .number('port')
     .demandOption('port')
-    .boolean('cached')
+    .boolean('cache')
     .boolean('verbose').argv
 );

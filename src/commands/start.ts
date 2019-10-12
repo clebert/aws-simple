@@ -10,12 +10,12 @@ export interface StartArgv {
   readonly _: ['start'];
   readonly config: string;
   readonly port: number;
-  readonly cached: boolean;
+  readonly cache: boolean;
   readonly verbose: boolean;
 }
 
 export async function start(argv: StartArgv): Promise<void> {
-  const {config, port, cached, verbose} = argv;
+  const {config, port, cache, verbose} = argv;
   const {lambdaConfigs = [], s3Configs = []} = Context.load(config).appConfig;
 
   const localPaths = [...lambdaConfigs, ...s3Configs].map(
@@ -27,8 +27,8 @@ export async function start(argv: StartArgv): Promise<void> {
   const startServer = () => {
     const args = ['--config', config, '--port', String(availablePort)];
 
-    if (cached) {
-      args.push('--cached');
+    if (cache) {
+      args.push('--cache');
     }
 
     if (verbose) {
@@ -66,11 +66,11 @@ start.describe = (yargs: Argv) =>
       .default('port', 3000)
 
       .describe(
-        'cached',
-        'Enable caching of successful Lambda function results per request URL'
+        'cache',
+        'Enable caching of successful caching-enabled Lambda function results per request URL'
       )
-      .boolean('cached')
-      .default('cached', false)
+      .boolean('cache')
+      .default('cache', false)
 
       .describe(
         'verbose',
@@ -80,7 +80,7 @@ start.describe = (yargs: Argv) =>
       .default('verbose', false)
 
       .example('npx $0 start', '')
-      .example('npx $0 start --port 3001 --cached', '')
+      .example('npx $0 start --port 3001 --cache', '')
   );
 
 start.matches = (argv: {_: string[]}): argv is StartArgv =>
