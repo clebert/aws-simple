@@ -58,10 +58,8 @@ async function deleteStack(
 ): Promise<void> {
   const {StackName} = stack;
 
-  await Promise.all([
-    cloudFormation.deleteStack({StackName}).promise(),
-    deleteS3Bucket(context, s3, stack)
-  ]);
+  await cloudFormation.deleteStack({StackName}).promise();
+  await deleteS3Bucket(context, s3, stack);
 
   await cloudFormation
     .waitFor('stackDeleteComplete', {
