@@ -25,7 +25,7 @@ jobs:
         env:
           CI: true
         run: |
-          yarn prettier --list-different '**/*.{js,json,md,ts,yml}'
+          yarn prettier --list-different '**/*.{js,json,md,ts,tsx,yml}'
           yarn compile
           yarn lint
           yarn test
