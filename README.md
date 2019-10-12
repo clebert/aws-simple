@@ -454,6 +454,21 @@ exports.default = {
 };
 ```
 
+### Set The Logging Level
+
+You can set the logging level for the Lambda functions, it affects the log
+entries pushed to Amazon CloudWatch Logs. The available levels are `OFF`,
+`ERROR`, and `INFO`. Choose `ERROR` to write only error-level entries to
+CloudWatch Logs, or choose `INFO` to include all `ERROR` events as well as extra
+informational events.
+
+```js
+exports.default = {
+  /* ... */
+  loggingLevel: 'ERROR'
+};
+```
+
 ## CLI Usage
 
 ```
