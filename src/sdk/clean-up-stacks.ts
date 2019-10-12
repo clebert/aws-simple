@@ -11,7 +11,7 @@ import {getStackOutputs} from './get-stack-outputs';
 
 export interface CleanUpAllStacksConfig {
   readonly maxAgeInDays: number;
-  readonly tagNamesToPreserve: string[];
+  readonly tagsToPreserve: string[];
   readonly autoConfirm: boolean;
 }
 
@@ -20,11 +20,11 @@ function isExpired(
   config: CleanUpAllStacksConfig
 ): boolean {
   const {CreationTime, Tags = []} = stack;
-  const {maxAgeInDays, tagNamesToPreserve} = config;
+  const {maxAgeInDays, tagsToPreserve} = config;
 
   return (
     getAgeInDays(CreationTime) > maxAgeInDays &&
-    !Tags.some(({Key}) => tagNamesToPreserve.some(tagName => tagName === Key))
+    !Tags.some(({Key}) => tagsToPreserve.some(tag => tag === Key))
   );
 }
 

@@ -583,13 +583,14 @@ Options:
   -h, --help    Show help                                              [boolean]
   --config      The path to the config file
                                       [string] [default: "aws-simple.config.js"]
-  --tag-name    The tag name                                 [string] [required]
+  --add         The tags to add                                          [array]
+  --remove      The tags to remove                                       [array]
   --stack-name  The stack name to be used instead of the default one declared in
                 the config file                                         [string]
 
 Examples:
-  npx aws-simple tag --tag-name release
-  npx aws-simple tag --tag-name release --stack-name stage
+  npx aws-simple tag --add release --remove prerelease
+  npx aws-simple tag --add release --stack-name stage
 ```
 
 ### Clean Up Old Deployed Stacks
@@ -606,8 +607,8 @@ Options:
                                       [string] [default: "aws-simple.config.js"]
   --max-age   The maximum age (in days) of a stack, all older stacks will be
               deleted                                     [number] [default: 30]
-  --preserve  Optional tag names that prevent a stack from being deleted
-              regardless of its age                                      [array]
+  --preserve  Optional tags that prevent a stack from being deleted regardless
+              of its age                                                 [array]
   --yes       The confirmation message will automatically be answered with Yes
                                                       [boolean] [default: false]
 

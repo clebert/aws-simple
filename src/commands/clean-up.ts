@@ -16,7 +16,7 @@ export async function cleanUp(argv: CleanUpArgv): Promise<void> {
 
   await cleanUpStacks(Context.load(config), {
     maxAgeInDays: maxAge,
-    tagNamesToPreserve: preserve,
+    tagsToPreserve: preserve,
     autoConfirm: yes
   });
 }
@@ -37,7 +37,7 @@ cleanUp.describe = (yargs: Argv) =>
 
       .describe(
         'preserve',
-        'Optional tag names that prevent a stack from being deleted regardless of its age'
+        'Optional tags that prevent a stack from being deleted regardless of its age'
       )
       .array('preserve')
 

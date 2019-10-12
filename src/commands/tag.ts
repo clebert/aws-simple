@@ -1,19 +1,20 @@
 import {Argv} from 'yargs';
 import {Context} from '../context';
 import {defaults} from '../defaults';
-import {addTag} from '../sdk/add-tag';
+import {updateTags} from '../sdk/update-tags';
 
 export interface TagArgv {
   readonly _: ['tag'];
   readonly config: string;
-  readonly tagName: string;
+  readonly add?: string[];
+  readonly remove?: string[];
   readonly stackName?: string;
 }
 
 export async function tag(argv: TagArgv): Promise<void> {
-  const {config, tagName, stackName} = argv;
+  const {config, add = [], remove = [], stackName} = argv;
 
-  await addTag(Context.load(config, stackName), tagName);
+  await updateTags(Context.load(config, stackName), add, remove);
 }
 
 tag.describe = (yargs: Argv) =>
@@ -23,9 +24,11 @@ tag.describe = (yargs: Argv) =>
       .string('config')
       .default('config', defaults.configFilename)
 
-      .describe('tag-name', 'The tag name')
-      .string('tag-name')
-      .demandOption('tag-name')
+      .describe('add', 'The tags to add')
+      .array('add')
+
+      .describe('remove', 'The tags to remove')
+      .array('remove')
 
       .describe(
         'stack-name',
@@ -33,8 +36,8 @@ tag.describe = (yargs: Argv) =>
       )
       .string('stack-name')
 
-      .example('npx $0 tag --tag-name release', '')
-      .example('npx $0 tag --tag-name release --stack-name stage', '')
+      .example('npx $0 tag --add release --remove prerelease', '')
+      .example('npx $0 tag --add release --stack-name stage', '')
   );
 
 tag.matches = (argv: {_: string[]}): argv is TagArgv => argv._[0] === 'tag';
