@@ -1,5 +1,6 @@
 import {fork} from 'child_process';
 import {watch} from 'chokidar';
+import getPort from 'get-port';
 import * as path from 'path';
 import {Argv} from 'yargs';
 import {Context} from '../context';
@@ -13,7 +14,7 @@ export interface StartArgv {
   readonly verbose: boolean;
 }
 
-export function start(argv: StartArgv): void {
+export async function start(argv: StartArgv): Promise<void> {
   const {config, port, cached, verbose} = argv;
   const {lambdaConfigs = [], s3Configs = []} = Context.load(config).appConfig;
 
@@ -21,8 +22,10 @@ export function start(argv: StartArgv): void {
     ({localPath}) => localPath
   );
 
+  const availablePort = await getPort({port});
+
   const startServer = () => {
-    const args = ['--config', config, '--port', String(port)];
+    const args = ['--config', config, '--port', String(availablePort)];
 
     if (cached) {
       args.push('--cached');
@@ -55,7 +58,10 @@ start.describe = (yargs: Argv) =>
       .string('config')
       .default('config', defaults.configFilename)
 
-      .describe('port', 'The port to listen on')
+      .describe(
+        'port',
+        'The port to listen on if available, otherwise listen on a random port'
+      )
       .number('port')
       .default('port', 3000)
 
@@ -74,7 +80,7 @@ start.describe = (yargs: Argv) =>
       .default('verbose', false)
 
       .example('npx $0 start', '')
-      .example('npx $0 start --port 1985 --cached', '')
+      .example('npx $0 start --port 3001 --cached', '')
   );
 
 start.matches = (argv: {_: string[]}): argv is StartArgv =>

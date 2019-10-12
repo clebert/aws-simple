@@ -126,6 +126,9 @@ manually:
 
 ```
 cat ~/.aws/credentials
+```
+
+```
 [default]
 aws_access_key_id = ********************
 aws_secret_access_key = ****************************************
@@ -133,6 +136,9 @@ aws_secret_access_key = ****************************************
 
 ```
 cat ~/.aws/config
+```
+
+```
 [default]
 output = json
 region = eu-central-1
@@ -204,7 +210,7 @@ _Note: This command only needs to be executed once._
 ### Start A Local DEV Server
 
 ```
-npx aws-simple start --port 1985 --cached
+npx aws-simple start
 ```
 
 _Note: When changing the `aws-simple` config file, the DEV server must be
@@ -521,7 +527,8 @@ Options:
   -h, --help  Show help                                                [boolean]
   --config    The path to the config file
                                       [string] [default: "aws-simple.config.js"]
-  --port      The port to listen on                     [number] [default: 3000]
+  --port      The port to listen on if available, otherwise listen on a random
+              port                                      [number] [default: 3000]
   --cached    Enable caching of successful Lambda function results per request
               URL                                     [boolean] [default: false]
   --verbose   Enable logging of successful Lambda function results
@@ -529,7 +536,7 @@ Options:
 
 Examples:
   npx aws-simple start
-  npx aws-simple start --port 1985 --cached
+  npx aws-simple start --port 3001 --cached
 ```
 
 ### List All Deployed Stacks

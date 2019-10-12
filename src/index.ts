@@ -126,7 +126,7 @@ try {
   } else if (upload.matches(argv)) {
     upload(argv).catch(handleError);
   } else if (start.matches(argv)) {
-    start(argv);
+    start(argv).catch(handleError);
   } else if (list.matches(argv)) {
     list(argv).catch(handleError);
   } else if (tag.matches(argv)) {
