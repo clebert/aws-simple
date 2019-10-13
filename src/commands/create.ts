@@ -15,9 +15,9 @@ function isCreateArgv(argv: {readonly _: string[]}): argv is CreateArgv {
 export function create(
   appConfig: AppConfig,
   argv: {readonly _: string[]}
-): void {
+): boolean {
   if (!isCreateArgv(argv)) {
-    return;
+    return false;
   }
 
   const resources = createResources(appConfig);
@@ -30,6 +30,8 @@ export function create(
   for (const s3Config of s3Configs) {
     createS3Integration(resources, s3Config);
   }
+
+  return true;
 }
 
 create.describe = (argv: Argv) =>

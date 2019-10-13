@@ -1,7 +1,10 @@
 {
   "extends": ["ts-config"],
   "rules": {
-    "no-implicit-dependencies": [true, ["aws-lambda", "winston"]],
+    "no-implicit-dependencies": [
+      true,
+      ["aws-lambda", "ink-testing-library", "winston"]
+    ],
     "prefer-method-signature": false
   }
 }
