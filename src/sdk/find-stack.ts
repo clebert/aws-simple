@@ -1,18 +1,21 @@
 import {CloudFormation} from 'aws-sdk';
-import {Context} from '../context';
+import {AppConfig} from '../types';
+import {createStackName} from '../utils/stack-name';
 
 export async function findStack(
-  context: Context,
-  cloudFormation: CloudFormation
+  appConfig: AppConfig,
+  clientConfig: CloudFormation.ClientConfiguration
 ): Promise<CloudFormation.Stack> {
-  const result = await cloudFormation
-    .describeStacks({StackName: context.getResourceId('stack')})
+  const stackName = createStackName(appConfig);
+
+  const result = await new CloudFormation(clientConfig)
+    .describeStacks({StackName: stackName})
     .promise();
 
   const stack = result.Stacks && result.Stacks[0];
 
   if (!stack) {
-    throw new Error(`Stack not found: ${context.getResourceId('stack')}`);
+    throw new Error(`Stack (${stackName}) not found.`);
   }
 
   return stack;

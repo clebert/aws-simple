@@ -1,36 +1,67 @@
+import Listr from 'listr';
+import path from 'path';
+import joinUrl from 'url-join';
 import {Argv} from 'yargs';
-import {Context} from '../context';
-import {defaults} from '../defaults';
-import {uploadToS3} from '../sdk/upload-to-s3';
+import {createClientConfig} from '../sdk/create-client-config';
+import {createStackBaseUrl} from '../sdk/create-stack-base-url';
+import {findStack} from '../sdk/find-stack';
+import {uploadFilesToS3} from '../sdk/upload-files-to-s3';
+import {AppConfig} from '../types';
 
-export interface UploadArgv {
+interface UploadArgv {
   readonly _: ['upload'];
-  readonly config: string;
-  readonly stackName?: string;
 }
 
-export async function upload(argv: UploadArgv): Promise<void> {
-  const {config, stackName} = argv;
-
-  await uploadToS3(Context.load(config, stackName));
+function isUploadArgv(argv: {readonly _: string[]}): argv is UploadArgv {
+  return argv._[0] === 'upload';
 }
 
-upload.describe = (yargs: Argv) =>
-  yargs.command('upload [options]', 'Upload files to S3', args =>
-    args
-      .describe('config', 'The path to the config file')
-      .string('config')
-      .default('config', defaults.configFilename)
+export async function upload(
+  appConfig: AppConfig,
+  argv: {readonly _: string[]}
+): Promise<void> {
+  if (!isUploadArgv(argv)) {
+    return;
+  }
 
-      .describe(
-        'stack-name',
-        'The stack name to be used instead of the default one declared in the config file'
-      )
-      .string('stack-name')
+  const clientConfig = await createClientConfig();
+  const stack = await findStack(appConfig, clientConfig);
+  const baseUrl = createStackBaseUrl(appConfig, stack);
+  const listrTasks: Listr.ListrTask[] = [];
+  const {s3Configs = []} = appConfig;
 
-      .example('npx $0 upload', '')
-      .example('npx $0 upload --stack-name stage', '')
+  for (const s3Config of s3Configs) {
+    const {type, publicPath} = s3Config;
+
+    for (const s3UploadTask of uploadFilesToS3(clientConfig, stack, s3Config)) {
+      const {filename, promise} = s3UploadTask;
+
+      listrTasks.push({
+        title: `Uploading file: ${filename}`,
+        task: async (_, listrTask) => {
+          try {
+            await promise;
+
+            const url =
+              type === 'file'
+                ? joinUrl(baseUrl, publicPath)
+                : joinUrl(baseUrl, publicPath, path.basename(filename));
+
+            listrTask.title = `Successfully uploaded file: ${url}`;
+          } catch (error) {
+            listrTask.title = `Error while uploading file: ${filename}`;
+
+            throw error;
+          }
+        }
+      });
+    }
+  }
+
+  await new Listr(listrTasks, {concurrent: true, exitOnError: true}).run();
+}
+
+upload.describe = (argv: Argv) =>
+  argv.command('upload [options]', 'Upload files to S3', commandArgv =>
+    commandArgv.example('npx $0 upload', '')
   );
-
-upload.matches = (argv: {_: string[]}): argv is UploadArgv =>
-  argv._[0] === 'upload';

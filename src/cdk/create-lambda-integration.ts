@@ -1,27 +1,24 @@
 import {LambdaIntegration} from '@aws-cdk/aws-apigateway';
 import {Code, Function as Lambda, Runtime} from '@aws-cdk/aws-lambda';
 import {Duration} from '@aws-cdk/core';
+import {createHash} from 'crypto';
 import * as path from 'path';
-import {LambdaConfig} from '..';
-import {Context} from '../context';
-import {defaults} from '../defaults';
+import {LambdaConfig} from '../types';
 import {Resources} from './create-resources';
 
 export function createLambdaIntegration(
-  context: Context,
   resources: Resources,
   lambdaConfig: LambdaConfig
 ): void {
-  const {stackName} = context;
   const {stack, restApi} = resources;
 
   const {
     httpMethod,
     publicPath,
     localPath,
-    handler = defaults.lambdaHandler,
-    memorySize = defaults.lambdaMemorySize,
-    timeoutInSeconds = defaults.lambdaTimeoutInSeconds,
+    handler = 'handler',
+    memorySize = 3008,
+    timeoutInSeconds = 30,
     acceptedParameters = {},
     getEnvironment
   } = lambdaConfig;
@@ -31,10 +28,11 @@ export function createLambdaIntegration(
     new LambdaIntegration(
       new Lambda(
         stack,
-        `${context.getResourceId('lambda')}${path.join(
-          publicPath,
-          httpMethod
-        )}`,
+        `Lambda${httpMethod}${createHash('sha1')
+          .update(publicPath)
+          .digest()
+          .toString('hex')
+          .slice(8)}`,
         {
           runtime: Runtime.NODEJS_10_X,
           code: Code.fromAsset(path.dirname(localPath)),
@@ -44,8 +42,7 @@ export function createLambdaIntegration(
           )}.${handler}`,
           timeout: Duration.seconds(timeoutInSeconds),
           memorySize,
-          environment:
-            getEnvironment && getEnvironment({type: 'aws', stackName})
+          environment: getEnvironment && getEnvironment()
         }
       ),
       {

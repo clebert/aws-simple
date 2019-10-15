@@ -1,6 +1,6 @@
 import {existsSync, lstatSync, readdirSync} from 'fs';
 import * as path from 'path';
-import {S3Config} from '..';
+import {S3Config} from '../types';
 
 export function resolveFilenames(s3Config: S3Config): string[] {
   const {type, localPath} = s3Config;
@@ -8,7 +8,7 @@ export function resolveFilenames(s3Config: S3Config): string[] {
   if (type === 'file') {
     if (!existsSync(localPath) || !lstatSync(localPath).isFile()) {
       throw new Error(
-        `Expect the specified local path to be an existing file: ${localPath}`
+        `Expect the specified local path (${localPath}) to be an existing file.`
       );
     }
 
@@ -17,7 +17,7 @@ export function resolveFilenames(s3Config: S3Config): string[] {
 
   if (!existsSync(localPath) || !lstatSync(localPath).isDirectory()) {
     throw new Error(
-      `Expect the specified local path to be an existing directory: ${localPath}`
+      `Expect the specified local path (${localPath}) to be an existing directory.`
     );
   }
 
