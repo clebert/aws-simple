@@ -29,10 +29,3 @@ jobs:
           yarn compile
           yarn lint
           yarn test
-
-      - name: Test bin script
-        run: |
-          node lib/index.js -h
-          node lib/index.js create -h
-          node lib/index.js start -h
-          node lib/index.js upload -h
