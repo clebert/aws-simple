@@ -1,5 +1,8 @@
 import {CloudFormation} from 'aws-sdk';
-import {ExportName} from '../cdk/create-resources';
+import {
+  ExportName,
+  createUniqueExportName
+} from '../utils/create-unique-export-name';
 
 export interface StackOutputs {
   readonly restApiUrl: string;
@@ -13,7 +16,11 @@ export function findStackOutput(
   const {StackName, Outputs} = stack;
 
   const output =
-    Outputs && Outputs.find(Output => Output.ExportName === exportName);
+    Outputs &&
+    Outputs.find(
+      Output =>
+        Output.ExportName === createUniqueExportName(StackName, exportName)
+    );
 
   const outputValue = output && output.OutputValue;
 

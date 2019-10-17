@@ -6,7 +6,7 @@ export async function deleteS3Bucket(
   stack: CloudFormation.Stack
 ): Promise<void> {
   const s3 = new S3(clientConfig);
-  const s3BucketName = findStackOutput(stack, 's3BucketName');
+  const s3BucketName = findStackOutput(stack, 'S3BucketName');
 
   const {Contents = []} = await s3
     .listObjects({Bucket: s3BucketName})

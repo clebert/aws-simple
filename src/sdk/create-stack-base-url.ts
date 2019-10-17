@@ -9,7 +9,7 @@ export function createStackBaseUrl(
   const {customDomainConfig} = appConfig;
 
   if (!customDomainConfig) {
-    return findStackOutput(stack, 'restApiUrl');
+    return findStackOutput(stack, 'RestApiUrl');
   }
 
   const {hostedZoneName, aliasRecordName} = customDomainConfig;

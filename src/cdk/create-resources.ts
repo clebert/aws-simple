@@ -8,11 +8,10 @@ import {
 import {Bucket} from '@aws-cdk/aws-s3';
 import {App, CfnOutput, Stack} from '@aws-cdk/core';
 import {AppConfig} from '../types';
+import {createUniqueExportName} from '../utils/create-unique-export-name';
 import {createStackName} from '../utils/stack-name';
 import {createARecord} from './utils/create-a-record';
 import {createRestApiProps} from './utils/create-rest-api-props';
-
-export type ExportName = 'restApiUrl' | 's3BucketName';
 
 export interface Resources {
   readonly stack: Stack;
@@ -30,11 +29,9 @@ export function createResources(appConfig: AppConfig): Resources {
     createRestApiProps(appConfig, stack)
   );
 
-  const restApiUrlExportName: ExportName = 'restApiUrl';
-
   const restApiUrlOutput = new CfnOutput(stack, 'RestApiUrlOutput', {
     value: restApi.url,
-    exportName: restApiUrlExportName
+    exportName: createUniqueExportName(stack.stackName, 'RestApiUrl')
   });
 
   restApiUrlOutput.node.addDependency(restApi);
@@ -42,11 +39,10 @@ export function createResources(appConfig: AppConfig): Resources {
   createARecord(appConfig, stack, restApi);
 
   const s3Bucket = new Bucket(stack, 'S3Bucket', {publicReadAccess: false});
-  const s3BucketNameExportName: ExportName = 's3BucketName';
 
   const s3BucketNameOutput = new CfnOutput(stack, 'S3BucketNameOutput', {
     value: s3Bucket.bucketName,
-    exportName: s3BucketNameExportName
+    exportName: createUniqueExportName(stack.stackName, 'S3BucketName')
   });
 
   s3BucketNameOutput.node.addDependency(s3Bucket);

@@ -17,7 +17,7 @@ export function uploadFilesToS3(
   s3Config: S3Config
 ): S3UploadTask[] {
   const s3 = new S3(clientConfig);
-  const s3BucketName = findStackOutput(stack, 's3BucketName');
+  const s3BucketName = findStackOutput(stack, 'S3BucketName');
   const {type, publicPath, bucketPath = publicPath} = s3Config;
 
   return resolveFilenames(s3Config).map(filename => ({
