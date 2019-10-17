@@ -1,8 +1,8 @@
+import {CloudFormation} from 'aws-sdk';
 import Listr from 'listr';
 import path from 'path';
 import joinUrl from 'url-join';
 import {Argv} from 'yargs';
-import {createClientConfig} from '../sdk/create-client-config';
 import {createStackBaseUrl} from '../sdk/create-stack-base-url';
 import {findStack} from '../sdk/find-stack';
 import {uploadFilesToS3} from '../sdk/upload-files-to-s3';
@@ -18,13 +18,13 @@ function isUploadArgv(argv: {readonly _: string[]}): argv is UploadArgv {
 
 export async function upload(
   appConfig: AppConfig,
+  clientConfig: CloudFormation.ClientConfiguration,
   argv: {readonly _: string[]}
 ): Promise<void> {
   if (!isUploadArgv(argv)) {
     return;
   }
 
-  const clientConfig = await createClientConfig();
   const stack = await findStack(appConfig, clientConfig);
   const baseUrl = createStackBaseUrl(appConfig, stack);
   const listrTasks: Listr.ListrTask[] = [];

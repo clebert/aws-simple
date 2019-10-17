@@ -1,6 +1,6 @@
+import {CloudFormation} from 'aws-sdk';
 import Listr from 'listr';
 import {Argv} from 'yargs';
-import {createClientConfig} from '../sdk/create-client-config';
 import {findStack} from '../sdk/find-stack';
 import {updateStackTags} from '../sdk/update-stack-tags';
 import {AppConfig} from '../types';
@@ -17,13 +17,13 @@ function isTagArgv(argv: {readonly _: string[]}): argv is TagArgv {
 
 export async function tag(
   appConfig: AppConfig,
+  clientConfig: CloudFormation.ClientConfiguration,
   argv: {readonly _: string[]}
 ): Promise<void> {
   if (!isTagArgv(argv)) {
     return;
   }
 
-  const clientConfig = await createClientConfig();
   const stack = await findStack(appConfig, clientConfig);
 
   await new Listr([
