@@ -1,25 +1,36 @@
 import {Argv} from 'yargs';
-import {Context} from '../context';
-import {defaults} from '../defaults';
-import {listAllStacks} from '../sdk/list-all-stacks';
+import {createClientConfig} from '../sdk/create-client-config';
+import {findStacks} from '../sdk/find-stacks';
+import {printStacksTable} from '../sdk/print-stacks-table';
+import {AppConfig} from '../types';
 
-export interface ListArgv {
+interface ListArgv {
   readonly _: ['list'];
-  readonly config: string;
 }
 
-export async function list(argv: ListArgv): Promise<void> {
-  await listAllStacks(Context.load(argv.config));
+function isListArgv(argv: {readonly _: string[]}): argv is ListArgv {
+  return argv._[0] === 'list';
 }
 
-list.describe = (yargs: Argv) =>
-  yargs.command('list [options]', 'List all deployed stacks', args =>
-    args
-      .describe('config', 'The path to the config file')
-      .string('config')
-      .default('config', defaults.configFilename)
+export async function list(
+  appConfig: AppConfig,
+  argv: {readonly _: string[]}
+): Promise<void> {
+  if (!isListArgv(argv)) {
+    return;
+  }
 
-      .example('npx $0 list', '')
+  const clientConfig = await createClientConfig();
+  const stacks = await findStacks(appConfig, clientConfig);
+
+  if (stacks.length === 0) {
+    console.info('No stacks found.');
+  } else {
+    printStacksTable(stacks);
+  }
+}
+
+list.describe = (argv: Argv) =>
+  argv.command('list [options]', 'List all deployed stacks', commandArgv =>
+    commandArgv.example('npx $0 list', '')
   );
-
-list.matches = (argv: {_: string[]}): argv is ListArgv => argv._[0] === 'list';

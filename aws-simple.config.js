@@ -1,11 +1,11 @@
 // @ts-check
 
 /**
- * @type {import('./src').AppConfig}
+ * @type {import('./src/types').AppConfig}
  */
 exports.default = {
   appName: 'aws-simple',
-  defaultStackName: 'test',
+  appVersion: 'test',
   s3Configs: [
     {
       type: 'file',

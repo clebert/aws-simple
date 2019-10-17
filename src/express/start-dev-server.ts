@@ -2,15 +2,13 @@ import 'source-map-support/register';
 
 import compression from 'compression';
 import express from 'express';
-import lambdaLocal from 'lambda-local';
-import {format} from 'winston';
 import yargs from 'yargs';
-import {Context} from '../context';
-import {serveLocalLambda} from './serve-local-lambda';
-import {serveLocalS3} from './serve-local-s3';
+import {loadAppConfig} from '../utils/load-app-config';
+import {serveLocalLambda} from './utils/serve-local-lambda';
+import {serveLocalS3} from './utils/serve-local-s3';
+import {suppressLambdaResultLogging} from './utils/suppress-lambda-result-logging';
 
 interface Argv {
-  readonly config: string;
   readonly port: number;
   readonly cache?: boolean;
   readonly verbose?: boolean;
@@ -22,36 +20,21 @@ function isArgv(value: any): value is Argv {
     return false;
   }
 
-  return typeof value.config === 'string' && typeof value.port === 'number';
+  return typeof value.port === 'number';
 }
 
-function suppressLambdaResultLogging(): void {
-  const logger = lambdaLocal.getLogger();
-
-  logger.format = format.combine(
-    format(info => {
-      if ('statusCode' in info && 'headers' in info && 'body' in info) {
-        return false;
-      }
-
-      return info;
-    })(),
-    logger.format
-  );
-}
-
-function startServer(argv: unknown): void {
+function startDevServer(argv: unknown): void {
   if (!isArgv(argv)) {
     throw new Error('Illegal arguments received.');
   }
 
-  const {config, port, cache, verbose} = argv;
+  const {port, cache, verbose} = argv;
 
   const {
     minimumCompressionSizeInBytes,
     lambdaConfigs = [],
     s3Configs = []
-  } = Context.load(config).appConfig;
+  } = loadAppConfig();
 
   if (!verbose) {
     suppressLambdaResultLogging();
@@ -76,11 +59,9 @@ function startServer(argv: unknown): void {
   });
 }
 
-startServer(
+startDevServer(
   yargs
     .detectLocale(false)
-    .string('config')
-    .demandOption('config')
     .number('port')
     .demandOption('port')
     .boolean('cache')

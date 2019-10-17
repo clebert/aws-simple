@@ -1,43 +1,59 @@
+import Listr from 'listr';
 import {Argv} from 'yargs';
-import {Context} from '../context';
-import {defaults} from '../defaults';
-import {updateTags} from '../sdk/update-tags';
+import {createClientConfig} from '../sdk/create-client-config';
+import {findStack} from '../sdk/find-stack';
+import {updateStackTags} from '../sdk/update-stack-tags';
+import {AppConfig} from '../types';
 
-export interface TagArgv {
+interface TagArgv {
   readonly _: ['tag'];
-  readonly config: string;
-  readonly add?: string[];
-  readonly remove?: string[];
-  readonly stackName?: string;
+  readonly add: string[];
+  readonly remove: string[];
 }
 
-export async function tag(argv: TagArgv): Promise<void> {
-  const {config, add = [], remove = [], stackName} = argv;
-
-  await updateTags(Context.load(config, stackName), add, remove);
+function isTagArgv(argv: {readonly _: string[]}): argv is TagArgv {
+  return argv._[0] === 'tag';
 }
 
-tag.describe = (yargs: Argv) =>
-  yargs.command('tag [options]', 'Tag a deployed stack', args =>
-    args
-      .describe('config', 'The path to the config file')
-      .string('config')
-      .default('config', defaults.configFilename)
+export async function tag(
+  appConfig: AppConfig,
+  argv: {readonly _: string[]}
+): Promise<void> {
+  if (!isTagArgv(argv)) {
+    return;
+  }
 
+  const clientConfig = await createClientConfig();
+  const stack = await findStack(appConfig, clientConfig);
+
+  await new Listr([
+    {
+      title: 'Completing stack update',
+      task: async (_, listrTask) => {
+        try {
+          await updateStackTags(clientConfig, stack, argv.add, argv.remove);
+
+          listrTask.title = 'Successfully completed stack update';
+        } catch (error) {
+          listrTask.title = 'Error while completing stack update';
+
+          throw error;
+        }
+      }
+    }
+  ]).run();
+}
+
+tag.describe = (argv: Argv) =>
+  argv.command('tag [options]', 'Tag a deployed stack', commandArgv =>
+    commandArgv
       .describe('add', 'The tags to add')
       .array('add')
+      .default('add', [])
 
       .describe('remove', 'The tags to remove')
       .array('remove')
+      .default('remove', [])
 
-      .describe(
-        'stack-name',
-        'The stack name to be used instead of the default one declared in the config file'
-      )
-      .string('stack-name')
-
-      .example('npx $0 tag --add release --remove prerelease', '')
-      .example('npx $0 tag --add release --stack-name stage', '')
+      .example('npx $0 tag --add latest release --remove prerelease', '')
   );
-
-tag.matches = (argv: {_: string[]}): argv is TagArgv => argv._[0] === 'tag';

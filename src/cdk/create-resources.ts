@@ -1,24 +1,18 @@
-import {
-  DomainNameOptions,
-  MethodDeploymentOptions,
-  MethodLoggingLevel,
-  RestApi,
-  RestApiProps,
-  StageOptions
-} from '@aws-cdk/aws-apigateway';
-import {Certificate} from '@aws-cdk/aws-certificatemanager';
+import {RestApi} from '@aws-cdk/aws-apigateway';
 import {
   Policy,
   PolicyStatement,
   Role,
   ServicePrincipal
 } from '@aws-cdk/aws-iam';
-import {ARecord, HostedZone, RecordTarget} from '@aws-cdk/aws-route53';
-import {ApiGateway} from '@aws-cdk/aws-route53-targets';
 import {Bucket} from '@aws-cdk/aws-s3';
-import {App, CfnOutput, Duration, Stack} from '@aws-cdk/core';
-import * as path from 'path';
-import {Context} from '../context';
+import {App, CfnOutput, Stack} from '@aws-cdk/core';
+import {AppConfig} from '../types';
+import {createStackName} from '../utils/stack-name';
+import {createARecord} from './utils/create-a-record';
+import {createRestApiProps} from './utils/create-rest-api-props';
+
+export type ExportName = 'restApiUrl' | 's3BucketName';
 
 export interface Resources {
   readonly stack: Stack;
@@ -27,175 +21,44 @@ export interface Resources {
   readonly s3IntegrationRole: Role;
 }
 
-function createDomainNameOptions(
-  context: Context,
-  stack: Stack
-): DomainNameOptions | undefined {
-  const {
-    appConfig: {customDomainConfig},
-    stackName
-  } = context;
-
-  if (!customDomainConfig) {
-    return;
-  }
-
-  const {
-    certificateArn,
-    hostedZoneName,
-    getAliasRecordName
-  } = customDomainConfig;
-
-  return {
-    domainName: getAliasRecordName
-      ? `${getAliasRecordName(stackName)}.${hostedZoneName}`
-      : hostedZoneName,
-    certificate: Certificate.fromCertificateArn(
-      stack,
-      context.getResourceId('certificate'),
-      certificateArn
-    )
-  };
-}
-
-function createStageOptions(context: Context): StageOptions {
-  const {
-    appConfig: {loggingLevel, lambdaConfigs = []}
-  } = context;
-
-  const restApiMethodOptions: Record<string, MethodDeploymentOptions> = {};
-
-  let rootCachingEnabled = false;
-  let rootCacheTtl: Duration | undefined;
-
-  const cacheClusterEnabled = lambdaConfigs.some(
-    ({cachingEnabled}) => cachingEnabled
-  );
-
-  if (cacheClusterEnabled) {
-    for (const lambdaConfig of lambdaConfigs) {
-      const {
-        httpMethod,
-        publicPath,
-        cachingEnabled,
-        cacheTtlInSeconds
-      } = lambdaConfig;
-
-      if (publicPath === '/') {
-        if (cachingEnabled) {
-          rootCachingEnabled = cachingEnabled;
-        }
-
-        if (cacheTtlInSeconds) {
-          rootCacheTtl = Duration.seconds(cacheTtlInSeconds);
-        }
-      } else {
-        restApiMethodOptions[path.join(publicPath, httpMethod)] = {
-          cachingEnabled: Boolean(cachingEnabled),
-          cacheTtl:
-            cacheTtlInSeconds !== undefined
-              ? Duration.seconds(cacheTtlInSeconds)
-              : undefined
-        };
-      }
-    }
-  }
-
-  return {
-    cacheClusterEnabled,
-    cachingEnabled: rootCachingEnabled,
-    cacheTtl: rootCacheTtl,
-    methodOptions: restApiMethodOptions,
-    loggingLevel: loggingLevel && MethodLoggingLevel[loggingLevel]
-  };
-}
-
-function createRestApiProps(context: Context, stack: Stack): RestApiProps {
-  const {
-    appConfig: {binaryMediaTypes, minimumCompressionSizeInBytes}
-  } = context;
-
-  return {
-    domainName: createDomainNameOptions(context, stack),
-    binaryMediaTypes,
-    minimumCompressionSize: minimumCompressionSizeInBytes,
-    deployOptions: createStageOptions(context)
-  };
-}
-
-function createARecord(context: Context, stack: Stack, restApi: RestApi): void {
-  const {
-    appConfig: {customDomainConfig},
-    stackName
-  } = context;
-
-  if (!customDomainConfig) {
-    return;
-  }
-
-  const {hostedZoneId, hostedZoneName, getAliasRecordName} = customDomainConfig;
-
-  const aRecord = new ARecord(stack, context.getResourceId('a-record'), {
-    zone: HostedZone.fromHostedZoneAttributes(
-      stack,
-      context.getResourceId('zone'),
-      {hostedZoneId, zoneName: hostedZoneName}
-    ),
-    recordName: getAliasRecordName && getAliasRecordName(stackName),
-    target: RecordTarget.fromAlias(new ApiGateway(restApi))
-  });
-
-  aRecord.node.addDependency(restApi);
-}
-
-export function createResources(context: Context): Resources {
-  const stack = new Stack(new App(), context.getResourceId('stack'));
+export function createResources(appConfig: AppConfig): Resources {
+  const stack = new Stack(new App(), createStackName(appConfig));
 
   const restApi = new RestApi(
     stack,
-    context.getResourceId('rest-api'),
-    createRestApiProps(context, stack)
+    'RestApi',
+    createRestApiProps(appConfig, stack)
   );
 
-  const restApiUrlOutput = new CfnOutput(
-    stack,
-    context.getResourceId('rest-api-url-output'),
-    {value: restApi.url, exportName: context.getOutputId('rest-api-url')}
-  );
+  const restApiUrlExportName: ExportName = 'restApiUrl';
+
+  const restApiUrlOutput = new CfnOutput(stack, 'RestApiUrlOutput', {
+    value: restApi.url,
+    exportName: restApiUrlExportName
+  });
 
   restApiUrlOutput.node.addDependency(restApi);
 
-  createARecord(context, stack, restApi);
+  createARecord(appConfig, stack, restApi);
 
-  const s3Bucket = new Bucket(stack, context.getResourceId('s3-bucket'), {
-    publicReadAccess: false
+  const s3Bucket = new Bucket(stack, 'S3Bucket', {publicReadAccess: false});
+  const s3BucketNameExportName: ExportName = 's3BucketName';
+
+  const s3BucketNameOutput = new CfnOutput(stack, 'S3BucketNameOutput', {
+    value: s3Bucket.bucketName,
+    exportName: s3BucketNameExportName
   });
-
-  const s3BucketNameOutput = new CfnOutput(
-    stack,
-    context.getResourceId('s3-bucket-name-output'),
-    {
-      value: s3Bucket.bucketName,
-      exportName: context.getOutputId('s3-bucket-name')
-    }
-  );
 
   s3BucketNameOutput.node.addDependency(s3Bucket);
 
-  const s3IntegrationRole = new Role(
-    stack,
-    context.getResourceId('s3-integration-role'),
-    {assumedBy: new ServicePrincipal('apigateway.amazonaws.com')}
-  );
+  const s3IntegrationRole = new Role(stack, 'S3IntegrationRole', {
+    assumedBy: new ServicePrincipal('apigateway.amazonaws.com')
+  });
 
-  const s3IntegrationPolicy = new Policy(
-    stack,
-    context.getResourceId('s3-integration-policy'),
-    {
-      statements: [new PolicyStatement({actions: ['s3:*'], resources: ['*']})],
-      roles: [s3IntegrationRole]
-    }
-  );
+  const s3IntegrationPolicy = new Policy(stack, 'S3IntegrationPolicy', {
+    statements: [new PolicyStatement({actions: ['s3:*'], resources: ['*']})],
+    roles: [s3IntegrationRole]
+  });
 
   s3IntegrationPolicy.node.addDependency(s3IntegrationRole);
 

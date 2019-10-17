@@ -25,12 +25,12 @@
   "files": [
     "lib"
   ],
-  "types": "lib/index.d.ts",
+  "types": "lib/types.d.ts",
   "bin": "lib/index.js",
   "scripts": {
     "precompile": "rm -rf lib/",
     "compile": "tsc",
-    "postcompile": "chmod +x lib/index.js",
+    "postcompile": "chmod +x lib/index.js && node update-readme.js",
     "format": "prettier --write '**/*.{js,json,md,ts,yml}'",
     "lint": "tslint --project . --format stylish",
     "release": "npm version",

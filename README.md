@@ -37,7 +37,7 @@ abstraction for the AWS CDK/SDK for a faster and easier setup.
 
 Since existing backend/CMS systems are used, an additional persistence layer is
 rarely required. Therefore, setting up such a layer (e.g. with Amazon DynamoDB)
-is [currently not supported](https://github.com/clebert/aws-simple/issues/12).
+is not supported.
 
 I deliberately kept it simple. An app with a more complex setup should be set up
 manually with the AWS CDK/SDK.
@@ -50,10 +50,6 @@ You need to install `aws-simple` and `aws-cdk` as dependencies, e.g. with:
 
 ```
 yarn add --dev aws-simple aws-cdk
-```
-
-```
-npm install --save-dev aws-simple aws-cdk
 ```
 
 ### Create An AWS IAM User
@@ -74,12 +70,12 @@ with programmatic access and the following attached policy:
     {
       "Effect": "Allow",
       "Action": ["lambda:*"],
-      "Resource": "arn:aws:lambda:*:*:function:myapp-*"
+      "Resource": "arn:aws:lambda:*:*:function:*"
     },
     {
       "Effect": "Allow",
       "Action": ["iam:*"],
-      "Resource": "arn:aws:iam::*:role/myapp-*"
+      "Resource": "arn:aws:iam::*:role/*"
     },
     {
       "Effect": "Allow",
@@ -94,10 +90,6 @@ with programmatic access and the following attached policy:
   ]
 }
 ```
-
-_Note: Please replace the app name (`myapp`) with your own. All resources
-created with CloudFormation have the app name combined with the stack name as a
-prefix for their ID such as `myapp-mystack-resource-s3-bucket`._
 
 ### Optional: Create An AWS Profile
 
@@ -168,41 +160,36 @@ overwritten by setting the environment variable `AWS_CONFIG_FILE`.
 
 ### Create A Config File
 
-To use the `aws-simple` CLI you have to create a top-level node module config
-file named `aws-simple.config.js` which exports an object compatible to the
-[`AppConfig` interface](https://github.com/clebert/aws-simple/blob/master/src/index.ts#L86).
+To use the `aws-simple` CLI you have to create a top-level config file named
+`aws-simple.config.js` which exports an object compatible to the
+[`AppConfig` interface](https://github.com/clebert/aws-simple/blob/master/src/types.ts#L59).
 
 For example, the following app config describes a simple app consisting of a
 single static HTML file:
 
 ```js
 exports.default = {
-  appName: 'myapp',
-  defaultStackName: 'mystack',
+  appName: 'MyApp',
+  appVersion: 'prod',
   s3Configs: [
     {
       type: 'file',
       publicPath: '/',
-      localPath: 'dist/app/index.html',
+      localPath: 'dist/index.html',
       bucketPath: 'index.html'
     }
   ]
 };
 ```
 
-_Note: Different stack names allow multiple stacks of the same app to be
-deployed simultaneously. The specified default stack name can be overwritten
-with most `aws-simple` CLI commands using the `--stack-name` CLI option._
-
 ### Bootstrap Your AWS Environment
 
 Before you can use the AWS CDK you must
 [bootstrap your AWS environment](https://docs.aws.amazon.com/cdk/latest/guide/tools.html)
-to create the infrastructure that the AWS CDK CLI needs to deploy your AWS CDK
-app:
+to create the infrastructure that the AWS CDK CLI needs to deploy your app:
 
 ```
-npx cdk bootstrap --app 'npx aws-simple create'
+yarn cdk bootstrap --app 'yarn aws-simple create'
 ```
 
 _Note: This command only needs to be executed once._
@@ -210,7 +197,7 @@ _Note: This command only needs to be executed once._
 ### Start A Local DEV Server
 
 ```
-npx aws-simple start
+yarn aws-simple start
 ```
 
 _Note: When changing the `aws-simple` config file, the DEV server must be
@@ -219,11 +206,15 @@ started in addition to the DEV server._
 
 ### Deploy A Stack To AWS
 
-Create a stack using the CDK:
+Create and deploy a stack using the CDK:
 
 ```
-npx cdk deploy --app 'npx aws-simple create'
+yarn cdk deploy --app 'yarn aws-simple create'
 ```
+
+The name of the deployed stack consists of the app name (e.g. `MyApp`) in
+combination with the app version (e.g. `prod`) such as
+`aws-simple--MyApp--prod`.
 
 **Caution:** Re-deploying an already deployed stack (so a stack with the same
 name) will remove all tags set with `aws-simple tag [options]`.
@@ -231,7 +222,7 @@ name) will remove all tags set with `aws-simple tag [options]`.
 Upload files to S3:
 
 ```
-npx aws-simple upload
+yarn aws-simple upload
 ```
 
 Example `package.json` scripts:
@@ -239,7 +230,7 @@ Example `package.json` scripts:
 ```json
 {
   "scripts": {
-    "deploy": "cdk deploy --app 'npx aws-simple create'",
+    "deploy": "cdk deploy --app 'yarn aws-simple create'",
     "postdeploy": "aws-simple upload"
   }
 }
@@ -247,7 +238,7 @@ Example `package.json` scripts:
 
 _Note: In a CI pipeline the `deploy` script should be called with the additional
 argument `--require-approval never`, e.g.
-`npm run deploy --require-approval never`._
+`yarn deploy --require-approval never`._
 
 ## Configuration
 
@@ -263,8 +254,8 @@ TypeScript 2.3 and later support type-checking in `*.js` files by adding a
  * @type {import('aws-simple').AppConfig}
  */
 exports.default = {
-  appName: 'myapp',
-  defaultStackName: 'mystack'
+  appName: 'MyApp',
+  appVersion: 'prod'
 };
 ```
 
@@ -277,26 +268,30 @@ and
 must be created manually. You can then configure the custom domain as follows:
 
 ```js
+const appVersion = process.env.APP_VERSION || 'prod';
+
 exports.default = {
+  appVersion,
   /* ... */
   customDomainConfig: {
     certificateArn:
       'arn:aws:acm:eu-central-1:************:certificate/********-****-****-****-************',
     hostedZoneId: '**************',
     hostedZoneName: 'example.com',
-    getAliasRecordName: stackName => stackName
+    aliasRecordName: appVersion === 'prod' ? 'my-app' : `my-app-${appVersion}`
   }
 };
 ```
 
-_Note: Different stack names allow multiple stacks of the same app to be
-deployed simultaneously. In this case the optional `getAliasRecordName` function
-is used to give each stack its own URL, for example `mystack.example.com`._
+_Note: Different app versions allow multiple stacks of the same app to be
+deployed simultaneously. In this case the optional `aliasRecordName` property is
+used to give each stack its own URL, for example `my-app.example.com` or
+`my-app-test.example.com` (`APP_VERSION=test`)._
 
 ### Example Configuration Of A Lambda Function
 
 You can configure a Lambda function that can be accessed via GET request at the
-URL `mystack.example.com/endpoint` as follows:
+URL `my-app.example.com/endpoint` as follows:
 
 ```js
 exports.default = {
@@ -318,11 +313,10 @@ exports.default = {
         baz: {required: true},
         qux: {isCacheKey: true, required: true}
       },
-      getEnvironment: runtime => ({
-        BASE_URL:
-          runtime.type === 'dev'
-            ? `http://localhost:${runtime.port}`
-            : `https://${runtime.stackName}.example.com`
+      getEnvironment: port => ({
+        BASE_URL: port
+          ? `http://localhost:${port}` // Local DEV server
+          : `https://${appVersion}.example.com`
       })
     }
   ]
@@ -366,7 +360,7 @@ bundle._
 ### Example Configuration Of An S3 File
 
 You can configure an S3 file that can be accessed via GET request at the URL
-`mystack.example.com/` as follows:
+`my-app.example.com/` as follows:
 
 ```js
 exports.default = {
@@ -382,15 +376,15 @@ exports.default = {
 };
 ```
 
-_Note: The file specified under the local path is loaded into the S3 bucket
+_Note: The file specified under the `localPath` is loaded into the S3 bucket
 associated with the stack using the `aws-simple upload [options]` CLI command.
-The optionally specified bucket path or, if not specified, the public path is
+The optionally specified `bucketPath` or, if not specified, the `publicPath` is
 used as the S3 object key._
 
 ### Example Configuration Of An S3 Folder
 
 You can configure an S3 folder whose contained files can be accessed via GET
-request at the URL `mystack.example.com/assets/*` as follows:
+request at the URL `my-app.example.com/assets/*` as follows:
 
 ```js
 exports.default = {
@@ -409,25 +403,47 @@ exports.default = {
 };
 ```
 
-_Note: All files contained in the folder specified under the local path are
+_Note: All files contained in the folder specified under the `localPath` are
 loaded into the S3 bucket associated with the stack using the
 `aws-simple upload [options]` command. Nested folders are ignored! Thus a
-separate S3 Config must be created for each nested folder._
+separate S3 config object must be created for each nested folder._
 
 ### Dynamically Set Config Properties
 
 Since the config file is a node module, individual properties can also be set
-dynamically. For example, you can set the default stack name based on the
-current hash or tag:
+dynamically. For example, you can set the `appVersion` based on the current Git
+commit SHA or Git tag ref:
 
 ```js
 const {isTagDirty, short, tag} = require('git-rev-sync');
 
+function detectAppVersion() {
+  const {GITHUB_REF, GITHUB_SHA} = process.env;
+
+  if (GITHUB_REF) {
+    return GITHUB_REF.replace(/\./g, '-');
+  }
+
+  if (GITHUB_SHA) {
+    return GITHUB_SHA.slice(7);
+  }
+
+  if (isTagDirty()) {
+    return short();
+  }
+
+  return tag().replace(/\./g, '-');
+}
+
+const appVersion = detectAppVersion();
+
 exports.default = {
   /* ... */
-  defaultStackName: isTagDirty()
-    ? short(undefined, 8)
-    : tag().replace(/\./g, '-')
+  appVersion,
+  customDomainConfig: {
+    /* ... */
+    aliasRecordName: appVersion
+  }
 };
 ```
 
@@ -498,16 +514,12 @@ aws-simple create [options]
 Create a stack using the CDK
 
 Options:
-  --version     Show version number                                    [boolean]
-  -h, --help    Show help                                              [boolean]
-  --config      The path to the config file
-                                      [string] [default: "aws-simple.config.js"]
-  --stack-name  The stack name to be used instead of the default one declared in
-                the config file                                         [string]
+  --version   Show version number                                      [boolean]
+  -h, --help  Show help                                                [boolean]
 
 Examples:
+  npx aws-simple create
   npx cdk deploy --app 'npx aws-simple create'
-  npx cdk deploy --app 'npx aws-simple create --stack-name stage'
 ```
 
 ### Upload Files To S3
@@ -518,16 +530,11 @@ aws-simple upload [options]
 Upload files to S3
 
 Options:
-  --version     Show version number                                    [boolean]
-  -h, --help    Show help                                              [boolean]
-  --config      The path to the config file
-                                      [string] [default: "aws-simple.config.js"]
-  --stack-name  The stack name to be used instead of the default one declared in
-                the config file                                         [string]
+  --version   Show version number                                      [boolean]
+  -h, --help  Show help                                                [boolean]
 
 Examples:
   npx aws-simple upload
-  npx aws-simple upload --stack-name stage
 ```
 
 ### Start A Local DEV Server
@@ -540,8 +547,6 @@ Start a local DEV server
 Options:
   --version   Show version number                                      [boolean]
   -h, --help  Show help                                                [boolean]
-  --config    The path to the config file
-                                      [string] [default: "aws-simple.config.js"]
   --port      The port to listen on if available, otherwise listen on a random
               port                                      [number] [default: 3000]
   --cache     Enable caching of successful caching-enabled Lambda function
@@ -551,7 +556,7 @@ Options:
 
 Examples:
   npx aws-simple start
-  npx aws-simple start --port 3001 --cache
+  npx aws-simple start --port 3001 --cache --verbose
 ```
 
 ### List All Deployed Stacks
@@ -564,8 +569,6 @@ List all deployed stacks
 Options:
   --version   Show version number                                      [boolean]
   -h, --help  Show help                                                [boolean]
-  --config    The path to the config file
-                                      [string] [default: "aws-simple.config.js"]
 
 Examples:
   npx aws-simple list
@@ -579,18 +582,13 @@ aws-simple tag [options]
 Tag a deployed stack
 
 Options:
-  --version     Show version number                                    [boolean]
-  -h, --help    Show help                                              [boolean]
-  --config      The path to the config file
-                                      [string] [default: "aws-simple.config.js"]
-  --add         The tags to add                                          [array]
-  --remove      The tags to remove                                       [array]
-  --stack-name  The stack name to be used instead of the default one declared in
-                the config file                                         [string]
+  --version   Show version number                                      [boolean]
+  -h, --help  Show help                                                [boolean]
+  --add       The tags to add                              [array] [default: []]
+  --remove    The tags to remove                           [array] [default: []]
 
 Examples:
-  npx aws-simple tag --add release --remove prerelease
-  npx aws-simple tag --add release --stack-name stage
+  npx aws-simple tag --add latest release --remove prerelease
 ```
 
 ### Clean Up Old Deployed Stacks
@@ -603,18 +601,16 @@ Clean up old deployed stacks
 Options:
   --version   Show version number                                      [boolean]
   -h, --help  Show help                                                [boolean]
-  --config    The path to the config file
-                                      [string] [default: "aws-simple.config.js"]
   --max-age   The maximum age (in days) of a stack, all older stacks will be
               deleted                                     [number] [default: 30]
-  --preserve  Optional tags that prevent a stack from being deleted regardless
-              of its age                                                 [array]
-  --yes       The confirmation message will automatically be answered with Yes
+  --preserve  Tags that prevent a stack from being deleted regardless of its age
+                                                           [array] [default: []]
+  --yes       The confirmation message will automatically be answered with yes
                                                       [boolean] [default: false]
 
 Examples:
   npx aws-simple clean-up
-  npx aws-simple clean-up --max-age 14 --preserve release
+  npx aws-simple clean-up --max-age 14 --preserve release prerelease --yes
 ```
 
 ## Development

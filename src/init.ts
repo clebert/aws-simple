@@ -1,7 +1,3 @@
-/**
- * IMPORTANT: This module must be required before 'aws-sdk'
- */
-
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -17,7 +13,7 @@ const sharedCredentialsFile = process.env.AWS_SHARED_CREDENTIALS_FILE
 if (fs.existsSync(awsConfigFile) && !fs.existsSync(sharedCredentialsFile)) {
   /*
    * Write an empty credentials file if there's a config file,
-   * otherwise the AWS SDK will throw an error
+   * otherwise the AWS SDK will throw an error.
    */
   fs.writeFileSync(sharedCredentialsFile, '');
 }
@@ -25,13 +21,13 @@ if (fs.existsSync(awsConfigFile) && !fs.existsSync(sharedCredentialsFile)) {
 if (fs.existsSync(sharedCredentialsFile)) {
   /*
    * Ensure that the AWS SDK will load region from ~/.aws/config
-   * if the environment variable AWS_REGION is not set
+   * if the environment variable AWS_REGION is not set.
    */
   process.env.AWS_SDK_LOAD_CONFIG = '1';
 }
 
 /*
- * Set environment variables so we behave as close as possible to the AWS CLI
+ * Set environment variables so we behave as close as possible to the AWS CLI.
  */
 if (process.env.AWS_DEFAULT_PROFILE && !process.env.AWS_PROFILE) {
   process.env.AWS_PROFILE = process.env.AWS_DEFAULT_PROFILE;

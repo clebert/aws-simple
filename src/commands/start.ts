@@ -3,61 +3,65 @@ import {watch} from 'chokidar';
 import getPort from 'get-port';
 import * as path from 'path';
 import {Argv} from 'yargs';
-import {Context} from '../context';
-import {defaults} from '../defaults';
+import {AppConfig} from '../types';
 
-export interface StartArgv {
+interface StartArgv {
   readonly _: ['start'];
-  readonly config: string;
   readonly port: number;
   readonly cache: boolean;
   readonly verbose: boolean;
 }
 
-export async function start(argv: StartArgv): Promise<void> {
-  const {config, port, cache, verbose} = argv;
-  const {lambdaConfigs = [], s3Configs = []} = Context.load(config).appConfig;
+function isStartArgv(argv: {readonly _: string[]}): argv is StartArgv {
+  return argv._[0] === 'start';
+}
+
+export async function start(
+  appConfig: AppConfig,
+  argv: {readonly _: string[]}
+): Promise<void> {
+  if (!isStartArgv(argv)) {
+    return;
+  }
+
+  const {lambdaConfigs = [], s3Configs = []} = appConfig;
 
   const localPaths = [...lambdaConfigs, ...s3Configs].map(
     ({localPath}) => localPath
   );
 
-  const availablePort = await getPort({port});
+  const port = await getPort({port: argv.port});
 
-  const startServer = () => {
-    const args = ['--config', config, '--port', String(availablePort)];
+  const startDevServer = () => {
+    const args = ['--port', String(port)];
 
-    if (cache) {
+    if (argv.cache) {
       args.push('--cache');
     }
 
-    if (verbose) {
+    if (argv.verbose) {
       args.push('--verbose');
     }
 
-    const modulePath = path.join(__dirname, '../express/start-server.js');
+    const modulePath = path.join(__dirname, '../express/start-dev-server.js');
 
     return fork(modulePath, args, {stdio: 'inherit'});
   };
 
-  let serverProcess = startServer();
+  let serverProcess = startDevServer();
 
   watch(localPaths).on('change', () => {
     console.info(new Date().toLocaleTimeString(), 'Restarting DEV server...');
 
     serverProcess.kill();
 
-    serverProcess = startServer();
+    serverProcess = startDevServer();
   });
 }
 
-start.describe = (yargs: Argv) =>
-  yargs.command('start [options]', 'Start a local DEV server', args =>
-    args
-      .describe('config', 'The path to the config file')
-      .string('config')
-      .default('config', defaults.configFilename)
-
+start.describe = (argv: Argv) =>
+  argv.command('start [options]', 'Start a local DEV server', commandArgv =>
+    commandArgv
       .describe(
         'port',
         'The port to listen on if available, otherwise listen on a random port'
@@ -80,8 +84,5 @@ start.describe = (yargs: Argv) =>
       .default('verbose', false)
 
       .example('npx $0 start', '')
-      .example('npx $0 start --port 3001 --cache', '')
+      .example('npx $0 start --port 3001 --cache --verbose', '')
   );
-
-start.matches = (argv: {_: string[]}): argv is StartArgv =>
-  argv._[0] === 'start';
