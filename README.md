@@ -282,10 +282,11 @@ and
 must be created manually. You can then configure the custom domain as follows:
 
 ```js
+const appName = 'my-app';
 const appVersion = process.env.APP_VERSION || 'prod';
 
 exports.default = () => ({
-  appName: 'my-app',
+  appName,
   appVersion,
   createStackConfig: () => ({
     customDomainConfig: {
@@ -293,7 +294,8 @@ exports.default = () => ({
         'arn:aws:acm:eu-central-1:************:certificate/********-****-****-****-************',
       hostedZoneId: '**************',
       hostedZoneName: 'example.com',
-      aliasRecordName: appVersion === 'prod' ? 'my-app' : `my-app-${appVersion}`
+      aliasRecordName:
+        appVersion === 'prod' ? appName : `${appName}-${appVersion}`
     }
   })
 });
