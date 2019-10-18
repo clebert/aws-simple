@@ -40,7 +40,7 @@ export interface LambdaConfig {
   readonly cachingEnabled?: boolean;
   readonly cacheTtlInSeconds?: number;
   readonly acceptedParameters?: LambdaAcceptedParameters;
-  readonly getEnvironment?: (port?: number) => LambdaEnvironment;
+  readonly environment?: LambdaEnvironment;
 }
 
 export interface S3ResponseHeaders {
@@ -66,3 +66,5 @@ export interface AppConfig {
   readonly lambdaConfigs?: LambdaConfig[];
   readonly s3Configs?: S3Config[];
 }
+
+export type AppConfigCreator = (port: number | undefined) => AppConfig;

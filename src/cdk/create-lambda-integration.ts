@@ -20,7 +20,7 @@ export function createLambdaIntegration(
     memorySize = 3008,
     timeoutInSeconds = 30,
     acceptedParameters = {},
-    getEnvironment
+    environment
   } = lambdaConfig;
 
   restApi.root.resourceForPath(publicPath).addMethod(
@@ -42,7 +42,7 @@ export function createLambdaIntegration(
           )}.${handler}`,
           timeout: Duration.seconds(timeoutInSeconds),
           memorySize,
-          environment: getEnvironment && getEnvironment()
+          environment
         }
       ),
       {

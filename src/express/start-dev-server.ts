@@ -34,7 +34,7 @@ function startDevServer(argv: unknown): void {
     minimumCompressionSizeInBytes,
     lambdaConfigs = [],
     s3Configs = []
-  } = loadAppConfig();
+  } = loadAppConfig(port);
 
   if (!verbose) {
     suppressLambdaResultLogging();
@@ -47,7 +47,7 @@ function startDevServer(argv: unknown): void {
   }
 
   for (const lambdaConfig of lambdaConfigs) {
-    serveLocalLambda(app, port, lambdaConfig, Boolean(cache));
+    serveLocalLambda(app, lambdaConfig, Boolean(cache));
   }
 
   for (const s3Config of s3Configs) {

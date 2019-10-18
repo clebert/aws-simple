@@ -164,14 +164,14 @@ overwritten by setting the environment variable `AWS_CONFIG_FILE`.
 ### Create A Config File
 
 To use the `aws-simple` CLI you have to create a top-level config file named
-`aws-simple.config.js` which exports an object compatible to the
-[`AppConfig` interface](https://github.com/clebert/aws-simple/blob/master/src/types.ts#L59).
+`aws-simple.config.js` which exports a function compatible to the
+[`AppConfigCreator` type](https://github.com/clebert/aws-simple/blob/master/src/types.ts#L70).
 
-For example, the following app config describes a simple app consisting of a
-single static HTML file:
+For example, a config file with the following content describes a simple app
+consisting of a single static HTML file:
 
 ```js
-exports.default = {
+exports.default = port => ({
   appName: 'my-app',
   appVersion: 'prod',
   s3Configs: [
@@ -182,8 +182,14 @@ exports.default = {
       bucketPath: 'index.html'
     }
   ]
-};
+});
 ```
+
+_Note: The `AppConfigCreator` function optionally gets a `port` argument. It is
+set when the function is called from the local DEV server. This gives the
+opportunity to create different
+[`AppConfig` objects](https://github.com/clebert/aws-simple/blob/master/src/types.ts#L59)
+for AWS or the local DEV environment._
 
 ### Bootstrap Your AWS Environment
 
@@ -256,10 +262,10 @@ TypeScript 2.3 and later support type-checking in `*.js` files by adding a
 /**
  * @type {import('aws-simple').AppConfig}
  */
-exports.default = {
+exports.default = () => ({
   appName: 'my-app',
   appVersion: 'prod'
-};
+});
 ```
 
 ### Example Configuration Of A Custom Domain
@@ -273,7 +279,7 @@ must be created manually. You can then configure the custom domain as follows:
 ```js
 const appVersion = process.env.APP_VERSION || 'prod';
 
-exports.default = {
+exports.default = () => ({
   appVersion,
   /* ... */
   customDomainConfig: {
@@ -283,7 +289,7 @@ exports.default = {
     hostedZoneName: 'example.com',
     aliasRecordName: appVersion === 'prod' ? 'my-app' : `my-app-${appVersion}`
   }
-};
+});
 ```
 
 _Note: Different app versions allow multiple stacks of the same app to be
@@ -297,7 +303,7 @@ You can configure a Lambda function that can be accessed via GET request at the
 URL `my-app.example.com/endpoint` as follows:
 
 ```js
-exports.default = {
+exports.default = port => ({
   /* ... */
   lambdaConfigs: [
     {
@@ -316,14 +322,14 @@ exports.default = {
         baz: {required: true},
         qux: {isCacheKey: true, required: true}
       },
-      getEnvironment: port => ({
+      environment: {
         BASE_URL: port
           ? `http://localhost:${port}` // Local DEV server
           : `https://${appVersion}.example.com`
-      })
+      }
     }
   ]
-};
+});
 ```
 
 The contents of file `path/to/lambda.js` could look like this:
@@ -344,7 +350,7 @@ If the export of the Lambda function node module has a different name than
 `handler`, this must be explicitly specified in the Lambda configuration:
 
 ```js
-exports.default = {
+exports.default = () => ({
   /* ... */
   lambdaConfigs: [
     {
@@ -352,7 +358,7 @@ exports.default = {
       handler: 'myHandler'
     }
   ]
-};
+});
 ```
 
 _Note: If external node modules are to be referenced in the Lambda function node
@@ -366,7 +372,7 @@ You can configure an S3 file that can be accessed via GET request at the URL
 `my-app.example.com/` as follows:
 
 ```js
-exports.default = {
+exports.default = () => ({
   /* ... */
   s3Configs: [
     {
@@ -376,7 +382,7 @@ exports.default = {
       bucketPath: 'file.html'
     }
   ]
-};
+});
 ```
 
 _Note: The file specified under the `localPath` is loaded into the S3 bucket
@@ -390,7 +396,7 @@ You can configure an S3 folder whose contained files can be accessed via GET
 request at the URL `my-app.example.com/assets/*` as follows:
 
 ```js
-exports.default = {
+exports.default = () => ({
   /* ... */
   s3Configs: [
     {
@@ -403,7 +409,7 @@ exports.default = {
       }
     }
   ]
-};
+});
 ```
 
 _Note: All files contained in the folder specified under the `localPath` are
@@ -440,14 +446,14 @@ function detectAppVersion() {
 
 const appVersion = detectAppVersion();
 
-exports.default = {
+exports.default = () => ({
   /* ... */
   appVersion,
   customDomainConfig: {
     /* ... */
     aliasRecordName: appVersion
   }
-};
+});
 ```
 
 ### Enable Binary Support
@@ -456,10 +462,10 @@ You can specify media types (e.g. `image/png`, `application/octet-stream`, etc.)
 to be treated as binary as follows:
 
 ```js
-exports.default = {
+exports.default = () => ({
   /* ... */
   binaryMediaTypes: ['font/woff2']
-};
+});
 ```
 
 ### Enable Payload Compression
@@ -467,10 +473,10 @@ exports.default = {
 You can enable compression for an API as follows:
 
 ```js
-exports.default = {
+exports.default = () => ({
   /* ... */
   minimumCompressionSizeInBytes: 1000
-};
+});
 ```
 
 ### Set The Logging Level
@@ -482,10 +488,10 @@ CloudWatch Logs, or choose `INFO` to include all `ERROR` events as well as extra
 informational events.
 
 ```js
-exports.default = {
+exports.default = () => ({
   /* ... */
   loggingLevel: 'ERROR'
-};
+});
 ```
 
 ## CLI Usage

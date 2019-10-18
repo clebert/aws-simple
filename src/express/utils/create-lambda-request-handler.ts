@@ -5,7 +5,6 @@ import {LambdaConfig} from '../../types';
 import {getRequestHeaders} from './get-request-headers';
 
 export function createLambdaRequestHandler(
-  port: number,
   lambdaConfig: LambdaConfig,
   useCache: boolean
 ): express.RequestHandler {
@@ -16,7 +15,7 @@ export function createLambdaRequestHandler(
     handler = 'handler',
     timeoutInSeconds = 30,
     cachingEnabled,
-    getEnvironment
+    environment
   } = lambdaConfig;
 
   return async (req, res) => {
@@ -27,7 +26,7 @@ export function createLambdaRequestHandler(
           lambdaPath: localPath,
           lambdaHandler: handler,
           timeoutMs: timeoutInSeconds * 1000,
-          environment: getEnvironment && getEnvironment(port),
+          environment,
           event: {
             ...getRequestHeaders(req),
             path: req.path,

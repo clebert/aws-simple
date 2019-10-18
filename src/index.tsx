@@ -15,58 +15,52 @@ import {upload} from './commands/upload';
 import {ListCommand} from './components/list-command';
 import {Ui} from './components/ui';
 import {createClientConfig} from './sdk/create-client-config';
-import {AppConfig} from './types';
 import {loadAppConfig} from './utils/load-app-config';
 
-function handleError(error: Error): void {
-  console.error(chalk.red(String(error.stack)));
+(async () => {
+  // tslint:disable-next-line: no-require-imports no-var-requires
+  const {description} = require('../package.json');
 
-  process.exit(1);
-}
+  const argv = compose(
+    cleanUp.describe,
+    tag.describe,
+    ListCommand.describe,
+    start.describe,
+    upload.describe,
+    create.describe
+  )(
+    yargs
+      .usage('Usage: $0 <command> [options]')
+      .help('h')
+      .alias('h', 'help')
+      .detectLocale(false)
+      .demandCommand()
+      .epilogue(description)
+      .strict()
+  ).argv;
 
-async function renderUi(appConfig: AppConfig): Promise<void> {
+  const appConfig = loadAppConfig();
+
+  if (create(appConfig, argv) || (await start(argv))) {
+    return;
+  }
+
   const clientConfig = await createClientConfig();
 
+  // Legacy UI
   await Promise.all([
     upload(appConfig, clientConfig, argv),
-    start(appConfig, argv),
     tag(appConfig, clientConfig, argv),
     cleanUp(appConfig, clientConfig, argv)
   ]);
 
+  // New UI
   await render(
     <Ui appConfig={appConfig} clientConfig={clientConfig} argv={argv} />,
     {experimental: true}
   ).waitUntilExit();
-}
+})().catch(error => {
+  console.error(chalk.red(String(error.stack)));
 
-// tslint:disable-next-line: no-require-imports no-var-requires
-const {description} = require('../package.json');
-
-const argv = compose(
-  cleanUp.describe,
-  tag.describe,
-  ListCommand.describe,
-  start.describe,
-  upload.describe,
-  create.describe
-)(
-  yargs
-    .usage('Usage: $0 <command> [options]')
-    .help('h')
-    .alias('h', 'help')
-    .detectLocale(false)
-    .demandCommand()
-    .epilogue(description)
-    .strict()
-).argv;
-
-try {
-  const appConfig = loadAppConfig();
-
-  if (!create(appConfig, argv)) {
-    renderUi(appConfig).catch(handleError);
-  }
-} catch (error) {
-  handleError(error);
-}
+  process.exit(1);
+});

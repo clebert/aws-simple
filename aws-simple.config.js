@@ -1,9 +1,9 @@
 // @ts-check
 
 /**
- * @type {import('./src/types').AppConfig}
+ * @type {import('./src/types').AppConfigCreator}
  */
-exports.default = {
+exports.default = () => ({
   appName: 'aws-simple',
   appVersion: 'test',
   s3Configs: [
@@ -14,4 +14,4 @@ exports.default = {
       bucketPath: 'index.html'
     }
   ]
-};
+});

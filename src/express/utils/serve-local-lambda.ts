@@ -5,7 +5,6 @@ import {getRouterMatcher} from './get-router-matcher';
 
 export function serveLocalLambda(
   app: express.Express,
-  port: number,
   lambdaConfig: LambdaConfig,
   useCache: boolean
 ): void {
@@ -13,6 +12,6 @@ export function serveLocalLambda(
 
   getRouterMatcher(app, httpMethod)(
     publicPath,
-    createLambdaRequestHandler(port, lambdaConfig, useCache)
+    createLambdaRequestHandler(lambdaConfig, useCache)
   );
 }
