@@ -77,8 +77,9 @@ with programmatic access and the following attached policy:
 }
 ```
 
-_Note: This policy has more rights than necessary and should be more specific
-for security._
+_Note: This policy has more rights than necessary and
+[should be more specific](https://github.com/clebert/aws-simple/issues/23) for
+security._
 
 ### Optional: Create An AWS Profile
 
