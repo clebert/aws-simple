@@ -14,7 +14,8 @@
     "esModuleInterop": true,
     "outDir": "lib",
     "declaration": true,
-    "jsx": "react"
+    "jsx": "react",
+    "incremental": true
   },
   "include": ["src/**/*"]
 }

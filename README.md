@@ -604,16 +604,15 @@ Clean up old deployed stacks
 Options:
   --version   Show version number                                      [boolean]
   -h, --help  Show help                                                [boolean]
-  --max-age   The maximum age (in days) of a stack, all older stacks will be
-              deleted                                     [number] [default: 30]
-  --preserve  Tags that prevent a stack from being deleted regardless of its age
-                                                           [array] [default: []]
+  --min-age   The minimum age (in days) of a stack for deletion
+                                                          [number] [default: 30]
+  --exclude   Tags that exclude a stack from deletion      [array] [default: []]
   --yes       The confirmation message will automatically be answered with yes
                                                       [boolean] [default: false]
 
 Examples:
   npx aws-simple clean-up
-  npx aws-simple clean-up --max-age 14 --preserve release prerelease --yes
+  npx aws-simple clean-up --min-age 14 --exclude release prerelease --yes
 ```
 
 ## Development

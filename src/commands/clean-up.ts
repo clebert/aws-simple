@@ -14,8 +14,8 @@ import {parseStackName} from '../utils/stack-name';
 
 interface CleanUpArgv {
   readonly _: ['clean-up'];
-  readonly maxAge: number;
-  readonly preserve: string[];
+  readonly minAge: number;
+  readonly exclude: string[];
   readonly yes: boolean;
 }
 
@@ -60,10 +60,7 @@ export async function cleanUp(
   const stacks = await findStacks(appConfig, clientConfig);
 
   const expiredStacks = stacks.filter(stack =>
-    isStackExpired(
-      {maxAgeInDays: argv.maxAge, tagsToPreserve: argv.preserve},
-      stack
-    )
+    isStackExpired(stack, argv.minAge, argv.exclude)
   );
 
   if (expiredStacks.length === 0) {
@@ -120,18 +117,15 @@ cleanUp.describe = (argv: Argv) =>
     commandArgv =>
       commandArgv
         .describe(
-          'max-age',
-          'The maximum age (in days) of a stack, all older stacks will be deleted'
+          'min-age',
+          'The minimum age (in days) of a stack for deletion'
         )
-        .number('max-age')
-        .default('max-age', 30)
+        .number('min-age')
+        .default('min-age', 30)
 
-        .describe(
-          'preserve',
-          'Tags that prevent a stack from being deleted regardless of its age'
-        )
-        .array('preserve')
-        .default('preserve', [])
+        .describe('exclude', 'Tags that exclude a stack from deletion')
+        .array('exclude')
+        .default('exclude', [])
 
         .describe(
           'yes',
@@ -143,7 +137,7 @@ cleanUp.describe = (argv: Argv) =>
         .example('npx $0 clean-up', '')
 
         .example(
-          'npx $0 clean-up --max-age 14 --preserve release prerelease --yes',
+          'npx $0 clean-up --min-age 14 --exclude release prerelease --yes',
           ''
         )
   );
