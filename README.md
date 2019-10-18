@@ -113,6 +113,13 @@ Default region name [None]: eu-central-1
 Default output format [None]: json
 ```
 
+_Note: If a profile other than the `default` profile is to be set up, the `aws`
+CLI can be called with the `--profile` CLI option, e.g.:_
+
+```
+aws configure --profile my-profile
+```
+
 As an alternative to using the `aws` CLI, you can create the following files
 manually:
 
@@ -141,6 +148,12 @@ region = eu-central-1
 The following two environment variables `AWS_PROFILE` and `AWS_DEFAULT_PROFILE`
 are evaluated in the specified order. If neither of the two environment
 variables is set, the `default` profile is used.
+
+The following is an example of setting a specific profile:
+
+```
+AWS_PROFILE=my-profile yarn aws-simple list
+```
 
 ### Set The AWS Credentials
 
