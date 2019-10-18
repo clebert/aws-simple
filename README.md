@@ -169,7 +169,7 @@ single static HTML file:
 
 ```js
 exports.default = {
-  appName: 'MyApp',
+  appName: 'my-app',
   appVersion: 'prod',
   s3Configs: [
     {
@@ -212,9 +212,9 @@ Create and deploy a stack using the CDK:
 yarn cdk deploy --app 'yarn aws-simple create'
 ```
 
-The name of the deployed stack consists of the app name (e.g. `MyApp`) in
+The name of the deployed stack consists of the app name (e.g. `my-app`) in
 combination with the app version (e.g. `prod`) such as
-`aws-simple--MyApp--prod`.
+`aws-simple--my-app--prod`.
 
 **Caution:** Re-deploying an already deployed stack (so a stack with the same
 name) will remove all tags set with `aws-simple tag [options]`.
@@ -254,7 +254,7 @@ TypeScript 2.3 and later support type-checking in `*.js` files by adding a
  * @type {import('aws-simple').AppConfig}
  */
 exports.default = {
-  appName: 'MyApp',
+  appName: 'my-app',
   appVersion: 'prod'
 };
 ```
