@@ -26,9 +26,10 @@ export async function upload(
   }
 
   const stack = await findStack(appConfig, clientConfig);
-  const baseUrl = createStackBaseUrl(appConfig, stack);
+  const stackConfig = appConfig.createStackConfig();
+  const baseUrl = createStackBaseUrl(stackConfig, stack);
   const listrTasks: Listr.ListrTask[] = [];
-  const {s3Configs = []} = appConfig;
+  const {s3Configs = []} = stackConfig;
 
   for (const s3Config of s3Configs) {
     const {type, publicPath} = s3Config;

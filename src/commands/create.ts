@@ -1,7 +1,5 @@
 import {Argv} from 'yargs';
-import {createLambdaIntegration} from '../cdk/create-lambda-integration';
-import {createResources} from '../cdk/create-resources';
-import {createS3Integration} from '../cdk/create-s3-integration';
+import {createStack} from '../cdk/create-stack';
 import {AppConfig} from '../types';
 
 interface CreateArgv {
@@ -20,16 +18,7 @@ export function create(
     return false;
   }
 
-  const resources = createResources(appConfig);
-  const {lambdaConfigs = [], s3Configs = []} = appConfig;
-
-  for (const lambdaConfig of lambdaConfigs) {
-    createLambdaIntegration(resources, lambdaConfig);
-  }
-
-  for (const s3Config of s3Configs) {
-    createS3Integration(resources, s3Config);
-  }
+  createStack(appConfig);
 
   return true;
 }

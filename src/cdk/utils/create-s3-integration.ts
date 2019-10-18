@@ -1,15 +1,21 @@
-import {AuthorizationType, AwsIntegration} from '@aws-cdk/aws-apigateway';
+import {
+  AuthorizationType,
+  AwsIntegration,
+  RestApi
+} from '@aws-cdk/aws-apigateway';
+import {Role} from '@aws-cdk/aws-iam';
+import {Bucket} from '@aws-cdk/aws-s3';
 import * as path from 'path';
-import {S3Config} from '../types';
-import {Resources} from './create-resources';
-import {createS3IntegrationResponses} from './utils/create-s3-integration-responses';
-import {createS3MethodResponses} from './utils/create-s3-method-responses';
+import {S3Config} from '../../types';
+import {createS3IntegrationResponses} from './create-s3-integration-responses';
+import {createS3MethodResponses} from './create-s3-method-responses';
 
 export function createS3Integration(
-  resources: Resources,
+  restApi: RestApi,
+  s3Bucket: Bucket,
+  s3IntegrationRole: Role,
   s3Config: S3Config
 ): void {
-  const {restApi, s3Bucket, s3IntegrationRole} = resources;
   const {type, publicPath, bucketPath = publicPath} = s3Config;
 
   const s3Integration = new AwsIntegration({

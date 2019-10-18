@@ -41,7 +41,7 @@ import {loadAppConfig} from './utils/load-app-config';
 
   const appConfig = loadAppConfig();
 
-  if (create(appConfig, argv) || (await start(argv))) {
+  if (create(appConfig, argv)) {
     return;
   }
 
@@ -50,6 +50,7 @@ import {loadAppConfig} from './utils/load-app-config';
   // Legacy UI
   await Promise.all([
     upload(appConfig, clientConfig, argv),
+    start(appConfig, argv),
     tag(appConfig, clientConfig, argv),
     cleanUp(appConfig, clientConfig, argv)
   ]);

@@ -1,17 +1,15 @@
-import {LambdaIntegration} from '@aws-cdk/aws-apigateway';
+import {LambdaIntegration, RestApi} from '@aws-cdk/aws-apigateway';
 import {Code, Function as Lambda, Runtime} from '@aws-cdk/aws-lambda';
-import {Duration} from '@aws-cdk/core';
+import {Duration, Stack} from '@aws-cdk/core';
 import {createHash} from 'crypto';
 import * as path from 'path';
-import {LambdaConfig} from '../types';
-import {Resources} from './create-resources';
+import {LambdaConfig} from '../../types';
 
 export function createLambdaIntegration(
-  resources: Resources,
+  stack: Stack,
+  restApi: RestApi,
   lambdaConfig: LambdaConfig
 ): void {
-  const {stack, restApi} = resources;
-
   const {
     httpMethod,
     publicPath,

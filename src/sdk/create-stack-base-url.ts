@@ -1,12 +1,12 @@
 import {CloudFormation} from 'aws-sdk';
-import {AppConfig} from '../types';
+import {StackConfig} from '../types';
 import {findStackOutput} from './find-stack-output';
 
 export function createStackBaseUrl(
-  appConfig: AppConfig,
+  stackConfig: StackConfig,
   stack: CloudFormation.Stack
 ): string {
-  const {customDomainConfig} = appConfig;
+  const {customDomainConfig} = stackConfig;
 
   if (!customDomainConfig) {
     return findStackOutput(stack, 'RestApiUrl');

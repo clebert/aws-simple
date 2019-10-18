@@ -11,22 +11,18 @@ import {AppConfig} from '../types';
 import {createUniqueExportName} from '../utils/create-unique-export-name';
 import {createStackName} from '../utils/stack-name';
 import {createARecord} from './utils/create-a-record';
+import {createLambdaIntegration} from './utils/create-lambda-integration';
 import {createRestApiProps} from './utils/create-rest-api-props';
+import {createS3Integration} from './utils/create-s3-integration';
 
-export interface Resources {
-  readonly stack: Stack;
-  readonly restApi: RestApi;
-  readonly s3Bucket: Bucket;
-  readonly s3IntegrationRole: Role;
-}
-
-export function createResources(appConfig: AppConfig): Resources {
+export function createStack(appConfig: AppConfig): void {
+  const stackConfig = appConfig.createStackConfig();
   const stack = new Stack(new App(), createStackName(appConfig));
 
   const restApi = new RestApi(
     stack,
     'RestApi',
-    createRestApiProps(appConfig, stack)
+    createRestApiProps(stackConfig, stack)
   );
 
   const restApiUrlOutput = new CfnOutput(stack, 'RestApiUrlOutput', {
@@ -36,7 +32,7 @@ export function createResources(appConfig: AppConfig): Resources {
 
   restApiUrlOutput.node.addDependency(restApi);
 
-  createARecord(appConfig, stack, restApi);
+  createARecord(stackConfig, stack, restApi);
 
   const s3Bucket = new Bucket(stack, 'S3Bucket', {publicReadAccess: false});
 
@@ -58,5 +54,13 @@ export function createResources(appConfig: AppConfig): Resources {
 
   s3IntegrationPolicy.node.addDependency(s3IntegrationRole);
 
-  return {stack, restApi, s3Bucket, s3IntegrationRole};
+  const {lambdaConfigs = [], s3Configs = []} = stackConfig;
+
+  for (const lambdaConfig of lambdaConfigs) {
+    createLambdaIntegration(stack, restApi, lambdaConfig);
+  }
+
+  for (const s3Config of s3Configs) {
+    createS3Integration(restApi, s3Bucket, s3IntegrationRole, s3Config);
+  }
 }

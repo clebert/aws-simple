@@ -2,14 +2,14 @@ import {RestApi} from '@aws-cdk/aws-apigateway';
 import {ARecord, HostedZone, RecordTarget} from '@aws-cdk/aws-route53';
 import {ApiGateway} from '@aws-cdk/aws-route53-targets';
 import {Stack} from '@aws-cdk/core';
-import {AppConfig} from '../../types';
+import {StackConfig} from '../../types';
 
 export function createARecord(
-  appConfig: AppConfig,
+  stackConfig: StackConfig,
   stack: Stack,
   restApi: RestApi
 ): void {
-  const {customDomainConfig} = appConfig;
+  const {customDomainConfig} = stackConfig;
 
   if (!customDomainConfig) {
     return;

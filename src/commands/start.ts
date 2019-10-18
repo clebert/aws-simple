@@ -3,7 +3,7 @@ import {watch} from 'chokidar';
 import getPort from 'get-port';
 import * as path from 'path';
 import {Argv} from 'yargs';
-import {loadAppConfig} from '../utils/load-app-config';
+import {AppConfig} from '../types';
 
 interface StartArgv {
   readonly _: ['start'];
@@ -16,13 +16,19 @@ function isStartArgv(argv: {readonly _: string[]}): argv is StartArgv {
   return argv._[0] === 'start';
 }
 
-export async function start(argv: {readonly _: string[]}): Promise<boolean> {
+export async function start(
+  appConfig: AppConfig,
+  argv: {readonly _: string[]}
+): Promise<void> {
   if (!isStartArgv(argv)) {
-    return false;
+    return;
   }
 
   const port = await getPort({port: argv.port});
-  const {lambdaConfigs = [], s3Configs = []} = loadAppConfig(port);
+
+  const {lambdaConfigs = [], s3Configs = []} = appConfig.createStackConfig(
+    port
+  );
 
   const localPaths = [...lambdaConfigs, ...s3Configs].map(
     ({localPath}) => localPath
@@ -53,8 +59,6 @@ export async function start(argv: {readonly _: string[]}): Promise<boolean> {
 
     serverProcess = startDevServer();
   });
-
-  return true;
 }
 
 start.describe = (argv: Argv) =>

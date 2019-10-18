@@ -34,7 +34,7 @@ function startDevServer(argv: unknown): void {
     minimumCompressionSizeInBytes,
     lambdaConfigs = [],
     s3Configs = []
-  } = loadAppConfig(port);
+  } = loadAppConfig().createStackConfig(port);
 
   if (!verbose) {
     suppressLambdaResultLogging();

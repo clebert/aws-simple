@@ -56,9 +56,7 @@ export interface S3Config {
   readonly responseHeaders?: S3ResponseHeaders;
 }
 
-export interface AppConfig {
-  readonly appName: string;
-  readonly appVersion: string;
+export interface StackConfig {
   readonly customDomainConfig?: CustomDomainConfig;
   readonly binaryMediaTypes?: string[];
   readonly minimumCompressionSizeInBytes?: number;
@@ -67,4 +65,8 @@ export interface AppConfig {
   readonly s3Configs?: S3Config[];
 }
 
-export type AppConfigCreator = (port: number | undefined) => AppConfig;
+export interface AppConfig {
+  readonly appName: string;
+  readonly appVersion: string;
+  readonly createStackConfig: (port?: number) => StackConfig;
+}

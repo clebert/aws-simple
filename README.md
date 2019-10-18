@@ -164,32 +164,34 @@ overwritten by setting the environment variable `AWS_CONFIG_FILE`.
 ### Create A Config File
 
 To use the `aws-simple` CLI you have to create a top-level config file named
-`aws-simple.config.js` which exports a function compatible to the
-[`AppConfigCreator` type](https://github.com/clebert/aws-simple/blob/master/src/types.ts#L70).
+`aws-simple.config.js` which exports an object compatible to the
+[`AppConfig` interface](https://github.com/clebert/aws-simple/blob/master/src/types.ts#L68).
 
 For example, a config file with the following content describes a simple app
 consisting of a single static HTML file:
 
 ```js
-exports.default = port => ({
+exports.default = {
   appName: 'my-app',
   appVersion: 'prod',
-  s3Configs: [
-    {
-      type: 'file',
-      publicPath: '/',
-      localPath: 'dist/index.html',
-      bucketPath: 'index.html'
-    }
-  ]
-});
+  createStackConfig: port => ({
+    s3Configs: [
+      {
+        type: 'file',
+        publicPath: '/',
+        localPath: 'dist/index.html',
+        bucketPath: 'index.html'
+      }
+    ]
+  })
+};
 ```
 
-_Note: The `AppConfigCreator` function optionally gets a `port` argument. It is
-set when the function is called from the local DEV server. This gives the
-opportunity to create different
-[`AppConfig` objects](https://github.com/clebert/aws-simple/blob/master/src/types.ts#L59)
-for AWS or the local DEV environment._
+_Note: The `createStackConfig` function optionally gets a `port` argument. It is
+set when the function is called in the context of the local DEV server. This
+gives the opportunity to create different
+[`StackConfig` objects](https://github.com/clebert/aws-simple/blob/master/src/types.ts#L59)
+for either AWS or the local DEV environment._
 
 ### Bootstrap Your AWS Environment
 
@@ -264,7 +266,10 @@ TypeScript 2.3 and later support type-checking in `*.js` files by adding a
  */
 exports.default = () => ({
   appName: 'my-app',
-  appVersion: 'prod'
+  appVersion: 'prod',
+  createStackConfig: () => ({
+    /* ... */
+  })
 });
 ```
 
@@ -280,15 +285,17 @@ must be created manually. You can then configure the custom domain as follows:
 const appVersion = process.env.APP_VERSION || 'prod';
 
 exports.default = () => ({
+  appName: 'my-app',
   appVersion,
-  /* ... */
-  customDomainConfig: {
-    certificateArn:
-      'arn:aws:acm:eu-central-1:************:certificate/********-****-****-****-************',
-    hostedZoneId: '**************',
-    hostedZoneName: 'example.com',
-    aliasRecordName: appVersion === 'prod' ? 'my-app' : `my-app-${appVersion}`
-  }
+  createStackConfig: () => ({
+    customDomainConfig: {
+      certificateArn:
+        'arn:aws:acm:eu-central-1:************:certificate/********-****-****-****-************',
+      hostedZoneId: '**************',
+      hostedZoneName: 'example.com',
+      aliasRecordName: appVersion === 'prod' ? 'my-app' : `my-app-${appVersion}`
+    }
+  })
 });
 ```
 
@@ -303,33 +310,38 @@ You can configure a Lambda function that can be accessed via GET request at the
 URL `my-app.example.com/endpoint` as follows:
 
 ```js
-exports.default = port => ({
-  /* ... */
-  lambdaConfigs: [
-    {
-      httpMethod: 'GET',
-      publicPath: '/endpoint',
-      localPath: 'path/to/lambda.js',
+const appVersion = process.env.APP_VERSION || 'prod';
 
-      // Optional example properties
-      memorySize: 3008,
-      timeoutInSeconds: 30,
-      cachingEnabled: true,
-      cacheTtlInSeconds: 600,
-      acceptedParameters: {
-        foo: {},
-        bar: {isCacheKey: true},
-        baz: {required: true},
-        qux: {isCacheKey: true, required: true}
-      },
-      environment: {
-        BASE_URL: port
-          ? `http://localhost:${port}` // Local DEV server
-          : `https://${appVersion}.example.com`
+exports.default = {
+  appName: 'my-app',
+  appVersion,
+  createStackConfig: port => ({
+    lambdaConfigs: [
+      {
+        httpMethod: 'GET',
+        publicPath: '/endpoint',
+        localPath: 'path/to/lambda.js',
+
+        // Optional example properties
+        memorySize: 3008,
+        timeoutInSeconds: 30,
+        cachingEnabled: true,
+        cacheTtlInSeconds: 600,
+        acceptedParameters: {
+          foo: {},
+          bar: {isCacheKey: true},
+          baz: {required: true},
+          qux: {isCacheKey: true, required: true}
+        },
+        environment: {
+          BASE_URL: port
+            ? `http://localhost:${port}` // Local DEV server
+            : `https://${appVersion}.example.com`
+        }
       }
-    }
-  ]
-});
+    ]
+  })
+};
 ```
 
 The contents of file `path/to/lambda.js` could look like this:
@@ -351,13 +363,16 @@ If the export of the Lambda function node module has a different name than
 
 ```js
 exports.default = () => ({
-  /* ... */
-  lambdaConfigs: [
-    {
-      /* ... */
-      handler: 'myHandler'
-    }
-  ]
+  appName: 'my-app',
+  appVersion: 'prod',
+  createStackConfig: () => ({
+    lambdaConfigs: [
+      {
+        /* ... */
+        handler: 'myHandler'
+      }
+    ]
+  })
 });
 ```
 
@@ -373,15 +388,18 @@ You can configure an S3 file that can be accessed via GET request at the URL
 
 ```js
 exports.default = () => ({
-  /* ... */
-  s3Configs: [
-    {
-      type: 'file',
-      publicPath: '/',
-      localPath: 'path/to/file.html',
-      bucketPath: 'file.html'
-    }
-  ]
+  appName: 'my-app',
+  appVersion: 'prod',
+  createStackConfig: () => ({
+    s3Configs: [
+      {
+        type: 'file',
+        publicPath: '/',
+        localPath: 'path/to/file.html',
+        bucketPath: 'file.html'
+      }
+    ]
+  })
 });
 ```
 
@@ -397,18 +415,21 @@ request at the URL `my-app.example.com/assets/*` as follows:
 
 ```js
 exports.default = () => ({
-  /* ... */
-  s3Configs: [
-    {
-      type: 'folder',
-      publicPath: '/assets',
-      localPath: 'path/to/folder',
-      responseHeaders: {
-        accessControlAllowOrigin: '*',
-        cacheControl: 'max-age=157680000'
+  appName: 'my-app',
+  appVersion: 'prod',
+  createStackConfig: () => ({
+    s3Configs: [
+      {
+        type: 'folder',
+        publicPath: '/assets',
+        localPath: 'path/to/folder',
+        responseHeaders: {
+          accessControlAllowOrigin: '*',
+          cacheControl: 'max-age=157680000'
+        }
       }
-    }
-  ]
+    ]
+  })
 });
 ```
 
@@ -447,12 +468,15 @@ function detectAppVersion() {
 const appVersion = detectAppVersion();
 
 exports.default = () => ({
-  /* ... */
+  appName: 'my-app',
   appVersion,
-  customDomainConfig: {
-    /* ... */
-    aliasRecordName: appVersion
-  }
+  createStackConfig: () => ({
+    customDomainConfig: {
+      /* ... */
+      hostedZoneName: 'example.com',
+      aliasRecordName: appVersion
+    }
+  })
 });
 ```
 
@@ -463,8 +487,11 @@ to be treated as binary as follows:
 
 ```js
 exports.default = () => ({
-  /* ... */
-  binaryMediaTypes: ['font/woff2']
+  appName: 'my-app',
+  appVersion: 'prod',
+  createStackConfig: () => ({
+    binaryMediaTypes: ['font/woff2']
+  })
 });
 ```
 
@@ -474,8 +501,11 @@ You can enable compression for an API as follows:
 
 ```js
 exports.default = () => ({
-  /* ... */
-  minimumCompressionSizeInBytes: 1000
+  appName: 'my-app',
+  appVersion: 'prod',
+  createStackConfig: () => ({
+    minimumCompressionSizeInBytes: 1000
+  })
 });
 ```
 
@@ -489,8 +519,11 @@ informational events.
 
 ```js
 exports.default = () => ({
-  /* ... */
-  loggingLevel: 'ERROR'
+  appName: 'my-app',
+  appVersion: 'prod',
+  createStackConfig: () => ({
+    loggingLevel: 'ERROR'
+  })
 });
 ```
 

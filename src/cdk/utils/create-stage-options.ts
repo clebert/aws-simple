@@ -5,10 +5,10 @@ import {
 } from '@aws-cdk/aws-apigateway';
 import {Duration} from '@aws-cdk/core';
 import * as path from 'path';
-import {AppConfig} from '../../types';
+import {StackConfig} from '../../types';
 
-export function createStageOptions(appConfig: AppConfig): StageOptions {
-  const {loggingLevel, lambdaConfigs = []} = appConfig;
+export function createStageOptions(stackConfig: StackConfig): StageOptions {
+  const {loggingLevel, lambdaConfigs = []} = stackConfig;
   const restApiMethodOptions: Record<string, MethodDeploymentOptions> = {};
 
   let rootCachingEnabled = false;

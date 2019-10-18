@@ -1,13 +1,13 @@
 import {DomainNameOptions} from '@aws-cdk/aws-apigateway';
 import {Certificate} from '@aws-cdk/aws-certificatemanager';
 import {Stack} from '@aws-cdk/core';
-import {AppConfig} from '../../types';
+import {StackConfig} from '../../types';
 
 export function createDomainNameOptions(
-  appConfig: AppConfig,
+  stackConfig: StackConfig,
   stack: Stack
 ): DomainNameOptions | undefined {
-  const {customDomainConfig} = appConfig;
+  const {customDomainConfig} = stackConfig;
 
   if (!customDomainConfig) {
     return;
