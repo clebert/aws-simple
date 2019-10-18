@@ -45,7 +45,7 @@ const ageColumn: Column<CloudFormation.Stack, 'CreationTime'> = {
 const tagsColumn: Column<CloudFormation.Stack, 'Tags'> = {
   headerCell: <Text underline>Tags</Text>,
   entryKey: 'Tags',
-  createEntryCell: value => (value ? value.join(', ') : '')
+  createEntryCell: value => (value ? value.map(({Key}) => Key).join(', ') : '')
 };
 
 export const ListCommand = (props: ListCommandProps) => {
