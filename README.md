@@ -21,13 +21,12 @@ domain and optional alias record, host static web resources via S3, and
 provision public backend APIs via Lambda. In addition, a local DEV server can be
 started to emulate the resulting AWS infrastructure.
 
-### aws-simple-example
+### [aws-simple-example](https://github.com/clebert/aws-simple-example)
 
-For a quick impression, an
-[example app](https://github.com/clebert/aws-simple-example) is available that
-consists essentially of a React component that retrieves text from a Lambda
-function using a `React.useEffect` hook and displays it. Parcel is used for
-bundling and TypeScript as language.
+For a quick impression, an example app is available that consists essentially of
+a React component that retrieves text from a Lambda function using a
+`React.useEffect` hook and displays it. Parcel is used for bundling and
+TypeScript as language.
 
 ## Motivation
 
@@ -64,32 +63,22 @@ with programmatic access and the following attached policy:
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": ["cloudformation:*", "apigateway:*", "s3:*"],
+      "Action": [
+        "apigateway:*",
+        "cloudformation:*",
+        "iam:*",
+        "lambda:*",
+        "route53:*",
+        "s3:*"
+      ],
       "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": ["lambda:*"],
-      "Resource": "arn:aws:lambda:*:*:function:*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": ["iam:*"],
-      "Resource": "arn:aws:iam::*:role/*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": ["iam:CreateServiceLinkedRole"],
-      "Resource": "arn:aws:iam::*:role/aws-service-role/ops.apigateway.amazonaws.com/*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": ["route53:*"],
-      "Resource": "arn:aws:route53:::*"
     }
   ]
 }
 ```
+
+_Note: This policy has more rights than necessary and should be more specific
+for security._
 
 ### Optional: Create An AWS Profile
 
