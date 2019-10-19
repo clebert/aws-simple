@@ -1,14 +1,13 @@
 import {CloudFormation} from 'aws-sdk';
 import {Box, Color, Text} from 'ink';
-import Spinner from 'ink-spinner';
 import React from 'react';
 import {Argv} from 'yargs';
-import {Column} from '../components/table';
 import {useFindStacks} from '../hooks/use-find-stacks';
 import {getAgeInDays} from '../utils/get-age-in-days';
 import {plural} from '../utils/plural';
 import {parseStackName} from '../utils/stack-name';
-import {Table} from './table';
+import {Spinner} from './spinner';
+import {Column, Table} from './table';
 
 export interface ListCommandProps {
   readonly argv: {readonly _: string[]};
@@ -56,12 +55,7 @@ export const ListCommand = (props: ListCommandProps) => {
   const stacks = useFindStacks();
 
   if (!stacks) {
-    return (
-      <Box marginRight={1}>
-        <Spinner type="dots" />
-        {'Searching deployed stacks.'}
-      </Box>
-    );
+    return <Spinner>Searching deployed stacks.</Spinner>;
   }
 
   if (stacks.length === 0) {
@@ -71,10 +65,9 @@ export const ListCommand = (props: ListCommandProps) => {
   return (
     <>
       <Box marginBottom={1}>
-        <Color green>{`Found ${stacks.length} deployed ${plural(
-          'stack',
-          stacks
-        )}.`}</Color>
+        <Color green>
+          Found {stacks.length} deployed {plural('stack', stacks)}.
+        </Color>
       </Box>
       <Table
         columns={[appVersionColumn, ageColumn, tagsColumn]}

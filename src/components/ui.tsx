@@ -5,6 +5,7 @@ import {ClientConfigContext} from '../contexts/client-config-context';
 import {AppConfig} from '../types';
 import {AppInfo} from './app-info';
 import {ListCommand} from './list-command';
+import {TagCommand} from './tag-command';
 
 export interface UiProps {
   readonly appConfig: AppConfig;
@@ -18,6 +19,7 @@ export const Ui = ({appConfig, clientConfig, argv}: UiProps) => (
     <AppConfigContext.Provider value={appConfig}>
       <ClientConfigContext.Provider value={clientConfig}>
         <ListCommand argv={argv} />
+        <TagCommand argv={argv} />
       </ClientConfigContext.Provider>
     </AppConfigContext.Provider>
   </>

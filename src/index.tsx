@@ -11,9 +11,9 @@ import yargs from 'yargs';
 import {cleanUp} from './commands/clean-up';
 import {create} from './commands/create';
 import {start} from './commands/start';
-import {tag} from './commands/tag';
 import {upload} from './commands/upload';
 import {ListCommand} from './components/list-command';
+import {TagCommand} from './components/tag-command';
 import {Ui} from './components/ui';
 import {createClientConfig} from './sdk/create-client-config';
 import {loadAppConfig} from './utils/load-app-config';
@@ -24,7 +24,7 @@ import {loadAppConfig} from './utils/load-app-config';
 
   const argv = compose(
     cleanUp.describe,
-    tag.describe,
+    TagCommand.describe,
     ListCommand.describe,
     start.describe,
     upload.describe,
@@ -54,7 +54,6 @@ import {loadAppConfig} from './utils/load-app-config';
   // Legacy UI
   await upload(appConfig, clientConfig, argv);
   await start(appConfig, argv);
-  await tag(appConfig, clientConfig, argv);
   await cleanUp(appConfig, clientConfig, argv);
 
   await exitPromise;

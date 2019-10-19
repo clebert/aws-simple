@@ -1,0 +1,14 @@
+import {Box} from 'ink';
+import React from 'react';
+
+export interface SpinnerProps {
+  readonly name: React.ReactNode;
+  readonly children: React.ReactNode;
+}
+
+export const Label = ({name, children}: SpinnerProps) => (
+  <Box>
+    <Box marginRight={1}>{name}</Box>
+    {children}
+  </Box>
+);
