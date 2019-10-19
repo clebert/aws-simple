@@ -3,6 +3,7 @@ import React from 'react';
 import {AppConfigContext} from '../contexts/app-config-context';
 import {ClientConfigContext} from '../contexts/client-config-context';
 import {AppConfig} from '../types';
+import {AppInfo} from './app-info';
 import {ListCommand} from './list-command';
 
 export interface UiProps {
@@ -12,9 +13,12 @@ export interface UiProps {
 }
 
 export const Ui = ({appConfig, clientConfig, argv}: UiProps) => (
-  <AppConfigContext.Provider value={appConfig}>
-    <ClientConfigContext.Provider value={clientConfig}>
-      <ListCommand argv={argv} />
-    </ClientConfigContext.Provider>
-  </AppConfigContext.Provider>
+  <>
+    <AppInfo appConfig={appConfig} />
+    <AppConfigContext.Provider value={appConfig}>
+      <ClientConfigContext.Provider value={clientConfig}>
+        <ListCommand argv={argv} />
+      </ClientConfigContext.Provider>
+    </AppConfigContext.Provider>
+  </>
 );

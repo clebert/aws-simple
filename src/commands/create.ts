@@ -13,14 +13,10 @@ function isCreateArgv(argv: {readonly _: string[]}): argv is CreateArgv {
 export function create(
   appConfig: AppConfig,
   argv: {readonly _: string[]}
-): boolean {
-  if (!isCreateArgv(argv)) {
-    return false;
+): void {
+  if (isCreateArgv(argv)) {
+    createStack(appConfig);
   }
-
-  createStack(appConfig);
-
-  return true;
 }
 
 create.describe = (argv: Argv) =>

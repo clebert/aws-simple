@@ -6,6 +6,7 @@ import chalk from 'chalk';
 import compose from 'compose-function';
 import {render} from 'ink';
 import React from 'react';
+import signalExit from 'signal-exit';
 import yargs from 'yargs';
 import {cleanUp} from './commands/clean-up';
 import {create} from './commands/create';
@@ -40,28 +41,31 @@ import {loadAppConfig} from './utils/load-app-config';
   ).argv;
 
   const appConfig = loadAppConfig();
-
-  if (create(appConfig, argv)) {
-    return;
-  }
-
   const clientConfig = await createClientConfig();
 
-  // Legacy UI
-  await Promise.all([
-    upload(appConfig, clientConfig, argv),
-    start(appConfig, argv),
-    tag(appConfig, clientConfig, argv),
-    cleanUp(appConfig, clientConfig, argv)
-  ]);
-
   // New UI
-  await render(
+  const exitPromise = render(
     <Ui appConfig={appConfig} clientConfig={clientConfig} argv={argv} />,
     {experimental: true}
   ).waitUntilExit();
+
+  create(appConfig, argv);
+
+  // Legacy UI
+  await upload(appConfig, clientConfig, argv);
+  await start(appConfig, argv);
+  await tag(appConfig, clientConfig, argv);
+  await cleanUp(appConfig, clientConfig, argv);
+
+  await exitPromise;
 })().catch(error => {
-  console.error(chalk.red(String(error.stack)));
+  signalExit(() => {
+    /*
+     * This ensures that the error is printed after ink has finished rendering.
+     * Otherwise ink renders the same output twice.
+     */
+    console.error(chalk.red(String(error.stack)));
+  });
 
   process.exit(1);
 });

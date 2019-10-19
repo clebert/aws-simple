@@ -57,9 +57,9 @@ export const ListCommand = (props: ListCommandProps) => {
 
   if (!stacks) {
     return (
-      <Box>
+      <Box marginRight={1}>
         <Spinner type="dots" />
-        {' Searching deployed stacks.'}
+        {'Searching deployed stacks.'}
       </Box>
     );
   }
@@ -70,10 +70,12 @@ export const ListCommand = (props: ListCommandProps) => {
 
   return (
     <>
-      <Color green>{`Found ${stacks.length} deployed ${plural(
-        'stack',
-        stacks
-      )}.`}</Color>{' '}
+      <Box marginBottom={1}>
+        <Color green>{`Found ${stacks.length} deployed ${plural(
+          'stack',
+          stacks
+        )}.`}</Color>
+      </Box>
       <Table
         columns={[appVersionColumn, ageColumn, tagsColumn]}
         entries={stacks}
