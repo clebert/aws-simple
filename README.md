@@ -328,7 +328,7 @@ exports.default = {
         memorySize: 3008,
         timeoutInSeconds: 30,
         cachingEnabled: true,
-        cacheTtlInSeconds: 600,
+        cacheTtlInSeconds: 3600,
         acceptedParameters: {
           foo: {},
           bar: {isCacheKey: true},
