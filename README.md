@@ -638,9 +638,12 @@ Options:
   -h, --help  Show help                                                [boolean]
   --add       The tags to add                              [array] [default: []]
   --remove    The tags to remove                           [array] [default: []]
+  --yes       The confirmation message will automatically be answered with yes
+                                                      [boolean] [default: false]
 
 Examples:
   npx aws-simple tag --add latest release --remove prerelease
+  npx aws-simple tag --add prerelease --yes
 ```
 
 ### Clean Up Old Deployed Stacks

@@ -55,18 +55,18 @@ export const ListCommand = (props: ListCommandProps) => {
   const stacks = useFindStacks();
 
   if (!stacks) {
-    return <Spinner>Searching deployed stacks.</Spinner>;
+    return <Spinner>The search for deployed stacks is running.</Spinner>;
   }
 
   if (stacks.length === 0) {
-    return <Color yellow>Found no deployed stacks.</Color>;
+    return <Color yellow>No deployed stacks found.</Color>;
   }
 
   return (
     <>
       <Box marginBottom={1}>
         <Color green>
-          Found {stacks.length} deployed {plural('stack', stacks)}.
+          {stacks.length} deployed {plural('stack', stacks)} found.
         </Color>
       </Box>
       <Table

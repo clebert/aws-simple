@@ -1,9 +1,8 @@
 import {Color} from 'ink';
 import React from 'react';
 import {Argv} from 'yargs';
-import {AppConfigContext} from '../contexts/app-config-context';
 import {useUpdateStackTags} from '../hooks/use-update-stack-tags';
-import {createStackName} from '../utils/stack-name';
+import {Confirm} from './confirm';
 import {Spinner} from './spinner';
 
 export interface TagCommandProps {
@@ -14,6 +13,7 @@ interface TagArgv {
   readonly _: ['tag'];
   readonly add: string[];
   readonly remove: string[];
+  readonly yes: boolean;
 }
 
 function isTagArgv(argv: {readonly _: string[]}): argv is TagArgv {
@@ -25,15 +25,28 @@ export const TagCommand = (props: TagCommandProps) => {
     return null;
   }
 
-  const {argv} = props;
-  const completed = useUpdateStackTags(argv.add, argv.remove);
-  const appConfig = React.useContext(AppConfigContext);
-  const stackName = createStackName(appConfig);
+  const {
+    argv: {add, remove, yes}
+  } = props;
 
-  return completed ? (
-    <Color green>Successfully completed update of stack: {stackName}</Color>
+  const updateStackTagsHook = useUpdateStackTags(add, remove, yes);
+
+  if (updateStackTagsHook.state === 'uninitialized') {
+    return (
+      <Confirm callback={result => updateStackTagsHook.perform(!result)}>
+        Should the stack update be performed?
+      </Confirm>
+    );
+  }
+
+  if (updateStackTagsHook.state === 'canceled') {
+    return <Color yellow>The stack update was canceled.</Color>;
+  }
+
+  return updateStackTagsHook.completed ? (
+    <Color green>The stack update was completed successfully.</Color>
   ) : (
-    <Spinner>Completing update of stack: {stackName}</Spinner>
+    <Spinner>The stack update is in progress.</Spinner>
   );
 };
 
@@ -48,5 +61,13 @@ TagCommand.describe = (argv: Argv) =>
       .array('remove')
       .default('remove', [])
 
+      .describe(
+        'yes',
+        'The confirmation message will automatically be answered with yes'
+      )
+      .boolean('yes')
+      .default('yes', false)
+
       .example('npx $0 tag --add latest release --remove prerelease', '')
+      .example('npx $0 tag --add prerelease --yes', '')
   );
