@@ -188,10 +188,18 @@ exports.default = {
 ```
 
 _Note: The `createStackConfig` function optionally gets a `port` argument. It is
-set when the function is called in the context of the local DEV server. This
-gives the opportunity to create different
+set when the function is called in the context of the
+`aws-simple start [options]` CLI command. This gives the opportunity to create
+different
 [`StackConfig` objects](https://github.com/clebert/aws-simple/blob/master/src/types.ts#L59)
 for either AWS or the local DEV environment._
+
+_The `createStackConfig` function is only called in the context of the following
+CLI commands:_
+
+- _`aws-simple create [options]`_
+- _`aws-simple upload [options]`_
+- _`aws-simple start [options]`_
 
 ### Bootstrap Your AWS Environment
 
