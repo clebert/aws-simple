@@ -165,7 +165,7 @@ overwritten by setting the environment variable `AWS_CONFIG_FILE`.
 
 To use the `aws-simple` CLI you have to create a top-level config file named
 `aws-simple.config.js` which exports an object compatible to the
-[`AppConfig` interface](https://github.com/clebert/aws-simple/blob/master/src/types.ts#L68).
+[`AppConfig` interface](https://github.com/clebert/aws-simple/blob/master/src/types.ts#L69).
 
 For example, a config file with the following content describes a simple app
 consisting of a single static HTML file:
@@ -191,7 +191,7 @@ _Note: The `createStackConfig` function optionally gets a `port` argument. It is
 set when the function is called in the context of the
 `aws-simple start [options]` CLI command. This gives the opportunity to create
 different
-[`StackConfig` objects](https://github.com/clebert/aws-simple/blob/master/src/types.ts#L59)
+[`StackConfig` objects](https://github.com/clebert/aws-simple/blob/master/src/types.ts#L60)
 for either AWS or the local DEV environment._
 
 _The `createStackConfig` function is only called in the context of the following

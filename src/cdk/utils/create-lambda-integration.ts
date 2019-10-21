@@ -5,6 +5,14 @@ import {createHash} from 'crypto';
 import * as path from 'path';
 import {LambdaConfig} from '../../types';
 
+function createResourceName(publicPath: string): string {
+  return createHash('sha1')
+    .update(publicPath)
+    .digest()
+    .toString('hex')
+    .slice(8);
+}
+
 export function createLambdaIntegration(
   stack: Stack,
   restApi: RestApi,
@@ -14,6 +22,7 @@ export function createLambdaIntegration(
     httpMethod,
     publicPath,
     localPath,
+    resourceName = createResourceName(publicPath),
     handler = 'handler',
     memorySize = 3008,
     timeoutInSeconds = 30,
@@ -24,25 +33,17 @@ export function createLambdaIntegration(
   restApi.root.resourceForPath(publicPath).addMethod(
     httpMethod,
     new LambdaIntegration(
-      new Lambda(
-        stack,
-        `Lambda${httpMethod}${createHash('sha1')
-          .update(publicPath)
-          .digest()
-          .toString('hex')
-          .slice(8)}`,
-        {
-          runtime: Runtime.NODEJS_10_X,
-          code: Code.fromAsset(path.dirname(localPath)),
-          handler: `${path.basename(
-            localPath,
-            path.extname(localPath)
-          )}.${handler}`,
-          timeout: Duration.seconds(timeoutInSeconds),
-          memorySize,
-          environment
-        }
-      ),
+      new Lambda(stack, `Lambda${httpMethod}${resourceName}`, {
+        runtime: Runtime.NODEJS_10_X,
+        code: Code.fromAsset(path.dirname(localPath)),
+        handler: `${path.basename(
+          localPath,
+          path.extname(localPath)
+        )}.${handler}`,
+        timeout: Duration.seconds(timeoutInSeconds),
+        memorySize,
+        environment
+      }),
       {
         cacheKeyParameters: Object.keys(acceptedParameters)
           .filter(parameterName => acceptedParameters[parameterName].isCacheKey)
