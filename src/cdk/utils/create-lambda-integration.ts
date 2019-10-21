@@ -1,17 +1,9 @@
 import {LambdaIntegration, RestApi} from '@aws-cdk/aws-apigateway';
 import {Code, Function as Lambda, Runtime} from '@aws-cdk/aws-lambda';
 import {Duration, Stack} from '@aws-cdk/core';
-import {createHash} from 'crypto';
 import * as path from 'path';
 import {LambdaConfig} from '../../types';
-
-function createResourceName(publicPath: string): string {
-  return createHash('sha1')
-    .update(publicPath)
-    .digest()
-    .toString('hex')
-    .slice(8);
-}
+import {createShortHash} from '../../utils/create-short-hash';
 
 export function createLambdaIntegration(
   stack: Stack,
@@ -22,7 +14,7 @@ export function createLambdaIntegration(
     httpMethod,
     publicPath,
     localPath,
-    resourceName = createResourceName(publicPath),
+    description,
     handler = 'handler',
     memorySize = 3008,
     timeoutInSeconds = 30,
@@ -33,7 +25,8 @@ export function createLambdaIntegration(
   restApi.root.resourceForPath(publicPath).addMethod(
     httpMethod,
     new LambdaIntegration(
-      new Lambda(stack, `Lambda${httpMethod}${resourceName}`, {
+      new Lambda(stack, createShortHash(httpMethod, publicPath), {
+        description,
         runtime: Runtime.NODEJS_10_X,
         code: Code.fromAsset(path.dirname(localPath)),
         handler: `${path.basename(

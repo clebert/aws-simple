@@ -34,7 +34,7 @@ export interface LambdaConfig {
   readonly httpMethod: LambdaHttpMethod;
   readonly publicPath: string;
   readonly localPath: string;
-  readonly resourceName?: string;
+  readonly description?: string;
   readonly handler?: string;
   readonly memorySize?: number;
   readonly timeoutInSeconds?: number;

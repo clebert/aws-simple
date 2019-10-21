@@ -333,6 +333,8 @@ exports.default = {
         localPath: 'path/to/lambda.js',
 
         // Optional example properties
+        description:
+          'A description can be useful to find the lambda in the AWS console.',
         memorySize: 3008,
         timeoutInSeconds: 30,
         cachingEnabled: true,

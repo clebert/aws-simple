@@ -2,6 +2,7 @@ import {DomainNameOptions} from '@aws-cdk/aws-apigateway';
 import {Certificate} from '@aws-cdk/aws-certificatemanager';
 import {Stack} from '@aws-cdk/core';
 import {StackConfig} from '../../types';
+import {createShortHash} from '../../utils/create-short-hash';
 
 export function createDomainNameOptions(
   stackConfig: StackConfig,
@@ -21,7 +22,7 @@ export function createDomainNameOptions(
       : hostedZoneName,
     certificate: Certificate.fromCertificateArn(
       stack,
-      'Certificate',
+      createShortHash('Certificate'),
       certificateArn
     )
   };
