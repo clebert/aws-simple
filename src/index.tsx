@@ -41,6 +41,11 @@ import {loadAppConfig} from './utils/load-app-config';
   ).argv;
 
   const appConfig = loadAppConfig();
+
+  if (await start(appConfig, argv)) {
+    return;
+  }
+
   const clientConfig = await createClientConfig();
 
   // New UI
@@ -53,7 +58,6 @@ import {loadAppConfig} from './utils/load-app-config';
 
   // Legacy UI
   await upload(appConfig, clientConfig, argv);
-  await start(appConfig, argv);
   await cleanUp(appConfig, clientConfig, argv);
 
   await exitPromise;

@@ -19,9 +19,9 @@ function isStartArgv(argv: {readonly _: string[]}): argv is StartArgv {
 export async function start(
   appConfig: AppConfig,
   argv: {readonly _: string[]}
-): Promise<void> {
+): Promise<boolean> {
   if (!isStartArgv(argv)) {
-    return;
+    return false;
   }
 
   const port = await getPort({port: argv.port});
@@ -59,6 +59,8 @@ export async function start(
 
     serverProcess = startDevServer();
   });
+
+  return true;
 }
 
 start.describe = (argv: Argv) =>
