@@ -6,6 +6,7 @@ import {LambdaConfig} from '../../types';
 import {createShortHash} from '../../utils/create-short-hash';
 
 export function createLambdaIntegration(
+  resourceName: string,
   stack: Stack,
   restApi: RestApi,
   lambdaConfig: LambdaConfig
@@ -25,7 +26,8 @@ export function createLambdaIntegration(
   restApi.root.resourceForPath(publicPath).addMethod(
     httpMethod,
     new LambdaIntegration(
-      new Lambda(stack, createShortHash(httpMethod, publicPath), {
+      new Lambda(stack, createShortHash('Lambda', httpMethod, publicPath), {
+        functionName: `${resourceName} ${httpMethod} ${publicPath}`,
         description,
         runtime: Runtime.NODEJS_10_X,
         code: Code.fromAsset(path.dirname(localPath)),
