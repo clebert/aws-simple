@@ -7,51 +7,58 @@ import {Duration} from '@aws-cdk/core';
 import * as path from 'path';
 import {StackConfig} from '../../types';
 
+export interface MethodConfig {
+  readonly publicPath: string;
+  readonly cachingEnabled?: boolean;
+  readonly cacheTtlInSeconds?: number;
+  readonly httpMethod?: string;
+  readonly type?: 'file' | 'folder';
+}
+
+function createMethodOption(
+  methodConfig: MethodConfig
+): MethodDeploymentOptions {
+  const {cachingEnabled, cacheTtlInSeconds} = methodConfig;
+
+  return {
+    cachingEnabled: Boolean(cachingEnabled),
+    cacheTtl:
+      cacheTtlInSeconds !== undefined
+        ? Duration.seconds(cacheTtlInSeconds)
+        : undefined
+  };
+}
+
+function createMethodPath(methodConfig: MethodConfig): string {
+  const {publicPath, httpMethod = 'GET', type} = methodConfig;
+
+  if (type === 'folder') {
+    return path.join(publicPath, '{file}', httpMethod);
+  }
+
+  return publicPath === '/'
+    ? `//${httpMethod}`
+    : path.join(publicPath, httpMethod);
+}
+
 export function createStageOptions(stackConfig: StackConfig): StageOptions {
-  const {loggingLevel, lambdaConfigs = []} = stackConfig;
-  const restApiMethodOptions: Record<string, MethodDeploymentOptions> = {};
+  const {loggingLevel, lambdaConfigs = [], s3Configs = []} = stackConfig;
+  const methodOptions: Record<string, MethodDeploymentOptions> = {};
 
-  let rootCachingEnabled = false;
-  let rootCacheTtl: Duration | undefined;
+  for (const lambdaConfig of lambdaConfigs) {
+    methodOptions[createMethodPath(lambdaConfig)] = createMethodOption(
+      lambdaConfig
+    );
+  }
 
-  const cacheClusterEnabled = lambdaConfigs.some(
-    ({cachingEnabled}) => cachingEnabled
-  );
-
-  if (cacheClusterEnabled) {
-    for (const lambdaConfig of lambdaConfigs) {
-      const {
-        httpMethod,
-        publicPath,
-        cachingEnabled,
-        cacheTtlInSeconds
-      } = lambdaConfig;
-
-      if (publicPath === '/') {
-        if (cachingEnabled) {
-          rootCachingEnabled = cachingEnabled;
-        }
-
-        if (cacheTtlInSeconds) {
-          rootCacheTtl = Duration.seconds(cacheTtlInSeconds);
-        }
-      } else {
-        restApiMethodOptions[path.join(publicPath, httpMethod)] = {
-          cachingEnabled: Boolean(cachingEnabled),
-          cacheTtl:
-            cacheTtlInSeconds !== undefined
-              ? Duration.seconds(cacheTtlInSeconds)
-              : undefined
-        };
-      }
-    }
+  for (const s3Config of s3Configs) {
+    methodOptions[createMethodPath(s3Config)] = createMethodOption(s3Config);
   }
 
   return {
-    cacheClusterEnabled,
-    cachingEnabled: rootCachingEnabled,
-    cacheTtl: rootCacheTtl,
-    methodOptions: restApiMethodOptions,
+    cacheClusterEnabled: true,
+    cachingEnabled: false,
+    methodOptions,
     loggingLevel: loggingLevel && MethodLoggingLevel[loggingLevel]
   };
 }

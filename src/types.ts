@@ -55,6 +55,8 @@ export interface S3Config {
   readonly localPath: string;
   readonly bucketPath?: string;
   readonly responseHeaders?: S3ResponseHeaders;
+  readonly cachingEnabled?: boolean;
+  readonly cacheTtlInSeconds?: number;
 }
 
 export interface StackConfig {

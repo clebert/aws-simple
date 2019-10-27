@@ -408,7 +408,11 @@ exports.default = () => ({
         type: 'file',
         publicPath: '/',
         localPath: 'path/to/file.html',
-        bucketPath: 'file.html'
+
+        // Optional example properties
+        bucketPath: 'file.html',
+        cachingEnabled: true,
+        cacheTtlInSeconds: 3600
       }
     ]
   })
@@ -435,10 +439,14 @@ exports.default = () => ({
         type: 'folder',
         publicPath: '/assets',
         localPath: 'path/to/folder',
+
+        // Optional example properties
         responseHeaders: {
           accessControlAllowOrigin: '*',
           cacheControl: 'max-age=157680000'
-        }
+        },
+        cachingEnabled: true,
+        cacheTtlInSeconds: 3600
       }
     ]
   })
