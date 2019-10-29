@@ -37,6 +37,11 @@ export interface LambdaConfig {
   readonly description?: string;
   readonly handler?: string;
   readonly memorySize?: number;
+
+  /**
+   * Due to the default timeout of the API Gateway, the maximum timeout is
+   * limited to 28 seconds.
+   */
   readonly timeoutInSeconds?: number;
 
   /**

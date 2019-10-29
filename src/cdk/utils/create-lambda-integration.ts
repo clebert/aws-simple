@@ -17,10 +17,16 @@ export function createLambdaIntegration(
     description,
     handler = 'handler',
     memorySize = 3008,
-    timeoutInSeconds = 30,
+    timeoutInSeconds = 28,
     acceptedParameters = {},
     environment
   } = lambdaConfig;
+
+  if (timeoutInSeconds > 28) {
+    console.warn(
+      'Due to the default timeout of the API Gateway, the maximum Lambda timeout is limited to 28 seconds.'
+    );
+  }
 
   restApi.root.resourceForPath(publicPath).addMethod(
     httpMethod,
@@ -33,7 +39,9 @@ export function createLambdaIntegration(
           localPath,
           path.extname(localPath)
         )}.${handler}`,
-        timeout: Duration.seconds(timeoutInSeconds),
+        timeout: Duration.seconds(
+          timeoutInSeconds > 28 ? 28 : timeoutInSeconds
+        ),
         memorySize,
         environment
       }),

@@ -13,7 +13,7 @@ export function createLambdaRequestHandler(
   const {
     localPath,
     handler = 'handler',
-    timeoutInSeconds = 30,
+    timeoutInSeconds = 28,
     cachingEnabled,
     environment
   } = lambdaConfig;
