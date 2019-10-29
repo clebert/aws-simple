@@ -5,8 +5,6 @@ export interface CustomDomainConfig {
   readonly aliasRecordName?: string;
 }
 
-export type LoggingLevel = 'OFF' | 'ERROR' | 'INFO';
-
 export type LambdaHttpMethod =
   | 'ANY'
   | 'DELETE'
@@ -16,6 +14,8 @@ export type LambdaHttpMethod =
   | 'PATCH'
   | 'POST'
   | 'PUT';
+
+export type LambdaLoggingLevel = 'OFF' | 'ERROR' | 'INFO';
 
 export interface LambdaParameterOptions {
   readonly isCacheKey?: boolean;
@@ -38,6 +38,15 @@ export interface LambdaConfig {
   readonly handler?: string;
   readonly memorySize?: number;
   readonly timeoutInSeconds?: number;
+
+  /**
+   * You can set the logging level for a Lambda function, it affects the log
+   * entries pushed to Amazon CloudWatch Logs. The available levels are `OFF`,
+   * `ERROR`, and `INFO`. Choose `ERROR` to write only error-level entries to
+   * CloudWatch Logs, or choose `INFO` to include all `ERROR` events as well as
+   * extra informational events.
+   */
+  readonly loggingLevel?: LambdaLoggingLevel;
   readonly cachingEnabled?: boolean;
   readonly cacheTtlInSeconds?: number;
   readonly acceptedParameters?: LambdaAcceptedParameters;
@@ -63,7 +72,6 @@ export interface StackConfig {
   readonly customDomainConfig?: CustomDomainConfig;
   readonly binaryMediaTypes?: string[];
   readonly minimumCompressionSizeInBytes?: number;
-  readonly loggingLevel?: LoggingLevel;
   readonly lambdaConfigs?: LambdaConfig[];
   readonly s3Configs?: S3Config[];
 }

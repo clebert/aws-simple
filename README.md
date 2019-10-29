@@ -281,13 +281,13 @@ exports.default = () => ({
 });
 ```
 
-### Example Configuration Of A Custom Domain
+### Configure A Custom Domain
 
 In order to use a custom domain,
 [a public certificate](https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html)
 and
 [a public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/CreatingHostedZone.html)
-must be created manually. You can then configure the custom domain as follows:
+must be created manually. You can then configure a custom domain as follows:
 
 ```js
 const appName = 'my-app';
@@ -314,7 +314,7 @@ deployed simultaneously. In this case the optional `aliasRecordName` property is
 used to give each stack its own URL, for example `my-app.example.com` or
 `my-app-test.example.com` (`APP_VERSION=test`)._
 
-### Example Configuration Of A Lambda Function
+### Configure A Lambda Function
 
 You can configure a Lambda function that can be accessed via GET request at the
 URL `my-app.example.com/endpoint` as follows:
@@ -337,6 +337,7 @@ exports.default = {
           'A description can be useful to find the lambda in the AWS console.',
         memorySize: 3008,
         timeoutInSeconds: 30,
+        loggingLevel: 'INFO',
         cachingEnabled: true,
         cacheTtlInSeconds: 3600,
         acceptedParameters: {
@@ -393,7 +394,7 @@ module, it must be bundled with a bundler such as Webpack (in this case you have
 to set the target to node: `{target: 'node'}`) to create a single node module
 bundle._
 
-### Example Configuration Of An S3 File
+### Configure An S3 File
 
 You can configure an S3 file that can be accessed via GET request at the URL
 `my-app.example.com/` as follows:
@@ -424,7 +425,7 @@ associated with the stack using the `aws-simple upload [options]` CLI command.
 The optionally specified `bucketPath` or, if not specified, the `publicPath` is
 used as the S3 object key._
 
-### Example Configuration Of An S3 Folder
+### Configure An S3 Folder
 
 You can configure an S3 folder whose contained files can be accessed via GET
 request at the URL `my-app.example.com/assets/*` as follows:
@@ -525,24 +526,6 @@ exports.default = () => ({
   appVersion: 'prod',
   createStackConfig: () => ({
     minimumCompressionSizeInBytes: 1000
-  })
-});
-```
-
-### Set The Logging Level
-
-You can set the logging level for the Lambda functions, it affects the log
-entries pushed to Amazon CloudWatch Logs. The available levels are `OFF`,
-`ERROR`, and `INFO`. Choose `ERROR` to write only error-level entries to
-CloudWatch Logs, or choose `INFO` to include all `ERROR` events as well as extra
-informational events.
-
-```js
-exports.default = () => ({
-  appName: 'my-app',
-  appVersion: 'prod',
-  createStackConfig: () => ({
-    loggingLevel: 'ERROR'
   })
 });
 ```

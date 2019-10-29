@@ -1,18 +1,25 @@
 import {Duration} from '@aws-cdk/core';
-import {LambdaConfig, LambdaHttpMethod, S3Config} from '../../types';
+import {
+  LambdaConfig,
+  LambdaHttpMethod,
+  LambdaLoggingLevel,
+  S3Config
+} from '../../types';
 import {createStageOptions} from './create-stage-options';
 
 function lambda(
   httpMethod: LambdaHttpMethod,
   publicPath: string,
-  cacheTtlInSeconds?: number
+  cacheTtlInSeconds?: number,
+  loggingLevel?: LambdaLoggingLevel
 ): LambdaConfig {
   return {
     httpMethod,
     publicPath,
     localPath: '.',
     cachingEnabled: cacheTtlInSeconds !== undefined,
-    cacheTtlInSeconds
+    cacheTtlInSeconds,
+    loggingLevel
   };
 }
 
@@ -59,12 +66,16 @@ describe('createStageOptions()', () => {
     });
 
     expect(
-      createStageOptions({lambdaConfigs: [lambda('GET', '/', 30)]})
+      createStageOptions({lambdaConfigs: [lambda('GET', '/', 30, 'INFO')]})
     ).toEqual({
       cacheClusterEnabled: true,
       cachingEnabled: false,
       methodOptions: {
-        '//GET': {cachingEnabled: true, cacheTtl: Duration.seconds(30)}
+        '//GET': {
+          cachingEnabled: true,
+          cacheTtl: Duration.seconds(30),
+          loggingLevel: 'INFO'
+        }
       }
     });
 
@@ -142,29 +153,6 @@ describe('createStageOptions()', () => {
       cacheClusterEnabled: true,
       cachingEnabled: false,
       methodOptions: {'/bar/{file}/GET': {cachingEnabled: false}}
-    });
-  });
-
-  it('returns stage options with logging level', () => {
-    expect(createStageOptions({loggingLevel: 'OFF'})).toEqual({
-      cacheClusterEnabled: true,
-      cachingEnabled: false,
-      methodOptions: {},
-      loggingLevel: 'OFF'
-    });
-
-    expect(createStageOptions({loggingLevel: 'INFO'})).toEqual({
-      cacheClusterEnabled: true,
-      cachingEnabled: false,
-      methodOptions: {},
-      loggingLevel: 'INFO'
-    });
-
-    expect(createStageOptions({loggingLevel: 'ERROR'})).toEqual({
-      cacheClusterEnabled: true,
-      cachingEnabled: false,
-      methodOptions: {},
-      loggingLevel: 'ERROR'
     });
   });
 });

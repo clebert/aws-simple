@@ -5,27 +5,29 @@ import {
 } from '@aws-cdk/aws-apigateway';
 import {Duration} from '@aws-cdk/core';
 import * as path from 'path';
-import {StackConfig} from '../../types';
+import {LambdaLoggingLevel, StackConfig} from '../../types';
 
 export interface MethodConfig {
   readonly publicPath: string;
   readonly cachingEnabled?: boolean;
   readonly cacheTtlInSeconds?: number;
   readonly httpMethod?: string;
+  readonly loggingLevel?: LambdaLoggingLevel;
   readonly type?: 'file' | 'folder';
 }
 
 function createMethodOption(
   methodConfig: MethodConfig
 ): MethodDeploymentOptions {
-  const {cachingEnabled, cacheTtlInSeconds} = methodConfig;
+  const {cachingEnabled, cacheTtlInSeconds, loggingLevel} = methodConfig;
 
   return {
     cachingEnabled: Boolean(cachingEnabled),
     cacheTtl:
       cacheTtlInSeconds !== undefined
         ? Duration.seconds(cacheTtlInSeconds)
-        : undefined
+        : undefined,
+    loggingLevel: loggingLevel && MethodLoggingLevel[loggingLevel]
   };
 }
 
@@ -42,23 +44,16 @@ function createMethodPath(methodConfig: MethodConfig): string {
 }
 
 export function createStageOptions(stackConfig: StackConfig): StageOptions {
-  const {loggingLevel, lambdaConfigs = [], s3Configs = []} = stackConfig;
+  const {lambdaConfigs = [], s3Configs = []} = stackConfig;
   const methodOptions: Record<string, MethodDeploymentOptions> = {};
 
-  for (const lambdaConfig of lambdaConfigs) {
-    methodOptions[createMethodPath(lambdaConfig)] = createMethodOption(
-      lambdaConfig
-    );
+  for (const config of lambdaConfigs) {
+    methodOptions[createMethodPath(config)] = createMethodOption(config);
   }
 
-  for (const s3Config of s3Configs) {
-    methodOptions[createMethodPath(s3Config)] = createMethodOption(s3Config);
+  for (const config of s3Configs) {
+    methodOptions[createMethodPath(config)] = createMethodOption(config);
   }
 
-  return {
-    cacheClusterEnabled: true,
-    cachingEnabled: false,
-    methodOptions,
-    loggingLevel: loggingLevel && MethodLoggingLevel[loggingLevel]
-  };
+  return {cacheClusterEnabled: true, cachingEnabled: false, methodOptions};
 }
