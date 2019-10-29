@@ -34,6 +34,10 @@ export interface LambdaConfig {
   readonly httpMethod: LambdaHttpMethod;
   readonly publicPath: string;
   readonly localPath: string;
+
+  /**
+   * A description can be useful to find a Lambda function in the AWS console.
+   */
   readonly description?: string;
   readonly handler?: string;
   readonly memorySize?: number;
