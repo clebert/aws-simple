@@ -32,7 +32,8 @@ export function createS3Integration(
       requestParameters:
         type === 'folder'
           ? {'integration.request.path.file': 'method.request.path.file'}
-          : {}
+          : {},
+      cacheKeyParameters: type === 'folder' ? ['method.request.path.file'] : []
     }
   });
 
