@@ -173,7 +173,7 @@ consisting of a single static HTML file:
 ```js
 exports.default = {
   appName: 'my-app',
-  appVersion: 'prod',
+  appVersion: 'latest',
   createStackConfig: port => ({
     s3Configs: [
       {
@@ -232,8 +232,8 @@ yarn cdk deploy --app 'yarn aws-simple create'
 ```
 
 The name of the deployed stack consists of the app name (e.g. `my-app`) in
-combination with the app version (e.g. `prod`) such as
-`aws-simple--my-app--prod`.
+combination with the app version (e.g. `latest`) such as
+`aws-simple--my-app--latest`.
 
 **Caution:** Re-deploying an already deployed stack (so a stack with the same
 name) will remove all tags set with `aws-simple tag [options]`.
@@ -274,7 +274,7 @@ TypeScript 2.3 and later support type-checking in `*.js` files by adding a
  */
 exports.default = () => ({
   appName: 'my-app',
-  appVersion: 'prod',
+  appVersion: 'latest',
   createStackConfig: () => ({
     /* ... */
   })
@@ -291,7 +291,7 @@ must be created manually. You can then configure a custom domain as follows:
 
 ```js
 const appName = 'my-app';
-const appVersion = process.env.APP_VERSION || 'prod';
+const appVersion = process.env.APP_VERSION || 'latest';
 
 exports.default = () => ({
   appName,
@@ -303,7 +303,7 @@ exports.default = () => ({
       hostedZoneId: '**************',
       hostedZoneName: 'example.com',
       aliasRecordName:
-        appVersion === 'prod' ? appName : `${appName}-${appVersion}`
+        appVersion === 'latest' ? appName : `${appName}-${appVersion}`
     }
   })
 });
@@ -320,7 +320,7 @@ You can configure a Lambda function that can be accessed via GET request at the
 URL `my-app.example.com/endpoint` as follows:
 
 ```js
-const appVersion = process.env.APP_VERSION || 'prod';
+const appVersion = process.env.APP_VERSION || 'latest';
 
 exports.default = {
   appName: 'my-app',
@@ -376,7 +376,7 @@ If the export of the Lambda function node module has a different name than
 ```js
 exports.default = () => ({
   appName: 'my-app',
-  appVersion: 'prod',
+  appVersion: 'latest',
   createStackConfig: () => ({
     lambdaConfigs: [
       {
@@ -401,7 +401,7 @@ You can configure an S3 file that can be accessed via GET request at the URL
 ```js
 exports.default = () => ({
   appName: 'my-app',
-  appVersion: 'prod',
+  appVersion: 'latest',
   createStackConfig: () => ({
     s3Configs: [
       {
@@ -432,7 +432,7 @@ request at the URL `my-app.example.com/assets/*` as follows:
 ```js
 exports.default = () => ({
   appName: 'my-app',
-  appVersion: 'prod',
+  appVersion: 'latest',
   createStackConfig: () => ({
     s3Configs: [
       {
@@ -508,7 +508,7 @@ to be treated as binary as follows:
 ```js
 exports.default = () => ({
   appName: 'my-app',
-  appVersion: 'prod',
+  appVersion: 'latest',
   createStackConfig: () => ({
     binaryMediaTypes: ['font/woff2']
   })
@@ -522,7 +522,7 @@ You can enable compression for an API as follows:
 ```js
 exports.default = () => ({
   appName: 'my-app',
-  appVersion: 'prod',
+  appVersion: 'latest',
   createStackConfig: () => ({
     minimumCompressionSizeInBytes: 1000
   })
