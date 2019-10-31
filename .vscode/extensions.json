@@ -1,8 +1,8 @@
 {
   "recommendations": [
     "EditorConfig.EditorConfig",
+    "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
-    "ms-vscode.vscode-typescript-tslint-plugin",
     "unional.vscode-sort-package-json"
   ]
 }

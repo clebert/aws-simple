@@ -47,7 +47,7 @@ const tagsColumn: Column<CloudFormation.Stack, 'Tags'> = {
   createEntryCell: value => (value ? value.map(({Key}) => Key).join(', ') : '')
 };
 
-export const ListCommand = (props: ListCommandProps) => {
+export const ListCommand = (props: ListCommandProps): JSX.Element | null => {
   if (!isListArgv(props.argv)) {
     return null;
   }

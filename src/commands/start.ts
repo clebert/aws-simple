@@ -1,4 +1,4 @@
-import {fork} from 'child_process';
+import {ChildProcess, fork} from 'child_process';
 import {watch} from 'chokidar';
 import getPort from 'get-port';
 import * as path from 'path';
@@ -34,7 +34,7 @@ export async function start(
     ({localPath}) => localPath
   );
 
-  const startDevServer = () => {
+  const startDevServer = (): ChildProcess => {
     const args = ['--port', String(port)];
 
     if (argv.cache) {

@@ -13,7 +13,7 @@ export interface UiProps {
   readonly argv: {readonly _: string[]};
 }
 
-export const Ui = ({appConfig, clientConfig, argv}: UiProps) => (
+export const Ui = ({appConfig, clientConfig, argv}: UiProps): JSX.Element => (
   <>
     <AppInfo appConfig={appConfig} />
     <AppConfigContext.Provider value={appConfig}>

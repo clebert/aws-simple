@@ -19,7 +19,6 @@ import {createClientConfig} from './sdk/create-client-config';
 import {loadAppConfig} from './utils/load-app-config';
 
 (async () => {
-  // tslint:disable-next-line: no-require-imports no-var-requires
   const {description} = require('../package.json');
 
   const argv = compose(

@@ -1,9 +1,9 @@
 import path from 'path';
 import {AppConfig} from '../types';
+import {isObject} from './is-object';
 
-// tslint:disable-next-line: no-any
-function isAppConfig(value: any): value is AppConfig {
-  if (typeof value !== 'object' || value === null) {
+function isAppConfig(value: unknown): value is AppConfig {
+  if (!isObject(value)) {
     return false;
   }
 

@@ -8,14 +8,14 @@ export interface Column<TEntry extends object, TEntryKey extends keyof TEntry> {
 }
 
 export interface TableProps<TEntry extends object> {
-  readonly columns: Column<TEntry, any>[]; // tslint:disable-line: no-any
+  readonly columns: Column<TEntry, any>[];
   readonly entries: TEntry[];
 }
 
 export const Table = <TEntry extends object>({
   columns,
   entries
-}: TableProps<TEntry>) =>
+}: TableProps<TEntry>): JSX.Element | null =>
   columns.length > 0 ? (
     <Box width="100%" flexDirection="row">
       {columns.map(({headerCell, entryKey, createEntryCell}, columnIndex) => (
@@ -25,11 +25,7 @@ export const Table = <TEntry extends object>({
           marginRight={columnIndex < columns.length - 1 ? 2 : 0}
         >
           {<Box textWrap="truncate">{headerCell || ' '}</Box>}
-
-          {entries.map((
-            entry: any, // tslint:disable-line: no-any
-            entryIndex
-          ) => {
+          {entries.map((entry: any, entryIndex) => {
             const value = createEntryCell && createEntryCell(entry[entryKey]);
 
             return (

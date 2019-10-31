@@ -7,7 +7,7 @@ export interface AppInfoProps {
   readonly appConfig: AppConfig;
 }
 
-export const AppInfo = ({appConfig}: AppInfoProps) => (
+export const AppInfo = ({appConfig}: AppInfoProps): JSX.Element => (
   <Static>
     {[
       <Box flexDirection="column" marginBottom={1} key="app-info">

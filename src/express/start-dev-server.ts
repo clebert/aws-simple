@@ -3,6 +3,7 @@ import 'source-map-support/register';
 import compression from 'compression';
 import express from 'express';
 import yargs from 'yargs';
+import {isObject} from '../utils/is-object';
 import {loadAppConfig} from '../utils/load-app-config';
 import {serveLocalLambda} from './utils/serve-local-lambda';
 import {serveLocalS3} from './utils/serve-local-s3';
@@ -14,13 +15,8 @@ interface Argv {
   readonly verbose?: boolean;
 }
 
-// tslint:disable-next-line: no-any
-function isArgv(value: any): value is Argv {
-  if (typeof value !== 'object' || value === null) {
-    return false;
-  }
-
-  return typeof value.port === 'number';
+function isArgv(value: unknown): value is Argv {
+  return isObject(value) && typeof value.port === 'number';
 }
 
 function startDevServer(argv: unknown): void {

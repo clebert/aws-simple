@@ -1,6 +1,5 @@
 import {isStackExpired} from './is-stack-expired';
 
-// tslint:disable-next-line: no-any
 function createStack(ageInDays: number, tags?: string[]): any {
   const date = new Date();
 

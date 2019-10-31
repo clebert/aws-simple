@@ -6,7 +6,10 @@ export interface ConfirmProps {
   readonly callback: (result: boolean) => void;
 }
 
-export const Confirm = ({children, callback}: ConfirmProps) => {
+export const Confirm = ({
+  children,
+  callback
+}: ConfirmProps): JSX.Element | null => {
   const [confirmed, setConfirmed] = React.useState<boolean>();
 
   const {isRawModeSupported, setRawMode, stdin} = React.useContext(
@@ -18,7 +21,7 @@ export const Confirm = ({children, callback}: ConfirmProps) => {
       setRawMode(true);
     }
 
-    const handleData = (data: string) => {
+    const handleData = (data: string): void => {
       const input = data.toLowerCase();
 
       if (input === 'y' || input === 'n') {

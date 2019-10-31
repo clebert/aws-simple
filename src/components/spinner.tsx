@@ -6,6 +6,6 @@ export interface SpinnerProps {
   readonly children: React.ReactNode;
 }
 
-export const Spinner = ({children}: SpinnerProps) => (
+export const Spinner = ({children}: SpinnerProps): JSX.Element => (
   <Label name={<InkSpinner type={'dots'} />}>{children}</Label>
 );

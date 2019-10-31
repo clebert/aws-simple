@@ -6,7 +6,7 @@ export interface SpinnerProps {
   readonly children: React.ReactNode;
 }
 
-export const Label = ({name, children}: SpinnerProps) => (
+export const Label = ({name, children}: SpinnerProps): JSX.Element => (
   <Box>
     <Box marginRight={1}>{name}</Box>
     {children}

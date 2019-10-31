@@ -20,7 +20,7 @@ function isTagArgv(argv: {readonly _: string[]}): argv is TagArgv {
   return argv._[0] === 'tag';
 }
 
-export const TagCommand = (props: TagCommandProps) => {
+export const TagCommand = (props: TagCommandProps): JSX.Element | null => {
   if (!isTagArgv(props.argv)) {
     return null;
   }
