@@ -8,6 +8,7 @@ export interface Column<TEntry extends object, TEntryKey extends keyof TEntry> {
 }
 
 export interface TableProps<TEntry extends object> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly columns: Column<TEntry, any>[];
   readonly entries: TEntry[];
 }
@@ -25,15 +26,18 @@ export const Table = <TEntry extends object>({
           marginRight={columnIndex < columns.length - 1 ? 2 : 0}
         >
           {<Box textWrap="truncate">{headerCell || ' '}</Box>}
-          {entries.map((entry: any, entryIndex) => {
-            const value = createEntryCell && createEntryCell(entry[entryKey]);
+          {entries.map(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (entry: any, entryIndex) => {
+              const value = createEntryCell && createEntryCell(entry[entryKey]);
 
-            return (
-              <Box key={entryIndex} textWrap="truncate">
-                {value || ' '}
-              </Box>
-            );
-          })}
+              return (
+                <Box key={entryIndex} textWrap="truncate">
+                  {value || ' '}
+                </Box>
+              );
+            }
+          )}
         </Box>
       ))}
     </Box>

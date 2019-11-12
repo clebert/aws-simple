@@ -1,5 +1,6 @@
 import {isStackExpired} from './is-stack-expired';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createStack(ageInDays: number, tags?: string[]): any {
   const date = new Date();
 
