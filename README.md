@@ -302,8 +302,7 @@ exports.default = () => ({
         'arn:aws:acm:eu-central-1:************:certificate/********-****-****-****-************',
       hostedZoneId: '**************',
       hostedZoneName: 'example.com',
-      aliasRecordName:
-        appVersion === 'latest' ? appName : `${appName}-${appVersion}`
+      aliasRecordName: appVersion !== 'latest' ? appVersion : undefined
     }
   })
 });
@@ -311,8 +310,8 @@ exports.default = () => ({
 
 _Note: Different app versions allow multiple stacks of the same app to be
 deployed simultaneously. In this case the optional `aliasRecordName` property is
-used to give each stack its own URL, for example `my-app.example.com` or
-`my-app-test.example.com` (`APP_VERSION=test`)._
+used to give each stack its own URL, for example `example.com` or
+`beta.example.com` (`APP_VERSION=beta`)._
 
 ### Configure A Lambda Function
 
