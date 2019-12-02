@@ -6,5 +6,5 @@ export function createUniqueExportName(
   stackName: string,
   exportName: ExportName
 ): string {
-  return createShortHash(exportName, stackName);
+  return `${exportName}${createShortHash(stackName)}`;
 }

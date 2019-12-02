@@ -3,7 +3,6 @@ import {ARecord, HostedZone, RecordTarget} from '@aws-cdk/aws-route53';
 import {ApiGateway} from '@aws-cdk/aws-route53-targets';
 import {Stack} from '@aws-cdk/core';
 import {StackConfig} from '../../types';
-import {createShortHash} from '../../utils/create-short-hash';
 
 export function createARecord(
   stackConfig: StackConfig,
@@ -18,12 +17,11 @@ export function createARecord(
 
   const {hostedZoneId, hostedZoneName, aliasRecordName} = customDomainConfig;
 
-  const aRecord = new ARecord(stack, createShortHash('ARecord'), {
-    zone: HostedZone.fromHostedZoneAttributes(
-      stack,
-      createShortHash('HostedZone'),
-      {hostedZoneId, zoneName: hostedZoneName}
-    ),
+  const aRecord = new ARecord(stack, 'ARecord', {
+    zone: HostedZone.fromHostedZoneAttributes(stack, 'HostedZone', {
+      hostedZoneId,
+      zoneName: hostedZoneName
+    }),
     recordName: aliasRecordName,
     target: RecordTarget.fromAlias(new ApiGateway(restApi))
   });

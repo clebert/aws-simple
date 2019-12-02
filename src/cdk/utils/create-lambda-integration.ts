@@ -31,7 +31,7 @@ export function createLambdaIntegration(
   restApi.root.resourceForPath(publicPath).addMethod(
     httpMethod,
     new LambdaIntegration(
-      new Lambda(stack, createShortHash('Lambda', httpMethod, publicPath), {
+      new Lambda(stack, `Lambda${httpMethod}${createShortHash(publicPath)}`, {
         description,
         runtime: Runtime.NODEJS_10_X,
         code: Code.fromAsset(path.dirname(localPath)),
