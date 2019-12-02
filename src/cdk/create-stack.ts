@@ -8,7 +8,6 @@ import {
 import {Bucket} from '@aws-cdk/aws-s3';
 import {App, CfnOutput, Stack} from '@aws-cdk/core';
 import {AppConfig} from '../types';
-import {createShortHash} from '../utils/create-short-hash';
 import {createUniqueExportName} from '../utils/create-unique-export-name';
 import {createStackName} from '../utils/stack-name';
 import {createARecord} from './utils/create-a-record';
@@ -22,7 +21,7 @@ export function createStack(appConfig: AppConfig): void {
 
   const restApi = new RestApi(
     stack,
-    createShortHash('RestApi'),
+    'RestApi',
     createRestApiProps(
       `${appConfig.appName} ${appConfig.appVersion}`,
       stackConfig,
@@ -30,48 +29,32 @@ export function createStack(appConfig: AppConfig): void {
     )
   );
 
-  const restApiUrlOutput = new CfnOutput(
-    stack,
-    createShortHash('RestApiUrlOutput'),
-    {
-      value: restApi.url,
-      exportName: createUniqueExportName(stack.stackName, 'RestApiUrl')
-    }
-  );
+  const restApiUrlOutput = new CfnOutput(stack, 'RestApiUrlOutput', {
+    value: restApi.url,
+    exportName: createUniqueExportName(stack.stackName, 'RestApiUrl')
+  });
 
   restApiUrlOutput.node.addDependency(restApi);
 
   createARecord(stackConfig, stack, restApi);
 
-  const s3Bucket = new Bucket(stack, createShortHash('S3Bucket'), {
-    publicReadAccess: false
-  });
+  const s3Bucket = new Bucket(stack, 'S3Bucket', {publicReadAccess: false});
 
-  const s3BucketNameOutput = new CfnOutput(
-    stack,
-    createShortHash('S3BucketNameOutput'),
-    {
-      value: s3Bucket.bucketName,
-      exportName: createUniqueExportName(stack.stackName, 'S3BucketName')
-    }
-  );
+  const s3BucketNameOutput = new CfnOutput(stack, 'S3BucketNameOutput', {
+    value: s3Bucket.bucketName,
+    exportName: createUniqueExportName(stack.stackName, 'S3BucketName')
+  });
 
   s3BucketNameOutput.node.addDependency(s3Bucket);
 
-  const s3IntegrationRole = new Role(
-    stack,
-    createShortHash('S3IntegrationRole'),
-    {assumedBy: new ServicePrincipal('apigateway.amazonaws.com')}
-  );
+  const s3IntegrationRole = new Role(stack, 'S3IntegrationRole', {
+    assumedBy: new ServicePrincipal('apigateway.amazonaws.com')
+  });
 
-  const s3IntegrationPolicy = new Policy(
-    stack,
-    createShortHash('S3IntegrationPolicy'),
-    {
-      statements: [new PolicyStatement({actions: ['s3:*'], resources: ['*']})],
-      roles: [s3IntegrationRole]
-    }
-  );
+  const s3IntegrationPolicy = new Policy(stack, 'S3IntegrationPolicy', {
+    statements: [new PolicyStatement({actions: ['s3:*'], resources: ['*']})],
+    roles: [s3IntegrationRole]
+  });
 
   s3IntegrationPolicy.node.addDependency(s3IntegrationRole);
 

@@ -7,5 +7,5 @@ export function createShortHash(...values: string[]): string {
     .toString('hex')
     .slice(0, 7);
 
-  return `R${shortHash}`;
+  return shortHash;
 }
