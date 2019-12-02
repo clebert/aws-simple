@@ -19,7 +19,9 @@ export function findStackOutput(
     Outputs &&
     Outputs.find(
       Output =>
-        Output.ExportName === createUniqueExportName(StackName, exportName)
+        Output.ExportName === createUniqueExportName(StackName, exportName) ||
+        Output.ExportName ===
+          createUniqueExportName(StackName, exportName, true)
     );
 
   const outputValue = output && output.OutputValue;
