@@ -3,5 +3,11 @@
   "eslint.validate": [
     {"language": "typescript", "autoFix": true},
     {"language": "typescriptreact", "autoFix": true}
-  ]
+  ],
+  "files.exclude": {
+    "lib": true,
+    "node_modules": true,
+    "yarn.lock": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
