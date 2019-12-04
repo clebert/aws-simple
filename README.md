@@ -423,6 +423,30 @@ associated with the stack using the `aws-simple upload [options]` CLI command.
 The optionally specified `bucketPath` or, if not specified, the `publicPath` is
 used as the S3 object key._
 
+#### Configure A Single-page Application
+
+Instead of specifying multiple `s3Configs`, you can also specify a catch-all
+`s3Config`. For example a single greedy `publicPath` (`/{proxy+}`) will
+intercept requests made to `/`, `/foo`, and `/bar`. This can be useful to
+deliver the same single-page Application under different paths.
+
+```js
+exports.default = () => ({
+  appName: 'my-app',
+  appVersion: 'latest',
+  createStackConfig: () => ({
+    s3Configs: [
+      {
+        type: 'file',
+        publicPath: '/{proxy+}',
+        localPath: 'dist/index.html',
+        bucketPath: 'index.html'
+      }
+    ]
+  })
+});
+```
+
 ### Configure An S3 Folder
 
 You can configure an S3 folder whose contained files can be accessed via GET
