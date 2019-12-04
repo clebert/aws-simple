@@ -45,7 +45,7 @@ export async function upload(
 
             const url =
               type === 'file'
-                ? joinUrl(baseUrl, publicPath)
+                ? joinUrl(baseUrl, publicPath).replace('{proxy+}', '')
                 : joinUrl(baseUrl, publicPath, path.basename(filename));
 
             listrTask.title = `Successfully uploaded file: ${url}`;
