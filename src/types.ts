@@ -6,7 +6,6 @@ export interface CustomDomainConfig {
 }
 
 export type LambdaHttpMethod =
-  | 'ANY'
   | 'DELETE'
   | 'GET'
   | 'HEAD'
