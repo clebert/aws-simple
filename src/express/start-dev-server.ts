@@ -38,6 +38,8 @@ function startDevServer(argv: unknown): void {
 
   const app = express();
 
+  app.use(express.text());
+
   if (typeof minimumCompressionSizeInBytes === 'number') {
     app.use(compression({threshold: minimumCompressionSizeInBytes}));
   }
