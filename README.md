@@ -427,7 +427,7 @@ used as the S3 object key._
 
 Instead of specifying multiple `s3Configs`, you can also specify a catch-all
 `s3Config`. For example a single greedy `publicPath` (`/{proxy+}`) will
-intercept requests made to `/`, `/foo`, and `/bar`. This can be useful to
+intercept requests made to `/foo`, `/bar`, and `/baz`. This can be useful to
 deliver the same single-page Application under different paths.
 
 ```js
@@ -436,6 +436,12 @@ exports.default = () => ({
   appVersion: 'latest',
   createStackConfig: () => ({
     s3Configs: [
+      {
+        type: 'file',
+        publicPath: '/',
+        localPath: 'dist/index.html',
+        bucketPath: 'index.html'
+      },
       {
         type: 'file',
         publicPath: '/{proxy+}',
