@@ -6,9 +6,6 @@ export function getRouterMatcher(
   httpMethod: LambdaHttpMethod
 ): express.IRouterMatcher<express.Express> {
   switch (httpMethod) {
-    case 'ANY': {
-      return app.all.bind(app);
-    }
     case 'DELETE': {
       return app.delete.bind(app);
     }
