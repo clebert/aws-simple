@@ -48,7 +48,8 @@ function startDevServer(argv: unknown): void {
     serveLocalLambda(app, lambdaConfig, Boolean(cache));
   }
 
-  for (const s3Config of s3Configs) {
+  // ['/foo/bar', '/', '/foo'] => ['/foo/bar', '/foo', '/']
+  for (const s3Config of [...s3Configs].sort().reverse()) {
     serveLocalS3(app, s3Config);
   }
 
