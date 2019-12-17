@@ -26,14 +26,6 @@ export async function start(
 
   const port = await getPort({port: argv.port});
 
-  const {lambdaConfigs = [], s3Configs = []} = appConfig.createStackConfig(
-    port
-  );
-
-  const localPaths = [...lambdaConfigs, ...s3Configs].map(
-    ({localPath}) => localPath
-  );
-
   const startDevServer = (): ChildProcess => {
     const args = ['--port', String(port)];
 
@@ -52,13 +44,18 @@ export async function start(
 
   let serverProcess = startDevServer();
 
-  watch(localPaths).on('change', () => {
-    console.info(new Date().toLocaleTimeString(), 'Restarting DEV server...');
+  const {lambdaConfigs = []} = appConfig.createStackConfig(port);
+  const localLambdaPaths = lambdaConfigs.map(({localPath}) => localPath);
 
-    serverProcess.kill();
+  if (localLambdaPaths.length > 0) {
+    watch(localLambdaPaths).on('change', () => {
+      console.info(new Date().toLocaleTimeString(), 'Restarting DEV server...');
 
-    serverProcess = startDevServer();
-  });
+      serverProcess.kill();
+
+      serverProcess = startDevServer();
+    });
+  }
 
   return true;
 }
