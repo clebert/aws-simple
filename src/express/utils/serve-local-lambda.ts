@@ -10,8 +10,10 @@ export function serveLocalLambda(
 ): void {
   const {httpMethod, publicPath} = lambdaConfig;
 
+  const normalizedPublicPath = publicPath.replace('{proxy+}', '*');
+
   getRouterMatcher(app, httpMethod)(
-    publicPath,
+    normalizedPublicPath,
     createLambdaRequestHandler(lambdaConfig, useCache)
   );
 }

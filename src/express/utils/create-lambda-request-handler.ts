@@ -30,8 +30,13 @@ export function createLambdaRequestHandler(
           event: {
             ...getRequestHeaders(req),
             path: req.path,
+            httpMethod: req.method,
             queryStringParameters: req.query,
             body: req.body
+              ? typeof req.body === 'string'
+                ? req.body
+                : JSON.stringify(req.body)
+              : null
           }
         }));
 
