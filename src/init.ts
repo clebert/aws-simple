@@ -18,7 +18,7 @@ if (fs.existsSync(awsConfigFile) && !fs.existsSync(sharedCredentialsFile)) {
   fs.writeFileSync(sharedCredentialsFile, '');
 }
 
-if (fs.existsSync(sharedCredentialsFile)) {
+if (fs.existsSync(awsConfigFile)) {
   /*
    * Ensure that the AWS SDK will load region from ~/.aws/config
    * if the environment variable AWS_REGION is not set.
