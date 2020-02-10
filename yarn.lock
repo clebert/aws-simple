@@ -1497,7 +1497,7 @@
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-2.0.1.tgz#dc488842312a7f075149312905b5e3c0b054c79d"
   integrity sha512-FwI9gX75FgVBJ7ywgnq/P7tw+/o1GUbtP0KzbtusLigAOgIgNISRK0ZPl4qertvXSIE8YbsVJueQ90cDt9YYyw==
 
-"@types/node@*", "@types/node@^13.1.7":
+"@types/node@*":
   version "13.5.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.5.0.tgz#4e498dbf355795a611a87ae5ef811a8660d42662"
   integrity sha512-Onhn+z72D2O2Pb2ql2xukJ55rglumsVo1H6Fmyi8mlU9SvKdBk/pUSUAiBY/d9bAOF7VVWajX3sths/+g6ZiAQ==
@@ -4522,17 +4522,14 @@ kuler@1.0.x:
   dependencies:
     colornames "^1.1.1"
 
-lambda-local@^1.6.3:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/lambda-local/-/lambda-local-1.7.0.tgz#f3cb6f1d5242c13d9e12544ce647785940016e57"
-  integrity sha512-giXGBg16ZzFwchgX1uOCrK1yVjkzpj1X49+MKGSyVf0t0liFMclOs5pGXKVwMcd8RAySbO79hDcHREnTBzNNcw==
+lambda-local@^1.7.1:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/lambda-local/-/lambda-local-1.7.1.tgz#aaf599f4f5ea7c111007b58ba696ca029a9a4742"
+  integrity sha512-2nRlgFSELc2YgLu1haa0jUgnAzlV5zPjYQKlsDkHUKFn73QlQsIqJZ5w8Hs54FyOT95qcJ29fc03x9f0+pf4ag==
   dependencies:
-    "@types/node" "^13.1.7"
     aws-sdk "^2.488.0"
     commander "^4.1.0"
     dotenv "^8.0.0"
-    mute "^2.0.6"
-    typescript "^3.7.5"
     winston "^3.2.1"
 
 lazystream@^1.0.0:
@@ -4870,11 +4867,6 @@ mute-stream@0.0.8, mute-stream@~0.0.4:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
-
-mute@^2.0.6:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/mute/-/mute-2.0.6.tgz#8bf10f1f285ea38c9db2630bff675c114c973ed5"
-  integrity sha1-i/EPHyheo4ydsmML/2dcEUyXPtU=
 
 nanomatch@^1.2.9:
   version "1.2.13"
@@ -6454,7 +6446,7 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
-typescript@^3.6.4, typescript@^3.7.5:
+typescript@^3.6.4:
   version "3.7.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.5.tgz#0692e21f65fd4108b9330238aac11dd2e177a1ae"
   integrity sha512-/P5lkRXkWHNAbcJIiHPfRoKqyd7bsyCma1hZNUGfn20qm64T6ZBlrzprymeu918H+mB/0rIg2gGK/BXkhhYgBw==

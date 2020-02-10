@@ -1,4 +1,4 @@
-import lambdaLocal from 'lambda-local';
+import * as lambdaLocal from 'lambda-local';
 import {format} from 'winston';
 
 export function suppressLambdaResultLogging(): void {

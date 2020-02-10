@@ -1,6 +1,6 @@
 import {APIGatewayProxyResult} from 'aws-lambda';
 import express from 'express';
-import lambdaLocal from 'lambda-local';
+import * as lambdaLocal from 'lambda-local';
 import {LambdaConfig} from '../../types';
 import {getRequestHeaders} from './get-request-headers';
 
