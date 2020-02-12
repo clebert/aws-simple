@@ -84,6 +84,7 @@
     "signal-exit": "^3.0.2",
     "source-map-support": "^0.5.13",
     "url-join": "^4.0.1",
+    "winston": "^3.2.1",
     "yargs": "^15.0.0"
   },
   "devDependencies": {
