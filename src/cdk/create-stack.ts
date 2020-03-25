@@ -14,6 +14,7 @@ import {createARecord} from './utils/create-a-record';
 import {createLambdaIntegration} from './utils/create-lambda-integration';
 import {createRestApiProps} from './utils/create-rest-api-props';
 import {createS3Integration} from './utils/create-s3-integration';
+import {createUnauthorizedGatewayResponse} from './utils/create-unauthorized-gateway-response';
 
 export function createStack(appConfig: AppConfig): void {
   const stackConfig = appConfig.createStackConfig();
@@ -37,6 +38,7 @@ export function createStack(appConfig: AppConfig): void {
   restApiUrlOutput.node.addDependency(restApi);
 
   createARecord(stackConfig, stack, restApi);
+  createUnauthorizedGatewayResponse(stackConfig, stack, restApi);
 
   const s3Bucket = new Bucket(stack, 'S3Bucket', {publicReadAccess: false});
 

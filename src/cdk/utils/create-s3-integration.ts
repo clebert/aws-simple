@@ -1,6 +1,7 @@
 import {
   AuthorizationType,
   AwsIntegration,
+  IAuthorizer,
   RestApi
 } from '@aws-cdk/aws-apigateway';
 import {Role} from '@aws-cdk/aws-iam';
@@ -10,13 +11,23 @@ import {S3Config} from '../../types';
 import {createS3IntegrationResponses} from './create-s3-integration-responses';
 import {createS3MethodResponses} from './create-s3-method-responses';
 
+const noneAuthorizer: IAuthorizer = {
+  authorizerId: 'none',
+  authorizationType: AuthorizationType.NONE
+};
+
 export function createS3Integration(
   restApi: RestApi,
   s3Bucket: Bucket,
   s3IntegrationRole: Role,
   s3Config: S3Config
 ): void {
-  const {type, publicPath, bucketPath = publicPath} = s3Config;
+  const {
+    type,
+    publicPath,
+    bucketPath = publicPath,
+    authenticationRequired
+  } = s3Config;
 
   const s3Integration = new AwsIntegration({
     service: 's3',
@@ -44,7 +55,10 @@ export function createS3Integration(
   }
 
   resource.addMethod('GET', s3Integration, {
-    authorizationType: AuthorizationType.NONE,
+    authorizationType: authenticationRequired
+      ? AuthorizationType.CUSTOM
+      : AuthorizationType.NONE,
+    authorizer: authenticationRequired ? undefined : noneAuthorizer,
     methodResponses: createS3MethodResponses(s3Config),
     requestParameters: {'method.request.path.file': type === 'folder'}
   });

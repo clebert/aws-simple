@@ -1,9 +1,19 @@
-import {LambdaIntegration, RestApi} from '@aws-cdk/aws-apigateway';
+import {
+  AuthorizationType,
+  IAuthorizer,
+  LambdaIntegration,
+  RestApi
+} from '@aws-cdk/aws-apigateway';
 import {Code, Function as Lambda, Runtime} from '@aws-cdk/aws-lambda';
 import {Duration, Stack} from '@aws-cdk/core';
 import * as path from 'path';
 import {LambdaConfig} from '../../types';
 import {createShortHash} from '../../utils/create-short-hash';
+
+const noneAuthorizer: IAuthorizer = {
+  authorizerId: 'none',
+  authorizationType: AuthorizationType.NONE
+};
 
 export function createLambdaIntegration(
   stack: Stack,
@@ -19,7 +29,8 @@ export function createLambdaIntegration(
     memorySize = 3008,
     timeoutInSeconds = 28,
     acceptedParameters = {},
-    environment
+    environment,
+    authenticationRequired
   } = lambdaConfig;
 
   if (timeoutInSeconds > 28) {
@@ -52,6 +63,10 @@ export function createLambdaIntegration(
       }
     ),
     {
+      authorizationType: authenticationRequired
+        ? AuthorizationType.CUSTOM
+        : AuthorizationType.NONE,
+      authorizer: authenticationRequired ? undefined : noneAuthorizer,
       requestParameters: Object.keys(acceptedParameters).reduce(
         (requestParameters, parameterName) => {
           requestParameters[

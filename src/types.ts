@@ -59,6 +59,7 @@ export interface LambdaConfig {
   readonly cacheTtlInSeconds?: number;
   readonly acceptedParameters?: LambdaAcceptedParameters;
   readonly environment?: LambdaEnvironment;
+  readonly authenticationRequired?: boolean;
 }
 
 export interface S3ResponseHeaders {
@@ -74,6 +75,14 @@ export interface S3Config {
   readonly responseHeaders?: S3ResponseHeaders;
   readonly cachingEnabled?: boolean;
   readonly cacheTtlInSeconds?: number;
+  readonly authenticationRequired?: boolean;
+}
+
+export interface BasicAuthenticationConfig {
+  readonly username: string;
+  readonly password: string;
+  readonly realm?: string;
+  readonly cacheTtlInSeconds?: number;
 }
 
 export interface StackConfig {
@@ -82,6 +91,7 @@ export interface StackConfig {
   readonly minimumCompressionSizeInBytes?: number;
   readonly lambdaConfigs?: LambdaConfig[];
   readonly s3Configs?: S3Config[];
+  readonly basicAuthentication?: BasicAuthenticationConfig;
 }
 
 export interface AppConfig {
