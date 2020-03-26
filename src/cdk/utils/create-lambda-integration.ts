@@ -14,7 +14,7 @@ export function createLambdaIntegration(
   stack: Stack,
   restApi: RestApi,
   lambdaConfig: LambdaConfig,
-  authorizer?: IAuthorizer
+  authorizer: IAuthorizer | undefined
 ): void {
   const {
     httpMethod,

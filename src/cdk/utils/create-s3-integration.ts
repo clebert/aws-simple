@@ -16,7 +16,7 @@ export function createS3Integration(
   s3Bucket: Bucket,
   s3IntegrationRole: Role,
   s3Config: S3Config,
-  authorizer?: IAuthorizer
+  authorizer: IAuthorizer | undefined
 ): void {
   const {
     type,

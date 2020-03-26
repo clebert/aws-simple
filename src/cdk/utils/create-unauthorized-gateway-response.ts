@@ -7,9 +7,7 @@ export function createUnauthorizedGatewayResponse(
   stack: Stack,
   restApi: RestApi
 ): void {
-  const {basicAuthenticationConfig: basicAuthentication} = stackConfig;
-
-  if (!basicAuthentication) {
+  if (!stackConfig.basicAuthenticationConfig) {
     return;
   }
 

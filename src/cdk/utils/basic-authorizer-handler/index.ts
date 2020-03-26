@@ -13,8 +13,8 @@ function isValidBasicAuthHeader(headerValue?: string): boolean {
     .split(':');
 
   return (
-    username === process.env['USERNAME'] &&
-    password.join(':') === process.env['PASSWORD']
+    username === process.env.USERNAME &&
+    password.join(':') === process.env.PASSWORD
   );
 }
 
@@ -40,10 +40,10 @@ function createAllowPolicy(
 }
 
 export const handler: CustomAuthorizerHandler = (event, _context, callback) => {
-  if (!process.env['USERNAME']) {
+  if (!process.env.USERNAME) {
     callback(new Error('USERNAME is not defined.'));
   } else if (isValidBasicAuthHeader(event.headers?.authorization)) {
-    callback(null, createAllowPolicy(process.env['USERNAME'], event.methodArn));
+    callback(null, createAllowPolicy(process.env.USERNAME, event.methodArn));
   } else {
     callback('Unauthorized');
   }
