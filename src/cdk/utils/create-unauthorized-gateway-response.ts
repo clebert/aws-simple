@@ -7,13 +7,11 @@ export function createUnauthorizedGatewayResponse(
   stack: Stack,
   restApi: RestApi
 ): void {
-  const {basicAuthentication} = stackConfig;
+  const {basicAuthenticationConfig: basicAuthentication} = stackConfig;
 
   if (!basicAuthentication) {
     return;
   }
-
-  const {realm} = basicAuthentication;
 
   // We need to use a low-level construct here that should be replaced when
   // @aws-cdk/aws-apigateway adds a high-level construct for gateway responses.
@@ -21,16 +19,19 @@ export function createUnauthorizedGatewayResponse(
     statusCode: '401',
     responseType: 'UNAUTHORIZED',
     restApiId: restApi.restApiId,
-    responseParameters: {
-      'gatewayresponse.header.WWW-Authenticate': realm
-        ? `'Basic realm="${realm}"'`
-        : "'Basic'"
-    },
+    responseParameters: {'gatewayresponse.header.WWW-Authenticate': "'Basic'"},
     responseTemplates: {
-      'application/json': '{"message":$context.error.messageString}'
+      'application/json': '{"message":$context.error.messageString}',
+      'text/html': '$context.error.message'
     }
   });
 
-  // Intentionally not adding the restApi as a dependency here, otherwise the
-  // gateway response would only be active after a manual deployment.
+  // Intentionally not adding the restApi as a dependency here. With a defined
+  // dependency the api gateway would be deployed first, and only afterwards the
+  // gateway response would be added. This would require an additional
+  // deployment. We don't really need the dependency, since we are only
+  // interested in the restApiId (see above), which can be computed beforehand.
+  // Omitting the dependency allows the CDK to deploy the api gateway already
+  // with the gateway response defined, so that no additional deployment would
+  // be needed.
 }

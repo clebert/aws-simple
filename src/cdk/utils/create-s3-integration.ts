@@ -11,16 +11,12 @@ import {S3Config} from '../../types';
 import {createS3IntegrationResponses} from './create-s3-integration-responses';
 import {createS3MethodResponses} from './create-s3-method-responses';
 
-const noneAuthorizer: IAuthorizer = {
-  authorizerId: 'none',
-  authorizationType: AuthorizationType.NONE
-};
-
 export function createS3Integration(
   restApi: RestApi,
   s3Bucket: Bucket,
   s3IntegrationRole: Role,
-  s3Config: S3Config
+  s3Config: S3Config,
+  authorizer?: IAuthorizer
 ): void {
   const {
     type,
@@ -28,6 +24,12 @@ export function createS3Integration(
     bucketPath = publicPath,
     authenticationRequired
   } = s3Config;
+
+  if (authenticationRequired && !authorizer) {
+    throw new Error(
+      `The S3 config for "${publicPath}" requires authentication but no basicAuthenticationConfig has been defined.`
+    );
+  }
 
   const s3Integration = new AwsIntegration({
     service: 's3',
@@ -58,7 +60,7 @@ export function createS3Integration(
     authorizationType: authenticationRequired
       ? AuthorizationType.CUSTOM
       : AuthorizationType.NONE,
-    authorizer: authenticationRequired ? undefined : noneAuthorizer,
+    authorizer: authenticationRequired ? authorizer : undefined,
     methodResponses: createS3MethodResponses(s3Config),
     requestParameters: {'method.request.path.file': type === 'folder'}
   });

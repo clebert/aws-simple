@@ -22,6 +22,8 @@ function createAllowPolicy(
   principalId: string,
   resource: string
 ): CustomAuthorizerResult {
+  const [arn, partition, service, region, accountId] = resource.split(':');
+
   return {
     principalId,
     policyDocument: {
@@ -30,11 +32,7 @@ function createAllowPolicy(
         {
           Action: 'execute-api:Invoke',
           Effect: 'Allow',
-          Resource:
-            resource
-              .split(':')
-              .slice(0, -1)
-              .join(':') + ':*'
+          Resource: [arn, partition, service, region, accountId, '*'].join(':')
         }
       ]
     }

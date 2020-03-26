@@ -10,15 +10,11 @@ import * as path from 'path';
 import {LambdaConfig} from '../../types';
 import {createShortHash} from '../../utils/create-short-hash';
 
-const noneAuthorizer: IAuthorizer = {
-  authorizerId: 'none',
-  authorizationType: AuthorizationType.NONE
-};
-
 export function createLambdaIntegration(
   stack: Stack,
   restApi: RestApi,
-  lambdaConfig: LambdaConfig
+  lambdaConfig: LambdaConfig,
+  authorizer?: IAuthorizer
 ): void {
   const {
     httpMethod,
@@ -36,6 +32,12 @@ export function createLambdaIntegration(
   if (timeoutInSeconds > 28) {
     console.warn(
       'Due to the default timeout of the API Gateway, the maximum Lambda timeout is limited to 28 seconds.'
+    );
+  }
+
+  if (authenticationRequired && !authorizer) {
+    throw new Error(
+      `The Lambda config for "${httpMethod} ${publicPath}" requires authentication but no basicAuthenticationConfig has been defined.`
     );
   }
 
@@ -66,7 +68,7 @@ export function createLambdaIntegration(
       authorizationType: authenticationRequired
         ? AuthorizationType.CUSTOM
         : AuthorizationType.NONE,
-      authorizer: authenticationRequired ? undefined : noneAuthorizer,
+      authorizer: authenticationRequired ? authorizer : undefined,
       requestParameters: Object.keys(acceptedParameters).reduce(
         (requestParameters, parameterName) => {
           requestParameters[

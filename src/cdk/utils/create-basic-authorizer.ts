@@ -5,11 +5,12 @@ import path from 'path';
 import {StackConfig} from '../../types';
 
 export function createBasicAuthorizer(
-  restApiName: string,
+  appName: string,
+  appVersion: string,
   stackConfig: StackConfig,
   stack: Stack
 ): RequestAuthorizer | undefined {
-  if (!stackConfig.basicAuthentication) {
+  if (!stackConfig.basicAuthenticationConfig) {
     return undefined;
   }
 
@@ -17,11 +18,11 @@ export function createBasicAuthorizer(
     username,
     password,
     cacheTtlInSeconds
-  } = stackConfig.basicAuthentication;
+  } = stackConfig.basicAuthenticationConfig;
 
   return new RequestAuthorizer(stack, 'BasicAuthorizer', {
     handler: new Lambda(stack, 'AuthorizerLambda', {
-      description: `${restApiName} Authorizer Lambda`,
+      description: `${appName} Authorizer Lambda ${appVersion}`,
       runtime: Runtime.NODEJS_10_X,
       code: Code.fromAsset(
         path.dirname(require.resolve('./basic-authorizer-handler'))

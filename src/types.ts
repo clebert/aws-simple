@@ -81,7 +81,6 @@ export interface S3Config {
 export interface BasicAuthenticationConfig {
   readonly username: string;
   readonly password: string;
-  readonly realm?: string;
   readonly cacheTtlInSeconds?: number;
 }
 
@@ -91,7 +90,7 @@ export interface StackConfig {
   readonly minimumCompressionSizeInBytes?: number;
   readonly lambdaConfigs?: LambdaConfig[];
   readonly s3Configs?: S3Config[];
-  readonly basicAuthentication?: BasicAuthenticationConfig;
+  readonly basicAuthenticationConfig?: BasicAuthenticationConfig;
 }
 
 export interface AppConfig {

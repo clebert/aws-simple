@@ -15,19 +15,17 @@ import {createLambdaIntegration} from './utils/create-lambda-integration';
 import {createRestApiProps} from './utils/create-rest-api-props';
 import {createS3Integration} from './utils/create-s3-integration';
 import {createUnauthorizedGatewayResponse} from './utils/create-unauthorized-gateway-response';
+import {createBasicAuthorizer} from './utils/create-basic-authorizer';
 
 export function createStack(appConfig: AppConfig): void {
-  const stackConfig = appConfig.createStackConfig();
+  const {appName, appVersion, createStackConfig} = appConfig;
+  const stackConfig = createStackConfig();
   const stack = new Stack(new App(), createStackName(appConfig));
 
   const restApi = new RestApi(
     stack,
     'RestApi',
-    createRestApiProps(
-      `${appConfig.appName} ${appConfig.appVersion}`,
-      stackConfig,
-      stack
-    )
+    createRestApiProps(`${appName} ${appVersion}`, stackConfig, stack)
   );
 
   const restApiUrlOutput = new CfnOutput(stack, 'RestApiUrlOutput', {
@@ -60,13 +58,26 @@ export function createStack(appConfig: AppConfig): void {
 
   s3IntegrationPolicy.node.addDependency(s3IntegrationRole);
 
+  const authorizer = createBasicAuthorizer(
+    appName,
+    appVersion,
+    stackConfig,
+    stack
+  );
+
   const {lambdaConfigs = [], s3Configs = []} = stackConfig;
 
   for (const lambdaConfig of lambdaConfigs) {
-    createLambdaIntegration(stack, restApi, lambdaConfig);
+    createLambdaIntegration(stack, restApi, lambdaConfig, authorizer);
   }
 
   for (const s3Config of s3Configs) {
-    createS3Integration(restApi, s3Bucket, s3IntegrationRole, s3Config);
+    createS3Integration(
+      restApi,
+      s3Bucket,
+      s3IntegrationRole,
+      s3Config,
+      authorizer
+    );
   }
 }
