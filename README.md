@@ -174,16 +174,16 @@ consisting of a single static HTML file:
 exports.default = {
   appName: 'my-app',
   appVersion: 'latest',
-  createStackConfig: port => ({
+  createStackConfig: (port) => ({
     s3Configs: [
       {
         type: 'file',
         publicPath: '/',
         localPath: 'dist/index.html',
-        bucketPath: 'index.html'
-      }
-    ]
-  })
+        bucketPath: 'index.html',
+      },
+    ],
+  }),
 };
 ```
 
@@ -277,7 +277,7 @@ exports.default = {
   appVersion: 'latest',
   createStackConfig: () => ({
     /* ... */
-  })
+  }),
 };
 ```
 
@@ -302,9 +302,9 @@ exports.default = {
         'arn:aws:acm:eu-central-1:************:certificate/********-****-****-****-************',
       hostedZoneId: '**************',
       hostedZoneName: 'example.com',
-      aliasRecordName: appVersion !== 'latest' ? appVersion : undefined
-    }
-  })
+      aliasRecordName: appVersion !== 'latest' ? appVersion : undefined,
+    },
+  }),
 };
 ```
 
@@ -324,7 +324,7 @@ const appVersion = process.env.APP_VERSION || 'latest';
 exports.default = {
   appName: 'my-app',
   appVersion,
-  createStackConfig: port => ({
+  createStackConfig: (port) => ({
     lambdaConfigs: [
       {
         httpMethod: 'GET',
@@ -342,16 +342,16 @@ exports.default = {
           foo: {},
           bar: {isCacheKey: true},
           baz: {required: true},
-          qux: {isCacheKey: true, required: true}
+          qux: {isCacheKey: true, required: true},
         },
         environment: {
           BASE_URL: port
             ? `http://localhost:${port}` // Local DEV server
-            : `https://${appVersion}.example.com`
-        }
-      }
-    ]
-  })
+            : `https://${appVersion}.example.com`,
+        },
+      },
+    ],
+  }),
 };
 ```
 
@@ -362,7 +362,7 @@ async function handler() {
   return {
     statusCode: 200,
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify('Hello, World!')
+    body: JSON.stringify('Hello, World!'),
   };
 }
 
@@ -380,10 +380,10 @@ exports.default = {
     lambdaConfigs: [
       {
         /* ... */
-        handler: 'myHandler'
-      }
-    ]
-  })
+        handler: 'myHandler',
+      },
+    ],
+  }),
 };
 ```
 
@@ -411,10 +411,10 @@ exports.default = {
         // Optional example properties
         bucketPath: 'file.html',
         cachingEnabled: true,
-        cacheTtlInSeconds: 3600
-      }
-    ]
-  })
+        cacheTtlInSeconds: 3600,
+      },
+    ],
+  }),
 };
 ```
 
@@ -440,16 +440,16 @@ exports.default = {
         type: 'file',
         publicPath: '/',
         localPath: 'dist/index.html',
-        bucketPath: 'index.html'
+        bucketPath: 'index.html',
       },
       {
         type: 'file',
         publicPath: '/{proxy+}',
         localPath: 'dist/index.html',
-        bucketPath: 'index.html'
-      }
-    ]
-  })
+        bucketPath: 'index.html',
+      },
+    ],
+  }),
 };
 ```
 
@@ -472,13 +472,13 @@ exports.default = {
         // Optional example properties
         responseHeaders: {
           accessControlAllowOrigin: '*',
-          cacheControl: 'max-age=157680000'
+          cacheControl: 'max-age=157680000',
         },
         cachingEnabled: true,
-        cacheTtlInSeconds: 3600
-      }
-    ]
-  })
+        cacheTtlInSeconds: 3600,
+      },
+    ],
+  }),
 };
 ```
 
@@ -523,9 +523,9 @@ exports.default = {
     customDomainConfig: {
       /* ... */
       hostedZoneName: 'example.com',
-      aliasRecordName: appVersion
-    }
-  })
+      aliasRecordName: appVersion,
+    },
+  }),
 };
 ```
 
@@ -539,8 +539,8 @@ exports.default = {
   appName: 'my-app',
   appVersion: 'latest',
   createStackConfig: () => ({
-    binaryMediaTypes: ['font/woff2']
-  })
+    binaryMediaTypes: ['font/woff2'],
+  }),
 };
 ```
 
@@ -553,8 +553,8 @@ exports.default = {
   appName: 'my-app',
   appVersion: 'latest',
   createStackConfig: () => ({
-    minimumCompressionSizeInBytes: 1000
-  })
+    minimumCompressionSizeInBytes: 1000,
+  }),
 };
 ```
 
@@ -571,35 +571,35 @@ exports.default = {
     basicAuthenticationConfig: {
       username: process.env.USERNAME,
       password: process.env.PASSWORD,
-      cacheTtlInSeconds: 300
+      cacheTtlInSeconds: 300,
     },
     lambdaConfigs: [
       {
         httpMethod: 'GET',
         publicPath: '/secret-endpoint',
         localPath: 'path/to/secret-lambda.js',
-        authenticationRequired: true
+        authenticationRequired: true,
       },
       {
         httpMethod: 'GET',
         publicPath: '/public-endpoint',
-        localPath: 'path/to/public-lambda.js'
-      }
+        localPath: 'path/to/public-lambda.js',
+      },
     ],
     s3Configs: [
       {
         type: 'file',
         publicPath: '/secret-file',
         localPath: 'path/to/secret-file.html',
-        authenticationRequired: true
+        authenticationRequired: true,
       },
       {
         type: 'file',
         publicPath: '/public-file',
-        localPath: 'path/to/public-file.html'
-      }
-    ]
-  })
+        localPath: 'path/to/public-file.html',
+      },
+    ],
+  }),
 };
 ```
 

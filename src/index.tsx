@@ -60,7 +60,7 @@ import {loadAppConfig} from './utils/load-app-config';
   await cleanUp(appConfig, clientConfig, argv);
 
   await exitPromise;
-})().catch(error => {
+})().catch((error) => {
   signalExit(() => {
     /*
      * This ensures that the error is printed after ink has finished rendering.

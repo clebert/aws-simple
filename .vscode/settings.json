@@ -1,10 +1,7 @@
 {
   "editor.formatOnSave": true,
-  "eslint.validate": [
-    {"language": "typescript", "autoFix": true},
-    {"language": "typescriptreact", "autoFix": true}
-  ],
   "files.exclude": {
+    "coverage": true,
     "lib": true,
     "node_modules": true,
     "yarn.lock": true

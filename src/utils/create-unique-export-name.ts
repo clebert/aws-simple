@@ -5,7 +5,7 @@ export type ExportName = 'RestApiUrl' | 'S3BucketName';
 export function createUniqueExportName(
   stackName: string,
   exportName: ExportName,
-  legacy = false
+  legacy: boolean = false
 ): string {
   return legacy
     ? `R${createShortHash(exportName, stackName)}`

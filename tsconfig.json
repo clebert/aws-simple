@@ -1,21 +1,21 @@
 {
   "compilerOptions": {
     "forceConsistentCasingInFileNames": true,
-    "lib": ["es2017"],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "lib": ["ESNext"],
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true,
-    "target": "es2017",
-    "allowSyntheticDefaultImports": true,
+    "target": "ES2017",
     "esModuleInterop": true,
     "outDir": "lib",
     "declaration": true,
     "jsx": "react",
-    "incremental": true
+    "incremental": true,
+    "pretty": true
   },
   "include": ["src/**/*", "types/**/*"]
 }

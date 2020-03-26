@@ -24,27 +24,28 @@ function isListArgv(argv: {readonly _: string[]}): argv is ListArgv {
 const appVersionColumn: Column<CloudFormation.Stack, 'StackName'> = {
   headerCell: <Text underline>App Version</Text>,
   entryKey: 'StackName',
-  createEntryCell: value => {
+  createEntryCell: (value) => {
     const parts = parseStackName(value);
 
     return (parts && parts.appVersion) || value;
-  }
+  },
 };
 
 const ageColumn: Column<CloudFormation.Stack, 'CreationTime'> = {
   headerCell: <Text underline>Age</Text>,
   entryKey: 'CreationTime',
-  createEntryCell: value => {
+  createEntryCell: (value) => {
     const ageInDays = getAgeInDays(value);
 
     return `${ageInDays} day${ageInDays === 1 ? '' : 's'}`;
-  }
+  },
 };
 
 const tagsColumn: Column<CloudFormation.Stack, 'Tags'> = {
   headerCell: <Text underline>Tags</Text>,
   entryKey: 'Tags',
-  createEntryCell: value => (value ? value.map(({Key}) => Key).join(', ') : '')
+  createEntryCell: (value) =>
+    value ? value.map(({Key}) => Key).join(', ') : '',
 };
 
 export const ListCommand = (props: ListCommandProps): JSX.Element | null => {
@@ -78,6 +79,6 @@ export const ListCommand = (props: ListCommandProps): JSX.Element | null => {
 };
 
 ListCommand.describe = (argv: Argv) =>
-  argv.command('list [options]', 'List all deployed stacks', commandArgv =>
+  argv.command('list [options]', 'List all deployed stacks', (commandArgv) =>
     commandArgv.example('npx $0 list', '')
   );

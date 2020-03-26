@@ -1,4 +1,4 @@
-import {RestApi, CfnGatewayResponse} from '@aws-cdk/aws-apigateway';
+import {CfnGatewayResponse, RestApi} from '@aws-cdk/aws-apigateway';
 import {Stack} from '@aws-cdk/core';
 import {StackConfig} from '../../types';
 
@@ -20,8 +20,8 @@ export function createUnauthorizedGatewayResponse(
     responseParameters: {'gatewayresponse.header.WWW-Authenticate': "'Basic'"},
     responseTemplates: {
       'application/json': '{"message":$context.error.messageString}',
-      'text/html': '$context.error.message'
-    }
+      'text/html': '$context.error.message',
+    },
   });
 
   // Intentionally not adding the restApi as a dependency here. With a defined

@@ -32,10 +32,10 @@ function createAllowPolicy(
         {
           Action: 'execute-api:Invoke',
           Effect: 'Allow',
-          Resource: [arn, partition, service, region, accountId, '*'].join(':')
-        }
-      ]
-    }
+          Resource: [arn, partition, service, region, accountId, '*'].join(':'),
+        },
+      ],
+    },
   };
 }
 

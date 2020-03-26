@@ -25,7 +25,7 @@ describe('createStackName', () => {
       {appName: '-foo', appVersion: 'bar'},
       {appName: 'foo-', appVersion: 'bar'},
       {appName: 'f--o--o', appVersion: 'bar'},
-      {appName: 'f.o.o', appVersion: 'bar'}
+      {appName: 'f.o.o', appVersion: 'bar'},
     ]) {
       expect(() => createStackName(invalidParts)).toThrowError(
         'The specified app name is invalid. It can only include letters (A-Z and a-z), numbers (0-9), and single hyphens (-).'
@@ -38,7 +38,7 @@ describe('createStackName', () => {
       {appName: 'foo', appVersion: '-bar'},
       {appName: 'foo', appVersion: 'bar-'},
       {appName: 'foo', appVersion: 'b--a--r'},
-      {appName: 'foo', appVersion: 'b.a.r'}
+      {appName: 'foo', appVersion: 'b.a.r'},
     ]) {
       expect(() => createStackName(invalidParts)).toThrowError(
         'The specified app version is invalid. It can only include letters (A-Z and a-z), numbers (0-9), and single hyphens (-).'
@@ -52,7 +52,7 @@ describe('parseStackName', () => {
     for (const parts of [
       {appName: validPart, appVersion: validPart},
       {appName: 'foo', appVersion: 'bar'},
-      {appName: 'f-o-o', appVersion: 'b-a-r'}
+      {appName: 'f-o-o', appVersion: 'b-a-r'},
     ]) {
       expect(parseStackName(createStackName(parts))).toEqual(parts);
     }

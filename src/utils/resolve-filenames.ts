@@ -22,6 +22,6 @@ export function resolveFilenames(s3Config: S3Config): string[] {
   }
 
   return readdirSync(localPath)
-    .map(filename => path.resolve(path.join(localPath, filename)))
-    .filter(filename => lstatSync(filename).isFile());
+    .map((filename) => path.resolve(path.join(localPath, filename)))
+    .filter((filename) => lstatSync(filename).isFile());
 }

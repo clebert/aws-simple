@@ -6,7 +6,7 @@ export function createS3IntegrationResponses(
 ): IntegrationResponse[] {
   const s3IntegrationResponseParameters: Record<string, string> = {
     'method.response.header.Content-Type':
-      'integration.response.header.Content-Type'
+      'integration.response.header.Content-Type',
   };
 
   const {responseHeaders} = s3Config;
@@ -31,9 +31,9 @@ export function createS3IntegrationResponses(
     {
       selectionPattern: '200',
       statusCode: '200',
-      responseParameters: s3IntegrationResponseParameters
+      responseParameters: s3IntegrationResponseParameters,
     },
     {selectionPattern: '404', statusCode: '404'},
-    {selectionPattern: '5d{2}', statusCode: '500'}
+    {selectionPattern: '5d{2}', statusCode: '500'},
   ];
 }

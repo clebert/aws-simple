@@ -20,7 +20,7 @@ export function uploadFilesToS3(
   const s3BucketName = findStackOutput(stack, 'S3BucketName');
   const {type, publicPath, bucketPath = publicPath} = s3Config;
 
-  return resolveFilenames(s3Config).map(filename => ({
+  return resolveFilenames(s3Config).map((filename) => ({
     filename,
     promise: (async () => {
       await s3
@@ -31,9 +31,9 @@ export function uploadFilesToS3(
             ? path.join(bucketPath, path.basename(filename))
             : bucketPath
           ).replace(/^\//, ''),
-          Body: readFileSync(filename)
+          Body: readFileSync(filename),
         })
         .promise();
-    })()
+    })(),
   }));
 }

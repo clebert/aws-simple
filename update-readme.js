@@ -47,7 +47,7 @@ async function replaceCommandUsage(readmeText, commandName) {
   }
 
   fs.writeFileSync('README.md', updatedReadmeText);
-})().catch(error => {
+})().catch((error) => {
   console.error(error.toString());
 
   process.exit(1);

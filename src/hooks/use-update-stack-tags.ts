@@ -43,7 +43,7 @@ export function useUpdateStackTags(
   );
 
   const perform = React.useCallback((cancel: boolean) => {
-    setState(currentState =>
+    setState((currentState) =>
       currentState === 'uninitialized'
         ? cancel
           ? 'canceled'

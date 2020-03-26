@@ -12,9 +12,7 @@ export function useFindStacks(): CloudFormation.Stack[] | undefined {
   const [stacks, setStacks] = React.useState<CloudFormation.Stack[]>();
 
   React.useEffect(() => {
-    findStacks(appConfig, clientConfig)
-      .then(setStacks)
-      .catch(exit);
+    findStacks(appConfig, clientConfig).then(setStacks).catch(exit);
   }, [appConfig, clientConfig]);
 
   return stacks;

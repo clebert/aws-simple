@@ -29,7 +29,7 @@ export const AppInfo = ({appConfig}: AppInfoProps): JSX.Element => (
         >
           {appConfig.appVersion}
         </Label>
-      </Box>
+      </Box>,
     ]}
   </Static>
 );

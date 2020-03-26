@@ -1,7 +1,7 @@
 import {CloudFormation} from 'aws-sdk';
 import {
   ExportName,
-  createUniqueExportName
+  createUniqueExportName,
 } from '../utils/create-unique-export-name';
 
 export interface StackOutputs {
@@ -18,7 +18,7 @@ export function findStackOutput(
   const output =
     Outputs &&
     Outputs.find(
-      Output =>
+      (Output) =>
         Output.ExportName === createUniqueExportName(StackName, exportName) ||
         Output.ExportName ===
           createUniqueExportName(StackName, exportName, true)
