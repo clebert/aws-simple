@@ -1,6 +1,7 @@
 import {
   AuthorizationType,
   AwsIntegration,
+  IAuthorizer,
   RestApi
 } from '@aws-cdk/aws-apigateway';
 import {Role} from '@aws-cdk/aws-iam';
@@ -14,9 +15,21 @@ export function createS3Integration(
   restApi: RestApi,
   s3Bucket: Bucket,
   s3IntegrationRole: Role,
-  s3Config: S3Config
+  s3Config: S3Config,
+  authorizer: IAuthorizer | undefined
 ): void {
-  const {type, publicPath, bucketPath = publicPath} = s3Config;
+  const {
+    type,
+    publicPath,
+    bucketPath = publicPath,
+    authenticationRequired
+  } = s3Config;
+
+  if (authenticationRequired && !authorizer) {
+    throw new Error(
+      `The S3 config for "${publicPath}" requires authentication but no basicAuthenticationConfig has been defined.`
+    );
+  }
 
   const s3Integration = new AwsIntegration({
     service: 's3',
@@ -44,7 +57,10 @@ export function createS3Integration(
   }
 
   resource.addMethod('GET', s3Integration, {
-    authorizationType: AuthorizationType.NONE,
+    authorizationType: authenticationRequired
+      ? AuthorizationType.CUSTOM
+      : AuthorizationType.NONE,
+    authorizer: authenticationRequired ? authorizer : undefined,
     methodResponses: createS3MethodResponses(s3Config),
     requestParameters: {'method.request.path.file': type === 'folder'}
   });

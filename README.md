@@ -272,13 +272,13 @@ TypeScript 2.3 and later support type-checking in `*.js` files by adding a
 /**
  * @type {import('aws-simple').AppConfig}
  */
-exports.default = () => ({
+exports.default = {
   appName: 'my-app',
   appVersion: 'latest',
   createStackConfig: () => ({
     /* ... */
   })
-});
+};
 ```
 
 ### Configure A Custom Domain
@@ -293,7 +293,7 @@ must be created manually. You can then configure a custom domain as follows:
 const appName = 'my-app';
 const appVersion = process.env.APP_VERSION || 'latest';
 
-exports.default = () => ({
+exports.default = {
   appName,
   appVersion,
   createStackConfig: () => ({
@@ -305,7 +305,7 @@ exports.default = () => ({
       aliasRecordName: appVersion !== 'latest' ? appVersion : undefined
     }
   })
-});
+};
 ```
 
 _Note: Different app versions allow multiple stacks of the same app to be
@@ -373,7 +373,7 @@ If the export of the Lambda function node module has a different name than
 `handler`, this must be explicitly specified in the Lambda configuration:
 
 ```js
-exports.default = () => ({
+exports.default = {
   appName: 'my-app',
   appVersion: 'latest',
   createStackConfig: () => ({
@@ -384,7 +384,7 @@ exports.default = () => ({
       }
     ]
   })
-});
+};
 ```
 
 _Note: If external node modules are to be referenced in the Lambda function node
@@ -398,7 +398,7 @@ You can configure an S3 file that can be accessed via GET request at the URL
 `my-app.example.com/` as follows:
 
 ```js
-exports.default = () => ({
+exports.default = {
   appName: 'my-app',
   appVersion: 'latest',
   createStackConfig: () => ({
@@ -415,7 +415,7 @@ exports.default = () => ({
       }
     ]
   })
-});
+};
 ```
 
 _Note: The file specified under the `localPath` is loaded into the S3 bucket
@@ -431,7 +431,7 @@ intercept requests made to `/foo`, `/bar`, and `/baz/qux`. This can be useful to
 deliver the same single-page Application under different paths.
 
 ```js
-exports.default = () => ({
+exports.default = {
   appName: 'my-app',
   appVersion: 'latest',
   createStackConfig: () => ({
@@ -450,7 +450,7 @@ exports.default = () => ({
       }
     ]
   })
-});
+};
 ```
 
 ### Configure An S3 Folder
@@ -459,7 +459,7 @@ You can configure an S3 folder whose contained files can be accessed via GET
 request at the URL `my-app.example.com/assets/*` as follows:
 
 ```js
-exports.default = () => ({
+exports.default = {
   appName: 'my-app',
   appVersion: 'latest',
   createStackConfig: () => ({
@@ -479,7 +479,7 @@ exports.default = () => ({
       }
     ]
   })
-});
+};
 ```
 
 _Note: All files contained in the folder specified under the `localPath` are
@@ -516,7 +516,7 @@ function detectAppVersion() {
 
 const appVersion = detectAppVersion();
 
-exports.default = () => ({
+exports.default = {
   appName: 'my-app',
   appVersion,
   createStackConfig: () => ({
@@ -526,7 +526,7 @@ exports.default = () => ({
       aliasRecordName: appVersion
     }
   })
-});
+};
 ```
 
 ### Enable Binary Support
@@ -535,13 +535,13 @@ You can specify media types (e.g. `image/png`, `application/octet-stream`, etc.)
 to be treated as binary as follows:
 
 ```js
-exports.default = () => ({
+exports.default = {
   appName: 'my-app',
   appVersion: 'latest',
   createStackConfig: () => ({
     binaryMediaTypes: ['font/woff2']
   })
-});
+};
 ```
 
 ### Enable Payload Compression
@@ -549,14 +549,61 @@ exports.default = () => ({
 You can enable compression for an API as follows:
 
 ```js
-exports.default = () => ({
+exports.default = {
   appName: 'my-app',
   appVersion: 'latest',
   createStackConfig: () => ({
     minimumCompressionSizeInBytes: 1000
   })
-});
+};
 ```
+
+### Enable Basic Authentication
+
+You can configure basic authentication for an API, and require authentication
+for certain API methods, as follows:
+
+```js
+exports.default = {
+  appName: 'my-app',
+  appVersion: 'latest',
+  createStackConfig: () => ({
+    basicAuthenticationConfig: {
+      username: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      cacheTtlInSeconds: 300
+    },
+    lambdaConfigs: [
+      {
+        httpMethod: 'GET',
+        publicPath: '/secret-endpoint',
+        localPath: 'path/to/secret-lambda.js',
+        authenticationRequired: true
+      },
+      {
+        httpMethod: 'GET',
+        publicPath: '/public-endpoint',
+        localPath: 'path/to/public-lambda.js'
+      }
+    ],
+    s3Configs: [
+      {
+        type: 'file',
+        publicPath: '/secret-file',
+        localPath: 'path/to/secret-file.html',
+        authenticationRequired: true
+      },
+      {
+        type: 'file',
+        publicPath: '/public-file',
+        localPath: 'path/to/public-file.html'
+      }
+    ]
+  })
+};
+```
+
+_Note: Basic authentication is not handled by the local DEV server._
 
 ## CLI Usage
 

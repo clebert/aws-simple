@@ -1,4 +1,9 @@
-import {LambdaIntegration, RestApi} from '@aws-cdk/aws-apigateway';
+import {
+  AuthorizationType,
+  IAuthorizer,
+  LambdaIntegration,
+  RestApi
+} from '@aws-cdk/aws-apigateway';
 import {Code, Function as Lambda, Runtime} from '@aws-cdk/aws-lambda';
 import {Duration, Stack} from '@aws-cdk/core';
 import * as path from 'path';
@@ -8,7 +13,8 @@ import {createShortHash} from '../../utils/create-short-hash';
 export function createLambdaIntegration(
   stack: Stack,
   restApi: RestApi,
-  lambdaConfig: LambdaConfig
+  lambdaConfig: LambdaConfig,
+  authorizer: IAuthorizer | undefined
 ): void {
   const {
     httpMethod,
@@ -19,12 +25,19 @@ export function createLambdaIntegration(
     memorySize = 3008,
     timeoutInSeconds = 28,
     acceptedParameters = {},
-    environment
+    environment,
+    authenticationRequired
   } = lambdaConfig;
 
   if (timeoutInSeconds > 28) {
     console.warn(
       'Due to the default timeout of the API Gateway, the maximum Lambda timeout is limited to 28 seconds.'
+    );
+  }
+
+  if (authenticationRequired && !authorizer) {
+    throw new Error(
+      `The Lambda config for "${httpMethod} ${publicPath}" requires authentication but no basicAuthenticationConfig has been defined.`
     );
   }
 
@@ -52,6 +65,10 @@ export function createLambdaIntegration(
       }
     ),
     {
+      authorizationType: authenticationRequired
+        ? AuthorizationType.CUSTOM
+        : AuthorizationType.NONE,
+      authorizer: authenticationRequired ? authorizer : undefined,
       requestParameters: Object.keys(acceptedParameters).reduce(
         (requestParameters, parameterName) => {
           requestParameters[
