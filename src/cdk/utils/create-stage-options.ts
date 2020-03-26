@@ -47,13 +47,23 @@ export function createStageOptions(stackConfig: StackConfig): StageOptions {
   const {lambdaConfigs = [], s3Configs = []} = stackConfig;
   const methodOptions: Record<string, MethodDeploymentOptions> = {};
 
+  let cacheClusterEnabled = false;
+
   for (const config of lambdaConfigs) {
+    if (config.cachingEnabled) {
+      cacheClusterEnabled = true;
+    }
+
     methodOptions[createMethodPath(config)] = createMethodOption(config);
   }
 
   for (const config of s3Configs) {
+    if (config.cachingEnabled) {
+      cacheClusterEnabled = true;
+    }
+
     methodOptions[createMethodPath(config)] = createMethodOption(config);
   }
 
-  return {cacheClusterEnabled: true, cachingEnabled: false, methodOptions};
+  return {cacheClusterEnabled, cachingEnabled: false, methodOptions};
 }

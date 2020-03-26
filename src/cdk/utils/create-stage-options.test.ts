@@ -46,13 +46,13 @@ function folder(publicPath: string, cacheTtlInSeconds?: number): S3Config {
 describe('createStageOptions()', () => {
   it('returns stage options without method options', () => {
     expect(createStageOptions({})).toEqual({
-      cacheClusterEnabled: true,
+      cacheClusterEnabled: false,
       cachingEnabled: false,
       methodOptions: {},
     });
 
     expect(createStageOptions({lambdaConfigs: [], s3Configs: []})).toEqual({
-      cacheClusterEnabled: true,
+      cacheClusterEnabled: false,
       cachingEnabled: false,
       methodOptions: {},
     });
@@ -60,7 +60,7 @@ describe('createStageOptions()', () => {
 
   it('returns stage options with Lambda method options', () => {
     expect(createStageOptions({lambdaConfigs: [lambda('GET', '/')]})).toEqual({
-      cacheClusterEnabled: true,
+      cacheClusterEnabled: false,
       cachingEnabled: false,
       methodOptions: {'//GET': {cachingEnabled: false}},
     });
@@ -80,7 +80,7 @@ describe('createStageOptions()', () => {
     });
 
     expect(createStageOptions({lambdaConfigs: [lambda('POST', '/')]})).toEqual({
-      cacheClusterEnabled: true,
+      cacheClusterEnabled: false,
       cachingEnabled: false,
       methodOptions: {'//POST': {cachingEnabled: false}},
     });
@@ -88,7 +88,7 @@ describe('createStageOptions()', () => {
     expect(
       createStageOptions({lambdaConfigs: [lambda('GET', '/foo')]})
     ).toEqual({
-      cacheClusterEnabled: true,
+      cacheClusterEnabled: false,
       cachingEnabled: false,
       methodOptions: {'/foo/GET': {cachingEnabled: false}},
     });
@@ -96,7 +96,7 @@ describe('createStageOptions()', () => {
     expect(
       createStageOptions({lambdaConfigs: [lambda('GET', '/bar/')]})
     ).toEqual({
-      cacheClusterEnabled: true,
+      cacheClusterEnabled: false,
       cachingEnabled: false,
       methodOptions: {'/bar/GET': {cachingEnabled: false}},
     });
@@ -104,7 +104,7 @@ describe('createStageOptions()', () => {
 
   it('returns stage options with S3 method options', () => {
     expect(createStageOptions({s3Configs: [file('/')]})).toEqual({
-      cacheClusterEnabled: true,
+      cacheClusterEnabled: false,
       cachingEnabled: false,
       methodOptions: {'//GET': {cachingEnabled: false}},
     });
@@ -118,7 +118,7 @@ describe('createStageOptions()', () => {
     });
 
     expect(createStageOptions({s3Configs: [folder('/')]})).toEqual({
-      cacheClusterEnabled: true,
+      cacheClusterEnabled: false,
       cachingEnabled: false,
       methodOptions: {'/{file}/GET': {cachingEnabled: false}},
     });
@@ -132,25 +132,25 @@ describe('createStageOptions()', () => {
     });
 
     expect(createStageOptions({s3Configs: [file('/foo')]})).toEqual({
-      cacheClusterEnabled: true,
+      cacheClusterEnabled: false,
       cachingEnabled: false,
       methodOptions: {'/foo/GET': {cachingEnabled: false}},
     });
 
     expect(createStageOptions({s3Configs: [folder('/foo')]})).toEqual({
-      cacheClusterEnabled: true,
+      cacheClusterEnabled: false,
       cachingEnabled: false,
       methodOptions: {'/foo/{file}/GET': {cachingEnabled: false}},
     });
 
     expect(createStageOptions({s3Configs: [file('/bar/')]})).toEqual({
-      cacheClusterEnabled: true,
+      cacheClusterEnabled: false,
       cachingEnabled: false,
       methodOptions: {'/bar/GET': {cachingEnabled: false}},
     });
 
     expect(createStageOptions({s3Configs: [folder('/bar/')]})).toEqual({
-      cacheClusterEnabled: true,
+      cacheClusterEnabled: false,
       cachingEnabled: false,
       methodOptions: {'/bar/{file}/GET': {cachingEnabled: false}},
     });
