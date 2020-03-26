@@ -26,14 +26,14 @@ export const TagCommand = (props: TagCommandProps): JSX.Element | null => {
   }
 
   const {
-    argv: {add, remove, yes}
+    argv: {add, remove, yes},
   } = props;
 
   const updateStackTagsHook = useUpdateStackTags(add, remove, yes);
 
   if (updateStackTagsHook.state === 'uninitialized') {
     return (
-      <Confirm callback={result => updateStackTagsHook.perform(!result)}>
+      <Confirm callback={(result) => updateStackTagsHook.perform(!result)}>
         Should the stack update be performed?
       </Confirm>
     );
@@ -51,7 +51,7 @@ export const TagCommand = (props: TagCommandProps): JSX.Element | null => {
 };
 
 TagCommand.describe = (argv: Argv) =>
-  argv.command('tag [options]', 'Tag a deployed stack', commandArgv =>
+  argv.command('tag [options]', 'Tag a deployed stack', (commandArgv) =>
     commandArgv
       .describe('add', 'The tags to add')
       .array('add')

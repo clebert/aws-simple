@@ -1,7 +1,7 @@
 import {
   MethodDeploymentOptions,
   MethodLoggingLevel,
-  StageOptions
+  StageOptions,
 } from '@aws-cdk/aws-apigateway';
 import {Duration} from '@aws-cdk/core';
 import * as path from 'path';
@@ -27,7 +27,7 @@ function createMethodOption(
       cacheTtlInSeconds !== undefined
         ? Duration.seconds(cacheTtlInSeconds)
         : undefined,
-    loggingLevel: loggingLevel && MethodLoggingLevel[loggingLevel]
+    loggingLevel: loggingLevel && MethodLoggingLevel[loggingLevel],
   };
 }
 

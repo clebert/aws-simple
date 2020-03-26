@@ -1,6 +1,6 @@
-import {RequestAuthorizer, IdentitySource} from '@aws-cdk/aws-apigateway';
+import {IdentitySource, RequestAuthorizer} from '@aws-cdk/aws-apigateway';
 import {Code, Function as Lambda, Runtime} from '@aws-cdk/aws-lambda';
-import {Stack, Duration} from '@aws-cdk/core';
+import {Duration, Stack} from '@aws-cdk/core';
 import path from 'path';
 import {StackConfig} from '../../types';
 
@@ -17,7 +17,7 @@ export function createBasicAuthorizer(
   const {
     username,
     password,
-    cacheTtlInSeconds
+    cacheTtlInSeconds,
   } = stackConfig.basicAuthenticationConfig;
 
   return new RequestAuthorizer(stack, 'BasicAuthorizer', {
@@ -28,11 +28,11 @@ export function createBasicAuthorizer(
         path.dirname(require.resolve('./basic-authorizer-handler'))
       ),
       handler: 'index.handler',
-      environment: {USERNAME: username, PASSWORD: password}
+      environment: {USERNAME: username, PASSWORD: password},
     }),
     identitySources: [IdentitySource.header('Authorization')],
     resultsCacheTtl: cacheTtlInSeconds
       ? Duration.seconds(cacheTtlInSeconds)
-      : undefined
+      : undefined,
   });
 }

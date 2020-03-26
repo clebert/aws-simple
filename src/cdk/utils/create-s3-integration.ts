@@ -2,7 +2,7 @@ import {
   AuthorizationType,
   AwsIntegration,
   IAuthorizer,
-  RestApi
+  RestApi,
 } from '@aws-cdk/aws-apigateway';
 import {Role} from '@aws-cdk/aws-iam';
 import {Bucket} from '@aws-cdk/aws-s3';
@@ -22,7 +22,7 @@ export function createS3Integration(
     type,
     publicPath,
     bucketPath = publicPath,
-    authenticationRequired
+    authenticationRequired,
   } = s3Config;
 
   if (authenticationRequired && !authorizer) {
@@ -46,8 +46,8 @@ export function createS3Integration(
         type === 'folder'
           ? {'integration.request.path.file': 'method.request.path.file'}
           : {},
-      cacheKeyParameters: type === 'folder' ? ['method.request.path.file'] : []
-    }
+      cacheKeyParameters: type === 'folder' ? ['method.request.path.file'] : [],
+    },
   });
 
   let resource = restApi.root.resourceForPath(publicPath);
@@ -62,6 +62,6 @@ export function createS3Integration(
       : AuthorizationType.NONE,
     authorizer: authenticationRequired ? authorizer : undefined,
     methodResponses: createS3MethodResponses(s3Config),
-    requestParameters: {'method.request.path.file': type === 'folder'}
+    requestParameters: {'method.request.path.file': type === 'folder'},
   });
 }

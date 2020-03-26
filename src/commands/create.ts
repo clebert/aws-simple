@@ -23,7 +23,7 @@ create.describe = (argv: Argv) =>
   argv.command(
     'create [options]',
     'Create a stack using the CDK',
-    commandArgv =>
+    (commandArgv) =>
       commandArgv
         .example('npx $0 create', '')
         .example("npx cdk deploy --app 'npx $0 create'", '')

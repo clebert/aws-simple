@@ -61,7 +61,7 @@ export async function start(
 }
 
 start.describe = (argv: Argv) =>
-  argv.command('start [options]', 'Start a local DEV server', commandArgv =>
+  argv.command('start [options]', 'Start a local DEV server', (commandArgv) =>
     commandArgv
       .describe(
         'port',

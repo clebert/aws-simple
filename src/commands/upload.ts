@@ -54,7 +54,7 @@ export async function upload(
 
             throw error;
           }
-        }
+        },
       });
     }
   }
@@ -63,6 +63,6 @@ export async function upload(
 }
 
 upload.describe = (argv: Argv) =>
-  argv.command('upload [options]', 'Upload files to S3', commandArgv =>
+  argv.command('upload [options]', 'Upload files to S3', (commandArgv) =>
     commandArgv.example('npx $0 upload', '')
   );

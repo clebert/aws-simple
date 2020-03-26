@@ -2,7 +2,7 @@ import {
   CloudFormation,
   CredentialProviderChain,
   EnvironmentCredentials,
-  SharedIniFileCredentials
+  SharedIniFileCredentials,
 } from 'aws-sdk';
 
 export async function createClientConfig(): Promise<
@@ -10,7 +10,7 @@ export async function createClientConfig(): Promise<
 > {
   const credentialProviderChain = new CredentialProviderChain([
     () => new EnvironmentCredentials('AWS'), // AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
-    () => new SharedIniFileCredentials()
+    () => new SharedIniFileCredentials(),
   ]);
 
   return {credentials: await credentialProviderChain.resolvePromise()};

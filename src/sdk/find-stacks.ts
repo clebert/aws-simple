@@ -14,7 +14,7 @@ export async function findStacks(
   do {
     stackDescriptions = await new CloudFormation(clientConfig)
       .describeStacks({
-        NextToken: stackDescriptions && stackDescriptions.NextToken
+        NextToken: stackDescriptions && stackDescriptions.NextToken,
       })
       .promise();
 

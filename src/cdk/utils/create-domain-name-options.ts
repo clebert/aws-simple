@@ -23,6 +23,6 @@ export function createDomainNameOptions(
       stack,
       'Certificate',
       certificateArn
-    )
+    ),
   };
 }

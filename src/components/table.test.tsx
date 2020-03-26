@@ -11,19 +11,19 @@ interface TestEntry {
 const fooColumn: Column<TestEntry, 'foo'> = {
   headerCell: 'Foo',
   entryKey: 'foo',
-  createEntryCell: value => value
+  createEntryCell: (value) => value,
 };
 
 const barColumn: Column<TestEntry, 'bar'> = {
   headerCell: '',
   entryKey: 'bar',
-  createEntryCell: value => value
+  createEntryCell: (value) => value,
 };
 
 const bazColumn: Column<TestEntry, 'baz'> = {
   headerCell: 'Baz',
   entryKey: 'baz',
-  createEntryCell: value => value
+  createEntryCell: (value) => value,
 };
 
 const columns = [fooColumn, barColumn, bazColumn];
@@ -33,7 +33,7 @@ const entries: TestEntry[] = [
   {foo: '', bar: '', baz: ''},
   {foo: '', bar: 'b2', baz: 'c2'},
   {foo: 'a3', bar: '', baz: 'c3'},
-  {foo: 'a4', bar: 'b4', baz: ''}
+  {foo: 'a4', bar: 'b4', baz: ''},
 ];
 
 describe('Table', () => {
@@ -72,7 +72,7 @@ describe('Table', () => {
           '',
           '     b2  c2',
           'a3       c3',
-          'a4   b4'
+          'a4   b4',
         ].join('\n')
       );
     });

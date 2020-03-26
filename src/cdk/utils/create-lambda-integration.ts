@@ -2,7 +2,7 @@ import {
   AuthorizationType,
   IAuthorizer,
   LambdaIntegration,
-  RestApi
+  RestApi,
 } from '@aws-cdk/aws-apigateway';
 import {Code, Function as Lambda, Runtime} from '@aws-cdk/aws-lambda';
 import {Duration, Stack} from '@aws-cdk/core';
@@ -26,7 +26,7 @@ export function createLambdaIntegration(
     timeoutInSeconds = 28,
     acceptedParameters = {},
     environment,
-    authenticationRequired
+    authenticationRequired,
   } = lambdaConfig;
 
   if (timeoutInSeconds > 28) {
@@ -56,12 +56,16 @@ export function createLambdaIntegration(
           timeoutInSeconds > 28 ? 28 : timeoutInSeconds
         ),
         memorySize,
-        environment
+        environment,
       }),
       {
         cacheKeyParameters: Object.keys(acceptedParameters)
-          .filter(parameterName => acceptedParameters[parameterName].isCacheKey)
-          .map(parameterName => `method.request.querystring.${parameterName}`)
+          .filter(
+            (parameterName) => acceptedParameters[parameterName].isCacheKey
+          )
+          .map(
+            (parameterName) => `method.request.querystring.${parameterName}`
+          ),
       }
     ),
     {
@@ -78,7 +82,7 @@ export function createLambdaIntegration(
           return requestParameters;
         },
         {} as Record<string, boolean>
-      )
+      ),
     }
   );
 }

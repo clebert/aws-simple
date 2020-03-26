@@ -29,7 +29,7 @@ function startDevServer(argv: unknown): void {
   const {
     minimumCompressionSizeInBytes,
     lambdaConfigs = [],
-    s3Configs = []
+    s3Configs = [],
   } = loadAppConfig().createStackConfig(port);
 
   if (!verbose) {

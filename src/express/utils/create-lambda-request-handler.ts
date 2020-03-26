@@ -15,7 +15,7 @@ export function createLambdaRequestHandler(
     handler = 'handler',
     timeoutInSeconds = 28,
     cachingEnabled,
-    environment
+    environment,
   } = lambdaConfig;
 
   return async (req, res) => {
@@ -36,8 +36,8 @@ export function createLambdaRequestHandler(
               ? typeof req.body === 'string'
                 ? req.body
                 : JSON.stringify(req.body)
-              : null
-          }
+              : null,
+          },
         }));
 
       const {headers, statusCode, body} = result;

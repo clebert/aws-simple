@@ -5,7 +5,7 @@ export function suppressLambdaResultLogging(): void {
   const logger = lambdaLocal.getLogger();
 
   logger.format = format.combine(
-    format(info => {
+    format((info) => {
       if ('statusCode' in info && 'headers' in info && 'body' in info) {
         return false;
       }

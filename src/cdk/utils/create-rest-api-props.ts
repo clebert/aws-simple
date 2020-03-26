@@ -16,6 +16,6 @@ export function createRestApiProps(
     domainName: createDomainNameOptions(stackConfig, stack),
     binaryMediaTypes,
     minimumCompressionSize: minimumCompressionSizeInBytes,
-    deployOptions: createStageOptions(stackConfig)
+    deployOptions: createStageOptions(stackConfig),
   };
 }

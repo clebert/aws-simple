@@ -8,7 +8,7 @@ export interface ConfirmProps {
 
 export const Confirm = ({
   children,
-  callback
+  callback,
 }: ConfirmProps): JSX.Element | null => {
   const [confirmed, setConfirmed] = React.useState<boolean>();
 

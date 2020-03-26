@@ -12,8 +12,8 @@ exports.default = {
         type: 'file',
         publicPath: '/',
         localPath: 'src/test/index.html',
-        bucketPath: 'index.html'
-      }
-    ]
-  })
+        bucketPath: 'index.html',
+      },
+    ],
+  }),
 };

@@ -3,7 +3,7 @@ import {
   Policy,
   PolicyStatement,
   Role,
-  ServicePrincipal
+  ServicePrincipal,
 } from '@aws-cdk/aws-iam';
 import {Bucket} from '@aws-cdk/aws-s3';
 import {App, CfnOutput, Stack} from '@aws-cdk/core';
@@ -11,11 +11,11 @@ import {AppConfig} from '../types';
 import {createUniqueExportName} from '../utils/create-unique-export-name';
 import {createStackName} from '../utils/stack-name';
 import {createARecord} from './utils/create-a-record';
+import {createBasicAuthorizer} from './utils/create-basic-authorizer';
 import {createLambdaIntegration} from './utils/create-lambda-integration';
 import {createRestApiProps} from './utils/create-rest-api-props';
 import {createS3Integration} from './utils/create-s3-integration';
 import {createUnauthorizedGatewayResponse} from './utils/create-unauthorized-gateway-response';
-import {createBasicAuthorizer} from './utils/create-basic-authorizer';
 
 export function createStack(appConfig: AppConfig): void {
   const {appName, appVersion, createStackConfig} = appConfig;
@@ -30,7 +30,7 @@ export function createStack(appConfig: AppConfig): void {
 
   const restApiUrlOutput = new CfnOutput(stack, 'RestApiUrlOutput', {
     value: restApi.url,
-    exportName: createUniqueExportName(stack.stackName, 'RestApiUrl')
+    exportName: createUniqueExportName(stack.stackName, 'RestApiUrl'),
   });
 
   restApiUrlOutput.node.addDependency(restApi);
@@ -42,18 +42,18 @@ export function createStack(appConfig: AppConfig): void {
 
   const s3BucketNameOutput = new CfnOutput(stack, 'S3BucketNameOutput', {
     value: s3Bucket.bucketName,
-    exportName: createUniqueExportName(stack.stackName, 'S3BucketName')
+    exportName: createUniqueExportName(stack.stackName, 'S3BucketName'),
   });
 
   s3BucketNameOutput.node.addDependency(s3Bucket);
 
   const s3IntegrationRole = new Role(stack, 'S3IntegrationRole', {
-    assumedBy: new ServicePrincipal('apigateway.amazonaws.com')
+    assumedBy: new ServicePrincipal('apigateway.amazonaws.com'),
   });
 
   const s3IntegrationPolicy = new Policy(stack, 'S3IntegrationPolicy', {
     statements: [new PolicyStatement({actions: ['s3:*'], resources: ['*']})],
-    roles: [s3IntegrationRole]
+    roles: [s3IntegrationRole],
   });
 
   s3IntegrationPolicy.node.addDependency(s3IntegrationRole);

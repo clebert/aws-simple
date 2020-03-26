@@ -59,7 +59,7 @@ export async function cleanUp(
 
   const stacks = await findStacks(appConfig, clientConfig);
 
-  const expiredStacks = stacks.filter(stack =>
+  const expiredStacks = stacks.filter((stack) =>
     isStackExpired(stack, argv.minAge, argv.exclude)
   );
 
@@ -77,7 +77,7 @@ export async function cleanUp(
       name: 'deleteConfirmation',
       message: chalk.bold(
         chalk.red('The listed stacks will be deleted. Continue?')
-      )
+      ),
     });
 
     if (!deleteConfirmation) {
@@ -103,7 +103,7 @@ export async function cleanUp(
 
           throw error;
         }
-      }
+      },
     });
   }
 
@@ -114,7 +114,7 @@ cleanUp.describe = (argv: Argv) =>
   argv.command(
     'clean-up [options]',
     'Clean up old deployed stacks',
-    commandArgv =>
+    (commandArgv) =>
       commandArgv
         .describe(
           'min-age',

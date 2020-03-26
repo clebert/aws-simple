@@ -20,10 +20,10 @@ export function createARecord(
   const aRecord = new ARecord(stack, 'ARecord', {
     zone: HostedZone.fromHostedZoneAttributes(stack, 'HostedZone', {
       hostedZoneId,
-      zoneName: hostedZoneName
+      zoneName: hostedZoneName,
     }),
     recordName: aliasRecordName,
-    target: RecordTarget.fromAlias(new ApiGateway(restApi))
+    target: RecordTarget.fromAlias(new ApiGateway(restApi)),
   });
 
   aRecord.node.addDependency(restApi);
