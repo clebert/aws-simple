@@ -11,13 +11,27 @@ export function createUnauthorizedGatewayResponse(
     return;
   }
 
+  const responseParameters: Record<string, string> = {
+    'gatewayresponse.header.WWW-Authenticate': "'Basic'",
+  };
+
+  const {unauthorizedResponseHeaders} = stackConfig.basicAuthenticationConfig;
+
+  if (unauthorizedResponseHeaders) {
+    const {accessControlAllowOrigin} = unauthorizedResponseHeaders;
+
+    responseParameters[
+      'gatewayresponse.header.Access-Control-Allow-Origin'
+    ] = `'${accessControlAllowOrigin}'`;
+  }
+
   // We need to use a low-level construct here that should be replaced when
   // @aws-cdk/aws-apigateway adds a high-level construct for gateway responses.
   new CfnGatewayResponse(stack, 'ApiGatewayUnauthorizedResponse', {
     statusCode: '401',
     responseType: 'UNAUTHORIZED',
     restApiId: restApi.restApiId,
-    responseParameters: {'gatewayresponse.header.WWW-Authenticate': "'Basic'"},
+    responseParameters,
     responseTemplates: {
       'application/json': '{"message":$context.error.messageString}',
       'text/html': '$context.error.message',

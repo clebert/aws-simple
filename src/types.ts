@@ -78,10 +78,15 @@ export interface S3Config {
   readonly authenticationRequired?: boolean;
 }
 
+export interface UnauthorizedResponseHeaders {
+  readonly accessControlAllowOrigin?: string;
+}
+
 export interface BasicAuthenticationConfig {
   readonly username: string;
   readonly password: string;
   readonly cacheTtlInSeconds?: number;
+  readonly unauthorizedResponseHeaders?: UnauthorizedResponseHeaders;
 }
 
 export interface StackConfig {
