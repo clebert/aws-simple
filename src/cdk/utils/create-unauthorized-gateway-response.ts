@@ -20,9 +20,11 @@ export function createUnauthorizedGatewayResponse(
   if (unauthorizedResponseHeaders) {
     const {accessControlAllowOrigin} = unauthorizedResponseHeaders;
 
-    responseParameters[
-      'gatewayresponse.header.Access-Control-Allow-Origin'
-    ] = `'${accessControlAllowOrigin}'`;
+    if (accessControlAllowOrigin) {
+      responseParameters[
+        'gatewayresponse.header.Access-Control-Allow-Origin'
+      ] = `'${accessControlAllowOrigin}'`;
+    }
   }
 
   // We need to use a low-level construct here that should be replaced when
