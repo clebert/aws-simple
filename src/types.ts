@@ -79,6 +79,12 @@ export interface S3Config {
 }
 
 export interface UnauthorizedResponseHeaders {
+  /**
+   * Note: When an API with basic authentication is accessed cross-origin, it is
+   * important to define the origins that are allowed to access this API, even
+   * for the unauthorized response. Otherwise browsers will not be able display
+   * the dialog that prompts the credentials from the user.
+   */
   readonly accessControlAllowOrigin?: string;
 }
 
