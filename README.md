@@ -572,6 +572,9 @@ exports.default = {
       username: process.env.USERNAME,
       password: process.env.PASSWORD,
       cacheTtlInSeconds: 300,
+      unauthorizedResponseHeaders: {
+        accessControlAllowOrigin: '*',
+      },
     },
     lambdaConfigs: [
       {
