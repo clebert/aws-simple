@@ -1,4 +1,4 @@
-import {RestApiProps} from '@aws-cdk/aws-apigateway';
+import {Cors, RestApiProps} from '@aws-cdk/aws-apigateway';
 import {Stack} from '@aws-cdk/core';
 import {StackConfig} from '../../types';
 import {createDomainNameOptions} from './create-domain-name-options';
@@ -9,7 +9,11 @@ export function createRestApiProps(
   stackConfig: StackConfig,
   stack: Stack
 ): RestApiProps {
-  const {binaryMediaTypes, minimumCompressionSizeInBytes} = stackConfig;
+  const {
+    binaryMediaTypes,
+    minimumCompressionSizeInBytes,
+    enableCors,
+  } = stackConfig;
 
   return {
     restApiName: resourceName,
@@ -17,5 +21,11 @@ export function createRestApiProps(
     binaryMediaTypes,
     minimumCompressionSize: minimumCompressionSizeInBytes,
     deployOptions: createStageOptions(stackConfig),
+    defaultCorsPreflightOptions: enableCors
+      ? {
+          allowOrigins: Cors.ALL_ORIGINS,
+          allowCredentials: true,
+        }
+      : undefined,
   };
 }

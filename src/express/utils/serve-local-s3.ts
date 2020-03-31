@@ -2,14 +2,20 @@ import express from 'express';
 import * as path from 'path';
 import {S3Config} from '../../types';
 
-export function serveLocalS3(app: express.Express, s3Config: S3Config): void {
-  const {type, publicPath, localPath, responseHeaders = {}} = s3Config;
+export interface LocalS3Options {
+  readonly enableCors?: boolean;
+}
+
+export function serveLocalS3(
+  app: express.Express,
+  s3Config: S3Config,
+  options: LocalS3Options
+): void {
+  const {type, publicPath, localPath} = s3Config;
 
   const setHeaders = (res: express.Response): void => {
-    const {accessControlAllowOrigin} = responseHeaders;
-
-    if (accessControlAllowOrigin) {
-      res.setHeader('Access-Control-Allow-Origin', accessControlAllowOrigin);
+    if (options.enableCors) {
+      res.setHeader('Access-Control-Allow-Origin', '*');
     }
   };
 

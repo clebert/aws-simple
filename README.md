@@ -471,7 +471,6 @@ exports.default = {
 
         // Optional example properties
         responseHeaders: {
-          accessControlAllowOrigin: '*',
           cacheControl: 'max-age=157680000',
         },
         cachingEnabled: true,
@@ -558,6 +557,23 @@ exports.default = {
 };
 ```
 
+### Enable CORS
+
+Basic CORS support can be enabled as follows:
+
+```js
+exports.default = {
+  appName: 'my-app',
+  appVersion: 'latest',
+  createStackConfig: () => ({
+    enableCors: true,
+  }),
+};
+```
+
+_Note: Additionally, Lambda handlers must explicitly set any required CORS
+headers like `Access-Control-Allow-Origin` on their response._
+
 ### Enable Basic Authentication
 
 You can configure basic authentication for an API, and require authentication
@@ -572,9 +588,6 @@ exports.default = {
       username: process.env.USERNAME,
       password: process.env.PASSWORD,
       cacheTtlInSeconds: 300,
-      unauthorizedResponseHeaders: {
-        accessControlAllowOrigin: '*',
-      },
     },
     lambdaConfigs: [
       {

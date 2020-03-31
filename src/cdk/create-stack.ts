@@ -73,6 +73,7 @@ export function createStack(appConfig: AppConfig): void {
 
   for (const s3Config of s3Configs) {
     createS3Integration(
+      stackConfig,
       restApi,
       s3Bucket,
       s3IntegrationRole,

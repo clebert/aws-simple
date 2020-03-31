@@ -4,9 +4,13 @@ import * as lambdaLocal from 'lambda-local';
 import {LambdaConfig} from '../../types';
 import {getRequestHeaders} from './get-request-headers';
 
+export interface LambdaRequestHandlerOptions {
+  readonly useCache?: boolean;
+}
+
 export function createLambdaRequestHandler(
   lambdaConfig: LambdaConfig,
-  useCache: boolean
+  options: LambdaRequestHandlerOptions
 ): express.RequestHandler {
   const cachedResults = new Map<string, APIGatewayProxyResult>();
 
@@ -42,7 +46,7 @@ export function createLambdaRequestHandler(
 
       const {headers, statusCode, body} = result;
 
-      if (useCache && cachingEnabled && statusCode === 200) {
+      if (options.useCache && cachingEnabled && statusCode === 200) {
         cachedResults.set(req.url, result);
       }
 
