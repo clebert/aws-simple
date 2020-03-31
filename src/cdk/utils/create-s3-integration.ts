@@ -7,11 +7,12 @@ import {
 import {Role} from '@aws-cdk/aws-iam';
 import {Bucket} from '@aws-cdk/aws-s3';
 import * as path from 'path';
-import {S3Config} from '../../types';
+import {S3Config, StackConfig} from '../../types';
 import {createS3IntegrationResponses} from './create-s3-integration-responses';
 import {createS3MethodResponses} from './create-s3-method-responses';
 
 export function createS3Integration(
+  stackConfig: StackConfig,
   restApi: RestApi,
   s3Bucket: Bucket,
   s3IntegrationRole: Role,
@@ -41,7 +42,7 @@ export function createS3Integration(
     integrationHttpMethod: 'GET',
     options: {
       credentialsRole: s3IntegrationRole,
-      integrationResponses: createS3IntegrationResponses(s3Config),
+      integrationResponses: createS3IntegrationResponses(stackConfig, s3Config),
       requestParameters:
         type === 'folder'
           ? {'integration.request.path.file': 'method.request.path.file'}
@@ -61,7 +62,7 @@ export function createS3Integration(
       ? AuthorizationType.CUSTOM
       : AuthorizationType.NONE,
     authorizer: authenticationRequired ? authorizer : undefined,
-    methodResponses: createS3MethodResponses(s3Config),
+    methodResponses: createS3MethodResponses(stackConfig, s3Config),
     requestParameters: {'method.request.path.file': type === 'folder'},
   });
 }

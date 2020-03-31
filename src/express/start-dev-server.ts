@@ -26,11 +26,14 @@ function startDevServer(argv: unknown): void {
 
   const {port, cache, verbose} = argv;
 
+  const stackConfig = loadAppConfig().createStackConfig(port);
+
   const {
     minimumCompressionSizeInBytes,
     lambdaConfigs = [],
     s3Configs = [],
-  } = loadAppConfig().createStackConfig(port);
+    enableCors,
+  } = stackConfig;
 
   if (!verbose) {
     suppressLambdaResultLogging();
@@ -45,12 +48,12 @@ function startDevServer(argv: unknown): void {
   }
 
   for (const lambdaConfig of lambdaConfigs) {
-    serveLocalLambda(app, lambdaConfig, Boolean(cache));
+    serveLocalLambda(app, lambdaConfig, {useCache: cache});
   }
 
   // ['/foo/bar', '/', '/foo'] => ['/foo/bar', '/foo', '/']
   for (const s3Config of [...s3Configs].sort().reverse()) {
-    serveLocalS3(app, s3Config);
+    serveLocalS3(app, s3Config, {enableCors});
   }
 
   app.listen(port, () => {

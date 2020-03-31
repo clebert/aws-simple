@@ -3,10 +3,14 @@ import {LambdaConfig} from '../../types';
 import {createLambdaRequestHandler} from './create-lambda-request-handler';
 import {getRouterMatcher} from './get-router-matcher';
 
+export interface LocalLambdaOptions {
+  readonly useCache?: boolean;
+}
+
 export function serveLocalLambda(
   app: express.Express,
   lambdaConfig: LambdaConfig,
-  useCache: boolean
+  options: LocalLambdaOptions
 ): void {
   const {httpMethod, publicPath} = lambdaConfig;
 
@@ -14,6 +18,6 @@ export function serveLocalLambda(
 
   getRouterMatcher(app, httpMethod)(
     normalizedPublicPath,
-    createLambdaRequestHandler(lambdaConfig, useCache)
+    createLambdaRequestHandler(lambdaConfig, options)
   );
 }

@@ -1,7 +1,8 @@
 import {IntegrationResponse} from '@aws-cdk/aws-apigateway';
-import {S3Config} from '../../types';
+import {S3Config, StackConfig} from '../../types';
 
 export function createS3IntegrationResponses(
+  stackConfig: StackConfig,
   s3Config: S3Config
 ): IntegrationResponse[] {
   const s3IntegrationResponseParameters: Record<string, string> = {
@@ -9,16 +10,16 @@ export function createS3IntegrationResponses(
       'integration.response.header.Content-Type',
   };
 
+  if (stackConfig.enableCors) {
+    s3IntegrationResponseParameters[
+      'method.response.header.Access-Control-Allow-Origin'
+    ] = "'*'";
+  }
+
   const {responseHeaders} = s3Config;
 
   if (responseHeaders) {
-    const {accessControlAllowOrigin, cacheControl} = responseHeaders;
-
-    if (accessControlAllowOrigin) {
-      s3IntegrationResponseParameters[
-        'method.response.header.Access-Control-Allow-Origin'
-      ] = `'${accessControlAllowOrigin}'`;
-    }
+    const {cacheControl} = responseHeaders;
 
     if (cacheControl) {
       s3IntegrationResponseParameters[

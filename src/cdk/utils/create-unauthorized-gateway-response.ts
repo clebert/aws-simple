@@ -15,16 +15,9 @@ export function createUnauthorizedGatewayResponse(
     'gatewayresponse.header.WWW-Authenticate': "'Basic'",
   };
 
-  const {unauthorizedResponseHeaders} = stackConfig.basicAuthenticationConfig;
-
-  if (unauthorizedResponseHeaders) {
-    const {accessControlAllowOrigin} = unauthorizedResponseHeaders;
-
-    if (accessControlAllowOrigin) {
-      responseParameters[
-        'gatewayresponse.header.Access-Control-Allow-Origin'
-      ] = `'${accessControlAllowOrigin}'`;
-    }
+  if (stackConfig.enableCors) {
+    responseParameters['gatewayresponse.header.Access-Control-Allow-Origin'] =
+      "'*'";
   }
 
   // We need to use a low-level construct here that should be replaced when
