@@ -77,6 +77,8 @@ export interface S3Config {
   readonly authenticationRequired?: boolean;
 }
 
+export type S3FileConfig = S3Config & {readonly type: 'file'};
+
 export interface BasicAuthenticationConfig {
   readonly username: string;
   readonly password: string;

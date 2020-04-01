@@ -1,9 +1,9 @@
 import {MethodResponse} from '@aws-cdk/aws-apigateway';
-import {S3Config, StackConfig} from '../../types';
+import {S3FileConfig, StackConfig} from '../../types';
 
 export function createS3MethodResponses(
   stackConfig: StackConfig,
-  s3Config: S3Config
+  s3FileConfig: S3FileConfig
 ): MethodResponse[] {
   const corsResponseParameters: Record<string, boolean> = stackConfig.enableCors
     ? {'method.response.header.Access-Control-Allow-Origin': true}
@@ -14,7 +14,7 @@ export function createS3MethodResponses(
     'method.response.header.Content-Type': true,
   };
 
-  const {responseHeaders} = s3Config;
+  const {responseHeaders} = s3FileConfig;
 
   if (responseHeaders) {
     const {cacheControl} = responseHeaders;
