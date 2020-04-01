@@ -5,15 +5,14 @@ export function createS3MethodResponses(
   stackConfig: StackConfig,
   s3Config: S3Config
 ): MethodResponse[] {
-  const s3MethodResponseParameters: Record<string, boolean> = {
+  const corsResponseParameters: Record<string, boolean> = stackConfig.enableCors
+    ? {'method.response.header.Access-Control-Allow-Origin': true}
+    : {};
+
+  const status200ResponseParameters: Record<string, boolean> = {
+    ...corsResponseParameters,
     'method.response.header.Content-Type': true,
   };
-
-  if (stackConfig.enableCors) {
-    s3MethodResponseParameters[
-      'method.response.header.Access-Control-Allow-Origin'
-    ] = true;
-  }
 
   const {responseHeaders} = s3Config;
 
@@ -21,13 +20,15 @@ export function createS3MethodResponses(
     const {cacheControl} = responseHeaders;
 
     if (cacheControl) {
-      s3MethodResponseParameters['method.response.header.Cache-Control'] = true;
+      status200ResponseParameters[
+        'method.response.header.Cache-Control'
+      ] = true;
     }
   }
 
   return [
-    {statusCode: '200', responseParameters: s3MethodResponseParameters},
-    {statusCode: '404'},
-    {statusCode: '500'},
+    {statusCode: '200', responseParameters: status200ResponseParameters},
+    {statusCode: '404', responseParameters: corsResponseParameters},
+    {statusCode: '500', responseParameters: corsResponseParameters},
   ];
 }

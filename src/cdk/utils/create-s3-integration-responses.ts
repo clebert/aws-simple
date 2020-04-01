@@ -5,16 +5,15 @@ export function createS3IntegrationResponses(
   stackConfig: StackConfig,
   s3Config: S3Config
 ): IntegrationResponse[] {
-  const s3IntegrationResponseParameters: Record<string, string> = {
+  const corsResponseParameters: Record<string, string> = stackConfig.enableCors
+    ? {'method.response.header.Access-Control-Allow-Origin': "'*'"}
+    : {};
+
+  const status200ResponseParameters: Record<string, string> = {
+    ...corsResponseParameters,
     'method.response.header.Content-Type':
       'integration.response.header.Content-Type',
   };
-
-  if (stackConfig.enableCors) {
-    s3IntegrationResponseParameters[
-      'method.response.header.Access-Control-Allow-Origin'
-    ] = "'*'";
-  }
 
   const {responseHeaders} = s3Config;
 
@@ -22,7 +21,7 @@ export function createS3IntegrationResponses(
     const {cacheControl} = responseHeaders;
 
     if (cacheControl) {
-      s3IntegrationResponseParameters[
+      status200ResponseParameters[
         'method.response.header.Cache-Control'
       ] = `'${cacheControl}'`;
     }
@@ -32,9 +31,17 @@ export function createS3IntegrationResponses(
     {
       selectionPattern: '200',
       statusCode: '200',
-      responseParameters: s3IntegrationResponseParameters,
+      responseParameters: status200ResponseParameters,
     },
-    {selectionPattern: '404', statusCode: '404'},
-    {selectionPattern: '5d{2}', statusCode: '500'},
+    {
+      selectionPattern: '404',
+      statusCode: '404',
+      responseParameters: corsResponseParameters,
+    },
+    {
+      selectionPattern: '5d{2}',
+      statusCode: '500',
+      responseParameters: corsResponseParameters,
+    },
   ];
 }
