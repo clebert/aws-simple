@@ -6,6 +6,7 @@ import yargs from 'yargs';
 import {isObject} from '../utils/is-object';
 import {loadAppConfig} from '../utils/load-app-config';
 import {resolveS3FileConfigs} from '../utils/resolve-s3-file-configs';
+import {sortS3FileConfigs} from '../utils/sort-s3-file-configs';
 import {serveLocalLambda} from './utils/serve-local-lambda';
 import {serveLocalS3} from './utils/serve-local-s3';
 import {suppressLambdaResultLogging} from './utils/suppress-lambda-result-logging';
@@ -52,19 +53,7 @@ function startDevServer(argv: unknown): void {
     serveLocalLambda(app, lambdaConfig, {useCache: cache});
   }
 
-  const s3FileConfigs = resolveS3FileConfigs(s3Configs).sort(
-    ({publicPath: a}, {publicPath: b}) => {
-      if (a > b) {
-        return 1;
-      }
-
-      if (b > a) {
-        return -1;
-      }
-
-      return 0;
-    }
-  );
+  const s3FileConfigs = sortS3FileConfigs(resolveS3FileConfigs(s3Configs));
 
   for (const s3FileConfig of s3FileConfigs) {
     serveLocalS3(app, s3FileConfig, {enableCors});
