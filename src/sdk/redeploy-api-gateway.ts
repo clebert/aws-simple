@@ -14,7 +14,11 @@ export async function redeployApiGateway(
   const apiGateway = new APIGateway(clientConfig);
 
   const deployment = await apiGateway
-    .createDeployment({restApiId, stageName})
+    .createDeployment({
+      restApiId,
+      stageName,
+      description: 'Triggered by the aws-simple redeploy command',
+    })
     .promise();
 
   await apiGateway
