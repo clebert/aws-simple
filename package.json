@@ -67,7 +67,7 @@
     "@aws-cdk/cx-api": "^1.31.0",
     "@aws-cdk/region-info": "^1.31.0",
     "aws-sdk": "^2.647.0",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "chokidar": "^3.3.1",
     "cliui": "^6.0.0",
     "compose-function": "^3.0.3",
