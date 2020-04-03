@@ -41,6 +41,7 @@ async function replaceCommandUsage(readmeText, commandName) {
   updatedReadmeText = await replaceCommandUsage(updatedReadmeText, 'list');
   updatedReadmeText = await replaceCommandUsage(updatedReadmeText, 'tag');
   updatedReadmeText = await replaceCommandUsage(updatedReadmeText, 'clean-up');
+  updatedReadmeText = await replaceCommandUsage(updatedReadmeText, 'redeploy');
 
   if (process.env.GITHUB_ACTION && updatedReadmeText !== readmeText) {
     throw new Error('The README is not up to date.');

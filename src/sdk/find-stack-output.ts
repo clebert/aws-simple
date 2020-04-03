@@ -4,11 +4,6 @@ import {
   createUniqueExportName,
 } from '../utils/create-unique-export-name';
 
-export interface StackOutputs {
-  readonly restApiUrl: string;
-  readonly s3BucketName: string;
-}
-
 export function findStackOutput(
   stack: CloudFormation.Stack,
   exportName: ExportName

@@ -1,6 +1,6 @@
 import {createShortHash} from './create-short-hash';
 
-export type ExportName = 'RestApiUrl' | 'S3BucketName';
+export type ExportName = 'RestApiId' | 'RestApiUrl' | 'S3BucketName';
 
 export function createUniqueExportName(
   stackName: string,

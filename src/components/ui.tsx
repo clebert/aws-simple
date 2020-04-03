@@ -5,6 +5,7 @@ import {ClientConfigContext} from '../contexts/client-config-context';
 import {AppConfig} from '../types';
 import {AppInfo} from './app-info';
 import {ListCommand} from './list-command';
+import {RedeployCommand} from './redeploy-command';
 import {TagCommand} from './tag-command';
 
 export interface UiProps {
@@ -20,6 +21,7 @@ export const Ui = ({appConfig, clientConfig, argv}: UiProps): JSX.Element => (
       <ClientConfigContext.Provider value={clientConfig}>
         <ListCommand argv={argv} />
         <TagCommand argv={argv} />
+        <RedeployCommand argv={argv} />
       </ClientConfigContext.Provider>
     </AppConfigContext.Provider>
   </>
