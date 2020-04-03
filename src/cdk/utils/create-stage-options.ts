@@ -6,6 +6,7 @@ import {
 import {Duration} from '@aws-cdk/core';
 import * as path from 'path';
 import {LambdaLoggingLevel, StackConfig} from '../../types';
+import {resolveS3FileConfigs} from '../../utils/resolve-s3-file-configs';
 
 export interface MethodConfig {
   readonly publicPath: string;
@@ -13,7 +14,6 @@ export interface MethodConfig {
   readonly cacheTtlInSeconds?: number;
   readonly httpMethod?: string;
   readonly loggingLevel?: LambdaLoggingLevel;
-  readonly type?: 'file' | 'folder';
 }
 
 function createMethodOption(
@@ -32,11 +32,7 @@ function createMethodOption(
 }
 
 function createMethodPath(methodConfig: MethodConfig): string {
-  const {publicPath, httpMethod = 'GET', type} = methodConfig;
-
-  if (type === 'folder') {
-    return path.join(publicPath, '{file}', httpMethod);
-  }
+  const {publicPath, httpMethod = 'GET'} = methodConfig;
 
   return publicPath === '/'
     ? `//${httpMethod}`
@@ -49,20 +45,24 @@ export function createStageOptions(stackConfig: StackConfig): StageOptions {
 
   let cacheClusterEnabled = false;
 
-  for (const config of lambdaConfigs) {
-    if (config.cachingEnabled) {
+  for (const lambdaConfig of lambdaConfigs) {
+    if (lambdaConfig.cachingEnabled) {
       cacheClusterEnabled = true;
     }
 
-    methodOptions[createMethodPath(config)] = createMethodOption(config);
+    methodOptions[createMethodPath(lambdaConfig)] = createMethodOption(
+      lambdaConfig
+    );
   }
 
-  for (const config of s3Configs) {
-    if (config.cachingEnabled) {
+  for (const s3FileConfig of resolveS3FileConfigs(s3Configs)) {
+    if (s3FileConfig.cachingEnabled) {
       cacheClusterEnabled = true;
     }
 
-    methodOptions[createMethodPath(config)] = createMethodOption(config);
+    methodOptions[createMethodPath(s3FileConfig)] = createMethodOption(
+      s3FileConfig
+    );
   }
 
   return {cacheClusterEnabled, cachingEnabled: false, methodOptions};

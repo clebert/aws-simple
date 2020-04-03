@@ -1,6 +1,6 @@
 import express from 'express';
 import * as path from 'path';
-import {S3Config} from '../../types';
+import {S3FileConfig} from '../../types';
 
 export interface LocalS3Options {
   readonly enableCors?: boolean;
@@ -8,27 +8,16 @@ export interface LocalS3Options {
 
 export function serveLocalS3(
   app: express.Express,
-  s3Config: S3Config,
+  s3FileConfig: S3FileConfig,
   options: LocalS3Options
 ): void {
-  const {type, publicPath, localPath} = s3Config;
+  const {publicPath, localPath} = s3FileConfig;
 
-  const setHeaders = (res: express.Response): void => {
+  app.get(publicPath.replace('{proxy+}', '*'), (_req, res) => {
     if (options.enableCors) {
       res.setHeader('Access-Control-Allow-Origin', '*');
     }
-  };
 
-  if (type === 'file') {
-    app.get(publicPath.replace('{proxy+}', '*'), (_req, res) => {
-      setHeaders(res);
-
-      res.sendFile(path.resolve(localPath));
-    });
-  } else {
-    app.use(
-      publicPath.replace('{proxy+}', ''),
-      express.static(path.resolve(localPath), {setHeaders})
-    );
-  }
+    res.sendFile(path.resolve(localPath));
+  });
 }

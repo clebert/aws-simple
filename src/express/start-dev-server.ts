@@ -5,6 +5,8 @@ import express from 'express';
 import yargs from 'yargs';
 import {isObject} from '../utils/is-object';
 import {loadAppConfig} from '../utils/load-app-config';
+import {resolveS3FileConfigs} from '../utils/resolve-s3-file-configs';
+import {sortS3FileConfigs} from '../utils/sort-s3-file-configs';
 import {serveLocalLambda} from './utils/serve-local-lambda';
 import {serveLocalS3} from './utils/serve-local-s3';
 import {suppressLambdaResultLogging} from './utils/suppress-lambda-result-logging';
@@ -51,9 +53,10 @@ function startDevServer(argv: unknown): void {
     serveLocalLambda(app, lambdaConfig, {useCache: cache});
   }
 
-  // ['/foo/bar', '/', '/foo'] => ['/foo/bar', '/foo', '/']
-  for (const s3Config of [...s3Configs].sort().reverse()) {
-    serveLocalS3(app, s3Config, {enableCors});
+  const s3FileConfigs = sortS3FileConfigs(resolveS3FileConfigs(s3Configs));
+
+  for (const s3FileConfig of s3FileConfigs) {
+    serveLocalS3(app, s3FileConfig, {enableCors});
   }
 
   app.listen(port, () => {
