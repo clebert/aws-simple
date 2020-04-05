@@ -639,7 +639,7 @@ Commands:
   aws-simple list [options]      List all deployed stacks
   aws-simple tag [options]       Tag a deployed stack
   aws-simple clean-up [options]  Clean up old deployed stacks
-  aws-simple redeploy            Redeploy the API Gateway
+  aws-simple redeploy [options]  Redeploy the API Gateway
 
 Options:
   --version   Show version number                                      [boolean]
@@ -761,7 +761,7 @@ Examples:
 ### Redeploy The API Gateway
 
 ```
-aws-simple redeploy
+aws-simple redeploy [options]
 
 Redeploy the API Gateway
 

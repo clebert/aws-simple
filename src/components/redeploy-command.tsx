@@ -51,6 +51,8 @@ export const RedeployCommand = (
 };
 
 RedeployCommand.describe = (argv: Argv) =>
-  argv.command('redeploy', 'Redeploy the API Gateway', (commandArgv) =>
-    commandArgv.example('npx $0 redeploy', '')
+  argv.command(
+    'redeploy [options]',
+    'Redeploy the API Gateway',
+    (commandArgv) => commandArgv.example('npx $0 redeploy', '')
   );
