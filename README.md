@@ -621,6 +621,12 @@ exports.default = {
 
 _Note: Basic authentication is not handled by the local DEV server._
 
+### Troubleshooting
+
+[Some changes](https://docs.aws.amazon.com/apigateway/latest/developerguide/updating-api.html)
+to an existing stack require a redeployment of the API Gateway. So if changes to
+a stack do not work, the `aws-simple redeploy` command might help.
+
 ## CLI Usage
 
 ```
@@ -633,6 +639,7 @@ Commands:
   aws-simple list [options]      List all deployed stacks
   aws-simple tag [options]       Tag a deployed stack
   aws-simple clean-up [options]  Clean up old deployed stacks
+  aws-simple redeploy [options]  Redeploy the API Gateway
 
 Options:
   --version   Show version number                                      [boolean]
@@ -749,6 +756,21 @@ Options:
 Examples:
   npx aws-simple clean-up
   npx aws-simple clean-up --min-age 14 --exclude release prerelease --yes
+```
+
+### Redeploy The API Gateway
+
+```
+aws-simple redeploy [options]
+
+Redeploy the API Gateway
+
+Options:
+  --version   Show version number                                      [boolean]
+  -h, --help  Show help                                                [boolean]
+
+Examples:
+  npx aws-simple redeploy
 ```
 
 ## Development

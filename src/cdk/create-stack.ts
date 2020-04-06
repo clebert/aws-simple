@@ -29,6 +29,13 @@ export function createStack(appConfig: AppConfig): void {
     createRestApiProps(`${appName} ${appVersion}`, stackConfig, stack)
   );
 
+  const restApiIdOutput = new CfnOutput(stack, 'RestApiIdOutput', {
+    value: restApi.restApiId,
+    exportName: createUniqueExportName(stack.stackName, 'RestApiId'),
+  });
+
+  restApiIdOutput.node.addDependency(restApi);
+
   const restApiUrlOutput = new CfnOutput(stack, 'RestApiUrlOutput', {
     value: restApi.url,
     exportName: createUniqueExportName(stack.stackName, 'RestApiUrl'),

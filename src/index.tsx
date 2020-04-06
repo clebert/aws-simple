@@ -13,6 +13,7 @@ import {create} from './commands/create';
 import {start} from './commands/start';
 import {upload} from './commands/upload';
 import {ListCommand} from './components/list-command';
+import {RedeployCommand} from './components/redeploy-command';
 import {TagCommand} from './components/tag-command';
 import {Ui} from './components/ui';
 import {createClientConfig} from './sdk/create-client-config';
@@ -22,6 +23,7 @@ import {loadAppConfig} from './utils/load-app-config';
   const {description} = require('../package.json');
 
   const argv = compose(
+    RedeployCommand.describe,
     cleanUp.describe,
     TagCommand.describe,
     ListCommand.describe,
