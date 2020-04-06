@@ -41,14 +41,19 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
   registerRoutes(app, stackConfig, useCache);
 
   app.listen(port, () => {
-    console.info('Started DEV server:', `http://localhost:${port}`);
+    console.info(
+      `[${new Date().toLocaleTimeString()}] Started DEV server: http://localhost:${port}`
+    );
 
     const localPaths = [...lambdaConfigs, ...s3Configs].map(
       ({localPath}) => localPath
     );
 
     watch(localPaths).on('change', () => {
-      console.info(new Date().toLocaleTimeString(), 'Reregister routes...');
+      console.info(
+        `[${new Date().toLocaleTimeString()}] Reregister DEV server routes...`
+      );
+
       resetRoutes(app);
       registerRoutes(app, stackConfig, useCache);
     });
