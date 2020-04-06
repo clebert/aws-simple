@@ -1,4 +1,4 @@
-import {S3FileConfig} from '../types';
+import {S3FileConfig} from '../../types';
 
 export function sortS3FileConfigs(
   s3FileConfigs: readonly S3FileConfig[]
