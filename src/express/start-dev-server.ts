@@ -9,7 +9,7 @@ import {logInfo} from './utils/log-info';
 import {registerLambdaRoute} from './utils/register-lambda-route';
 import {registerS3Route} from './utils/register-s3-route';
 import {removeAllRoutes} from './utils/remove-all-routes';
-import {sortS3FileConfigs} from './utils/sort-s3-file-configs';
+import {sortRouteConfigs} from './utils/sort-route-configs';
 import {suppressLambdaResultLogging} from './utils/suppress-lambda-result-logging';
 
 export interface DevServerInit {
@@ -48,22 +48,23 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
     ? new WeakMap<LambdaConfig, Map<string, APIGatewayProxyResult>>()
     : undefined;
 
-  for (const lambdaConfig of lambdaConfigs) {
-    if (lambdaCaches && lambdaConfig.cachingEnabled) {
-      lambdaCaches.set(lambdaConfig, new Map());
+  for (const routeConfig of sortRouteConfigs([
+    ...lambdaConfigs,
+    ...resolveS3FileConfigs(s3Configs),
+  ])) {
+    if ('httpMethod' in routeConfig) {
+      if (lambdaCaches && routeConfig.cachingEnabled) {
+        lambdaCaches.set(routeConfig, new Map());
 
-      logInfo(
-        `Initialized DEV server cache for Lambda: ${lambdaConfig.localPath}`
-      );
+        logInfo(
+          `Initialized DEV server cache for Lambda: ${routeConfig.localPath}`
+        );
+      }
+
+      registerLambdaRoute(app, routeConfig, lambdaCaches?.get(routeConfig));
+    } else {
+      registerS3Route(app, routeConfig, enableCors);
     }
-
-    registerLambdaRoute(app, lambdaConfig, lambdaCaches?.get(lambdaConfig));
-  }
-
-  for (const s3FileConfig of sortS3FileConfigs(
-    resolveS3FileConfigs(s3Configs)
-  )) {
-    registerS3Route(app, s3FileConfig, enableCors);
   }
 
   app.listen(port, () => {
@@ -88,14 +89,15 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
 
       removeAllRoutes(app);
 
-      for (const lambdaConfig of lambdaConfigs) {
-        registerLambdaRoute(app, lambdaConfig, lambdaCaches?.get(lambdaConfig));
-      }
-
-      for (const s3FileConfig of sortS3FileConfigs(
-        resolveS3FileConfigs(s3Configs)
-      )) {
-        registerS3Route(app, s3FileConfig, enableCors);
+      for (const routeConfig of sortRouteConfigs([
+        ...lambdaConfigs,
+        ...resolveS3FileConfigs(s3Configs),
+      ])) {
+        if ('httpMethod' in routeConfig) {
+          registerLambdaRoute(app, routeConfig, lambdaCaches?.get(routeConfig));
+        } else {
+          registerS3Route(app, routeConfig, enableCors);
+        }
       }
 
       logInfo('Reregistered DEV server routes.');
