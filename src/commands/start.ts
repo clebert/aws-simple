@@ -1,8 +1,5 @@
-import {ChildProcess, fork} from 'child_process';
-import {watch} from 'chokidar';
-import getPort from 'get-port';
-import * as path from 'path';
 import {Argv} from 'yargs';
+import {startDevServer} from '../express/start-dev-server';
 import {AppConfig} from '../types';
 
 interface StartArgv {
@@ -24,38 +21,9 @@ export async function start(
     return false;
   }
 
-  const port = await getPort({port: argv.port});
+  const {port: requestedPort, cache: useCache, verbose} = argv;
 
-  const startDevServer = (): ChildProcess => {
-    const args = ['--port', String(port)];
-
-    if (argv.cache) {
-      args.push('--cache');
-    }
-
-    if (argv.verbose) {
-      args.push('--verbose');
-    }
-
-    const modulePath = path.join(__dirname, '../express/start-dev-server.js');
-
-    return fork(modulePath, args, {stdio: 'inherit'});
-  };
-
-  let serverProcess = startDevServer();
-
-  const {lambdaConfigs = []} = appConfig.createStackConfig(port);
-  const localLambdaPaths = lambdaConfigs.map(({localPath}) => localPath);
-
-  if (localLambdaPaths.length > 0) {
-    watch(localLambdaPaths).on('change', () => {
-      console.info(new Date().toLocaleTimeString(), 'Restarting DEV server...');
-
-      serverProcess.kill();
-
-      serverProcess = startDevServer();
-    });
-  }
+  await startDevServer({appConfig, requestedPort, useCache, verbose});
 
   return true;
 }
