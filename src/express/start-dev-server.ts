@@ -100,7 +100,11 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
         }
       }
 
-      logInfo('Reregistered DEV server routes.');
+      logInfo(
+        `Reregistered DEV server routes because of changed ${
+          changedLambdaConfig ? 'Lambda' : 'S3'
+        } file: ${changedLocalPath}`
+      );
     });
   });
 }
