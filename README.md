@@ -423,12 +423,14 @@ associated with the stack using the `aws-simple upload [options]` CLI command.
 The optionally specified `bucketPath` or, if not specified, the `publicPath` is
 used as the S3 object key._
 
-#### Configure A Single-page Application
+#### Configure A Single-Page Application
 
-Instead of specifying multiple `s3Configs`, you can also specify a catch-all
-`s3Config`. For example a single greedy `publicPath` (`/{proxy+}`) will
-intercept requests made to `/foo`, `/bar`, and `/baz/qux`. This can be useful to
-deliver the same single-page Application under different paths.
+Instead of specifying multiple `s3Configs`, you can also specify a _catch-all_
+`s3Config`. For example a single greedy `publicPath` (e.g.
+`publicPath: '/{proxy+}'`) will match requests made to `/foo`, `/bar`, and
+`/baz/qux`, but to match also `/` it needs a non-greedy `publicPath`
+(`publicPath: '/'`) in addition. This can be useful to deliver the same
+single-page Application under different paths.
 
 ```js
 exports.default = {
@@ -452,6 +454,8 @@ exports.default = {
   }),
 };
 ```
+
+_Note: This feature can be configured in the same way for Lambda functions._
 
 ### Configure An S3 Folder
 
