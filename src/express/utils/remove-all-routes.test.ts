@@ -18,15 +18,15 @@ describe('removeAllRoutes()', () => {
     expect(app._router!.stack).toStrictEqual(expect.any(Array));
     expect(app._router!.stack).toHaveLength(4);
 
-    const stack0 = app._router!.stack[0];
+    const expressQueryLayer = app._router!.stack[0];
 
-    expect(stack0).toStrictEqual(expect.any(Object));
-    expect(stack0!.route).toBeUndefined();
+    expect(expressQueryLayer).toStrictEqual(expect.any(Object));
+    expect(expressQueryLayer!.route).toBeUndefined();
 
-    const stack1 = app._router!.stack[1];
+    const expressInitLayer = app._router!.stack[1];
 
-    expect(stack1).toStrictEqual(expect.any(Object));
-    expect(stack1!.route).toBeUndefined();
+    expect(expressInitLayer).toStrictEqual(expect.any(Object));
+    expect(expressInitLayer!.route).toBeUndefined();
 
     expect(app._router!.stack[2]).toStrictEqual(expect.any(Object));
     expect(app._router!.stack[2].route).toStrictEqual(expect.any(Object));
@@ -39,7 +39,7 @@ describe('removeAllRoutes()', () => {
     expect(app._router).toStrictEqual(expect.any(Function));
     expect(app._router!.stack).toStrictEqual(expect.any(Array));
     expect(app._router!.stack).toHaveLength(2);
-    expect(app._router!.stack[0]).toBe(stack0);
-    expect(app._router!.stack[1]).toBe(stack1);
+    expect(app._router!.stack[0]).toBe(expressQueryLayer);
+    expect(app._router!.stack[1]).toBe(expressInitLayer);
   });
 });
