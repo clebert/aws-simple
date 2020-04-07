@@ -8,12 +8,12 @@ export interface LambdaRequestHandlerOptions {
   readonly useCache?: boolean;
 }
 
+const cachedResults = new Map<string, APIGatewayProxyResult>();
+
 export function createLambdaRequestHandler(
   lambdaConfig: LambdaConfig,
   options: LambdaRequestHandlerOptions
 ): express.RequestHandler {
-  const cachedResults = new Map<string, APIGatewayProxyResult>();
-
   const {
     localPath,
     handler = 'handler',
