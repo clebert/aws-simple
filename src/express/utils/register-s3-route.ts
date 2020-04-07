@@ -2,7 +2,7 @@ import express from 'express';
 import * as path from 'path';
 import {S3FileConfig} from '../../types';
 
-export function serveLocalS3(
+export function registerS3Route(
   app: express.Express,
   s3FileConfig: S3FileConfig,
   enableCors: boolean

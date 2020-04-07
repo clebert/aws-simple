@@ -4,7 +4,7 @@ import {LambdaConfig} from '../../types';
 import {createLambdaRequestHandler} from './create-lambda-request-handler';
 import {getRouterMatcher} from './get-router-matcher';
 
-export function serveLocalLambda(
+export function registerLambdaRoute(
   app: express.Express,
   lambdaConfig: LambdaConfig,
   lambdaCache: Map<string, APIGatewayProxyResult> | undefined
