@@ -24,8 +24,10 @@ export function createLambdaRequestHandler(
 
   return async (req, res) => {
     try {
+      const cachedResult = cachedResults.get(req.url);
+
       const result =
-        cachedResults.get(req.url) ||
+        cachedResult ||
         (await lambdaLocal.execute({
           lambdaPath: localPath,
           lambdaHandler: handler,
@@ -46,7 +48,12 @@ export function createLambdaRequestHandler(
 
       const {headers, statusCode, body} = result;
 
-      if (options.useCache && cachingEnabled && statusCode === 200) {
+      if (
+        !cachedResult &&
+        options.useCache &&
+        cachingEnabled &&
+        statusCode === 200
+      ) {
         cachedResults.set(req.url, result);
       }
 
@@ -54,6 +61,14 @@ export function createLambdaRequestHandler(
         for (const key of Object.keys(headers)) {
           res.set(key, String(headers[key]));
         }
+      }
+
+      if (cachedResult) {
+        console.info(
+          `[${new Date().toLocaleTimeString()}] DEV server cache hit for Lambda request: ${
+            req.url
+          }`
+        );
       }
 
       res.status(statusCode).send(body);
