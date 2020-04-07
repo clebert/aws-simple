@@ -74,8 +74,6 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
     );
 
     watch(localPaths).on('change', (changedLocalPath) => {
-      removeAllRoutes(app);
-
       const changedLambdaConfig = lambdaConfigs.find(
         ({localPath}) => localPath === changedLocalPath
       );
@@ -87,6 +85,8 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
           `Invalidated DEV server cache for Lambda: ${changedLambdaConfig.localPath}`
         );
       }
+
+      removeAllRoutes(app);
 
       for (const lambdaConfig of lambdaConfigs) {
         registerLambdaRoute(app, lambdaConfig, lambdaCaches?.get(lambdaConfig));
