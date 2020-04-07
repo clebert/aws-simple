@@ -51,7 +51,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
 
     watch(localPaths).on('change', () => {
       console.info(
-        `[${new Date().toLocaleTimeString()}] Reregister DEV server routes...`
+        `[${new Date().toLocaleTimeString()}] Reregistering DEV server routes...`
       );
 
       removeAllRoutes(app);
