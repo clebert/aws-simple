@@ -4,7 +4,7 @@ import express from 'express';
 import getPort from 'get-port';
 import {AppConfig} from '../types';
 import {registerRoutes} from './utils/register-routes';
-import {resetRoutes} from './utils/reset-routes';
+import {removeAllRoutes} from './utils/remove-all-routes';
 import {suppressLambdaResultLogging} from './utils/suppress-lambda-result-logging';
 
 export interface DevServerInit {
@@ -54,7 +54,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
         `[${new Date().toLocaleTimeString()}] Reregister DEV server routes...`
       );
 
-      resetRoutes(app);
+      removeAllRoutes(app);
       registerRoutes(app, stackConfig, useCache);
     });
   });
