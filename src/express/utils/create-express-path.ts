@@ -1,3 +1,3 @@
-export function createExpressPath(publicPath: string): RegExp {
-  return new RegExp(publicPath.replace('{proxy+}', '.+'));
+export function createExpressPath(publicPath: string): string {
+  return publicPath.replace('{proxy+}', '.+');
 }

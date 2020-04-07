@@ -6,7 +6,10 @@ function isS3FileConfig(s3Config: S3Config): s3Config is S3FileConfig {
   return s3Config.type === 'file';
 }
 
-export function resolveS3FileConfigs(s3Configs: S3Config[]): S3FileConfig[] {
+export function resolveS3FileConfigs(
+  s3Configs: S3Config[],
+  resilient: boolean = false
+): S3FileConfig[] {
   const s3FileConfigs: S3FileConfig[] = [];
 
   for (const s3Config of s3Configs) {
@@ -21,18 +24,24 @@ export function resolveS3FileConfigs(s3Configs: S3Config[]): S3FileConfig[] {
         );
       }
 
-      const filenames = readdirSync(localPath)
-        .map((filename) => path.resolve(path.join(localPath, filename)))
-        .filter((filename) => lstatSync(filename).isFile());
+      try {
+        const filenames = readdirSync(localPath)
+          .map((filename) => path.resolve(path.join(localPath, filename)))
+          .filter((filename) => lstatSync(filename).isFile());
 
-      for (const filename of filenames) {
-        s3FileConfigs.push({
-          ...s3Config,
-          type: 'file',
-          publicPath: path.join(publicPath, path.basename(filename)),
-          localPath: filename,
-          bucketPath: path.join(bucketPath, path.basename(filename)),
-        });
+        for (const filename of filenames) {
+          s3FileConfigs.push({
+            ...s3Config,
+            type: 'file',
+            publicPath: path.join(publicPath, path.basename(filename)),
+            localPath: filename,
+            bucketPath: path.join(bucketPath, path.basename(filename)),
+          });
+        }
+      } catch (error) {
+        if (!resilient) {
+          throw error;
+        }
       }
     }
   }
