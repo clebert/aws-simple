@@ -50,12 +50,12 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
     );
 
     watch(localPaths).on('change', () => {
-      console.info(
-        `[${new Date().toLocaleTimeString()}] Reregistering DEV server routes...`
-      );
-
       removeAllRoutes(app);
       registerRoutes(app, stackConfig, useCache);
+
+      console.info(
+        `[${new Date().toLocaleTimeString()}] Reregistered DEV server routes.`
+      );
     });
   });
 }
