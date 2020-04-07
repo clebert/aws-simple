@@ -455,7 +455,7 @@ exports.default = {
 };
 ```
 
-_Note: This feature can be configured in the same way for Lambda functions._
+_Note: You can also specify a catch-all `lambdaConfig` in the same way._
 
 ### Configure An S3 Folder
 
