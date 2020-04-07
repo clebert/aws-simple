@@ -1,10 +1,15 @@
+import {APIGatewayProxyResult} from 'aws-lambda';
 import {watch} from 'chokidar';
 import compression from 'compression';
 import express from 'express';
 import getPort from 'get-port';
-import {AppConfig} from '../types';
-import {registerRoutes} from './utils/register-routes';
+import {AppConfig, LambdaConfig} from '../types';
+import {resolveS3FileConfigs} from '../utils/resolve-s3-file-configs';
+import {logInfo} from './utils/log-info';
 import {removeAllRoutes} from './utils/remove-all-routes';
+import {serveLocalLambda} from './utils/serve-local-lambda';
+import {serveLocalS3} from './utils/serve-local-s3';
+import {sortS3FileConfigs} from './utils/sort-s3-file-configs';
 import {suppressLambdaResultLogging} from './utils/suppress-lambda-result-logging';
 
 export interface DevServerInit {
@@ -32,30 +37,72 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
     minimumCompressionSizeInBytes,
     lambdaConfigs = [],
     s3Configs = [],
+    enableCors = false,
   } = stackConfig;
 
   if (typeof minimumCompressionSizeInBytes === 'number') {
     app.use(compression({threshold: minimumCompressionSizeInBytes}));
   }
 
-  registerRoutes(app, stackConfig, useCache);
+  const lambdaCaches = useCache
+    ? new WeakMap<LambdaConfig, Map<string, APIGatewayProxyResult>>()
+    : undefined;
+
+  for (const lambdaConfig of lambdaConfigs) {
+    if (lambdaCaches && lambdaConfig.cachingEnabled) {
+      lambdaCaches.set(lambdaConfig, new Map());
+
+      logInfo(
+        `Initialized DEV server cache for Lambda: ${lambdaConfig.localPath}`
+      );
+    }
+
+    serveLocalLambda(app, lambdaConfig, lambdaCaches?.get(lambdaConfig));
+  }
+
+  for (const s3FileConfig of sortS3FileConfigs(
+    resolveS3FileConfigs(s3Configs)
+  )) {
+    serveLocalS3(app, s3FileConfig, enableCors);
+  }
 
   app.listen(port, () => {
-    console.info(
-      `[${new Date().toLocaleTimeString()}] Started DEV server: http://localhost:${port}`
-    );
+    logInfo(`Started DEV server: http://localhost:${port}`);
 
     const localPaths = [...lambdaConfigs, ...s3Configs].map(
       ({localPath}) => localPath
     );
 
-    watch(localPaths).on('change', () => {
+    watch(localPaths).on('change', (changedLocalPath) => {
       removeAllRoutes(app);
-      registerRoutes(app, stackConfig, useCache);
 
-      console.info(
-        `[${new Date().toLocaleTimeString()}] Reregistered DEV server routes.`
+      const changedLambdaConfig = lambdaConfigs.find(
+        ({localPath}) => localPath === changedLocalPath
       );
+
+      for (const lambdaConfig of lambdaConfigs) {
+        if (
+          lambdaCaches &&
+          lambdaConfig.cachingEnabled &&
+          lambdaConfig === changedLambdaConfig
+        ) {
+          lambdaCaches.set(lambdaConfig, new Map());
+
+          logInfo(
+            `Invalidated DEV server cache for Lambda: ${lambdaConfig.localPath}`
+          );
+        }
+
+        serveLocalLambda(app, lambdaConfig, lambdaCaches?.get(lambdaConfig));
+      }
+
+      for (const s3FileConfig of sortS3FileConfigs(
+        resolveS3FileConfigs(s3Configs)
+      )) {
+        serveLocalS3(app, s3FileConfig, enableCors);
+      }
+
+      logInfo('Reregistered DEV server routes.');
     });
   });
 }

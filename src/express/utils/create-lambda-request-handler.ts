@@ -3,28 +3,22 @@ import express from 'express';
 import * as lambdaLocal from 'lambda-local';
 import {LambdaConfig} from '../../types';
 import {getRequestHeaders} from './get-request-headers';
-
-export interface LambdaRequestHandlerOptions {
-  readonly useCache?: boolean;
-}
-
-const cachedResults = new Map<string, APIGatewayProxyResult>();
+import {logInfo} from './log-info';
 
 export function createLambdaRequestHandler(
   lambdaConfig: LambdaConfig,
-  options: LambdaRequestHandlerOptions
+  lambdaCache: Map<string, APIGatewayProxyResult> | undefined
 ): express.RequestHandler {
   const {
     localPath,
     handler = 'handler',
     timeoutInSeconds = 28,
-    cachingEnabled,
     environment,
   } = lambdaConfig;
 
   return async (req, res) => {
     try {
-      const cachedResult = cachedResults.get(req.url);
+      const cachedResult = lambdaCache?.get(req.url);
 
       const result =
         cachedResult ||
@@ -48,13 +42,8 @@ export function createLambdaRequestHandler(
 
       const {headers, statusCode, body} = result;
 
-      if (
-        !cachedResult &&
-        options.useCache &&
-        cachingEnabled &&
-        statusCode === 200
-      ) {
-        cachedResults.set(req.url, result);
+      if (!cachedResult && statusCode === 200) {
+        lambdaCache?.set(req.url, result);
       }
 
       if (headers) {
@@ -64,11 +53,7 @@ export function createLambdaRequestHandler(
       }
 
       if (cachedResult) {
-        console.info(
-          `[${new Date().toLocaleTimeString()}] DEV server cache hit for Lambda request: ${
-            req.url
-          }`
-        );
+        logInfo(`DEV server cache hit for Lambda request: ${req.url}`);
       }
 
       res.status(statusCode).send(body);
