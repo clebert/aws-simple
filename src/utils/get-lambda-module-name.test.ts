@@ -3,6 +3,7 @@ import {getLambdaModuleName} from './get-lambda-module-name';
 describe('getLambdaModuleName()', () => {
   it('returns the file name without file extension', () => {
     expect(getLambdaModuleName('index.js')).toBe('index');
+    expect(getLambdaModuleName('foo/index.js')).toBe('index');
     expect(getLambdaModuleName('ABCabc.js')).toBe('ABCabc');
   });
 
@@ -12,6 +13,7 @@ describe('getLambdaModuleName()', () => {
     );
 
     expect(() => getLambdaModuleName('.js')).toThrow(expectedError);
+    expect(() => getLambdaModuleName('foo/.js')).toThrow(expectedError);
     expect(() => getLambdaModuleName('index.bundle.js')).toThrow(expectedError);
     expect(() => getLambdaModuleName('index-bundle.js')).toThrow(expectedError);
   });
