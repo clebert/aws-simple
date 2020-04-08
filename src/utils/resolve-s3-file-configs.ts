@@ -1,6 +1,10 @@
-import {lstatSync, readdirSync} from 'fs';
+import {existsSync, lstatSync, readdirSync} from 'fs';
 import * as path from 'path';
 import {S3Config, S3FileConfig} from '../types';
+
+export interface ResolveS3FileConfigsOptions {
+  readonly devMode?: boolean;
+}
 
 function isS3FileConfig(s3Config: S3Config): s3Config is S3FileConfig {
   return s3Config.type === 'file';
@@ -8,7 +12,7 @@ function isS3FileConfig(s3Config: S3Config): s3Config is S3FileConfig {
 
 export function resolveS3FileConfigs(
   s3Configs: S3Config[],
-  resilient: boolean = false
+  options: ResolveS3FileConfigsOptions = {}
 ): S3FileConfig[] {
   const s3FileConfigs: S3FileConfig[] = [];
 
@@ -24,24 +28,22 @@ export function resolveS3FileConfigs(
         );
       }
 
-      try {
-        const filenames = readdirSync(localPath)
-          .map((filename) => path.resolve(path.join(localPath, filename)))
-          .filter((filename) => lstatSync(filename).isFile());
+      if (options.devMode && !existsSync(localPath)) {
+        continue;
+      }
 
-        for (const filename of filenames) {
-          s3FileConfigs.push({
-            ...s3Config,
-            type: 'file',
-            publicPath: path.join(publicPath, path.basename(filename)),
-            localPath: filename,
-            bucketPath: path.join(bucketPath, path.basename(filename)),
-          });
-        }
-      } catch (error) {
-        if (!resilient) {
-          throw error;
-        }
+      const filenames = readdirSync(localPath)
+        .map((filename) => path.resolve(path.join(localPath, filename)))
+        .filter((filename) => lstatSync(filename).isFile());
+
+      for (const filename of filenames) {
+        s3FileConfigs.push({
+          ...s3Config,
+          type: 'file',
+          publicPath: path.join(publicPath, path.basename(filename)),
+          localPath: filename,
+          bucketPath: path.join(bucketPath, path.basename(filename)),
+        });
       }
     }
   }

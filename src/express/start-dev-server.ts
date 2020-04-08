@@ -50,7 +50,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
 
   for (const routeConfig of sortRouteConfigs([
     ...lambdaConfigs,
-    ...resolveS3FileConfigs(s3Configs, true),
+    ...resolveS3FileConfigs(s3Configs, {devMode: true}),
   ])) {
     if ('httpMethod' in routeConfig) {
       if (lambdaCaches && routeConfig.cachingEnabled) {
@@ -70,7 +70,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
   app.listen(port, () => {
     logInfo(`Started DEV server: http://localhost:${port}`);
 
-    const watchListener = (changedLocalPath: string) => {
+    const handleLocalPathChanges = (changedLocalPath: string) => {
       const changedLambdaConfig = lambdaConfigs.find(
         ({localPath}) => localPath === changedLocalPath
       );
@@ -87,7 +87,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
 
       for (const routeConfig of sortRouteConfigs([
         ...lambdaConfigs,
-        ...resolveS3FileConfigs(s3Configs, true),
+        ...resolveS3FileConfigs(s3Configs, {devMode: true}),
       ])) {
         if ('httpMethod' in routeConfig) {
           registerLambdaRoute(app, routeConfig, lambdaCaches?.get(routeConfig));
@@ -107,7 +107,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
       ({localPath}) => localPath
     );
 
-    watch(localPaths, {ignoreInitial: true}).on('add', watchListener);
-    watch(localPaths).on('change', watchListener);
+    watch(localPaths, {ignoreInitial: true}).on('add', handleLocalPathChanges);
+    watch(localPaths).on('change', handleLocalPathChanges);
   });
 }
