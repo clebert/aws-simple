@@ -107,7 +107,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
       ({localPath}) => localPath
     );
 
-    watch(localPaths).on('add', watchListener);
+    watch(localPaths, {ignoreInitial: true}).on('add', watchListener);
     watch(localPaths).on('change', watchListener);
   });
 }
