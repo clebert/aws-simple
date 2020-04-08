@@ -423,36 +423,6 @@ associated with the stack using the `aws-simple upload [options]` CLI command.
 The optionally specified `bucketPath` or, if not specified, the `publicPath` is
 used as the S3 object key._
 
-#### Configure A Single-page Application
-
-Instead of specifying multiple `s3Configs`, you can also specify a catch-all
-`s3Config`. For example a single greedy `publicPath` (`/{proxy+}`) will
-intercept requests made to `/foo`, `/bar`, and `/baz/qux`. This can be useful to
-deliver the same single-page Application under different paths.
-
-```js
-exports.default = {
-  appName: 'my-app',
-  appVersion: 'latest',
-  createStackConfig: () => ({
-    s3Configs: [
-      {
-        type: 'file',
-        publicPath: '/',
-        localPath: 'dist/index.html',
-        bucketPath: 'index.html',
-      },
-      {
-        type: 'file',
-        publicPath: '/{proxy+}',
-        localPath: 'dist/index.html',
-        bucketPath: 'index.html',
-      },
-    ],
-  }),
-};
-```
-
 ### Configure An S3 Folder
 
 You can configure an S3 folder whose contained files can be accessed via GET
@@ -620,6 +590,63 @@ exports.default = {
 ```
 
 _Note: Basic authentication is not handled by the local DEV server._
+
+### Configure A Single-Page Application (SPA)
+
+It can be useful to deliver the same single-page Application under different
+paths. Instead of specifying multiple `s3Configs` or `lambdaConfigs`, you can
+also specify a _catch-all_ `s3Config` or `lambdaConfig`. For example a single
+greedy `publicPath` (e.g. `publicPath: '/{proxy+}'`) will match requests made to
+`/foo`, `/bar`, and `/baz/qux`, but to match also `/` it needs a non-greedy
+`publicPath` (`publicPath: '/'`) in addition.
+
+#### S3 Example
+
+```js
+exports.default = {
+  appName: 'my-app',
+  appVersion: 'latest',
+  createStackConfig: () => ({
+    s3Configs: [
+      {
+        type: 'file',
+        publicPath: '/',
+        localPath: 'dist/index.html',
+        bucketPath: 'index.html',
+      },
+      {
+        type: 'file',
+        publicPath: '/{proxy+}',
+        localPath: 'dist/index.html',
+        bucketPath: 'index.html',
+      },
+    ],
+  }),
+};
+```
+
+#### Lambda Example
+
+```js
+exports.default = {
+  appName: 'my-app',
+  appVersion: 'latest',
+  createStackConfig: () => ({
+    lambdaConfigs: [
+      {
+        httpMethod: 'GET',
+        publicPath: '/',
+        localPath: 'path/to/lambda.js',
+      },
+      {
+        httpMethod: 'GET',
+        publicPath: '/{proxy+}',
+        localPath: 'path/to/lambda.js',
+      },
+    ],
+  }),
+};
+```
 
 ### Troubleshooting
 

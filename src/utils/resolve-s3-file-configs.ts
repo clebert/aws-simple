@@ -1,12 +1,19 @@
-import {lstatSync, readdirSync} from 'fs';
+import {existsSync, lstatSync, readdirSync} from 'fs';
 import * as path from 'path';
 import {S3Config, S3FileConfig} from '../types';
+
+export interface ResolveS3FileConfigsOptions {
+  readonly devMode?: boolean;
+}
 
 function isS3FileConfig(s3Config: S3Config): s3Config is S3FileConfig {
   return s3Config.type === 'file';
 }
 
-export function resolveS3FileConfigs(s3Configs: S3Config[]): S3FileConfig[] {
+export function resolveS3FileConfigs(
+  s3Configs: S3Config[],
+  options: ResolveS3FileConfigsOptions = {}
+): S3FileConfig[] {
   const s3FileConfigs: S3FileConfig[] = [];
 
   for (const s3Config of s3Configs) {
@@ -19,6 +26,10 @@ export function resolveS3FileConfigs(s3Configs: S3Config[]): S3FileConfig[] {
         throw new Error(
           'A catch-all S3 config is only supported for single files.'
         );
+      }
+
+      if (options.devMode && !existsSync(localPath)) {
+        continue;
       }
 
       const filenames = readdirSync(localPath)
