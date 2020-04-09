@@ -2,6 +2,7 @@ import {APIGatewayProxyResult} from 'aws-lambda';
 import express from 'express';
 import * as lambdaLocal from 'lambda-local';
 import {LambdaConfig} from '../../types';
+import {getLambdaModuleName as checkLambdaModuleName} from '../../utils/get-lambda-module-name';
 import {getRequestHeaders} from './get-request-headers';
 import {logInfo} from './log-info';
 
@@ -15,6 +16,8 @@ export function createLambdaRequestHandler(
     timeoutInSeconds = 28,
     environment,
   } = lambdaConfig;
+
+  checkLambdaModuleName(localPath);
 
   return async (req, res) => {
     try {

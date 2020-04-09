@@ -9,6 +9,7 @@ import {Duration, Stack} from '@aws-cdk/core';
 import * as path from 'path';
 import {LambdaConfig} from '../../types';
 import {createShortHash} from '../../utils/create-short-hash';
+import {getLambdaModuleName} from '../../utils/get-lambda-module-name';
 
 export function createLambdaIntegration(
   stack: Stack,
@@ -48,10 +49,7 @@ export function createLambdaIntegration(
         description,
         runtime: Runtime.NODEJS_10_X,
         code: Code.fromAsset(path.dirname(localPath)),
-        handler: `${path.basename(
-          localPath,
-          path.extname(localPath)
-        )}.${handler}`,
+        handler: `${getLambdaModuleName(localPath)}.${handler}`,
         timeout: Duration.seconds(
           timeoutInSeconds > 28 ? 28 : timeoutInSeconds
         ),
