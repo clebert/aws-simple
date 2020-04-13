@@ -22,6 +22,15 @@ export function createLambdaRequestHandler(
   return async (req, res) => {
     try {
       const cachedResult = lambdaCache?.get(req.url);
+      const queryStringParameters: Record<string, string> = {};
+
+      for (const key of Object.keys(req.query)) {
+        const parameter = req.query[key];
+
+        if (typeof parameter === 'string') {
+          queryStringParameters[key] = parameter;
+        }
+      }
 
       const result =
         cachedResult ||
@@ -34,7 +43,7 @@ export function createLambdaRequestHandler(
             ...getRequestHeaders(req),
             path: req.path,
             httpMethod: req.method,
-            queryStringParameters: req.query,
+            queryStringParameters,
             body: req.body
               ? typeof req.body === 'string'
                 ? req.body
