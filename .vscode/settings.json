@@ -3,8 +3,7 @@
   "files.exclude": {
     "coverage": true,
     "lib": true,
-    "node_modules": true,
-    "yarn.lock": true
+    "node_modules": true
   },
   "typescript.tsdk": "node_modules/typescript/lib"
 }

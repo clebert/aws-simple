@@ -21,13 +21,6 @@ domain and optional alias record, host static web resources via S3, and
 provision public backend APIs via Lambda. In addition, a local DEV server can be
 started to emulate the resulting AWS infrastructure.
 
-### [aws-simple-example](https://github.com/clebert/aws-simple-example)
-
-For a quick impression, an example app is available that consists essentially of
-a React component that retrieves text from a Lambda function using a
-`React.useEffect` hook and displays it. Parcel is used for bundling and
-TypeScript as language.
-
 ## Motivation
 
 In my job I mainly build web apps on top of existing backend/CMS systems. Since
