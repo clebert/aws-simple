@@ -1,6 +1,7 @@
 {
   "rules": {
     "no-floating-promises": true,
+    "no-implicit-dependencies": [true, "dev", ["aws-lambda"]],
     "no-shadowed-variable": true,
     "ordered-imports": {
       "options": {
