@@ -111,9 +111,9 @@
     "@types/url-join": "^4.0.0",
     "@types/yargs": "^15.0.4",
     "aws-cdk": "^1.36.1",
-    "babel-jest": "^25.5.1",
+    "babel-jest": "^26.0.0",
     "ink-testing-library": "^1.0.3",
-    "jest": "^25.5.3",
+    "jest": "^26.0.0",
     "prettier": "^2.0.5",
     "tslint": "^6.1.2",
     "typescript": "^3.8.3"
