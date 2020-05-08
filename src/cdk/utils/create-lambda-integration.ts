@@ -47,7 +47,7 @@ export function createLambdaIntegration(
     new LambdaIntegration(
       new Lambda(stack, `Lambda${httpMethod}${createShortHash(publicPath)}`, {
         description,
-        runtime: Runtime.NODEJS_10_X,
+        runtime: Runtime.NODEJS_12_X,
         code: Code.fromAsset(path.dirname(localPath)),
         handler: `${getLambdaModuleName(localPath)}.${handler}`,
         timeout: Duration.seconds(
