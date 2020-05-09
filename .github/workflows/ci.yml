@@ -20,8 +20,4 @@ jobs:
       - name: Run CI checks
         env:
           CI: true
-        run: |
-          yarn format:test
-          yarn update-readme
-          yarn lint
-          yarn test
+        run: yarn ci

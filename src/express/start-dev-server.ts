@@ -3,6 +3,8 @@ import {watch} from 'chokidar';
 import compression from 'compression';
 import express from 'express';
 import getPort from 'get-port';
+import mkdirp from 'mkdirp';
+import path from 'path';
 import {AppConfig, LambdaConfig} from '../types';
 import {resolveS3FileConfigs} from '../utils/resolve-s3-file-configs';
 import {logInfo} from './utils/log-info';
@@ -106,6 +108,10 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
     const localPaths = [...lambdaConfigs, ...s3Configs].map(
       ({localPath}) => localPath
     );
+
+    for (const localPath of localPaths) {
+      mkdirp.sync(path.dirname(localPath));
+    }
 
     watch(localPaths, {ignoreInitial: true}).on('add', handleLocalPathChanges);
     watch(localPaths).on('change', handleLocalPathChanges);
