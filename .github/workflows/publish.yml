@@ -19,8 +19,8 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Compile sources
-        run: yarn compile
+      - name: Build sources
+        run: yarn build
 
       - name: Publish to npm
         env:
