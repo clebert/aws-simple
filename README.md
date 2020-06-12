@@ -501,10 +501,22 @@ exports.default = {
   appName: 'my-app',
   appVersion: 'latest',
   createStackConfig: () => ({
-    binaryMediaTypes: ['font/woff2'],
+    binaryMediaTypes: ['image/gif', 'image/jpeg', 'image/png'],
+    s3Configs: [
+      {
+        type: 'folder',
+        binary: true,
+        publicPath: '/assets/images',
+        localPath: 'path/to/folder',
+      },
+    ],
   }),
 };
 ```
+
+_Note: Please make sure that S3 config objects representing binary files are
+declared accordingly (`binary: true`). S3 config objects representing folders
+may only contain either binary or non-binary files._
 
 ### Enable Payload Compression
 

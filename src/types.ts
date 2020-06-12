@@ -68,6 +68,7 @@ export interface S3ResponseHeaders {
 
 export interface S3Config {
   readonly type: 'file' | 'folder';
+  readonly binary?: boolean;
   readonly publicPath: string;
   readonly localPath: string;
   readonly bucketPath?: string;
@@ -76,8 +77,6 @@ export interface S3Config {
   readonly cacheTtlInSeconds?: number;
   readonly authenticationRequired?: boolean;
 }
-
-export type S3FileConfig = S3Config & {readonly type: 'file'};
 
 export interface BasicAuthenticationConfig {
   readonly username: string;
