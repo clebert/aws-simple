@@ -39,10 +39,26 @@ function createAllowPolicy(
   };
 }
 
+function getHeaderValue(
+  headers: Record<string, string> = {},
+  name: string
+): string | undefined {
+  const searchedHeaderName = name.toLowerCase();
+  return Object.entries(headers).find(
+    ([headerName]) => headerName.toLowerCase() === searchedHeaderName
+  )?.[1];
+}
+
+export function getAuthHeaderValue(
+  headers: Record<string, string> = {}
+): string | undefined {
+  return getHeaderValue(headers, 'authorization');
+}
+
 export const handler: CustomAuthorizerHandler = (event, _context, callback) => {
   if (!process.env.USERNAME) {
     callback(new Error('USERNAME is not defined.'));
-  } else if (isValidBasicAuthHeader(event.headers?.authorization)) {
+  } else if (isValidBasicAuthHeader(getAuthHeaderValue(event.headers))) {
     callback(null, createAllowPolicy(process.env.USERNAME, event.methodArn));
   } else {
     callback('Unauthorized');
