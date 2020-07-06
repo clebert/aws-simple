@@ -5,7 +5,7 @@ import {
   Role,
   ServicePrincipal,
 } from '@aws-cdk/aws-iam';
-import {Bucket} from '@aws-cdk/aws-s3';
+import {Bucket, BucketEncryption} from '@aws-cdk/aws-s3';
 import {App, CfnOutput, Stack} from '@aws-cdk/core';
 import {AppConfig} from '../types';
 import {createUniqueExportName} from '../utils/create-unique-export-name';
@@ -46,7 +46,10 @@ export function createStack(appConfig: AppConfig): void {
   createARecord(stackConfig, stack, restApi);
   createUnauthorizedGatewayResponse(stackConfig, stack, restApi);
 
-  const s3Bucket = new Bucket(stack, 'S3Bucket', {publicReadAccess: false});
+  const s3Bucket = new Bucket(stack, 'S3Bucket', {
+    publicReadAccess: false,
+    encryption: BucketEncryption.S3_MANAGED,
+  });
 
   const s3BucketNameOutput = new CfnOutput(stack, 'S3BucketNameOutput', {
     value: s3Bucket.bucketName,
