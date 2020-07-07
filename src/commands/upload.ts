@@ -4,9 +4,9 @@ import joinUrl from 'url-join';
 import {Argv} from 'yargs';
 import {createStackBaseUrl} from '../sdk/create-stack-base-url';
 import {findStack} from '../sdk/find-stack';
+import {resolveS3UploadConfigs} from '../sdk/resolve-s3-upload-configs';
 import {uploadFileToS3} from '../sdk/upload-file-to-s3';
 import {AppConfig} from '../types';
-import {resolveS3FileConfigs} from '../utils/resolve-s3-file-configs';
 
 interface UploadArgv {
   readonly _: ['upload'];
@@ -31,29 +31,31 @@ export async function upload(
   const listrTasks: Listr.ListrTask[] = [];
   const {s3Configs = []} = stackConfig;
 
-  for (const s3FileConfig of resolveS3FileConfigs(s3Configs)) {
-    const {filename, promise} = uploadFileToS3(
-      clientConfig,
-      stack,
-      s3FileConfig
-    );
+  for (const s3Config of s3Configs) {
+    for (const s3UploadConfig of resolveS3UploadConfigs(s3Config)) {
+      const {filename, promise} = uploadFileToS3(
+        clientConfig,
+        stack,
+        s3UploadConfig
+      );
 
-    listrTasks.push({
-      title: `Uploading file: ${filename}`,
-      task: async (_, listrTask) => {
-        try {
-          await promise;
+      listrTasks.push({
+        title: `Uploading file: ${filename}`,
+        task: async (_, listrTask) => {
+          try {
+            await promise;
 
-          const url = joinUrl(baseUrl, s3FileConfig.publicPath);
+            const url = joinUrl(baseUrl, s3UploadConfig.publicPath);
 
-          listrTask.title = `Successfully uploaded file: ${url}`;
-        } catch (error) {
-          listrTask.title = `Error while uploading file: ${filename}`;
+            listrTask.title = `Successfully uploaded file: ${url}`;
+          } catch (error) {
+            listrTask.title = `Error while uploading file: ${filename}`;
 
-          throw error;
-        }
-      },
-    });
+            throw error;
+          }
+        },
+      });
+    }
   }
 
   await new Listr(listrTasks, {concurrent: true, exitOnError: true}).run();

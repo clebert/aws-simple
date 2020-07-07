@@ -1,10 +1,9 @@
 import {ContentHandling, IntegrationResponse} from '@aws-cdk/aws-apigateway';
-import mimeTypes from 'mime-types';
-import {S3FileConfig, StackConfig} from '../../types';
+import {S3Config, StackConfig} from '../../types';
 
 export function createS3IntegrationResponses(
   stackConfig: StackConfig,
-  s3FileConfig: S3FileConfig
+  s3Config: S3Config
 ): IntegrationResponse[] {
   const corsResponseParameters: Record<string, string> = stackConfig.enableCors
     ? {'method.response.header.Access-Control-Allow-Origin': "'*'"}
@@ -16,7 +15,7 @@ export function createS3IntegrationResponses(
       'integration.response.header.Content-Type',
   };
 
-  const {responseHeaders} = s3FileConfig;
+  const {responseHeaders} = s3Config;
 
   if (responseHeaders) {
     const {cacheControl} = responseHeaders;
@@ -28,17 +27,14 @@ export function createS3IntegrationResponses(
     }
   }
 
-  const mediaType = mimeTypes.lookup(s3FileConfig.localPath);
-
   return [
     {
       selectionPattern: '200',
       statusCode: '200',
       responseParameters: status200ResponseParameters,
-      contentHandling:
-        mediaType && stackConfig.binaryMediaTypes?.includes(mediaType)
-          ? ContentHandling.CONVERT_TO_BINARY
-          : undefined,
+      contentHandling: s3Config.binary
+        ? ContentHandling.CONVERT_TO_BINARY
+        : undefined,
     },
     {
       selectionPattern: '404',

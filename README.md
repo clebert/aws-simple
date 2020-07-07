@@ -41,7 +41,16 @@ manually with the AWS CDK/SDK.
 You need to install `aws-simple` and `aws-cdk` as dependencies, e.g. with:
 
 ```
-yarn add --dev aws-simple aws-cdk
+yarn add --dev aws-simple \
+  aws-cdk \
+  @aws-cdk/aws-apigateway \
+  @aws-cdk/aws-certificatemanager \
+  @aws-cdk/aws-iam \
+  @aws-cdk/aws-lambda \
+  @aws-cdk/aws-route53 \
+  @aws-cdk/aws-route53-targets \
+  @aws-cdk/aws-s3 \
+  @aws-cdk/core
 ```
 
 ### Create An AWS IAM User
@@ -501,10 +510,22 @@ exports.default = {
   appName: 'my-app',
   appVersion: 'latest',
   createStackConfig: () => ({
-    binaryMediaTypes: ['font/woff2'],
+    binaryMediaTypes: ['image/gif', 'image/jpeg', 'image/png'],
+    s3Configs: [
+      {
+        type: 'folder',
+        binary: true,
+        publicPath: '/assets/images',
+        localPath: 'path/to/folder',
+      },
+    ],
   }),
 };
 ```
+
+_Note: Please make sure that S3 config objects representing binary files are
+declared accordingly (`binary: true`). S3 config objects representing folders
+may only contain either binary or non-binary files._
 
 ### Enable Payload Compression
 

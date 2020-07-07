@@ -6,7 +6,6 @@ import getPort from 'get-port';
 import mkdirp from 'mkdirp';
 import path from 'path';
 import {AppConfig, LambdaConfig} from '../types';
-import {resolveS3FileConfigs} from '../utils/resolve-s3-file-configs';
 import {logInfo} from './utils/log-info';
 import {registerLambdaRoute} from './utils/register-lambda-route';
 import {registerS3Route} from './utils/register-s3-route';
@@ -52,7 +51,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
 
   for (const routeConfig of sortRouteConfigs([
     ...lambdaConfigs,
-    ...resolveS3FileConfigs(s3Configs, {devMode: true}),
+    ...s3Configs,
   ])) {
     if ('httpMethod' in routeConfig) {
       if (lambdaCaches && routeConfig.cachingEnabled) {
@@ -89,7 +88,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
 
       for (const routeConfig of sortRouteConfigs([
         ...lambdaConfigs,
-        ...resolveS3FileConfigs(s3Configs, {devMode: true}),
+        ...s3Configs,
       ])) {
         if ('httpMethod' in routeConfig) {
           registerLambdaRoute(app, routeConfig, lambdaCaches?.get(routeConfig));

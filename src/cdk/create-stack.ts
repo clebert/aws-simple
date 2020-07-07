@@ -9,7 +9,6 @@ import {Bucket, BucketEncryption} from '@aws-cdk/aws-s3';
 import {App, CfnOutput, Stack} from '@aws-cdk/core';
 import {AppConfig} from '../types';
 import {createUniqueExportName} from '../utils/create-unique-export-name';
-import {resolveS3FileConfigs} from '../utils/resolve-s3-file-configs';
 import {createStackName} from '../utils/stack-name';
 import {createARecord} from './utils/create-a-record';
 import {createBasicAuthorizer} from './utils/create-basic-authorizer';
@@ -82,13 +81,13 @@ export function createStack(appConfig: AppConfig): void {
     createLambdaIntegration(stack, restApi, lambdaConfig, authorizer);
   }
 
-  for (const s3FileConfig of resolveS3FileConfigs(s3Configs)) {
+  for (const s3Config of s3Configs) {
     createS3Integration(
       stackConfig,
       restApi,
       s3Bucket,
       s3IntegrationRole,
-      s3FileConfig,
+      s3Config,
       authorizer
     );
   }
