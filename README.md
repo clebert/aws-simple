@@ -41,7 +41,16 @@ manually with the AWS CDK/SDK.
 You need to install `aws-simple` and `aws-cdk` as dependencies, e.g. with:
 
 ```
-yarn add --dev aws-simple aws-cdk
+yarn add --dev aws-simple \
+  aws-cdk \
+  @aws-cdk/aws-apigateway \
+  @aws-cdk/aws-certificatemanager \
+  @aws-cdk/aws-iam \
+  @aws-cdk/aws-lambda \
+  @aws-cdk/aws-route53 \
+  @aws-cdk/aws-route53-targets \
+  @aws-cdk/aws-s3 \
+  @aws-cdk/core
 ```
 
 ### Create An AWS IAM User
