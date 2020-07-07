@@ -1595,6 +1595,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.13.5.tgz#96ec3b0afafd64a4ccea9107b75bf8489f0e5765"
   integrity sha512-3ySmiBYJPqgjiHA7oEaIo2Rzz0HrOZ7yrNO5HWyaE5q0lQ3BppDZ3N53Miz8bw2I7gh1/zir2MGVZBvpb1zq9g==
 
+"@types/node@^14.0.13":
+  version "14.0.18"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.18.tgz#5111b2285659442f9f95697386a2b42b875bd7e9"
+  integrity sha512-0Z3nS5acM0cIV4JPzrj9g/GH0Et5vmADWtip3YOXOp1NpOLU8V3KoZDc8ny9c1pe/YSYYzQkAWob6dyV/EWg4g==
+
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
@@ -1631,6 +1636,14 @@
   version "16.9.34"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.34.tgz#f7d5e331c468f53affed17a8a4d488cd44ea9349"
   integrity sha512-8AJlYMOfPe1KGLKyHpflCg5z46n0b5DbRfqDksxBLBTUpB75ypDBAO9eCUcjNwE6LCUslwTz00yyG/X9gaVtow==
+  dependencies:
+    "@types/prop-types" "*"
+    csstype "^2.2.0"
+
+"@types/react@^16.9.38":
+  version "16.9.41"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.41.tgz#925137ee4d2ff406a0ecf29e8e9237390844002e"
+  integrity sha512-6cFei7F7L4wwuM+IND/Q2cV1koQUvJ8iSV+Gwn0c3kvABZ691g7sp3hfEQHOUBJtccl1gPi+EyNjMIl9nGA0ug==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
@@ -3605,10 +3618,13 @@ ink-spinner@^3.0.1:
     cli-spinners "^1.0.0"
     prop-types "^15.5.10"
 
-ink-testing-library@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/ink-testing-library/-/ink-testing-library-1.0.3.tgz#4afddc0ff2c39d810ce24ea2d034ef64aec9a39e"
-  integrity sha512-FKq3urZvJ5aWqhXaf7OeHkXw7LsZu/m0H4an0RlUim3Ar97W1bbRUPY4K/C57/0YkFAOa6RtIbZ/EDiMJSYxXQ==
+ink-testing-library@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/ink-testing-library/-/ink-testing-library-2.0.0.tgz#e02e2fa9e4cd213fb3de065fcac22e4a2e8b7da9"
+  integrity sha512-BwOqxXedU7nuJekcSoA6HZrzQK/cOk8Uz+ciyV+UDVDrwdsLasAFxpfAXMfoVJV8rDgVmvTAowUE+xl0AbYyug==
+  dependencies:
+    "@types/node" "^14.0.13"
+    "@types/react" "^16.9.38"
 
 ink@^2.7.1:
   version "2.7.1"
