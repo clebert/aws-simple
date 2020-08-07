@@ -96,28 +96,31 @@ export async function cleanUp(
     listrTasks.push({
       title: `Deleting stack ${stackName} and associated S3 bucket`,
       task: () =>
-        new Listr([
-          {
-            title: 'Deleting stack',
-            task: async () => deleteStack(clientConfig, expiredStack),
-          },
-          {
-            title: 'Deleting S3 bucket',
-            task: async (_, listrSubTask) => {
-              let s3BucketName: string;
-
-              try {
-                s3BucketName = findStackOutput(expiredStack, 'S3BucketName');
-              } catch (error) {
-                listrSubTask.skip(error.message);
-
-                return;
-              }
-
-              return deleteS3Bucket(clientConfig, s3BucketName);
+        new Listr(
+          [
+            {
+              title: 'Deleting stack',
+              task: async () => deleteStack(clientConfig, expiredStack),
             },
-          },
-        ]),
+            {
+              title: 'Deleting S3 bucket',
+              task: async (_, listrSubTask) => {
+                let s3BucketName: string;
+
+                try {
+                  s3BucketName = findStackOutput(expiredStack, 'S3BucketName');
+                } catch (error) {
+                  listrSubTask.skip(error.message);
+
+                  return;
+                }
+
+                return deleteS3Bucket(clientConfig, s3BucketName);
+              },
+            },
+          ],
+          {exitOnError: true}
+        ),
     });
   }
 
