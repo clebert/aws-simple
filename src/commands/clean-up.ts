@@ -2,6 +2,7 @@ import {CloudFormation} from 'aws-sdk';
 import chalk from 'chalk';
 import createUi from 'cliui';
 import Listr from 'listr';
+import pRetry from 'p-retry';
 import prompts from 'prompts';
 import {Argv} from 'yargs';
 import {deleteS3Bucket} from '../sdk/delete-s3-bucket';
@@ -100,7 +101,13 @@ export async function cleanUp(
           [
             {
               title: 'Deleting stack',
-              task: async () => deleteStack(clientConfig, expiredStack),
+              task: async (_, listrSubTask) =>
+                pRetry(async () => deleteStack(clientConfig, expiredStack), {
+                  retries: 10,
+                  onFailedAttempt: (error) => {
+                    listrSubTask.title = `Deleting stack attempt ${error.attemptNumber} failed. There are ${error.retriesLeft} retries left.`;
+                  },
+                }),
             },
             {
               title: 'Deleting S3 bucket',
