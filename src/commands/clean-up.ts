@@ -104,8 +104,8 @@ export async function cleanUp(
               task: async (_, listrSubTask) =>
                 pRetry(async () => deleteStack(clientConfig, expiredStack), {
                   retries: 10,
-                  onFailedAttempt: (error) => {
-                    listrSubTask.title = `Deleting stack attempt ${error.attemptNumber} failed. There are ${error.retriesLeft} retries left.`;
+                  onFailedAttempt: ({attemptNumber, retriesLeft}) => {
+                    listrSubTask.title = `Attempt ${attemptNumber} to delete the stack failed. There are ${retriesLeft} retries left.`;
                   },
                 }),
             },
