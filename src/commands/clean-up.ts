@@ -115,7 +115,15 @@ export async function cleanUp(
                   return;
                 }
 
-                return deleteS3Bucket(clientConfig, s3BucketName);
+                try {
+                  await deleteS3Bucket(clientConfig, s3BucketName);
+                } catch (error) {
+                  if (error.code === 'NoSuchBucket') {
+                    listrSubTask.skip(error.message);
+                  } else {
+                    throw error;
+                  }
+                }
               },
             },
           ],
