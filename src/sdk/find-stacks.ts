@@ -29,7 +29,12 @@ export async function findStacks(
 
       return parts && parts.appName === appConfig.appName;
     })
-    .filter(({DeletionTime}) => !DeletionTime)
+    .filter(
+      ({DeletionTime, StackStatus}) =>
+        !DeletionTime ||
+        StackStatus === 'ROLLBACK_COMPLETE' ||
+        StackStatus === 'DELETE_FAILED'
+    )
     .sort(
       (stack1, stack2) =>
         getAgeInDays(stack1.CreationTime) - getAgeInDays(stack2.CreationTime)
