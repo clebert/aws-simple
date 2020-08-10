@@ -58,6 +58,7 @@
     "listr": "^0.14.3",
     "mime-types": "^2.1.27",
     "mkdirp": "^1.0.4",
+    "p-retry": "^4.2.0",
     "prompts": "^2.3.2",
     "react": "^16.13.1",
     "signal-exit": "^3.0.3",

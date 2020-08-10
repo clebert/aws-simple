@@ -1,12 +1,10 @@
 import {CloudFormation, S3} from 'aws-sdk';
-import {findStackOutput} from './find-stack-output';
 
 export async function deleteS3Bucket(
   clientConfig: CloudFormation.ClientConfiguration,
-  stack: CloudFormation.Stack
+  s3BucketName: string
 ): Promise<void> {
   const s3 = new S3(clientConfig);
-  const s3BucketName = findStackOutput(stack, 'S3BucketName');
 
   const {Contents = []} = await s3
     .listObjects({Bucket: s3BucketName})

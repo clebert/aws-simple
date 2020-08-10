@@ -2,10 +2,12 @@ import {CloudFormation} from 'aws-sdk';
 import chalk from 'chalk';
 import createUi from 'cliui';
 import Listr from 'listr';
+import pRetry from 'p-retry';
 import prompts from 'prompts';
 import {Argv} from 'yargs';
 import {deleteS3Bucket} from '../sdk/delete-s3-bucket';
 import {deleteStack} from '../sdk/delete-stack';
+import {findStackOutput} from '../sdk/find-stack-output';
 import {findStacks} from '../sdk/find-stacks';
 import {isStackExpired} from '../sdk/is-stack-expired';
 import {AppConfig} from '../types';
@@ -30,18 +32,20 @@ function printStacksTable(stacks: CloudFormation.Stack[]): void {
   ui.div(
     {text: chalk.bold('App Version'), border: true, padding},
     {text: chalk.bold('Age'), border: true, padding, width: 11},
+    {text: chalk.bold('Status'), border: true, padding},
     {text: chalk.bold('Tags'), border: true}
   );
 
   for (const stack of stacks) {
-    const {StackName, CreationTime, Tags} = stack;
+    const {StackName, CreationTime, Tags = [], StackStatus} = stack;
     const parts = parseStackName(StackName);
     const age = getAgeInDays(CreationTime);
 
     ui.div(
       {text: parts ? parts.appVersion : StackName, padding},
       {text: `${age} day${age === 1 ? '' : 's'}`, padding, width: 11},
-      Tags && Tags.length > 0 ? Tags.map(({Key}) => Key).join(', ') : ''
+      {text: StackStatus, padding},
+      Tags.map(({Key}) => Key).join(', ') || ''
     );
   }
 
@@ -91,19 +95,47 @@ export async function cleanUp(
     const {StackName: stackName} = expiredStack;
 
     listrTasks.push({
-      title: `Deleting stack: ${stackName}`,
-      task: async (_, listrTask) => {
-        try {
-          await deleteStack(clientConfig, expiredStack);
-          await deleteS3Bucket(clientConfig, expiredStack);
+      title: `Deleting stack ${stackName} and associated S3 bucket`,
+      task: () =>
+        new Listr(
+          [
+            {
+              title: 'Deleting stack',
+              task: async (_, listrSubTask) =>
+                pRetry(async () => deleteStack(clientConfig, expiredStack), {
+                  retries: 10,
+                  onFailedAttempt: ({attemptNumber, retriesLeft}) => {
+                    listrSubTask.title = `Attempt ${attemptNumber} to delete the stack failed. There are ${retriesLeft} retries left.`;
+                  },
+                }),
+            },
+            {
+              title: 'Deleting S3 bucket',
+              task: async (_, listrSubTask) => {
+                let s3BucketName: string;
 
-          listrTask.title = `Successfully deleted stack: ${stackName}`;
-        } catch (error) {
-          listrTask.title = `Error while deleting stack: ${stackName}`;
+                try {
+                  s3BucketName = findStackOutput(expiredStack, 'S3BucketName');
+                } catch (error) {
+                  listrSubTask.skip(error.message);
 
-          throw error;
-        }
-      },
+                  return;
+                }
+
+                try {
+                  await deleteS3Bucket(clientConfig, s3BucketName);
+                } catch (error) {
+                  if (error.code === 'NoSuchBucket') {
+                    listrSubTask.skip(error.message);
+                  } else {
+                    throw error;
+                  }
+                }
+              },
+            },
+          ],
+          {exitOnError: true}
+        ),
     });
   }
 
