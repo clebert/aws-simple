@@ -2511,6 +2511,15 @@ cliui@^6.0.0:
     strip-ansi "^6.0.0"
     wrap-ansi "^6.2.0"
 
+cliui@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/cliui/-/cliui-7.0.0.tgz#93a7f84583bbf794a94da7644eb2a816a3b2d662"
+  integrity sha512-uF09d2p7MMaGNhLiQ4Vc1I6S0ZP3S0Y9VGo2E0JcIvSxwTCv17pPmS8ImbAH0EsjL/fETLXdvdhbMJYsws7ShQ==
+  dependencies:
+    string-width "^4.2.0"
+    strip-ansi "^6.0.0"
+    wrap-ansi "^7.0.0"
+
 co@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
