@@ -62,7 +62,7 @@
     "mkdirp": "^1.0.4",
     "p-retry": "^4.2.0",
     "prompts": "^2.4.0",
-    "react": "^16.14.0",
+    "react": "^17.0.0",
     "signal-exit": "^3.0.3",
     "source-map-support": "^0.5.19",
     "url-join": "^4.0.1",
