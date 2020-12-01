@@ -16,8 +16,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm cache verify
+          npm doctor
           npm install
+          npm doctor
 
       - name: Run CI checks
         env:
