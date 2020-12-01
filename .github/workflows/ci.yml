@@ -15,10 +15,7 @@ jobs:
           node-version: 15.x
 
       - name: Install dependencies
-        run: |
-          sudo npm doctor
-          sudo npm install
-          sudo npm doctor
+        run: sudo npm install
 
       - name: Run CI checks
         env:
