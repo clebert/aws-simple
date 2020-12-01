@@ -1,4 +1,4 @@
-import {Box} from 'ink';
+import {Box, Text} from 'ink';
 import React from 'react';
 
 export interface Column<TEntry extends object, TEntryKey extends keyof TEntry> {
@@ -24,14 +24,14 @@ export const Table = <TEntry extends object>({
           flexDirection="column"
           marginRight={columnIndex < columns.length - 1 ? 2 : 0}
         >
-          {<Box textWrap="truncate">{headerCell || ' '}</Box>}
+          <Text wrap="truncate">{headerCell || ' '}</Text>
           {entries.map((entry: any, entryIndex) => {
             const value = createEntryCell && createEntryCell(entry[entryKey]);
 
             return (
-              <Box key={entryIndex} textWrap="truncate">
+              <Text key={entryIndex} wrap="truncate">
                 {value || ' '}
-              </Box>
+              </Text>
             );
           })}
         </Box>

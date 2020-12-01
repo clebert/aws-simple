@@ -1,5 +1,5 @@
 import {CloudFormation} from 'aws-sdk';
-import {Box, Color, Text} from 'ink';
+import {Box, Text} from 'ink';
 import React from 'react';
 import {Argv} from 'yargs';
 import {useFindStacks} from '../hooks/use-find-stacks';
@@ -60,15 +60,15 @@ export const ListCommand = (props: ListCommandProps): JSX.Element | null => {
   }
 
   if (stacks.length === 0) {
-    return <Color yellow>No deployed stacks found.</Color>;
+    return <Text color="yellow">No deployed stacks found.</Text>;
   }
 
   return (
     <>
       <Box marginBottom={1}>
-        <Color green>
+        <Text color="green">
           {stacks.length} deployed {plural('stack', stacks)} found.
-        </Color>
+        </Text>
       </Box>
       <Table
         columns={[appVersionColumn, ageColumn, tagsColumn]}

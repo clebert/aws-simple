@@ -1,4 +1,4 @@
-import {Box, Color, StdinContext} from 'ink';
+import {Box, Text, useStdin} from 'ink';
 import React from 'react';
 
 export interface ConfirmProps {
@@ -11,10 +11,7 @@ export const Confirm = ({
   callback,
 }: ConfirmProps): JSX.Element | null => {
   const [confirmed, setConfirmed] = React.useState<boolean>();
-
-  const {isRawModeSupported, setRawMode, stdin} = React.useContext(
-    StdinContext
-  );
+  const {isRawModeSupported, setRawMode, stdin} = useStdin();
 
   React.useEffect(() => {
     if (isRawModeSupported && setRawMode) {
@@ -25,7 +22,7 @@ export const Confirm = ({
       const input = data.toLowerCase();
 
       if (input === 'y' || input === 'n') {
-        stdin.off('data', handleData);
+        stdin?.off('data', handleData);
 
         const result = input === 'y';
 
@@ -34,10 +31,10 @@ export const Confirm = ({
       }
     };
 
-    stdin.on('data', handleData);
+    stdin?.on('data', handleData);
 
     return () => {
-      stdin.off('data', handleData);
+      stdin?.off('data', handleData);
 
       if (isRawModeSupported && setRawMode) {
         setRawMode(false);
@@ -47,13 +44,13 @@ export const Confirm = ({
 
   return isRawModeSupported ? (
     <Box>
-      {children}
+      <Text>{children}</Text>
       {confirmed === undefined ? (
-        <Color yellow> (y/n)</Color>
+        <Text color="yellow"> (y/n)</Text>
       ) : confirmed ? (
-        <Color green> yes</Color>
+        <Text color="green"> yes</Text>
       ) : (
-        <Color red> no</Color>
+        <Text color="red"> no</Text>
       )}
     </Box>
   ) : null;

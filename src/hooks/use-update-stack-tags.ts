@@ -1,4 +1,4 @@
-import {AppContext} from 'ink';
+import {useApp} from 'ink';
 import React from 'react';
 import {AppConfigContext} from '../contexts/app-config-context';
 import {ClientConfigContext} from '../contexts/client-config-context';
@@ -36,7 +36,7 @@ export function useUpdateStackTags(
 ): UpdateStackTagsHook {
   const appConfig = React.useContext(AppConfigContext);
   const clientConfig = React.useContext(ClientConfigContext);
-  const {exit} = React.useContext(AppContext);
+  const {exit} = useApp();
 
   const [state, setState] = React.useState<UpdateStackTagsHookState>(
     performImmediately ? 'initialized' : 'uninitialized'

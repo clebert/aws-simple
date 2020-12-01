@@ -59,7 +59,7 @@ export function createLambdaIntegration(
       {
         cacheKeyParameters: Object.keys(acceptedParameters)
           .filter(
-            (parameterName) => acceptedParameters[parameterName].isCacheKey
+            (parameterName) => acceptedParameters[parameterName]!.isCacheKey
           )
           .map(
             (parameterName) => `method.request.querystring.${parameterName}`
@@ -75,7 +75,7 @@ export function createLambdaIntegration(
         (requestParameters, parameterName) => {
           requestParameters[
             `method.request.querystring.${parameterName}`
-          ] = Boolean(acceptedParameters[parameterName].required);
+          ] = Boolean(acceptedParameters[parameterName]!.required);
 
           return requestParameters;
         },

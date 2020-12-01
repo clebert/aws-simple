@@ -29,10 +29,10 @@ describe('removeAllRoutes()', () => {
     expect(expressInitLayer!.route).toBeUndefined();
 
     expect(app._router!.stack[2]).toStrictEqual(expect.any(Object));
-    expect(app._router!.stack[2].route).toStrictEqual(expect.any(Object));
+    expect(app._router!.stack[2]!.route).toStrictEqual(expect.any(Object));
 
     expect(app._router!.stack[3]).toStrictEqual(expect.any(Object));
-    expect(app._router!.stack[3].route).toStrictEqual(expect.any(Object));
+    expect(app._router!.stack[3]!.route).toStrictEqual(expect.any(Object));
 
     removeAllRoutes(app);
 

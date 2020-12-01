@@ -38,19 +38,8 @@ manually with the AWS CDK/SDK.
 
 ### Install Dependencies
 
-You need to install `aws-simple` and `aws-cdk` as dependencies, e.g. with:
-
 ```
-yarn add --dev aws-simple \
-  aws-cdk \
-  @aws-cdk/aws-apigateway \
-  @aws-cdk/aws-certificatemanager \
-  @aws-cdk/aws-iam \
-  @aws-cdk/aws-lambda \
-  @aws-cdk/aws-route53 \
-  @aws-cdk/aws-route53-targets \
-  @aws-cdk/aws-s3 \
-  @aws-cdk/core
+npm install aws-simple --save-dev
 ```
 
 ### Create An AWS IAM User
@@ -144,7 +133,7 @@ variables is set, the `default` profile is used.
 The following is an example of setting a specific profile:
 
 ```
-AWS_PROFILE=my-profile yarn aws-simple list
+AWS_PROFILE=my-profile npx aws-simple list
 ```
 
 ### Set The AWS Credentials
@@ -210,7 +199,7 @@ Before you can use the AWS CDK you must
 to create the infrastructure that the AWS CDK CLI needs to deploy your app:
 
 ```
-yarn cdk bootstrap --app 'yarn aws-simple create'
+npx cdk bootstrap --app 'npx aws-simple create'
 ```
 
 _Note: This command only needs to be executed once._
@@ -218,7 +207,7 @@ _Note: This command only needs to be executed once._
 ### Start A Local DEV Server
 
 ```
-yarn aws-simple start
+npx aws-simple start
 ```
 
 _Note: When changing the `aws-simple` config file, the DEV server must be
@@ -230,7 +219,7 @@ started in addition to the DEV server._
 Create and deploy a stack using the CDK:
 
 ```
-yarn cdk deploy --app 'yarn aws-simple create'
+npx cdk deploy --app 'npx aws-simple create'
 ```
 
 The name of the deployed stack consists of the app name (e.g. `my-app`) in
@@ -243,7 +232,7 @@ name) will remove all tags set with `aws-simple tag [options]`.
 Upload files to S3:
 
 ```
-yarn aws-simple upload
+npx aws-simple upload
 ```
 
 Example `package.json` scripts:
@@ -251,7 +240,7 @@ Example `package.json` scripts:
 ```json
 {
   "scripts": {
-    "deploy": "cdk deploy --app 'yarn aws-simple create'",
+    "deploy": "cdk deploy --app 'npx aws-simple create'",
     "postdeploy": "aws-simple upload"
   }
 }
@@ -259,7 +248,7 @@ Example `package.json` scripts:
 
 _Note: In a CI pipeline the `deploy` script should be called with the additional
 argument `--require-approval never`, e.g.
-`yarn deploy --require-approval never`._
+`npm run deploy --require-approval never`._
 
 ## Configuration
 
@@ -683,8 +672,8 @@ Commands:
   aws-simple redeploy [options]  Redeploy the API Gateway
 
 Options:
-  --version   Show version number                                      [boolean]
-  -h, --help  Show help                                                [boolean]
+      --version  Show version number                                   [boolean]
+  -h, --help     Show help                                             [boolean]
 
 A Node.js interface for AWS that allows easy configuration and deployment of
 simple web apps.
@@ -698,8 +687,8 @@ aws-simple create [options]
 Create a stack using the CDK
 
 Options:
-  --version   Show version number                                      [boolean]
-  -h, --help  Show help                                                [boolean]
+      --version  Show version number                                   [boolean]
+  -h, --help     Show help                                             [boolean]
 
 Examples:
   npx aws-simple create
@@ -714,8 +703,8 @@ aws-simple upload [options]
 Upload files to S3
 
 Options:
-  --version   Show version number                                      [boolean]
-  -h, --help  Show help                                                [boolean]
+      --version  Show version number                                   [boolean]
+  -h, --help     Show help                                             [boolean]
 
 Examples:
   npx aws-simple upload
@@ -729,13 +718,13 @@ aws-simple start [options]
 Start a local DEV server
 
 Options:
-  --version   Show version number                                      [boolean]
-  -h, --help  Show help                                                [boolean]
-  --port      The port to listen on if available, otherwise listen on a random
-              port                                      [number] [default: 3000]
-  --cache     Enable caching of successful caching-enabled Lambda function
-              results per request URL                 [boolean] [default: false]
-  --verbose   Enable logging of successful Lambda function results
+      --version  Show version number                                   [boolean]
+  -h, --help     Show help                                             [boolean]
+      --port     The port to listen on if available, otherwise listen on a
+                 random port                            [number] [default: 3000]
+      --cache    Enable caching of successful caching-enabled Lambda function
+                 results per request URL              [boolean] [default: false]
+      --verbose  Enable logging of successful Lambda function results
                                                       [boolean] [default: false]
 
 Examples:
@@ -751,8 +740,8 @@ aws-simple list [options]
 List all deployed stacks
 
 Options:
-  --version   Show version number                                      [boolean]
-  -h, --help  Show help                                                [boolean]
+      --version  Show version number                                   [boolean]
+  -h, --help     Show help                                             [boolean]
 
 Examples:
   npx aws-simple list
@@ -766,12 +755,12 @@ aws-simple tag [options]
 Tag a deployed stack
 
 Options:
-  --version   Show version number                                      [boolean]
-  -h, --help  Show help                                                [boolean]
-  --add       The tags to add                              [array] [default: []]
-  --remove    The tags to remove                           [array] [default: []]
-  --yes       The confirmation message will automatically be answered with yes
-                                                      [boolean] [default: false]
+      --version  Show version number                                   [boolean]
+  -h, --help     Show help                                             [boolean]
+      --add      The tags to add                           [array] [default: []]
+      --remove   The tags to remove                        [array] [default: []]
+      --yes      The confirmation message will automatically be answered with
+                 yes                                  [boolean] [default: false]
 
 Examples:
   npx aws-simple tag --add latest release --remove prerelease
@@ -786,13 +775,13 @@ aws-simple clean-up [options]
 Clean up old deployed stacks
 
 Options:
-  --version   Show version number                                      [boolean]
-  -h, --help  Show help                                                [boolean]
-  --min-age   The minimum age (in days) of a stack for deletion
+      --version  Show version number                                   [boolean]
+  -h, --help     Show help                                             [boolean]
+      --min-age  The minimum age (in days) of a stack for deletion
                                                           [number] [default: 30]
-  --exclude   Tags that exclude a stack from deletion      [array] [default: []]
-  --yes       The confirmation message will automatically be answered with yes
-                                                      [boolean] [default: false]
+      --exclude  Tags that exclude a stack from deletion   [array] [default: []]
+      --yes      The confirmation message will automatically be answered with
+                 yes                                  [boolean] [default: false]
 
 Examples:
   npx aws-simple clean-up
@@ -807,8 +796,8 @@ aws-simple redeploy [options]
 Redeploy the API Gateway
 
 Options:
-  --version   Show version number                                      [boolean]
-  -h, --help  Show help                                                [boolean]
+      --version  Show version number                                   [boolean]
+  -h, --help     Show help                                             [boolean]
 
 Examples:
   npx aws-simple redeploy
@@ -819,15 +808,15 @@ Examples:
 ### Publish A New Release
 
 ```
-yarn release patch
+npm run release patch
 ```
 
 ```
-yarn release minor
+npm run release minor
 ```
 
 ```
-yarn release major
+npm run release major
 ```
 
 After a new release has been created by pushing the tag, it must be published

@@ -1,4 +1,4 @@
-import {AppContext, Color} from 'ink';
+import {Text, useApp} from 'ink';
 import React from 'react';
 import {Argv} from 'yargs';
 import {AppConfigContext} from '../contexts/app-config-context';
@@ -26,7 +26,7 @@ export const RedeployCommand = (
     return null;
   }
 
-  const {exit} = React.useContext(AppContext);
+  const {exit} = useApp();
   const appConfig = React.useContext(AppConfigContext);
   const clientConfig = React.useContext(ClientConfigContext);
   const [completed, setCompleted] = React.useState(false);
@@ -42,9 +42,9 @@ export const RedeployCommand = (
   }, []);
 
   return completed ? (
-    <Color green>
+    <Text color="green">
       The redeployment of the API Gateway was completed successfully.
-    </Color>
+    </Text>
   ) : (
     <Spinner>The redeployment of the API Gateway is in progress.</Spinner>
   );

@@ -51,8 +51,7 @@ import {loadAppConfig} from './utils/load-app-config';
 
   // New UI
   const exitPromise = render(
-    <Ui appConfig={appConfig} clientConfig={clientConfig} argv={argv} />,
-    {experimental: true}
+    <Ui appConfig={appConfig} clientConfig={clientConfig} argv={argv} />
   ).waitUntilExit();
 
   create(appConfig, argv);

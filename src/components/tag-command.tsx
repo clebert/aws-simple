@@ -1,4 +1,4 @@
-import {Color} from 'ink';
+import {Text} from 'ink';
 import React from 'react';
 import {Argv} from 'yargs';
 import {useUpdateStackTags} from '../hooks/use-update-stack-tags';
@@ -40,11 +40,11 @@ export const TagCommand = (props: TagCommandProps): JSX.Element | null => {
   }
 
   if (updateStackTagsHook.state === 'canceled') {
-    return <Color yellow>The stack update was canceled.</Color>;
+    return <Text color="yellow">The stack update was canceled.</Text>;
   }
 
   return updateStackTagsHook.completed ? (
-    <Color green>The stack update was completed successfully.</Color>
+    <Text color="green">The stack update was completed successfully.</Text>
   ) : (
     <Spinner>The stack update is in progress.</Spinner>
   );

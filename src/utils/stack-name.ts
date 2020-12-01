@@ -29,5 +29,5 @@ export function createStackName(parts: StackNameParts): string {
 export function parseStackName(stackName: string): StackNameParts | undefined {
   const result = /^aws-simple--(.*)--(.*)$/.exec(stackName);
 
-  return result ? {appName: result[1], appVersion: result[2]} : undefined;
+  return result ? {appName: result[1]!, appVersion: result[2]!} : undefined;
 }

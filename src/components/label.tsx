@@ -1,4 +1,4 @@
-import {Box} from 'ink';
+import {Box, Text} from 'ink';
 import React from 'react';
 
 export interface SpinnerProps {
@@ -9,6 +9,6 @@ export interface SpinnerProps {
 export const Label = ({name, children}: SpinnerProps): JSX.Element => (
   <Box>
     <Box marginRight={1}>{name}</Box>
-    {children}
+    <Text>{children}</Text>
   </Box>
 );
