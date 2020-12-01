@@ -30,7 +30,6 @@
     "lib"
   ],
   "scripts": {
-    "prebuild": "rm -rf lib",
     "build": "tsc --incremental --pretty",
     "postbuild": "chmod +x lib/index.js",
     "ci": "run-p format:test update-readme lint test",
