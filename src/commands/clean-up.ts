@@ -21,7 +21,7 @@ interface CleanUpArgv {
   readonly yes: boolean;
 }
 
-function isCleanUpArgv(argv: {readonly _: string[]}): argv is CleanUpArgv {
+function isCleanUpArgv(argv: {readonly _: unknown[]}): argv is CleanUpArgv {
   return argv._[0] === 'clean-up';
 }
 
@@ -55,7 +55,7 @@ function printStacksTable(stacks: CloudFormation.Stack[]): void {
 export async function cleanUp(
   appConfig: AppConfig,
   clientConfig: CloudFormation.ClientConfiguration,
-  argv: {readonly _: string[]}
+  argv: {readonly _: unknown[]}
 ): Promise<void> {
   if (!isCleanUpArgv(argv)) {
     return;

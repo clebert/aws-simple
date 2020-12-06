@@ -11,7 +11,7 @@ import {TagCommand} from './tag-command';
 export interface UiProps {
   readonly appConfig: AppConfig;
   readonly clientConfig: CloudFormation.ClientConfiguration;
-  readonly argv: {readonly _: string[]};
+  readonly argv: {readonly _: unknown[]};
 }
 
 export const Ui = ({appConfig, clientConfig, argv}: UiProps): JSX.Element => (

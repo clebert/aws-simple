@@ -12,14 +12,14 @@ interface UploadArgv {
   readonly _: ['upload'];
 }
 
-function isUploadArgv(argv: {readonly _: string[]}): argv is UploadArgv {
+function isUploadArgv(argv: {readonly _: unknown[]}): argv is UploadArgv {
   return argv._[0] === 'upload';
 }
 
 export async function upload(
   appConfig: AppConfig,
   clientConfig: CloudFormation.ClientConfiguration,
-  argv: {readonly _: string[]}
+  argv: {readonly _: unknown[]}
 ): Promise<void> {
   if (!isUploadArgv(argv)) {
     return;

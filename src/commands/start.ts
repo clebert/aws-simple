@@ -9,13 +9,13 @@ interface StartArgv {
   readonly verbose: boolean;
 }
 
-function isStartArgv(argv: {readonly _: string[]}): argv is StartArgv {
+function isStartArgv(argv: {readonly _: unknown[]}): argv is StartArgv {
   return argv._[0] === 'start';
 }
 
 export async function start(
   appConfig: AppConfig,
-  argv: {readonly _: string[]}
+  argv: {readonly _: unknown[]}
 ): Promise<boolean> {
   if (!isStartArgv(argv)) {
     return false;

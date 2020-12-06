@@ -8,14 +8,14 @@ import {redeployApiGateway} from '../sdk/redeploy-api-gateway';
 import {Spinner} from './spinner';
 
 export interface RedeployCommandProps {
-  readonly argv: {readonly _: string[]};
+  readonly argv: {readonly _: unknown[]};
 }
 
 interface TagArgv {
   readonly _: ['redeploy'];
 }
 
-function isRedeployArgv(argv: {readonly _: string[]}): argv is TagArgv {
+function isRedeployArgv(argv: {readonly _: unknown[]}): argv is TagArgv {
   return argv._[0] === 'redeploy';
 }
 

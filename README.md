@@ -248,7 +248,7 @@ Example `package.json` scripts:
 
 _Note: In a CI pipeline the `deploy` script should be called with the additional
 argument `--require-approval never`, e.g.
-`npm run deploy --require-approval never`._
+`npm run deploy -- --require-approval never`._
 
 ## Configuration
 

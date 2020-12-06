@@ -4,20 +4,23 @@ on:
     types: [published]
 
 jobs:
-  publish:
-    runs-on: ubuntu-latest
+  ci:
+    runs-on: macos-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Set Node.js version
+        run: echo NODE_VERSION=$(cat .node-version) >> $GITHUB_ENV
+
       - name: Setup Node.js
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v1
         with:
-          node-version: 15.x
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Install dependencies
-        run: sudo npm install
+        run: npm install
 
       - name: Build sources
         run: npm run build

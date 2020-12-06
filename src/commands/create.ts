@@ -6,13 +6,13 @@ interface CreateArgv {
   readonly _: ['create'];
 }
 
-function isCreateArgv(argv: {readonly _: string[]}): argv is CreateArgv {
+function isCreateArgv(argv: {readonly _: unknown[]}): argv is CreateArgv {
   return argv._[0] === 'create';
 }
 
 export function create(
   appConfig: AppConfig,
-  argv: {readonly _: string[]}
+  argv: {readonly _: unknown[]}
 ): void {
   if (isCreateArgv(argv)) {
     createStack(appConfig);

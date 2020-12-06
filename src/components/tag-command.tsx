@@ -6,7 +6,7 @@ import {Confirm} from './confirm';
 import {Spinner} from './spinner';
 
 export interface TagCommandProps {
-  readonly argv: {readonly _: string[]};
+  readonly argv: {readonly _: unknown[]};
 }
 
 interface TagArgv {
@@ -16,7 +16,7 @@ interface TagArgv {
   readonly yes: boolean;
 }
 
-function isTagArgv(argv: {readonly _: string[]}): argv is TagArgv {
+function isTagArgv(argv: {readonly _: unknown[]}): argv is TagArgv {
   return argv._[0] === 'tag';
 }
 

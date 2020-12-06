@@ -10,14 +10,14 @@ import {Spinner} from './spinner';
 import {Column, Table} from './table';
 
 export interface ListCommandProps {
-  readonly argv: {readonly _: string[]};
+  readonly argv: {readonly _: unknown[]};
 }
 
 interface ListArgv {
   readonly _: ['list'];
 }
 
-function isListArgv(argv: {readonly _: string[]}): argv is ListArgv {
+function isListArgv(argv: {readonly _: unknown[]}): argv is ListArgv {
   return argv._[0] === 'list';
 }
 
