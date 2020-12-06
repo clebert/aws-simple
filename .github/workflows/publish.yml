@@ -4,7 +4,7 @@ on:
     types: [published]
 
 jobs:
-  ci:
+  publish:
     runs-on: macos-latest
 
     steps:
