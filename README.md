@@ -176,9 +176,8 @@ open source applications
 
 _Note: The `routes` function optionally gets a `port` argument. It is set when
 the function is called in the context of the `aws-simple start [options]` CLI
-command. This gives the opportunity to create different
-[`Routes`](https://github.com/clebert/aws-simple/blob/master/src/new-types.ts#L23)
-for either AWS or the local DEV environment._
+command. This gives the opportunity to create different routes for either AWS or
+the local DEV environment._
 
 _The `routes` function is only called in the context of the following CLI
 commands:_
@@ -361,7 +360,7 @@ exports.default = {
 _Note: All files contained in the folder specified under the `dirname` property
 are loaded into the S3 bucket associated with the stack using the
 `aws-simple upload [options]` command. Nested folders are ignored! Thus a
-separate S3 config object must be created for each nested folder._
+separate route must be created for each nested folder._
 
 ### Enable Binary Support
 
@@ -416,9 +415,9 @@ async function handler() {
 exports.handler = handler;
 ```
 
-**Caution: During a transition period, the old configuration format continues to
-be used under the hood. This means that CORS cannot be activated by route. As
-soon as a route has activated CORS, this applies to all routes!**
+**Caution:** During a transition period, the old configuration format continues
+to be used under the hood. This means that CORS cannot be activated by route. As
+soon as a route has activated CORS, this applies to all routes!
 
 ### Enable Basic Authentication
 
@@ -431,7 +430,6 @@ exports.default = {
   authentication: {
     username: process.env.USERNAME,
     password: process.env.PASSWORD,
-    cacheTtlInSeconds: 300,
   },
   routes: () => ({
     '/': {
