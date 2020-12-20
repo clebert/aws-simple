@@ -35,10 +35,10 @@ export function translateAppConfig(app: App): AppConfig {
             publicPath: path,
             localPath: route.filename,
             description: route.routeName,
-            handler: route.handler,
+            handler: route.handler ?? 'handler',
             memorySize: route.memorySize ?? 128,
-            timeoutInSeconds: route.timeoutInSeconds,
-            loggingLevel: route.loggingLevel,
+            timeoutInSeconds: route.timeoutInSeconds ?? 28,
+            loggingLevel: route.loggingLevel ?? 'INFO',
             cachingEnabled: (route.cacheTtlInSeconds ?? 0) > 0,
             cacheTtlInSeconds: route.cacheTtlInSeconds,
             acceptedParameters: Object.entries(route.parameters ?? {}).reduce(
@@ -61,7 +61,8 @@ export function translateAppConfig(app: App): AppConfig {
           if (route.catchAll) {
             lambdaConfigs.push({
               ...lambdaConfig,
-              publicPath: path.endsWith('/') ? '{proxy+}' : '/{proxy+}',
+              publicPath:
+                path + (path.endsWith('/') ? '{proxy+}' : '/{proxy+}'),
             });
           }
         } else if (route.kind === 'file') {
@@ -86,7 +87,8 @@ export function translateAppConfig(app: App): AppConfig {
           if (route.catchAll) {
             s3Configs.push({
               ...s3Config,
-              publicPath: path.endsWith('/') ? '{proxy+}' : '/{proxy+}',
+              publicPath:
+                path + (path.endsWith('/') ? '{proxy+}' : '/{proxy+}'),
             });
           }
         } else {

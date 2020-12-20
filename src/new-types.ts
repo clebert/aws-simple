@@ -30,6 +30,11 @@ export interface CommonRoute {
   readonly routeName?: string;
   readonly cacheTtlInSeconds?: number;
   readonly enableAuthentication?: boolean;
+
+  /**
+   * Additionally, Lambda functions must explicitly set any required CORS
+   * headers like `Access-Control-Allow-Origin` on their response.
+   */
   readonly enableCors?: boolean;
 }
 
@@ -37,10 +42,35 @@ export interface FunctionRoute extends CommonRoute {
   readonly kind: 'function';
   readonly filename: string;
   readonly catchAll?: boolean;
+
+  /**
+   * Default: `'GET'`
+   */
   readonly method?: FunctionMethod;
+
+  /**
+   * Default: `'handler'`
+   */
   readonly handler?: string;
+
+  /**
+   * Default: `128`
+   */
   readonly memorySize?: number;
+
+  /**
+   * Due to the default timeout of the API Gateway, the maximum timeout is
+   * limited to 28 seconds. Default: `28`
+   */
   readonly timeoutInSeconds?: number;
+
+  /**
+   * You can set the logging level for a Lambda function, it affects the log
+   * entries pushed to Amazon CloudWatch Logs. The available levels are `'OFF'`,
+   * `'ERROR'`, and `'INFO'`. Choose `'ERROR'` to write only error-level entries
+   * to CloudWatch Logs, or choose `'INFO'` to include all `'ERROR'` events as
+   * well as extra informational events. Default: `'INFO'`
+   */
   readonly loggingLevel?: FunctionLoggingLevel;
   readonly parameters?: Readonly<Record<string, FunctionParameterOptions>>;
   readonly environment?: Readonly<Record<string, string>>;

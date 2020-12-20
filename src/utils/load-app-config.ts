@@ -32,12 +32,13 @@ export function loadAppConfig(): AppConfig {
 
     appConfig = require(absoluteConfigFilename).default;
   } catch {
-    throw new Error(`The config file cannot be loaded.`);
+    throw new Error('The aws-simple config file cannot be loaded.');
   }
 
   if (isAppConfig(appConfig)) {
     console.warn(
-      'You are using a deprecated configuration format. Please use the App interface instead of AppConfig.'
+      'aws-simple:',
+      'You are using a deprecated configuration format.'
     );
 
     return appConfig;
@@ -48,6 +49,6 @@ export function loadAppConfig(): AppConfig {
   }
 
   throw new Error(
-    `The config file does not export an App or AppConfig object.`
+    'The aws-simple config file does not have a valid default export.'
   );
 }
