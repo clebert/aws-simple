@@ -21,7 +21,14 @@ domain and optional alias record, host static web resources via S3, and
 provision public backend APIs via Lambda. In addition, a local DEV server can be
 started to emulate the resulting AWS infrastructure.
 
+**As an example, you can find the `aws-simple` configuration for one of my open
+source applications
+[here](https://github.com/clebert/bookmark.wtf/blob/main/aws-simple.config.js).**
+
 ## Motivation
+
+<details>
+  <summary>Show details</summary>
 
 In my job I mainly build web apps on top of existing backend/CMS systems. Since
 many of the frontend tech stacks are similar, I created an abstraction for the
@@ -34,15 +41,20 @@ is not supported.
 I deliberately kept it simple. An app with a more complex setup should be set up
 manually with the AWS CDK/SDK.
 
+</details>
+
 ## Getting Started
 
-### Install Dependencies
+### Install dependencies
 
 ```
 npm install aws-simple --save-dev
 ```
 
-### Create An AWS IAM User
+### Create an AWS IAM user
+
+<details>
+  <summary>Show details</summary>
 
 You need to
 [create an AWS IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html)
@@ -72,7 +84,12 @@ _Note: This policy has more rights than necessary and
 [should be more specific](https://github.com/clebert/aws-simple/issues/23) for
 security._
 
-### Optional: Create An AWS Profile
+</details>
+
+### Optional: Create an AWS profile
+
+<details>
+  <summary>Show details</summary>
 
 You can install the `aws` CLI, e.g. with:
 
@@ -124,7 +141,12 @@ output = json
 region = eu-central-1
 ```
 
-### Set The AWS Profile
+</details>
+
+### Set the AWS profile
+
+<details>
+  <summary>Show details</summary>
 
 The following two environment variables `AWS_PROFILE` and `AWS_DEFAULT_PROFILE`
 are evaluated in the specified order. If neither of the two environment
@@ -136,7 +158,12 @@ The following is an example of setting a specific profile:
 AWS_PROFILE=my-profile npx aws-simple list
 ```
 
-### Set The AWS Credentials
+</details>
+
+### Set the AWS credentials
+
+<details>
+  <summary>Show details</summary>
 
 The following two environment variables `AWS_ACCESS_KEY_ID` and
 `AWS_SECRET_ACCESS_KEY` are evaluated. If these are not set, an attempt is made
@@ -144,7 +171,12 @@ to read the credentials from the AWS shared credentials file using the AWS
 profile. The default location of the file (`~/.aws/credentials`) can be
 overwritten by setting the environment variable `AWS_SHARED_CREDENTIALS_FILE`.
 
-### Set The AWS Region
+</details>
+
+### Set the AWS region
+
+<details>
+  <summary>Show details</summary>
 
 The following two environment variables `AWS_REGION` and `AWS_DEFAULT_REGION`
 are evaluated in the specified order. If neither of the two environment
@@ -152,7 +184,12 @@ variables is set, an attempt is made to read the region from the AWS config file
 using the AWS profile. The default location of the file (`~/.aws/config`) can be
 overwritten by setting the environment variable `AWS_CONFIG_FILE`.
 
-### Create A Config File
+</details>
+
+### Create a config file
+
+<details>
+  <summary>Show details</summary>
 
 To use the `aws-simple` CLI you have to create a top-level config file named
 `aws-simple.config.js` which exports an object compatible to the
@@ -170,10 +207,6 @@ exports.default = {
 };
 ```
 
-**As a more comprehensive example, you can find the configuration for one of my
-open source applications
-[here](https://github.com/clebert/bookmark.wtf/blob/main/aws-simple.config.js).**
-
 _Note: The `routes` function optionally gets a `port` argument. It is set when
 the function is called in the context of the `aws-simple start [options]` CLI
 command. This gives the opportunity to create different routes for either AWS or
@@ -186,7 +219,12 @@ commands:_
 - _`aws-simple upload [options]`_
 - _`aws-simple start [options]`_
 
-### Bootstrap Your AWS Environment
+</details>
+
+### Bootstrap the AWS environment
+
+<details>
+  <summary>Show details</summary>
 
 Before you can use the AWS CDK you must
 [bootstrap your AWS environment](https://docs.aws.amazon.com/cdk/latest/guide/tools.html)
@@ -198,7 +236,12 @@ npx cdk bootstrap --app 'npx aws-simple create'
 
 _Note: This command only needs to be executed once._
 
-### Start A Local DEV Server
+</details>
+
+### Start a local DEV server
+
+<details>
+  <summary>Show details</summary>
 
 ```
 npx aws-simple start
@@ -208,7 +251,12 @@ _Note: When changing the `aws-simple` config file, the DEV server must be
 restarted. If a bundler such as Parcel or Webpack is used, its watcher must be
 started in addition to the DEV server._
 
-### Deploy A Stack To AWS
+</details>
+
+### Deploy a stack to AWS
+
+<details>
+  <summary>Show details</summary>
 
 Create and deploy a stack using the CDK:
 
@@ -244,9 +292,14 @@ _Note: In a CI pipeline the `deploy` script should be called with the additional
 argument `--require-approval never`, e.g.
 `npm run deploy -- --require-approval never`._
 
+</details>
+
 ## Configuration
 
-### Use TypeScript For Auto-Completion Support
+### Use TypeScript for auto-completion support
+
+<details>
+  <summary>Show details</summary>
 
 TypeScript 2.3 and later support type-checking in `*.js` files by adding a
 `// @ts-check` comment to them:
@@ -265,7 +318,12 @@ exports.default = {
 };
 ```
 
-### Configure A Custom Domain
+</details>
+
+### Configure a custom domain
+
+<details>
+  <summary>Show details</summary>
 
 In order to use a custom domain,
 [a public certificate](https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html)
@@ -297,7 +355,12 @@ deployed simultaneously. In this case the optional `aliasRecordName` property is
 used to give each stack its own URL, e.g. `example.com` or `beta.example.com`
 (`APP_VERSION=beta`)._
 
-### Configure A Lambda Function
+</details>
+
+### Configure a Lambda function
+
+<details>
+  <summary>Show details</summary>
 
 You can configure a Lambda function that can be accessed via GET request under
 the `/hello` path as follows:
@@ -329,7 +392,12 @@ _Note: If external modules are to be referenced in the Lambda function, it must
 be bundled with a bundler such as Webpack (in this case you have to set the
 target to node: `{target: 'node'}`) to create a single self-contained file._
 
-### Configure An S3 File
+</details>
+
+### Configure an S3 file
+
+<details>
+  <summary>Show details</summary>
 
 You can configure an S3 file that can be accessed via GET request under the `/`
 path as follows:
@@ -343,7 +411,12 @@ exports.default = {
 };
 ```
 
-### Configure An S3 Folder
+</details>
+
+### Configure an S3 folder
+
+<details>
+  <summary>Show details</summary>
 
 You can configure an S3 folder that can be accessed via GET request under the
 `/assets/*` path as follows:
@@ -362,7 +435,12 @@ are loaded into the S3 bucket associated with the stack using the
 `aws-simple upload [options]` command. Nested folders are ignored! Thus a
 separate route must be created for each nested folder._
 
-### Enable Binary Support
+</details>
+
+### Enable binary support
+
+<details>
+  <summary>Show details</summary>
 
 You can specify media types (e.g. `image/png`, `application/octet-stream`, etc.)
 to be treated as binary as follows:
@@ -382,7 +460,12 @@ exports.default = {
 
 _Note: Folders may only contain either binary or non-binary files._
 
+</details>
+
 ### Enable CORS
+
+<details>
+  <summary>Show details</summary>
 
 To enable CORS for a route, you can set its `enableCors` property to `true`:
 
@@ -419,7 +502,12 @@ exports.handler = handler;
 to be used under the hood. This means that CORS cannot be activated by route. As
 soon as a route has activated CORS, this applies to all routes!
 
-### Enable Basic Authentication
+</details>
+
+### Enable authentication
+
+<details>
+  <summary>Show details</summary>
 
 To enable basic authentication for a route, you can set its
 `enableAuthentication` property to `true`:
@@ -453,7 +541,12 @@ exports.default = {
 
 _Note: Basic authentication is not simulated by the local DEV server._
 
-### Configure A Single-Page Application (SPA)
+</details>
+
+### Configure a single-page application (SPA)
+
+<details>
+  <summary>Show details</summary>
 
 It can be useful to deliver the same single-page application under different
 paths. Instead of specifying multiple routes, you can set the `catchAll`
@@ -470,11 +563,18 @@ exports.default = {
 };
 ```
 
+</details>
+
 ### Troubleshooting
+
+<details>
+  <summary>Show details</summary>
 
 [Some changes](https://docs.aws.amazon.com/apigateway/latest/developerguide/updating-api.html)
 to an existing stack require a redeployment of the API Gateway. So if changes to
 a stack do not work, the `aws-simple redeploy` command might help.
+
+</details>
 
 ## CLI Usage
 
@@ -498,7 +598,10 @@ A Node.js interface for AWS that allows easy configuration and deployment of
 simple web apps.
 ```
 
-### Create A Stack Using The CDK
+### Create a stack using the CDK
+
+<details>
+  <summary>Show details</summary>
 
 ```
 aws-simple create [options]
@@ -514,7 +617,12 @@ Examples:
   npx cdk deploy --app 'npx aws-simple create'
 ```
 
-### Upload Files To S3
+</details>
+
+### Upload files to S3
+
+<details>
+  <summary>Show details</summary>
 
 ```
 aws-simple upload [options]
@@ -529,7 +637,12 @@ Examples:
   npx aws-simple upload
 ```
 
-### Start A Local DEV Server
+</details>
+
+### Start a local DEV server
+
+<details>
+  <summary>Show details</summary>
 
 ```
 aws-simple start [options]
@@ -551,7 +664,12 @@ Examples:
   npx aws-simple start --port 3001 --cache --verbose
 ```
 
-### List All Deployed Stacks
+</details>
+
+### List all deployed stacks
+
+<details>
+  <summary>Show details</summary>
 
 ```
 aws-simple list [options]
@@ -566,7 +684,12 @@ Examples:
   npx aws-simple list
 ```
 
-### Tag A Deployed Stack
+</details>
+
+### Tag a deployed stack
+
+<details>
+  <summary>Show details</summary>
 
 ```
 aws-simple tag [options]
@@ -586,7 +709,12 @@ Examples:
   npx aws-simple tag --add prerelease --yes
 ```
 
-### Clean Up Old Deployed Stacks
+</details>
+
+### Clean up old deployed stacks
+
+<details>
+  <summary>Show details</summary>
 
 ```
 aws-simple clean-up [options]
@@ -607,7 +735,12 @@ Examples:
   npx aws-simple clean-up --min-age 14 --exclude release prerelease --yes
 ```
 
-### Redeploy The API Gateway
+</details>
+
+### Redeploy the API Gateway
+
+<details>
+  <summary>Show details</summary>
 
 ```
 aws-simple redeploy [options]
@@ -622,9 +755,11 @@ Examples:
   npx aws-simple redeploy
 ```
 
+</details>
+
 ## Development
 
-### Publish A New Release
+### Publish a new release
 
 ```
 npm run release patch
