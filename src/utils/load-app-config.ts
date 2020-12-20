@@ -1,6 +1,17 @@
 import path from 'path';
-import {AppConfig} from '../types';
+import {App, AppConfig} from '../types';
 import {isObject} from './is-object';
+import {translateAppConfig} from './translate-app-config';
+
+function isApp(value: unknown): value is App {
+  if (!isObject(value)) {
+    return false;
+  }
+
+  return (
+    typeof value.appName === 'string' && typeof value.routes === 'function'
+  );
+}
 
 function isAppConfig(value: unknown): value is AppConfig {
   if (!isObject(value)) {
@@ -9,7 +20,6 @@ function isAppConfig(value: unknown): value is AppConfig {
 
   return (
     typeof value.appName === 'string' &&
-    typeof value.appVersion === 'string' &&
     typeof value.createStackConfig === 'function'
   );
 }
@@ -25,9 +35,19 @@ export function loadAppConfig(): AppConfig {
     throw new Error(`The config file cannot be loaded.`);
   }
 
-  if (!isAppConfig(appConfig)) {
-    throw new Error(`The config file does not export an AppConfig object.`);
+  if (isAppConfig(appConfig)) {
+    console.warn(
+      'You are using a deprecated configuration format. Please use the App interface instead of AppConfig.'
+    );
+
+    return appConfig;
   }
 
-  return appConfig;
+  if (isApp(appConfig)) {
+    return translateAppConfig(appConfig);
+  }
+
+  throw new Error(
+    `The config file does not export an App or AppConfig object.`
+  );
 }

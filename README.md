@@ -24,8 +24,8 @@ started to emulate the resulting AWS infrastructure.
 ## Motivation
 
 In my job I mainly build web apps on top of existing backend/CMS systems. Since
-many of the frontend tech stacks are similar again and again, I created an
-abstraction for the AWS CDK/SDK for a faster and easier setup.
+many of the frontend tech stacks are similar, I created an abstraction for the
+AWS CDK/SDK for a faster and easier setup.
 
 Since existing backend/CMS systems are used, an additional persistence layer is
 rarely required. Therefore, setting up such a layer (e.g. with Amazon DynamoDB)
@@ -156,7 +156,7 @@ overwritten by setting the environment variable `AWS_CONFIG_FILE`.
 
 To use the `aws-simple` CLI you have to create a top-level config file named
 `aws-simple.config.js` which exports an object compatible to the
-[`AppConfig` interface](https://github.com/clebert/aws-simple/blob/master/src/types.ts#L88).
+[`App` interface](https://github.com/clebert/aws-simple/blob/master/src/new-types.ts#L1).
 
 For example, a config file with the following content describes a simple app
 consisting of a single static HTML file:
@@ -164,29 +164,24 @@ consisting of a single static HTML file:
 ```js
 exports.default = {
   appName: 'my-app',
-  appVersion: 'latest',
-  createStackConfig: (port) => ({
-    s3Configs: [
-      {
-        type: 'file',
-        publicPath: '/',
-        localPath: 'dist/index.html',
-        bucketPath: 'index.html',
-      },
-    ],
+  routes: (port) => ({
+    '/': {kind: 'file', filename: 'dist/index.html'},
   }),
 };
 ```
 
-_Note: The `createStackConfig` function optionally gets a `port` argument. It is
-set when the function is called in the context of the
-`aws-simple start [options]` CLI command. This gives the opportunity to create
-different
-[`StackConfig` objects](https://github.com/clebert/aws-simple/blob/master/src/types.ts#L80)
+**As a more comprehensive example, you can find the configuration for one of my
+open source applications
+[here](https://github.com/clebert/bookmark.wtf/blob/main/aws-simple.config.js).**
+
+_Note: The `routes` function optionally gets a `port` argument. It is set when
+the function is called in the context of the `aws-simple start [options]` CLI
+command. This gives the opportunity to create different
+[`Routes`](https://github.com/clebert/aws-simple/blob/master/src/new-types.ts#L23)
 for either AWS or the local DEV environment._
 
-_The `createStackConfig` function is only called in the context of the following
-CLI commands:_
+_The `routes` function is only called in the context of the following CLI
+commands:_
 
 - _`aws-simple create [options]`_
 - _`aws-simple upload [options]`_
@@ -261,12 +256,11 @@ TypeScript 2.3 and later support type-checking in `*.js` files by adding a
 // @ts-check
 
 /**
- * @type {import('aws-simple').AppConfig}
+ * @type {import('aws-simple').App}
  */
 exports.default = {
   appName: 'my-app',
-  appVersion: 'latest',
-  createStackConfig: () => ({
+  routes: () => ({
     /* ... */
   }),
 };
@@ -281,72 +275,44 @@ and
 must be created manually. You can then configure a custom domain as follows:
 
 ```js
-const appName = 'my-app';
-const appVersion = process.env.APP_VERSION || 'latest';
+const appVersion = process.env.APP_VERSION;
 
 exports.default = {
-  appName,
+  appName: 'my-app',
   appVersion,
-  createStackConfig: () => ({
-    customDomainConfig: {
-      certificateArn:
-        'arn:aws:acm:eu-central-1:************:certificate/********-****-****-****-************',
-      hostedZoneId: '**************',
-      hostedZoneName: 'example.com',
-      aliasRecordName: appVersion !== 'latest' ? appVersion : undefined,
-    },
+  customDomain: {
+    certificateArn:
+      'arn:aws:acm:eu-central-1:************:certificate/********-****-****-****-************',
+    hostedZoneId: '**************',
+    hostedZoneName: 'example.com',
+    aliasRecordName: appVersion ? appVersion : undefined,
+  },
+  routes: () => ({
+    /* ... */
   }),
 };
 ```
 
 _Note: Different app versions allow multiple stacks of the same app to be
 deployed simultaneously. In this case the optional `aliasRecordName` property is
-used to give each stack its own URL, for example `example.com` or
-`beta.example.com` (`APP_VERSION=beta`)._
+used to give each stack its own URL, e.g. `example.com` or `beta.example.com`
+(`APP_VERSION=beta`)._
 
 ### Configure A Lambda Function
 
-You can configure a Lambda function that can be accessed via GET request at the
-URL `my-app.example.com/endpoint` as follows:
+You can configure a Lambda function that can be accessed via GET request under
+the `/hello` path as follows:
 
 ```js
-const appVersion = process.env.APP_VERSION || 'latest';
-
 exports.default = {
   appName: 'my-app',
-  appVersion,
-  createStackConfig: (port) => ({
-    lambdaConfigs: [
-      {
-        httpMethod: 'GET',
-        publicPath: '/endpoint',
-        localPath: 'path/to/lambda.js',
-
-        // Optional example properties
-        description: 'My Lambda function.',
-        memorySize: 3008,
-        timeoutInSeconds: 28,
-        loggingLevel: 'INFO',
-        cachingEnabled: true,
-        cacheTtlInSeconds: 3600,
-        acceptedParameters: {
-          foo: {},
-          bar: {isCacheKey: true},
-          baz: {required: true},
-          qux: {isCacheKey: true, required: true},
-        },
-        environment: {
-          BASE_URL: port
-            ? `http://localhost:${port}` // Local DEV server
-            : `https://${appVersion}.example.com`,
-        },
-      },
-    ],
+  routes: () => ({
+    '/hello': {kind: 'function', filename: 'dist/hello.js'},
   }),
 };
 ```
 
-The contents of file `path/to/lambda.js` could look like this:
+The contents of file `dist/hello.js` could look like this:
 
 ```js
 async function handler() {
@@ -360,134 +326,42 @@ async function handler() {
 exports.handler = handler;
 ```
 
-If the export of the Lambda function node module has a different name than
-`handler`, this must be explicitly specified in the Lambda configuration:
-
-```js
-exports.default = {
-  appName: 'my-app',
-  appVersion: 'latest',
-  createStackConfig: () => ({
-    lambdaConfigs: [
-      {
-        /* ... */
-        handler: 'myHandler',
-      },
-    ],
-  }),
-};
-```
-
-_Note: If external node modules are to be referenced in the Lambda function node
-module, it must be bundled with a bundler such as Webpack (in this case you have
-to set the target to node: `{target: 'node'}`) to create a single node module
-bundle._
+_Note: If external modules are to be referenced in the Lambda function, it must
+be bundled with a bundler such as Webpack (in this case you have to set the
+target to node: `{target: 'node'}`) to create a single self-contained file._
 
 ### Configure An S3 File
 
-You can configure an S3 file that can be accessed via GET request at the URL
-`my-app.example.com/` as follows:
+You can configure an S3 file that can be accessed via GET request under the `/`
+path as follows:
 
 ```js
 exports.default = {
   appName: 'my-app',
-  appVersion: 'latest',
-  createStackConfig: () => ({
-    s3Configs: [
-      {
-        type: 'file',
-        publicPath: '/',
-        localPath: 'path/to/file.html',
-
-        // Optional example properties
-        bucketPath: 'file.html',
-        cachingEnabled: true,
-        cacheTtlInSeconds: 3600,
-      },
-    ],
+  routes: () => ({
+    '/': {kind: 'file', filename: 'dist/index.html'},
   }),
 };
 ```
-
-_Note: The file specified under the `localPath` is loaded into the S3 bucket
-associated with the stack using the `aws-simple upload [options]` CLI command.
-The optionally specified `bucketPath` or, if not specified, the `publicPath` is
-used as the S3 object key._
 
 ### Configure An S3 Folder
 
-You can configure an S3 folder whose contained files can be accessed via GET
-request at the URL `my-app.example.com/assets/*` as follows:
+You can configure an S3 folder that can be accessed via GET request under the
+`/assets/*` path as follows:
 
 ```js
 exports.default = {
   appName: 'my-app',
-  appVersion: 'latest',
-  createStackConfig: () => ({
-    s3Configs: [
-      {
-        type: 'folder',
-        publicPath: '/assets',
-        localPath: 'path/to/folder',
-
-        // Optional example properties
-        responseHeaders: {
-          cacheControl: 'max-age=157680000',
-        },
-        cachingEnabled: true,
-        cacheTtlInSeconds: 3600,
-      },
-    ],
+  routes: () => ({
+    '/assets': {kind: 'folder', dirname: 'dist/assets'},
   }),
 };
 ```
 
-_Note: All files contained in the folder specified under the `localPath` are
-loaded into the S3 bucket associated with the stack using the
+_Note: All files contained in the folder specified under the `dirname` property
+are loaded into the S3 bucket associated with the stack using the
 `aws-simple upload [options]` command. Nested folders are ignored! Thus a
 separate S3 config object must be created for each nested folder._
-
-### Dynamically Set Config Properties
-
-Since the config file is a node module, individual properties can also be set
-dynamically. For example, you can set the `appVersion` based on the current Git
-commit SHA or Git tag ref:
-
-```js
-const {isTagDirty, short, tag} = require('git-rev-sync');
-
-function detectAppVersion() {
-  const {GITHUB_REF, GITHUB_SHA} = process.env;
-
-  if (GITHUB_REF) {
-    return GITHUB_REF.replace(/\./g, '-');
-  }
-
-  if (GITHUB_SHA) {
-    return GITHUB_SHA.slice(7);
-  }
-
-  if (isTagDirty()) {
-    return short();
-  }
-
-  return tag().replace(/\./g, '-');
-}
-
-const appVersion = detectAppVersion();
-
-exports.default = {
-  appName: 'my-app',
-  appVersion,
-  createStackConfig: () => ({
-    customDomainConfig: {
-      /* ... */
-      hostedZoneName: 'example.com',
-      aliasRecordName: appVersion,
-    },
-  }),
-};
-```
 
 ### Enable Binary Support
 
@@ -497,156 +371,103 @@ to be treated as binary as follows:
 ```js
 exports.default = {
   appName: 'my-app',
-  appVersion: 'latest',
-  createStackConfig: () => ({
-    binaryMediaTypes: ['image/gif', 'image/jpeg', 'image/png'],
-    s3Configs: [
-      {
-        type: 'folder',
-        binary: true,
-        publicPath: '/assets/images',
-        localPath: 'path/to/folder',
-      },
-    ],
+  routes: () => ({
+    '/images': {
+      kind: 'folder',
+      dirname: 'dist/images',
+      binaryMediaTypes: ['image/gif', 'image/jpeg', 'image/png'],
+    },
   }),
 };
 ```
 
-_Note: Please make sure that S3 config objects representing binary files are
-declared accordingly (`binary: true`). S3 config objects representing folders
-may only contain either binary or non-binary files._
-
-### Enable Payload Compression
-
-You can enable compression for an API as follows:
-
-```js
-exports.default = {
-  appName: 'my-app',
-  appVersion: 'latest',
-  createStackConfig: () => ({
-    minimumCompressionSizeInBytes: 1000,
-  }),
-};
-```
+_Note: Folders may only contain either binary or non-binary files._
 
 ### Enable CORS
 
-Basic CORS support can be enabled as follows:
+To enable CORS for a route, you can set its `enableCors` property to `true`:
 
 ```js
 exports.default = {
   appName: 'my-app',
-  appVersion: 'latest',
-  createStackConfig: () => ({
-    enableCors: true,
+  routes: () => ({
+    '/': {kind: 'file', filename: 'dist/index.html', enableCors: true},
+    '/assets': {kind: 'folder', dirname: 'dist/assets', enableCors: true},
+    '/hello': {kind: 'function', filename: 'dist/hello.js', enableCors: true},
   }),
 };
 ```
 
-_Note: Additionally, Lambda handlers must explicitly set any required CORS
-headers like `Access-Control-Allow-Origin` on their response._
+Additionally, Lambda functions must explicitly set any required CORS headers
+like `Access-Control-Allow-Origin` on their response:
+
+```js
+async function handler() {
+  return {
+    statusCode: 200,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+    body: JSON.stringify('Hello, World!'),
+  };
+}
+
+exports.handler = handler;
+```
+
+**Caution: During a transition period, the old configuration format continues to
+be used under the hood. This means that CORS cannot be activated by route. As
+soon as a route has activated CORS, this applies to all routes!**
 
 ### Enable Basic Authentication
 
-You can configure basic authentication for an API, and require authentication
-for certain API methods, as follows:
+To enable basic authentication for a route, you can set its
+`enableAuthentication` property to `true`:
 
 ```js
 exports.default = {
   appName: 'my-app',
-  appVersion: 'latest',
-  createStackConfig: () => ({
-    basicAuthenticationConfig: {
-      username: process.env.USERNAME,
-      password: process.env.PASSWORD,
-      cacheTtlInSeconds: 300,
+  authentication: {
+    username: process.env.USERNAME,
+    password: process.env.PASSWORD,
+    cacheTtlInSeconds: 300,
+  },
+  routes: () => ({
+    '/': {
+      kind: 'file',
+      filename: 'dist/index.html',
+      enableAuthentication: true,
     },
-    lambdaConfigs: [
-      {
-        httpMethod: 'GET',
-        publicPath: '/secret-endpoint',
-        localPath: 'path/to/secret-lambda.js',
-        authenticationRequired: true,
-      },
-      {
-        httpMethod: 'GET',
-        publicPath: '/public-endpoint',
-        localPath: 'path/to/public-lambda.js',
-      },
-    ],
-    s3Configs: [
-      {
-        type: 'file',
-        publicPath: '/secret-file',
-        localPath: 'path/to/secret-file.html',
-        authenticationRequired: true,
-      },
-      {
-        type: 'file',
-        publicPath: '/public-file',
-        localPath: 'path/to/public-file.html',
-      },
-    ],
+    '/assets': {
+      kind: 'folder',
+      dirname: 'dist/assets',
+      enableAuthentication: true,
+    },
+    '/hello': {
+      kind: 'function',
+      filename: 'dist/hello.js',
+      enableAuthentication: true,
+    },
   }),
 };
 ```
 
-_Note: Basic authentication is not handled by the local DEV server._
+_Note: Basic authentication is not simulated by the local DEV server._
 
 ### Configure A Single-Page Application (SPA)
 
-It can be useful to deliver the same single-page Application under different
-paths. Instead of specifying multiple `s3Configs` or `lambdaConfigs`, you can
-also specify a _catch-all_ `s3Config` or `lambdaConfig`. For example a single
-greedy `publicPath` (e.g. `publicPath: '/{proxy+}'`) will match requests made to
-`/foo`, `/bar`, and `/baz/qux`, but to match also `/` it needs a non-greedy
-`publicPath` (`publicPath: '/'`) in addition.
-
-#### S3 Example
+It can be useful to deliver the same single-page application under different
+paths. Instead of specifying multiple routes, you can set the `catchAll`
+property of a file or function route to `true`:
 
 ```js
 exports.default = {
   appName: 'my-app',
-  appVersion: 'latest',
-  createStackConfig: () => ({
-    s3Configs: [
-      {
-        type: 'file',
-        publicPath: '/',
-        localPath: 'dist/index.html',
-        bucketPath: 'index.html',
-      },
-      {
-        type: 'file',
-        publicPath: '/{proxy+}',
-        localPath: 'dist/index.html',
-        bucketPath: 'index.html',
-      },
-    ],
-  }),
-};
-```
-
-#### Lambda Example
-
-```js
-exports.default = {
-  appName: 'my-app',
-  appVersion: 'latest',
-  createStackConfig: () => ({
-    lambdaConfigs: [
-      {
-        httpMethod: 'GET',
-        publicPath: '/',
-        localPath: 'path/to/lambda.js',
-      },
-      {
-        httpMethod: 'GET',
-        publicPath: '/{proxy+}',
-        localPath: 'path/to/lambda.js',
-      },
-    ],
+  routes: (port) => ({
+    '/': {kind: 'file', filename: 'dist/index.html', catchAll: true},
+    '/assets': {kind: 'folder', dirname: 'dist/assets'},
+    '/hello': {kind: 'function', filename: 'dist/hello.js'},
   }),
 };
 ```

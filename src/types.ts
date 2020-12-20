@@ -1,3 +1,5 @@
+export * from './new-types';
+
 export interface CustomDomainConfig {
   readonly certificateArn: string;
   readonly hostedZoneId: string;
@@ -99,6 +101,9 @@ export interface StackConfig {
   readonly enableCors?: boolean;
 }
 
+/**
+ * @deprecated Please use the `App` interface instead of `AppConfig`.
+ */
 export interface AppConfig {
   readonly appName: string;
   readonly appVersion: string;
