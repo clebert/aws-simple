@@ -8,7 +8,7 @@ A Node.js interface for **AWS** that allows easy configuration and deployment of
 ## Contents
 
 - [Quick Overview](https://github.com/clebert/aws-simple#quick-overview)
-- [Motivation](https://github.com/clebert/aws-simple#motivation)
+- [Rationale](https://github.com/clebert/aws-simple#rationale)
 - [Getting Started](https://github.com/clebert/aws-simple#getting-started)
 - [Configuration](https://github.com/clebert/aws-simple#configuration)
 - [CLI Usage](https://github.com/clebert/aws-simple#cli-usage)
@@ -21,11 +21,7 @@ domain and optional alias record, host static web resources via S3, and
 provision public backend APIs via Lambda. In addition, a local DEV server can be
 started to emulate the resulting AWS infrastructure.
 
-**As an example, you can find the `aws-simple` configuration for one of my open
-source applications
-[here](https://github.com/clebert/bookmark.wtf/blob/main/aws-simple.config.js).**
-
-## Motivation
+## Rationale
 
 <details>
   <summary>Show details</summary>
@@ -50,6 +46,34 @@ manually with the AWS CDK/SDK.
 ```
 npm install aws-simple --save-dev
 ```
+
+### Create a config file
+
+To use the `aws-simple` CLI you have to create a top-level config file named
+`aws-simple.config.js` which exports an object compatible to the
+[`App`](https://github.com/clebert/aws-simple/blob/master/src/new-types.ts#L1)
+interface.
+
+For example, a config file with the following content describes a simple app
+consisting of a single static HTML file:
+
+```js
+exports.default = {
+  appName: 'my-app',
+  routes: (port) => ({
+    '/': {kind: 'file', filename: 'dist/index.html'},
+  }),
+};
+```
+
+**Note:** The `routes` function optionally gets a `port` argument. It is set
+when the function is called in the context of the `aws-simple start [options]`
+CLI command. This gives the opportunity to create different routes for either
+AWS or the local DEV environment.
+
+**Link:** As a real-world example, you can find the `aws-simple` configuration
+for one of my open source applications
+[here](https://github.com/clebert/bookmark.wtf/blob/main/aws-simple.config.js).
 
 ### Create an AWS IAM user
 
@@ -80,9 +104,9 @@ with programmatic access and the following attached policy:
 }
 ```
 
-_Note: This policy has more rights than necessary and
+**Caution:** This policy has more rights than necessary and
 [should be more specific](https://github.com/clebert/aws-simple/issues/23) for
-security._
+security.
 
 </details>
 
@@ -111,8 +135,8 @@ Default region name [None]: eu-central-1
 Default output format [None]: json
 ```
 
-_Note: If a profile other than the `default` profile is to be set up, the `aws`
-CLI can be called with the `--profile` CLI option, e.g.:_
+If a profile other than the `default` profile is to be set up, the `aws` CLI can
+be called with the `--profile` CLI option, e.g.:
 
 ```
 aws configure --profile my-profile
@@ -186,41 +210,6 @@ overwritten by setting the environment variable `AWS_CONFIG_FILE`.
 
 </details>
 
-### Create a config file
-
-<details>
-  <summary>Show details</summary>
-
-To use the `aws-simple` CLI you have to create a top-level config file named
-`aws-simple.config.js` which exports an object compatible to the
-[`App` interface](https://github.com/clebert/aws-simple/blob/master/src/new-types.ts#L1).
-
-For example, a config file with the following content describes a simple app
-consisting of a single static HTML file:
-
-```js
-exports.default = {
-  appName: 'my-app',
-  routes: (port) => ({
-    '/': {kind: 'file', filename: 'dist/index.html'},
-  }),
-};
-```
-
-_Note: The `routes` function optionally gets a `port` argument. It is set when
-the function is called in the context of the `aws-simple start [options]` CLI
-command. This gives the opportunity to create different routes for either AWS or
-the local DEV environment._
-
-_The `routes` function is only called in the context of the following CLI
-commands:_
-
-- _`aws-simple create [options]`_
-- _`aws-simple upload [options]`_
-- _`aws-simple start [options]`_
-
-</details>
-
 ### Bootstrap the AWS environment
 
 <details>
@@ -234,8 +223,6 @@ to create the infrastructure that the AWS CDK CLI needs to deploy your app:
 npx cdk bootstrap --app 'npx aws-simple create'
 ```
 
-_Note: This command only needs to be executed once._
-
 </details>
 
 ### Start a local DEV server
@@ -247,9 +234,9 @@ _Note: This command only needs to be executed once._
 npx aws-simple start
 ```
 
-_Note: When changing the `aws-simple` config file, the DEV server must be
+**Note:** When changing the `aws-simple` config file, the DEV server must be
 restarted. If a bundler such as Parcel or Webpack is used, its watcher must be
-started in addition to the DEV server._
+started in addition to the DEV server.
 
 </details>
 
@@ -288,9 +275,9 @@ Example `package.json` scripts:
 }
 ```
 
-_Note: In a CI pipeline the `deploy` script should be called with the additional
-argument `--require-approval never`, e.g.
-`npm run deploy -- --require-approval never`._
+**Note:** In a CI pipeline the `deploy` script should be called with the
+additional argument `--require-approval never`, e.g.
+`npm run deploy -- --require-approval never`.
 
 </details>
 
@@ -350,10 +337,10 @@ exports.default = {
 };
 ```
 
-_Note: Different app versions allow multiple stacks of the same app to be
+**Note:** Different app versions allow multiple stacks of the same app to be
 deployed simultaneously. In this case the optional `aliasRecordName` property is
 used to give each stack its own URL, e.g. `example.com` or `beta.example.com`
-(`APP_VERSION=beta`)._
+(`APP_VERSION=beta`).
 
 </details>
 
@@ -388,9 +375,9 @@ async function handler() {
 exports.handler = handler;
 ```
 
-_Note: If external modules are to be referenced in the Lambda function, it must
-be bundled with a bundler such as Webpack (in this case you have to set the
-target to node: `{target: 'node'}`) to create a single self-contained file._
+**Note:** If external modules are to be referenced in the Lambda function, it
+must be bundled with a bundler such as Webpack (in this case you have to set the
+target to node: `{target: 'node'}`) to create a single self-contained file.
 
 </details>
 
@@ -430,10 +417,12 @@ exports.default = {
 };
 ```
 
-_Note: All files contained in the folder specified under the `dirname` property
-are loaded into the S3 bucket associated with the stack using the
-`aws-simple upload [options]` command. Nested folders are ignored! Thus a
-separate route must be created for each nested folder._
+**Note:** All files contained in the folder specified under the `dirname`
+property are loaded into the S3 bucket associated with the stack using the
+`aws-simple upload [options]` command.
+
+**Important:** Nested folders are ignored! Thus a separate route must be created
+for each nested folder.
 
 </details>
 
@@ -458,7 +447,7 @@ exports.default = {
 };
 ```
 
-_Note: Folders may only contain either binary or non-binary files._
+**Important:** Folders may only contain either binary or non-binary files.
 
 </details>
 
@@ -504,7 +493,7 @@ soon as a route has activated CORS, this applies to all routes!
 
 </details>
 
-### Enable authentication
+### Enable basic authentication
 
 <details>
   <summary>Show details</summary>
@@ -539,7 +528,7 @@ exports.default = {
 };
 ```
 
-_Note: Basic authentication is not simulated by the local DEV server._
+**Note:** Basic authentication is not simulated by the local DEV server.
 
 </details>
 
