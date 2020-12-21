@@ -18,19 +18,19 @@ A Node.js interface for **AWS** that allows easy configuration and deployment of
 
 `aws-simple` allows you to easily create and deploy an API Gateway with a custom
 domain and optional alias record, host static web resources via S3, and
-provision public backend APIs via Lambda. In addition, a local DEV server can be
-started to emulate the resulting AWS infrastructure.
+provision public back-end APIs via Lambda. In addition, a local DEV server can
+be started to emulate the resulting AWS infrastructure.
 
 ## Rationale
 
 <details>
   <summary>Show details</summary>
 
-In my job I mainly build web apps on top of existing backend/CMS systems. Since
+In my job I mainly build web apps on top of existing back-end/CMS systems. Since
 many of the frontend tech stacks are similar, I created an abstraction for the
 AWS CDK/SDK for a faster and easier setup.
 
-Since existing backend/CMS systems are used, an additional persistence layer is
+Since existing back-end/CMS systems are used, an additional persistence layer is
 rarely required. Therefore, setting up such a layer (e.g. with Amazon DynamoDB)
 is not supported.
 
