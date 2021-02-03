@@ -7,12 +7,11 @@ A Node.js interface for **AWS** that allows easy configuration and deployment of
 
 ## Contents
 
-- [Quick Overview](https://github.com/clebert/aws-simple#quick-overview)
-- [Rationale](https://github.com/clebert/aws-simple#rationale)
-- [Getting Started](https://github.com/clebert/aws-simple#getting-started)
-- [Configuration](https://github.com/clebert/aws-simple#configuration)
-- [CLI Usage](https://github.com/clebert/aws-simple#cli-usage)
-- [Development](https://github.com/clebert/aws-simple#development)
+- [Quick Overview](#quick-overview)
+- [Motivation](#motivation)
+- [Getting Started](#getting-started)
+- [Configuration](#configuration)
+- [CLI Usage](#cli-usage)
 
 ## Quick Overview
 
@@ -21,7 +20,7 @@ domain and optional alias record, host static web resources via S3, and
 provision public back-end APIs via Lambda. In addition, a local DEV server can
 be started to emulate the resulting AWS infrastructure.
 
-## Rationale
+## Motivation
 
 <details>
   <summary>Show details</summary>
@@ -743,28 +742,6 @@ Options:
 Examples:
   npx aws-simple redeploy
 ```
-
-</details>
-
-## Development
-
-<details>
-  <summary>Publishing a new release</summary>
-
-```
-npm run release patch
-```
-
-```
-npm run release minor
-```
-
-```
-npm run release major
-```
-
-After a new release has been created by pushing the tag, it must be published
-via the GitHub UI. This triggers the final publication to npm.
 
 </details>
 
