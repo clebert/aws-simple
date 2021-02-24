@@ -5,7 +5,7 @@ import {
   Role,
   ServicePrincipal,
 } from '@aws-cdk/aws-iam';
-import {Bucket, BucketEncryption} from '@aws-cdk/aws-s3';
+import {BlockPublicAccess, Bucket, BucketEncryption} from '@aws-cdk/aws-s3';
 import {App, CfnOutput, Stack} from '@aws-cdk/core';
 import {AppConfig} from '../types';
 import {createUniqueExportName} from '../utils/create-unique-export-name';
@@ -47,6 +47,7 @@ export function createStack(appConfig: AppConfig): void {
 
   const s3Bucket = new Bucket(stack, 'S3Bucket', {
     publicReadAccess: false,
+    blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
     encryption: BucketEncryption.S3_MANAGED,
   });
 
