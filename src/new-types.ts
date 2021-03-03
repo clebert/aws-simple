@@ -27,7 +27,6 @@ export interface Routes {
 export type Route = FunctionRoute | FileRoute | FolderRoute;
 
 export interface CommonRoute {
-  readonly routeName?: string;
   readonly cacheTtlInSeconds?: number;
   readonly enableAuthentication?: boolean;
 
@@ -41,6 +40,7 @@ export interface CommonRoute {
 export interface FunctionRoute extends CommonRoute {
   readonly kind: 'function';
   readonly filename: string;
+  readonly description?: string;
   readonly catchAll?: boolean;
 
   /**

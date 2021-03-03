@@ -34,7 +34,7 @@ export function translateAppConfig(app: App): AppConfig {
             httpMethod: route.method ?? 'GET',
             publicPath: path,
             localPath: route.filename,
-            description: route.routeName,
+            description: route.description,
             handler: route.handler ?? 'handler',
             memorySize: route.memorySize ?? 128,
             timeoutInSeconds: route.timeoutInSeconds ?? 28,
