@@ -12,7 +12,7 @@ export function translateAppConfig(app: App): AppConfig {
     appVersion: app.appVersion ?? 'latest',
     createStackConfig: (port?: number) => {
       const routes = app.routes(port);
-      const binaryMediaTypes: string[] = [];
+      const binaryMediaTypes = new Set<string>();
       const lambdaConfigs: LambdaConfig[] = [];
       const s3Configs: S3Config[] = [];
 
@@ -67,7 +67,7 @@ export function translateAppConfig(app: App): AppConfig {
           }
         } else if (route.kind === 'file') {
           if (route.binaryMediaType) {
-            binaryMediaTypes.push(route.binaryMediaType);
+            binaryMediaTypes.add(route.binaryMediaType);
           }
 
           const s3Config: S3Config = {
@@ -93,7 +93,9 @@ export function translateAppConfig(app: App): AppConfig {
           }
         } else {
           if (route.binaryMediaTypes) {
-            binaryMediaTypes.push(...route.binaryMediaTypes);
+            for (const binaryMediaType of route.binaryMediaTypes) {
+              binaryMediaTypes.add(binaryMediaType);
+            }
           }
 
           s3Configs.push({
@@ -112,7 +114,7 @@ export function translateAppConfig(app: App): AppConfig {
 
       return {
         customDomainConfig: app.customDomain,
-        binaryMediaTypes,
+        binaryMediaTypes: Array.from(binaryMediaTypes),
         minimumCompressionSizeInBytes: app.disableCompression
           ? undefined
           : 1000,
