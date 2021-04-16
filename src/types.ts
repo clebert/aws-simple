@@ -5,6 +5,7 @@ export interface CustomDomainConfig {
   readonly hostedZoneId: string;
   readonly hostedZoneName: string;
   readonly aliasRecordName?: string;
+  readonly aliasRecordTtlInSeconds?: number;
 }
 
 export type LambdaHttpMethod =

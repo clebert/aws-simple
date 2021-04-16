@@ -1,7 +1,7 @@
 import {RestApi} from '@aws-cdk/aws-apigateway';
 import {ARecord, HostedZone, RecordTarget} from '@aws-cdk/aws-route53';
 import {ApiGateway} from '@aws-cdk/aws-route53-targets';
-import {Stack} from '@aws-cdk/core';
+import {Duration, Stack} from '@aws-cdk/core';
 import {StackConfig} from '../../types';
 
 export function createARecord(
@@ -15,7 +15,12 @@ export function createARecord(
     return;
   }
 
-  const {hostedZoneId, hostedZoneName, aliasRecordName} = customDomainConfig;
+  const {
+    hostedZoneId,
+    hostedZoneName,
+    aliasRecordName,
+    aliasRecordTtlInSeconds,
+  } = customDomainConfig;
 
   const aRecord = new ARecord(stack, 'ARecord', {
     zone: HostedZone.fromHostedZoneAttributes(stack, 'HostedZone', {
@@ -24,6 +29,10 @@ export function createARecord(
     }),
     recordName: aliasRecordName,
     target: RecordTarget.fromAlias(new ApiGateway(restApi)),
+    ttl:
+      aliasRecordTtlInSeconds !== undefined
+        ? Duration.seconds(aliasRecordTtlInSeconds)
+        : undefined,
   });
 
   aRecord.node.addDependency(restApi);

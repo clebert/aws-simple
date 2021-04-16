@@ -12,6 +12,7 @@ export interface CustomDomain {
   readonly hostedZoneId: string;
   readonly hostedZoneName: string;
   readonly aliasRecordName?: string;
+  readonly aliasRecordTtlInSeconds?: number;
 }
 
 export interface Authentication {
