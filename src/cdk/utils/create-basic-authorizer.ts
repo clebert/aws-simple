@@ -23,7 +23,7 @@ export function createBasicAuthorizer(
   return new RequestAuthorizer(stack, 'BasicAuthorizer', {
     handler: new Lambda(stack, 'AuthorizerLambda', {
       description: `${appName} Authorizer Lambda ${appVersion}`,
-      runtime: Runtime.NODEJS_12_X,
+      runtime: Runtime.NODEJS_14_X,
       code: Code.fromAsset(
         path.dirname(require.resolve('./basic-authorizer-handler'))
       ),
