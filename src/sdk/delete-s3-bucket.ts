@@ -11,12 +11,17 @@ export async function deleteS3Bucket(
     .promise();
 
   const objectIdentifiers = Contents.filter(
-    ({Key}) => typeof Key === 'string'
-  ).map(({Key}) => ({Key} as S3.ObjectIdentifier));
+    (object): object is S3.ObjectIdentifier => typeof object.Key === 'string'
+  ).map(({Key}) => ({Key}));
 
-  await s3
-    .deleteObjects({Bucket: s3BucketName, Delete: {Objects: objectIdentifiers}})
-    .promise();
+  if (objectIdentifiers.length > 0) {
+    await s3
+      .deleteObjects({
+        Bucket: s3BucketName,
+        Delete: {Objects: objectIdentifiers},
+      })
+      .promise();
+  }
 
   await s3.deleteBucket({Bucket: s3BucketName}).promise();
 }
