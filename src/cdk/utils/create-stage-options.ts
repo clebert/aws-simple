@@ -54,9 +54,8 @@ export function createStageOptions(stackConfig: StackConfig): StageOptions {
       cacheClusterEnabled = true;
     }
 
-    methodOptions[createMethodPath(lambdaConfig)] = createMethodOption(
-      lambdaConfig
-    );
+    methodOptions[createMethodPath(lambdaConfig)] =
+      createMethodOption(lambdaConfig);
   }
 
   for (const s3Config of s3Configs) {
