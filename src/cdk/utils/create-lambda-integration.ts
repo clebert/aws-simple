@@ -73,9 +73,8 @@ export function createLambdaIntegration(
       authorizer: authenticationRequired ? authorizer : undefined,
       requestParameters: Object.keys(acceptedParameters).reduce(
         (requestParameters, parameterName) => {
-          requestParameters[
-            `method.request.querystring.${parameterName}`
-          ] = Boolean(acceptedParameters[parameterName]!.required);
+          requestParameters[`method.request.querystring.${parameterName}`] =
+            Boolean(acceptedParameters[parameterName]!.required);
 
           return requestParameters;
         },

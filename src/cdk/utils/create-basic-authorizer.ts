@@ -14,11 +14,8 @@ export function createBasicAuthorizer(
     return undefined;
   }
 
-  const {
-    username,
-    password,
-    cacheTtlInSeconds,
-  } = stackConfig.basicAuthenticationConfig;
+  const {username, password, cacheTtlInSeconds} =
+    stackConfig.basicAuthenticationConfig;
 
   return new RequestAuthorizer(stack, 'BasicAuthorizer', {
     handler: new Lambda(stack, 'AuthorizerLambda', {

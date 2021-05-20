@@ -20,9 +20,8 @@ export function createS3MethodResponses(
     const {cacheControl} = responseHeaders;
 
     if (cacheControl) {
-      status200ResponseParameters[
-        'method.response.header.Cache-Control'
-      ] = true;
+      status200ResponseParameters['method.response.header.Cache-Control'] =
+        true;
     }
   }
 

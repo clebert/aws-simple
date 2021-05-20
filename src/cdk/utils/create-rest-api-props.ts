@@ -9,11 +9,8 @@ export function createRestApiProps(
   stackConfig: StackConfig,
   stack: Stack
 ): RestApiProps {
-  const {
-    binaryMediaTypes,
-    minimumCompressionSizeInBytes,
-    enableCors,
-  } = stackConfig;
+  const {binaryMediaTypes, minimumCompressionSizeInBytes, enableCors} =
+    stackConfig;
 
   return {
     restApiName: resourceName,

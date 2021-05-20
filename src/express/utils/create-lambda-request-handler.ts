@@ -52,7 +52,7 @@ export function createLambdaRequestHandler(
           },
         }));
 
-      const {headers, statusCode, body} = result;
+      const {headers, statusCode, body, isBase64Encoded} = result;
 
       if (!cachedResult && statusCode === 200) {
         lambdaCache?.set(req.url, result);
@@ -68,7 +68,13 @@ export function createLambdaRequestHandler(
         logInfo(`DEV server cache hit for Lambda request: ${req.url}`);
       }
 
-      res.status(statusCode).send(body);
+      res.status(statusCode);
+
+      if (isBase64Encoded) {
+        res.end(body, 'base64');
+      } else {
+        res.send(body);
+      }
     } catch (error) {
       res.status(500).send(error);
     }
