@@ -1,3 +1,5 @@
+import {DevServerOptions} from './new-types';
+
 export * from './new-types';
 
 export interface CustomDomainConfig {
@@ -63,6 +65,7 @@ export interface LambdaConfig {
   readonly acceptedParameters?: LambdaAcceptedParameters;
   readonly environment?: LambdaEnvironment;
   readonly authenticationRequired?: boolean;
+  readonly devServer?: DevServerOptions;
 }
 
 export interface S3ResponseHeaders {

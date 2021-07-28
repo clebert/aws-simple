@@ -73,7 +73,19 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
 
     const handleLocalPathChanges = (changedLocalPath: string) => {
       const changedLambdaConfigs = lambdaConfigs.filter(
-        ({localPath}) => localPath === changedLocalPath
+        ({localPath, devServer, publicPath}) =>
+          localPath === changedLocalPath ||
+          devServer?.localPathDependencies?.some((localPathDependency) => {
+            if (localPathDependency === changedLocalPath) {
+              logInfo(
+                `Changed local DEV path dependency detected for Lambda: ${publicPath} depends on ${localPathDependency}`
+              );
+
+              return true;
+            }
+
+            return false;
+          })
       );
 
       for (const changedLambdaConfig of changedLambdaConfigs) {

@@ -38,6 +38,14 @@ export interface CommonRoute {
   readonly enableCors?: boolean;
 }
 
+export interface DevServerOptions {
+  /**
+   * Local path dependencies for a Lambda function that should be included in
+   * the files watched for cache invalidation.
+   */
+  readonly localPathDependencies?: string[];
+}
+
 export interface FunctionRoute extends CommonRoute {
   readonly kind: 'function';
   readonly filename: string;
@@ -75,6 +83,7 @@ export interface FunctionRoute extends CommonRoute {
   readonly loggingLevel?: FunctionLoggingLevel;
   readonly parameters?: Readonly<Record<string, FunctionParameterOptions>>;
   readonly environment?: Readonly<Record<string, string>>;
+  readonly devServer?: DevServerOptions;
 }
 
 export type FunctionMethod =
