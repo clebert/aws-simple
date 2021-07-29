@@ -1,6 +1,14 @@
 # aws-simple
 
-![](https://github.com/clebert/aws-simple/workflows/CI/badge.svg)
+[![][ci-badge]][ci-link] [![][version-badge]][version-link]
+[![][license-badge]][license-link]
+
+[ci-badge]: https://github.com/clebert/aws-simple/workflows/CI/badge.svg
+[ci-link]: https://github.com/clebert/aws-simple
+[version-badge]: https://badgen.net/npm/v/aws-simple
+[version-link]: https://www.npmjs.com/package/aws-simple
+[license-badge]: https://badgen.net/npm/license/aws-simple
+[license-link]: https://github.com/clebert/aws-simple/blob/master/LICENSE
 
 A Node.js interface for **AWS** that allows easy configuration and deployment of
 **simple** web apps.
