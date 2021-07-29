@@ -43,7 +43,7 @@ manually with the AWS CDK/SDK.
 ### Install dependencies
 
 ```
-npm install aws-simple --save-dev
+npm install aws-simple aws-cdk@next --save-dev
 ```
 
 ### Create a config file

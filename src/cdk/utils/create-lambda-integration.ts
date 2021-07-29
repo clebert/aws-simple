@@ -1,11 +1,4 @@
-import {
-  AuthorizationType,
-  IAuthorizer,
-  LambdaIntegration,
-  RestApi,
-} from '@aws-cdk/aws-apigateway';
-import {Code, Function as Lambda, Runtime} from '@aws-cdk/aws-lambda';
-import {Duration, Stack} from '@aws-cdk/core';
+import {Duration, Stack, aws_apigateway, aws_lambda} from 'aws-cdk-lib';
 import * as path from 'path';
 import {LambdaConfig} from '../../types';
 import {createShortHash} from '../../utils/create-short-hash';
@@ -13,9 +6,9 @@ import {getLambdaModuleName} from '../../utils/get-lambda-module-name';
 
 export function createLambdaIntegration(
   stack: Stack,
-  restApi: RestApi,
+  restApi: aws_apigateway.RestApi,
   lambdaConfig: LambdaConfig,
-  authorizer: IAuthorizer | undefined
+  authorizer: aws_apigateway.IAuthorizer | undefined
 ): void {
   const {
     httpMethod,
@@ -44,18 +37,22 @@ export function createLambdaIntegration(
 
   restApi.root.resourceForPath(publicPath).addMethod(
     httpMethod,
-    new LambdaIntegration(
-      new Lambda(stack, `Lambda${httpMethod}${createShortHash(publicPath)}`, {
-        description,
-        runtime: Runtime.NODEJS_14_X,
-        code: Code.fromAsset(path.dirname(localPath)),
-        handler: `${getLambdaModuleName(localPath)}.${handler}`,
-        timeout: Duration.seconds(
-          timeoutInSeconds > 28 ? 28 : timeoutInSeconds
-        ),
-        memorySize,
-        environment,
-      }),
+    new aws_apigateway.LambdaIntegration(
+      new aws_lambda.Function(
+        stack,
+        `Lambda${httpMethod}${createShortHash(publicPath)}`,
+        {
+          description,
+          runtime: aws_lambda.Runtime.NODEJS_14_X,
+          code: aws_lambda.Code.fromAsset(path.dirname(localPath)),
+          handler: `${getLambdaModuleName(localPath)}.${handler}`,
+          timeout: Duration.seconds(
+            timeoutInSeconds > 28 ? 28 : timeoutInSeconds
+          ),
+          memorySize,
+          environment,
+        }
+      ),
       {
         cacheKeyParameters: Object.keys(acceptedParameters)
           .filter(
@@ -68,8 +65,8 @@ export function createLambdaIntegration(
     ),
     {
       authorizationType: authenticationRequired
-        ? AuthorizationType.CUSTOM
-        : AuthorizationType.NONE,
+        ? aws_apigateway.AuthorizationType.CUSTOM
+        : aws_apigateway.AuthorizationType.NONE,
       authorizer: authenticationRequired ? authorizer : undefined,
       requestParameters: Object.keys(acceptedParameters).reduce(
         (requestParameters, parameterName) => {

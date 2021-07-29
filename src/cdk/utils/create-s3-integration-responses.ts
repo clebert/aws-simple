@@ -1,10 +1,10 @@
-import {ContentHandling, IntegrationResponse} from '@aws-cdk/aws-apigateway';
+import {aws_apigateway} from 'aws-cdk-lib';
 import {S3Config, StackConfig} from '../../types';
 
 export function createS3IntegrationResponses(
   stackConfig: StackConfig,
   s3Config: S3Config
-): IntegrationResponse[] {
+): aws_apigateway.IntegrationResponse[] {
   const corsResponseParameters: Record<string, string> = stackConfig.enableCors
     ? {'method.response.header.Access-Control-Allow-Origin': "'*'"}
     : {};
@@ -33,7 +33,7 @@ export function createS3IntegrationResponses(
       statusCode: '200',
       responseParameters: status200ResponseParameters,
       contentHandling: s3Config.binary
-        ? ContentHandling.CONVERT_TO_BINARY
+        ? aws_apigateway.ContentHandling.CONVERT_TO_BINARY
         : undefined,
     },
     {

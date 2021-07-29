@@ -1,9 +1,4 @@
-import {
-  MethodDeploymentOptions,
-  MethodLoggingLevel,
-  StageOptions,
-} from '@aws-cdk/aws-apigateway';
-import {Duration} from '@aws-cdk/core';
+import {Duration, aws_apigateway} from 'aws-cdk-lib';
 import * as path from 'path';
 import {LambdaLoggingLevel, StackConfig} from '../../types';
 
@@ -18,7 +13,7 @@ export interface MethodConfig {
 
 function createMethodOption(
   methodConfig: MethodConfig
-): MethodDeploymentOptions {
+): aws_apigateway.MethodDeploymentOptions {
   const {cachingEnabled, cacheTtlInSeconds, loggingLevel} = methodConfig;
 
   return {
@@ -27,7 +22,8 @@ function createMethodOption(
       cacheTtlInSeconds !== undefined
         ? Duration.seconds(cacheTtlInSeconds)
         : undefined,
-    loggingLevel: loggingLevel && MethodLoggingLevel[loggingLevel],
+    loggingLevel:
+      loggingLevel && aws_apigateway.MethodLoggingLevel[loggingLevel],
   };
 }
 
@@ -43,9 +39,13 @@ function createMethodPath(methodConfig: MethodConfig): string {
     : path.join(publicPath, httpMethod);
 }
 
-export function createStageOptions(stackConfig: StackConfig): StageOptions {
+export function createStageOptions(
+  stackConfig: StackConfig
+): aws_apigateway.StageOptions {
   const {lambdaConfigs = [], s3Configs = []} = stackConfig;
-  const methodOptions: Record<string, MethodDeploymentOptions> = {};
+
+  const methodOptions: Record<string, aws_apigateway.MethodDeploymentOptions> =
+    {};
 
   let cacheClusterEnabled = false;
 

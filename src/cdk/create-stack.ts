@@ -1,12 +1,11 @@
-import {RestApi} from '@aws-cdk/aws-apigateway';
 import {
-  Policy,
-  PolicyStatement,
-  Role,
-  ServicePrincipal,
-} from '@aws-cdk/aws-iam';
-import {BlockPublicAccess, Bucket, BucketEncryption} from '@aws-cdk/aws-s3';
-import {App, CfnOutput, Stack} from '@aws-cdk/core';
+  App,
+  CfnOutput,
+  Stack,
+  aws_apigateway,
+  aws_iam,
+  aws_s3,
+} from 'aws-cdk-lib';
 import {AppConfig} from '../types';
 import {createUniqueExportName} from '../utils/create-unique-export-name';
 import {createStackName} from '../utils/stack-name';
@@ -22,7 +21,7 @@ export function createStack(appConfig: AppConfig): void {
   const stackConfig = createStackConfig();
   const stack = new Stack(new App(), createStackName(appConfig));
 
-  const restApi = new RestApi(
+  const restApi = new aws_apigateway.RestApi(
     stack,
     'RestApi',
     createRestApiProps(`${appName} ${appVersion}`, stackConfig, stack)
@@ -45,10 +44,10 @@ export function createStack(appConfig: AppConfig): void {
   createARecord(stackConfig, stack, restApi);
   createUnauthorizedGatewayResponse(stackConfig, stack, restApi);
 
-  const s3Bucket = new Bucket(stack, 'S3Bucket', {
+  const s3Bucket = new aws_s3.Bucket(stack, 'S3Bucket', {
     publicReadAccess: false,
-    blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
-    encryption: BucketEncryption.S3_MANAGED,
+    blockPublicAccess: aws_s3.BlockPublicAccess.BLOCK_ALL,
+    encryption: aws_s3.BucketEncryption.S3_MANAGED,
   });
 
   const s3BucketNameOutput = new CfnOutput(stack, 'S3BucketNameOutput', {
@@ -58,12 +57,14 @@ export function createStack(appConfig: AppConfig): void {
 
   s3BucketNameOutput.node.addDependency(s3Bucket);
 
-  const s3IntegrationRole = new Role(stack, 'S3IntegrationRole', {
-    assumedBy: new ServicePrincipal('apigateway.amazonaws.com'),
+  const s3IntegrationRole = new aws_iam.Role(stack, 'S3IntegrationRole', {
+    assumedBy: new aws_iam.ServicePrincipal('apigateway.amazonaws.com'),
   });
 
-  const s3IntegrationPolicy = new Policy(stack, 'S3IntegrationPolicy', {
-    statements: [new PolicyStatement({actions: ['s3:*'], resources: ['*']})],
+  const s3IntegrationPolicy = new aws_iam.Policy(stack, 'S3IntegrationPolicy', {
+    statements: [
+      new aws_iam.PolicyStatement({actions: ['s3:*'], resources: ['*']}),
+    ],
     roles: [s3IntegrationRole],
   });
 

@@ -1,11 +1,4 @@
-import {
-  AuthorizationType,
-  AwsIntegration,
-  IAuthorizer,
-  RestApi,
-} from '@aws-cdk/aws-apigateway';
-import {Role} from '@aws-cdk/aws-iam';
-import {Bucket} from '@aws-cdk/aws-s3';
+import {aws_apigateway, aws_iam, aws_s3} from 'aws-cdk-lib';
 import * as path from 'path';
 import {S3Config, StackConfig} from '../../types';
 import {createS3IntegrationResponses} from './create-s3-integration-responses';
@@ -13,11 +6,11 @@ import {createS3MethodResponses} from './create-s3-method-responses';
 
 export function createS3Integration(
   stackConfig: StackConfig,
-  restApi: RestApi,
-  s3Bucket: Bucket,
-  s3IntegrationRole: Role,
+  restApi: aws_apigateway.RestApi,
+  s3Bucket: aws_s3.Bucket,
+  s3IntegrationRole: aws_iam.Role,
   s3Config: S3Config,
-  authorizer: IAuthorizer | undefined
+  authorizer: aws_apigateway.IAuthorizer | undefined
 ): void {
   const {
     type,
@@ -32,7 +25,7 @@ export function createS3Integration(
     );
   }
 
-  const s3Integration = new AwsIntegration({
+  const s3Integration = new aws_apigateway.AwsIntegration({
     service: 's3',
     path: path.join(
       s3Bucket.bucketName,
@@ -59,8 +52,8 @@ export function createS3Integration(
 
   resource.addMethod('GET', s3Integration, {
     authorizationType: authenticationRequired
-      ? AuthorizationType.CUSTOM
-      : AuthorizationType.NONE,
+      ? aws_apigateway.AuthorizationType.CUSTOM
+      : aws_apigateway.AuthorizationType.NONE,
     authorizer: authenticationRequired ? authorizer : undefined,
     methodResponses: createS3MethodResponses(stackConfig, s3Config),
     requestParameters: {'method.request.path.file': type === 'folder'},

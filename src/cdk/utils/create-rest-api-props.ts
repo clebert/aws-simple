@@ -1,5 +1,4 @@
-import {Cors, RestApiProps} from '@aws-cdk/aws-apigateway';
-import {Stack} from '@aws-cdk/core';
+import {Stack, aws_apigateway} from 'aws-cdk-lib';
 import {StackConfig} from '../../types';
 import {createDomainNameOptions} from './create-domain-name-options';
 import {createStageOptions} from './create-stage-options';
@@ -8,7 +7,7 @@ export function createRestApiProps(
   resourceName: string,
   stackConfig: StackConfig,
   stack: Stack
-): RestApiProps {
+): aws_apigateway.RestApiProps {
   const {binaryMediaTypes, minimumCompressionSizeInBytes, enableCors} =
     stackConfig;
 
@@ -20,7 +19,7 @@ export function createRestApiProps(
     deployOptions: createStageOptions(stackConfig),
     defaultCorsPreflightOptions: enableCors
       ? {
-          allowOrigins: Cors.ALL_ORIGINS,
+          allowOrigins: aws_apigateway.Cors.ALL_ORIGINS,
           allowCredentials: true,
         }
       : undefined,

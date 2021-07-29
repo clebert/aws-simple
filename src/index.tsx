@@ -39,7 +39,7 @@ import {loadAppConfig} from './utils/load-app-config';
       .demandCommand()
       .epilogue(description)
       .strict()
-  ).argv;
+  ).argv as {readonly _: (string | number)[]};
 
   const appConfig = loadAppConfig();
 

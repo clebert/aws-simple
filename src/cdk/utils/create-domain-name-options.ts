@@ -1,12 +1,10 @@
-import {DomainNameOptions} from '@aws-cdk/aws-apigateway';
-import {Certificate} from '@aws-cdk/aws-certificatemanager';
-import {Stack} from '@aws-cdk/core';
+import {Stack, aws_apigateway, aws_certificatemanager} from 'aws-cdk-lib';
 import {StackConfig} from '../../types';
 
 export function createDomainNameOptions(
   stackConfig: StackConfig,
   stack: Stack
-): DomainNameOptions | undefined {
+): aws_apigateway.DomainNameOptions | undefined {
   const {customDomainConfig} = stackConfig;
 
   if (!customDomainConfig) {
@@ -19,7 +17,7 @@ export function createDomainNameOptions(
     domainName: aliasRecordName
       ? `${aliasRecordName}.${hostedZoneName}`
       : hostedZoneName,
-    certificate: Certificate.fromCertificateArn(
+    certificate: aws_certificatemanager.Certificate.fromCertificateArn(
       stack,
       'Certificate',
       certificateArn

@@ -1,10 +1,10 @@
-import {MethodResponse} from '@aws-cdk/aws-apigateway';
+import {aws_apigateway} from 'aws-cdk-lib';
 import {S3Config, StackConfig} from '../../types';
 
 export function createS3MethodResponses(
   stackConfig: StackConfig,
   s3Config: S3Config
-): MethodResponse[] {
+): aws_apigateway.MethodResponse[] {
   const corsResponseParameters: Record<string, boolean> = stackConfig.enableCors
     ? {'method.response.header.Access-Control-Allow-Origin': true}
     : {};

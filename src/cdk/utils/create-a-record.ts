@@ -1,13 +1,16 @@
-import {RestApi} from '@aws-cdk/aws-apigateway';
-import {ARecord, HostedZone, RecordTarget} from '@aws-cdk/aws-route53';
-import {ApiGateway} from '@aws-cdk/aws-route53-targets';
-import {Duration, Stack} from '@aws-cdk/core';
+import {
+  Duration,
+  Stack,
+  aws_apigateway,
+  aws_route53,
+  aws_route53_targets,
+} from 'aws-cdk-lib';
 import {StackConfig} from '../../types';
 
 export function createARecord(
   stackConfig: StackConfig,
   stack: Stack,
-  restApi: RestApi
+  restApi: aws_apigateway.RestApi
 ): void {
   const {customDomainConfig} = stackConfig;
 
@@ -22,13 +25,15 @@ export function createARecord(
     aliasRecordTtlInSeconds,
   } = customDomainConfig;
 
-  const aRecord = new ARecord(stack, 'ARecord', {
-    zone: HostedZone.fromHostedZoneAttributes(stack, 'HostedZone', {
+  const aRecord = new aws_route53.ARecord(stack, 'ARecord', {
+    zone: aws_route53.HostedZone.fromHostedZoneAttributes(stack, 'HostedZone', {
       hostedZoneId,
       zoneName: hostedZoneName,
     }),
     recordName: aliasRecordName,
-    target: RecordTarget.fromAlias(new ApiGateway(restApi)),
+    target: aws_route53.RecordTarget.fromAlias(
+      new aws_route53_targets.ApiGateway(restApi)
+    ),
     ttl:
       aliasRecordTtlInSeconds !== undefined
         ? Duration.seconds(aliasRecordTtlInSeconds)
