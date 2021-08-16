@@ -31,8 +31,10 @@ export function loadAppConfig(): AppConfig {
     const absoluteConfigFilename = path.resolve('aws-simple.config.js');
 
     appConfig = require(absoluteConfigFilename).default;
-  } catch {
-    throw new Error('The aws-simple config file cannot be loaded.');
+  } catch (error) {
+    console.error('The aws-simple config file cannot be loaded.');
+
+    throw error;
   }
 
   if (isAppConfig(appConfig)) {
