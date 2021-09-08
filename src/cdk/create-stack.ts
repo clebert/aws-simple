@@ -63,7 +63,10 @@ export function createStack(appConfig: AppConfig): void {
 
   const s3IntegrationPolicy = new aws_iam.Policy(stack, 'S3IntegrationPolicy', {
     statements: [
-      new aws_iam.PolicyStatement({actions: ['s3:*'], resources: ['*']}),
+      new aws_iam.PolicyStatement({
+        actions: ['s3:Get*'],
+        resources: [s3Bucket.bucketArn],
+      }),
     ],
     roles: [s3IntegrationRole],
   });
