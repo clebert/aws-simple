@@ -755,5 +755,5 @@ Examples:
 
 ---
 
-Copyright (c) 2019-2021, Clemens Akens. Released under the terms of the
-[MIT License](https://github.com/clebert/aws-simple/blob/master/LICENSE).
+Copyright 2019-2021 Clemens Akens. All rights reserved.
+[MIT license](https://github.com/clebert/aws-simple/blob/master/LICENSE.md).

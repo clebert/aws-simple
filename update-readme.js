@@ -6,7 +6,9 @@ const fs = require('fs');
 async function getCommandUsage(commandName) {
   return new Promise((resolve, reject) => {
     cp.exec(
-      `node lib/index.js ${commandName === '<command>' ? '' : commandName} -h`,
+      `node lib/cjs/index.js ${
+        commandName === '<command>' ? '' : commandName
+      } -h`,
       (error, stdout) => {
         if (error) {
           reject(error);

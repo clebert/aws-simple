@@ -1,5 +1,5 @@
-import {aws_apigateway, aws_iam, aws_s3} from 'aws-cdk-lib';
 import * as path from 'path';
+import {aws_apigateway, aws_iam, aws_s3} from 'aws-cdk-lib';
 import {S3Config, StackConfig} from '../../types';
 import {createS3IntegrationResponses} from './create-s3-integration-responses';
 import {createS3MethodResponses} from './create-s3-method-responses';

@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-import './init';
-
 import chalk from 'chalk';
 import compose from 'compose-function';
 import {render} from 'ink';
@@ -16,11 +14,12 @@ import {ListCommand} from './components/list-command';
 import {RedeployCommand} from './components/redeploy-command';
 import {TagCommand} from './components/tag-command';
 import {Ui} from './components/ui';
+import './init';
 import {createClientConfig} from './sdk/create-client-config';
 import {loadAppConfig} from './utils/load-app-config';
 
 (async () => {
-  const {description} = require('../package.json');
+  const {description} = require('../../package.json');
 
   const argv = compose(
     RedeployCommand.describe,

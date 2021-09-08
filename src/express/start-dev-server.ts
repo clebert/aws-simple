@@ -1,10 +1,10 @@
+import path from 'path';
 import {APIGatewayProxyResult} from 'aws-lambda';
 import {watch} from 'chokidar';
 import compression from 'compression';
 import express from 'express';
 import getPort from 'get-port';
 import mkdirp from 'mkdirp';
-import path from 'path';
 import {AppConfig, LambdaConfig} from '../types';
 import {logInfo} from './utils/log-info';
 import {registerLambdaRoute} from './utils/register-lambda-route';

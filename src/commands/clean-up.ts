@@ -12,6 +12,7 @@ import {findStacks} from '../sdk/find-stacks';
 import {isStackExpired} from '../sdk/is-stack-expired';
 import {AppConfig} from '../types';
 import {getAgeInDays} from '../utils/get-age-in-days';
+import {isObject} from '../utils/is-object';
 import {parseStackName} from '../utils/stack-name';
 
 interface CleanUpArgv {
@@ -117,7 +118,9 @@ export async function cleanUp(
                 try {
                   s3BucketName = findStackOutput(expiredStack, 'S3BucketName');
                 } catch (error) {
-                  listrSubTask.skip(error.message);
+                  listrSubTask.skip(
+                    error instanceof Error ? error.message : 'No bucket name.'
+                  );
 
                   return;
                 }
@@ -125,8 +128,10 @@ export async function cleanUp(
                 try {
                   await deleteS3Bucket(clientConfig, s3BucketName);
                 } catch (error) {
-                  if (error.code === 'NoSuchBucket') {
-                    listrSubTask.skip(error.message);
+                  if (isObject(error) && error.code === 'NoSuchBucket') {
+                    listrSubTask.skip(
+                      error instanceof Error ? error.message : 'No such bucket.'
+                    );
                   } else {
                     throw error;
                   }

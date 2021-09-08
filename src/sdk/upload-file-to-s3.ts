@@ -1,5 +1,5 @@
-import {CloudFormation, S3} from 'aws-sdk';
 import {readFileSync} from 'fs';
+import {CloudFormation, S3} from 'aws-sdk';
 import mimeTypes from 'mime-types';
 import {findStackOutput} from './find-stack-output';
 import {S3UploadConfig} from './resolve-s3-upload-configs';
