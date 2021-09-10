@@ -97,23 +97,36 @@ with programmatic access and the following attached policy:
   "Statement": [
     {
       "Effect": "Allow",
+      "Action": ["sts:AssumeRole"],
+      "Resource": "arn:aws:iam::*:role/cdk-*"
+    },
+    {
       "Action": [
-        "apigateway:*",
-        "cloudformation:*",
-        "iam:*",
-        "lambda:*",
-        "route53:*",
-        "s3:*"
+        "ssm:GetParameter",
+        "ssm:GetParameters",
+        "ssm:PutParameter",
+        "ssm:DeleteParameter"
       ],
+      "Resource": "arn:aws:ssm:*:*:parameter/cdk-bootstrap/*",
+      "Effect": "Allow"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ecr:DescribeRepositories",
+        "ecr:CreateRepository",
+        "ecr:DeleteRepository"
+      ],
+      "Resource": "arn:aws:ecr:*:*:repository/cdk-*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["apigateway:*", "cloudformation:*", "s3:*"],
       "Resource": "*"
     }
   ]
 }
 ```
-
-**Caution:** This policy has more rights than necessary and
-[should be more specific](https://github.com/clebert/aws-simple/issues/23) for
-security.
 
 </details>
 
