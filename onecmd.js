@@ -19,9 +19,9 @@ const plugins = [
   std.vscode({showFilesInEditor: false}),
 
   {
-    dependencies: [
+    setup: () => [
       {
-        type: 'managed',
+        type: 'mod',
         path: 'jest.config.json',
         is: std.isObject,
 

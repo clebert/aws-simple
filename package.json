@@ -20,11 +20,11 @@
   ],
   "scripts": {
     "preci": "run-s setup",
-    "ci": "run-p fmt:check lint test update-readme",
+    "ci": "run-p format:check lint test update-readme",
     "postci": "chmod +x lib/cjs/index.js",
     "compile": "onecmd compile",
-    "fmt": "onecmd fmt",
-    "fmt:check": "onecmd fmt --check",
+    "format": "onecmd format",
+    "format:check": "onecmd format --check",
     "lint": "onecmd lint",
     "release": "npm version",
     "postrelease": "git push --follow-tags",
@@ -61,7 +61,7 @@
     "yargs": "^17.1.1"
   },
   "devDependencies": {
-    "@onecmd/standard-plugins": "^0.10.0",
+    "@onecmd/standard-plugins": "^0.11.0",
     "@types/aws-lambda": "^8.10.83",
     "@types/compose-function": "^0.0.30",
     "@types/compression": "^1.7.2",
