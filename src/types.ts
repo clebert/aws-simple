@@ -68,17 +68,13 @@ export interface LambdaConfig {
   readonly devServer?: DevServerOptions;
 }
 
-export interface S3ResponseHeaders {
-  readonly cacheControl?: string;
-}
-
 export interface S3Config {
   readonly type: 'file' | 'folder';
   readonly binary?: boolean;
   readonly publicPath: string;
   readonly localPath: string;
   readonly bucketPath?: string;
-  readonly responseHeaders?: S3ResponseHeaders;
+  readonly responseHeaders?: Readonly<Record<string, string>>;
   readonly cachingEnabled?: boolean;
   readonly cacheTtlInSeconds?: number;
   readonly authenticationRequired?: boolean;

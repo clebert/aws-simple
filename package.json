@@ -20,7 +20,7 @@
   ],
   "scripts": {
     "preci": "run-s setup",
-    "ci": "run-p format:check lint test update-readme",
+    "ci": "run-p format:check compile lint test update-readme",
     "postci": "chmod +x lib/cjs/index.js",
     "compile": "onecmd compile",
     "format": "onecmd format",
