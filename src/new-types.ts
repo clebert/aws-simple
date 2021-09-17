@@ -107,12 +107,12 @@ export interface FileRoute extends CommonRoute {
   readonly filename: string;
   readonly catchAll?: boolean;
   readonly binaryMediaType?: string;
-  readonly cacheControl?: string;
+  readonly responseHeaders?: Readonly<Record<string, string>>;
 }
 
 export interface FolderRoute extends CommonRoute {
   readonly kind: 'folder';
   readonly dirname: string;
   readonly binaryMediaTypes?: readonly [string, ...string[]];
-  readonly cacheControl?: string;
+  readonly responseHeaders?: Readonly<Record<string, string>>;
 }

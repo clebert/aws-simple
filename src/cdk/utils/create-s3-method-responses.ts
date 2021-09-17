@@ -14,15 +14,10 @@ export function createS3MethodResponses(
     'method.response.header.Content-Type': true,
   };
 
-  const {responseHeaders} = s3Config;
+  const {responseHeaders = {}} = s3Config;
 
-  if (responseHeaders) {
-    const {cacheControl} = responseHeaders;
-
-    if (cacheControl) {
-      status200ResponseParameters['method.response.header.Cache-Control'] =
-        true;
-    }
+  for (const key of Object.keys(responseHeaders)) {
+    status200ResponseParameters[`method.response.header.${key}`] = true;
   }
 
   return [

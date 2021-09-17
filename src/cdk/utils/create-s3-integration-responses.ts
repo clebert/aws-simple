@@ -15,16 +15,10 @@ export function createS3IntegrationResponses(
       'integration.response.header.Content-Type',
   };
 
-  const {responseHeaders} = s3Config;
+  const {responseHeaders = {}} = s3Config;
 
-  if (responseHeaders) {
-    const {cacheControl} = responseHeaders;
-
-    if (cacheControl) {
-      status200ResponseParameters[
-        'method.response.header.Cache-Control'
-      ] = `'${cacheControl}'`;
-    }
+  for (const [key, value] of Object.entries(responseHeaders)) {
+    status200ResponseParameters[`method.response.header.${key}`] = `'${value}'`;
   }
 
   return [
