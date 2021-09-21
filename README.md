@@ -8,43 +8,17 @@
 [version-badge]: https://badgen.net/npm/v/aws-simple
 [version-link]: https://www.npmjs.com/package/aws-simple
 [license-badge]: https://badgen.net/npm/license/aws-simple
-[license-link]: https://github.com/clebert/aws-simple/blob/master/LICENSE
+[license-link]: https://github.com/clebert/aws-simple/blob/master/LICENSE.md
 
 A Node.js interface for **AWS** that allows easy configuration and deployment of
 **simple** web apps.
 
-## Contents
-
-- [Quick Overview](#quick-overview)
-- [Motivation](#motivation)
-- [Getting Started](#getting-started)
-- [Configuration](#configuration)
-- [CLI Usage](#cli-usage)
-
-## Quick Overview
+## Introduction
 
 `aws-simple` allows you to easily create and deploy an API Gateway with a custom
 domain and optional alias record, host static web resources via S3, and
 provision public backend APIs via Lambda. In addition, a local DEV server can be
 started to emulate the resulting AWS infrastructure.
-
-## Motivation
-
-<details>
-  <summary>Show details</summary>
-
-In my job I mainly build web apps on top of existing backend/CMS systems. Since
-many of the frontend tech stacks are similar, I created an abstraction for the
-AWS CDK/SDK for a faster and easier setup.
-
-Since existing backend/CMS systems are used, an additional persistence layer is
-rarely required. Therefore, setting up such a layer (e.g. with Amazon DynamoDB)
-is not supported.
-
-I deliberately kept it simple. An app with a more complex setup should be set up
-manually with the AWS CDK/SDK.
-
-</details>
 
 ## Getting Started
 
@@ -83,9 +57,6 @@ for one of my open source applications
 [here](https://github.com/clebert/bookmark.wtf/blob/main/aws-simple.config.js).
 
 ### Create an AWS IAM user
-
-<details>
-  <summary>Show details</summary>
 
 You need to
 [create an AWS IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html)
@@ -128,12 +99,7 @@ with programmatic access and the following attached policy:
 }
 ```
 
-</details>
-
 ### Optional: Create an AWS profile
-
-<details>
-  <summary>Show details</summary>
 
 You can install the `aws` CLI, e.g. with:
 
@@ -185,12 +151,7 @@ output = json
 region = eu-central-1
 ```
 
-</details>
-
 ### Set the AWS profile
-
-<details>
-  <summary>Show details</summary>
 
 The following two environment variables `AWS_PROFILE` and `AWS_DEFAULT_PROFILE`
 are evaluated in the specified order. If neither of the two environment
@@ -202,12 +163,7 @@ The following is an example of setting a specific profile:
 AWS_PROFILE=my-profile npx aws-simple list
 ```
 
-</details>
-
 ### Set the AWS credentials
-
-<details>
-  <summary>Show details</summary>
 
 The following two environment variables `AWS_ACCESS_KEY_ID` and
 `AWS_SECRET_ACCESS_KEY` are evaluated. If these are not set, an attempt is made
@@ -215,12 +171,7 @@ to read the credentials from the AWS shared credentials file using the AWS
 profile. The default location of the file (`~/.aws/credentials`) can be
 overwritten by setting the environment variable `AWS_SHARED_CREDENTIALS_FILE`.
 
-</details>
-
 ### Set the AWS region
-
-<details>
-  <summary>Show details</summary>
 
 The following two environment variables `AWS_REGION` and `AWS_DEFAULT_REGION`
 are evaluated in the specified order. If neither of the two environment
@@ -228,12 +179,7 @@ variables is set, an attempt is made to read the region from the AWS config file
 using the AWS profile. The default location of the file (`~/.aws/config`) can be
 overwritten by setting the environment variable `AWS_CONFIG_FILE`.
 
-</details>
-
 ### Bootstrap the AWS environment
-
-<details>
-  <summary>Show details</summary>
 
 Before you can use the AWS CDK you must
 [bootstrap your AWS environment](https://docs.aws.amazon.com/cdk/latest/guide/tools.html)
@@ -243,12 +189,7 @@ to create the infrastructure that the AWS CDK CLI needs to deploy your app:
 npx cdk bootstrap --app 'npx aws-simple create'
 ```
 
-</details>
-
 ### Start a local DEV server
-
-<details>
-  <summary>Show details</summary>
 
 ```
 npx aws-simple start
@@ -258,12 +199,7 @@ npx aws-simple start
 restarted. If a bundler such as Parcel or Webpack is used, its watcher must be
 started in addition to the DEV server.
 
-</details>
-
 ### Deploy a stack to AWS
-
-<details>
-  <summary>Show details</summary>
 
 Create and deploy a stack using the CDK:
 
@@ -299,14 +235,9 @@ Example `package.json` scripts:
 additional argument `--require-approval never`, e.g.
 `npm run deploy -- --require-approval never`.
 
-</details>
-
 ## Configuration
 
 ### Use TypeScript for auto-completion support
-
-<details>
-  <summary>Show details</summary>
 
 TypeScript 2.3 and later support type-checking in `*.js` files by adding a
 `// @ts-check` comment to them:
@@ -325,12 +256,7 @@ exports.default = {
 };
 ```
 
-</details>
-
 ### Configure a custom domain
-
-<details>
-  <summary>Show details</summary>
 
 In order to use a custom domain,
 [a public certificate](https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html)
@@ -362,12 +288,7 @@ deployed simultaneously. In this case the optional `aliasRecordName` property is
 used to give each stack its own URL, e.g. `example.com` or `beta.example.com`
 (`APP_VERSION=beta`).
 
-</details>
-
 ### Configure a Lambda function
-
-<details>
-  <summary>Show details</summary>
 
 You can configure a Lambda function that can be accessed via GET request under
 the `/hello` path as follows:
@@ -399,12 +320,7 @@ exports.handler = handler;
 must be bundled with a bundler such as Webpack (in this case you have to set the
 target to node: `{target: 'node'}`) to create a single self-contained file.
 
-</details>
-
 ### Configure an S3 file
-
-<details>
-  <summary>Show details</summary>
 
 You can configure an S3 file that can be accessed via GET request under the `/`
 path as follows:
@@ -418,12 +334,7 @@ exports.default = {
 };
 ```
 
-</details>
-
 ### Configure an S3 folder
-
-<details>
-  <summary>Show details</summary>
 
 You can configure an S3 folder that can be accessed via GET request under the
 `/assets/*` path as follows:
@@ -444,12 +355,7 @@ property are loaded into the S3 bucket associated with the stack using the
 **Important:** Nested folders are ignored! Thus a separate route must be created
 for each nested folder.
 
-</details>
-
 ### Enable binary support
-
-<details>
-  <summary>Show details</summary>
 
 You can specify media types (e.g. `image/png`, `application/octet-stream`, etc.)
 to be treated as binary as follows:
@@ -469,12 +375,7 @@ exports.default = {
 
 **Important:** Folders may only contain either binary or non-binary files.
 
-</details>
-
 ### Enable CORS
-
-<details>
-  <summary>Show details</summary>
 
 To enable CORS for a route, you can set its `enableCors` property to `true`:
 
@@ -511,12 +412,7 @@ exports.handler = handler;
 to be used under the hood. This means that CORS cannot be activated by route. As
 soon as a route has activated CORS, this applies to all routes!
 
-</details>
-
 ### Enable basic authentication
-
-<details>
-  <summary>Show details</summary>
 
 To enable basic authentication for a route, you can set its
 `enableAuthentication` property to `true`:
@@ -550,12 +446,7 @@ exports.default = {
 
 **Note:** Basic authentication is not simulated by the local DEV server.
 
-</details>
-
 ### Configure a single-page application (SPA)
-
-<details>
-  <summary>Show details</summary>
 
 It can be useful to deliver the same single-page application under different
 paths. Instead of specifying multiple routes, you can set the `catchAll`
@@ -572,18 +463,11 @@ exports.default = {
 };
 ```
 
-</details>
-
 ### Troubleshooting
-
-<details>
-  <summary>Show details</summary>
 
 [Some changes](https://docs.aws.amazon.com/apigateway/latest/developerguide/updating-api.html)
 to an existing stack require a redeployment of the API Gateway. So if changes to
 a stack do not work, the `aws-simple redeploy` command might help.
-
-</details>
 
 ## CLI Usage
 
@@ -609,9 +493,6 @@ simple web apps.
 
 ### Create a stack using the CDK
 
-<details>
-  <summary>Show details</summary>
-
 ```
 aws-simple create [options]
 
@@ -626,12 +507,7 @@ Examples:
   npx cdk deploy --app 'npx aws-simple create'
 ```
 
-</details>
-
 ### Upload files to S3
-
-<details>
-  <summary>Show details</summary>
 
 ```
 aws-simple upload [options]
@@ -646,12 +522,7 @@ Examples:
   npx aws-simple upload
 ```
 
-</details>
-
 ### Start a local DEV server
-
-<details>
-  <summary>Show details</summary>
 
 ```
 aws-simple start [options]
@@ -673,12 +544,7 @@ Examples:
   npx aws-simple start --port 3001 --cache --verbose
 ```
 
-</details>
-
 ### List all deployed stacks
-
-<details>
-  <summary>Show details</summary>
 
 ```
 aws-simple list [options]
@@ -693,12 +559,7 @@ Examples:
   npx aws-simple list
 ```
 
-</details>
-
 ### Tag a deployed stack
-
-<details>
-  <summary>Show details</summary>
 
 ```
 aws-simple tag [options]
@@ -718,12 +579,7 @@ Examples:
   npx aws-simple tag --add prerelease --yes
 ```
 
-</details>
-
 ### Clean up old deployed stacks
-
-<details>
-  <summary>Show details</summary>
 
 ```
 aws-simple clean-up [options]
@@ -744,12 +600,7 @@ Examples:
   npx aws-simple clean-up --min-age 14 --exclude release prerelease --yes
 ```
 
-</details>
-
 ### Redeploy the API Gateway
-
-<details>
-  <summary>Show details</summary>
 
 ```
 aws-simple redeploy [options]
@@ -763,8 +614,6 @@ Options:
 Examples:
   npx aws-simple redeploy
 ```
-
-</details>
 
 ---
 
