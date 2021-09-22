@@ -35,6 +35,7 @@ export function translateAppConfig(app: App): AppConfig {
             publicPath: path,
             localPath: route.filename,
             description: route.description,
+            catchAll: route.catchAll,
             handler: route.handler ?? 'handler',
             memorySize: route.memorySize ?? 128,
             timeoutInSeconds: route.timeoutInSeconds ?? 28,
@@ -58,14 +59,6 @@ export function translateAppConfig(app: App): AppConfig {
           };
 
           lambdaConfigs.push(lambdaConfig);
-
-          if (route.catchAll) {
-            lambdaConfigs.push({
-              ...lambdaConfig,
-              publicPath:
-                path + (path.endsWith('/') ? '{proxy+}' : '/{proxy+}'),
-            });
-          }
         } else if (route.kind === 'file') {
           if (route.binaryMediaType) {
             binaryMediaTypes.add(route.binaryMediaType);
