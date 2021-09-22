@@ -15,6 +15,7 @@ export function createLambdaIntegration(
     publicPath,
     localPath,
     description,
+    catchAll,
     handler = 'handler',
     memorySize = 3008,
     timeoutInSeconds = 28,
@@ -35,48 +36,56 @@ export function createLambdaIntegration(
     );
   }
 
-  restApi.root.resourceForPath(publicPath).addMethod(
-    httpMethod,
-    new aws_apigateway.LambdaIntegration(
-      new aws_lambda.Function(
-        stack,
-        `Lambda${httpMethod}${createShortHash(publicPath)}`,
-        {
-          description,
-          runtime: aws_lambda.Runtime.NODEJS_14_X,
-          code: aws_lambda.Code.fromAsset(path.dirname(localPath)),
-          handler: `${getLambdaModuleName(localPath)}.${handler}`,
-          timeout: Duration.seconds(
-            timeoutInSeconds > 28 ? 28 : timeoutInSeconds
-          ),
-          memorySize,
-          environment,
-        }
-      ),
-      {
-        cacheKeyParameters: Object.keys(acceptedParameters)
-          .filter(
-            (parameterName) => acceptedParameters[parameterName]!.isCacheKey
-          )
-          .map(
-            (parameterName) => `method.request.querystring.${parameterName}`
-          ),
-      }
-    ),
+  const lambdaFunction = new aws_lambda.Function(
+    stack,
+    `Lambda${httpMethod}${createShortHash(publicPath)}`,
     {
-      authorizationType: authenticationRequired
-        ? aws_apigateway.AuthorizationType.CUSTOM
-        : aws_apigateway.AuthorizationType.NONE,
-      authorizer: authenticationRequired ? authorizer : undefined,
-      requestParameters: Object.keys(acceptedParameters).reduce(
-        (requestParameters, parameterName) => {
-          requestParameters[`method.request.querystring.${parameterName}`] =
-            Boolean(acceptedParameters[parameterName]!.required);
-
-          return requestParameters;
-        },
-        {} as Record<string, boolean>
-      ),
+      description,
+      runtime: aws_lambda.Runtime.NODEJS_14_X,
+      code: aws_lambda.Code.fromAsset(path.dirname(localPath)),
+      handler: `${getLambdaModuleName(localPath)}.${handler}`,
+      timeout: Duration.seconds(timeoutInSeconds > 28 ? 28 : timeoutInSeconds),
+      memorySize,
+      environment,
     }
   );
+
+  const methodOptions: aws_apigateway.MethodOptions = {
+    authorizationType: authenticationRequired
+      ? aws_apigateway.AuthorizationType.CUSTOM
+      : aws_apigateway.AuthorizationType.NONE,
+    authorizer: authenticationRequired ? authorizer : undefined,
+    requestParameters: Object.keys(acceptedParameters).reduce(
+      (requestParameters, parameterName) => {
+        requestParameters[`method.request.querystring.${parameterName}`] =
+          Boolean(acceptedParameters[parameterName]!.required);
+
+        return requestParameters;
+      },
+      {} as Record<string, boolean>
+    ),
+  };
+
+  const lambdaIntegration = new aws_apigateway.LambdaIntegration(
+    lambdaFunction,
+    {
+      cacheKeyParameters: Object.keys(acceptedParameters)
+        .filter(
+          (parameterName) => acceptedParameters[parameterName]!.isCacheKey
+        )
+        .map((parameterName) => `method.request.querystring.${parameterName}`),
+    }
+  );
+
+  restApi.root
+    .resourceForPath(publicPath)
+    .addMethod(httpMethod, lambdaIntegration, methodOptions);
+
+  if (catchAll) {
+    restApi.root
+      .resourceForPath(
+        publicPath + (publicPath.endsWith('/') ? '{proxy+}' : '/{proxy+}')
+      )
+      .addMethod(httpMethod, lambdaIntegration, methodOptions);
+  }
 }

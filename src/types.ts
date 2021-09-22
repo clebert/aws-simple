@@ -43,6 +43,7 @@ export interface LambdaConfig {
    * A description can be useful to find a Lambda function in the AWS console.
    */
   readonly description?: string;
+  readonly catchAll?: boolean;
   readonly handler?: string;
   readonly memorySize?: number;
 
