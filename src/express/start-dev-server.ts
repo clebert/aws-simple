@@ -20,6 +20,24 @@ export interface DevServerInit {
   readonly verbose: boolean;
 }
 
+function splitLambdaConfigs(lambdaConfigs: LambdaConfig[]): LambdaConfig[] {
+  const allLambdaConfigs: LambdaConfig[] = [];
+
+  for (const {publicPath, catchAll, ...lambdaConfig} of lambdaConfigs) {
+    allLambdaConfigs.push({...lambdaConfig, publicPath});
+
+    if (catchAll) {
+      allLambdaConfigs.push({
+        ...lambdaConfig,
+        publicPath:
+          publicPath + (publicPath.endsWith('/') ? '{proxy+}' : '/{proxy+}'),
+      });
+    }
+  }
+
+  return allLambdaConfigs;
+}
+
 export async function startDevServer(init: DevServerInit): Promise<void> {
   const {appConfig, requestedPort, useCache, verbose} = init;
 
@@ -36,7 +54,6 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
 
   const {
     minimumCompressionSizeInBytes,
-    lambdaConfigs = [],
     s3Configs = [],
     enableCors = false,
   } = stackConfig;
@@ -49,10 +66,10 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
     ? new WeakMap<LambdaConfig, Map<string, APIGatewayProxyResult>>()
     : undefined;
 
-  for (const routeConfig of sortRouteConfigs([
-    ...lambdaConfigs,
-    ...s3Configs,
-  ])) {
+  const lambdaConfigs = splitLambdaConfigs(stackConfig.lambdaConfigs ?? []);
+  const routeConfigs = [...lambdaConfigs, ...s3Configs];
+
+  for (const routeConfig of sortRouteConfigs(routeConfigs)) {
     if ('httpMethod' in routeConfig) {
       if (lambdaCaches && routeConfig.cachingEnabled) {
         lambdaCaches.set(routeConfig, new Map());
@@ -100,10 +117,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
 
       removeAllRoutes(app);
 
-      for (const routeConfig of sortRouteConfigs([
-        ...lambdaConfigs,
-        ...s3Configs,
-      ])) {
+      for (const routeConfig of sortRouteConfigs(routeConfigs)) {
         if ('httpMethod' in routeConfig) {
           registerLambdaRoute(app, routeConfig, lambdaCaches?.get(routeConfig));
         } else {
@@ -118,9 +132,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
       );
     };
 
-    const localPaths = [...lambdaConfigs, ...s3Configs].map(
-      ({localPath}) => localPath
-    );
+    const localPaths = routeConfigs.map(({localPath}) => localPath);
 
     for (const localPath of localPaths) {
       mkdirp.sync(path.dirname(localPath));
