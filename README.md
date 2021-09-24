@@ -475,13 +475,14 @@ a stack do not work, the `aws-simple redeploy` command might help.
 Usage: aws-simple <command> [options]
 
 Commands:
-  aws-simple create [options]    Create a stack using the CDK
-  aws-simple upload [options]    Upload files to S3
-  aws-simple start [options]     Start a local DEV server
-  aws-simple list [options]      List all deployed stacks
-  aws-simple tag [options]       Tag a deployed stack
-  aws-simple clean-up [options]  Clean up old deployed stacks
-  aws-simple redeploy [options]  Redeploy the API Gateway
+  aws-simple create [options]       Create a stack using the CDK
+  aws-simple upload [options]       Upload files to S3
+  aws-simple start [options]        Start a local DEV server
+  aws-simple list [options]         List all deployed stacks
+  aws-simple tag [options]          Tag a deployed stack
+  aws-simple clean-up [options]     Clean up old deployed stacks
+  aws-simple redeploy [options]     Redeploy the API Gateway
+  aws-simple flush-cache [options]  Flush the cache of the API Gateway
 
 Options:
       --version  Show version number                                   [boolean]
