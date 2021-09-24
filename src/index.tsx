@@ -8,6 +8,7 @@ import signalExit from 'signal-exit';
 import yargs from 'yargs';
 import {cleanUp} from './commands/clean-up';
 import {create} from './commands/create';
+import {flushCache} from './commands/flush-cache';
 import {start} from './commands/start';
 import {upload} from './commands/upload';
 import {ListCommand} from './components/list-command';
@@ -22,6 +23,7 @@ import {loadAppConfig} from './utils/load-app-config';
   const {description} = require('../../package.json');
 
   const argv = compose(
+    flushCache.describe,
     RedeployCommand.describe,
     cleanUp.describe,
     TagCommand.describe,
@@ -58,6 +60,7 @@ import {loadAppConfig} from './utils/load-app-config';
   // Legacy UI
   await upload(appConfig, clientConfig, argv);
   await cleanUp(appConfig, clientConfig, argv);
+  await flushCache(appConfig, clientConfig, argv);
 
   await exitPromise;
 })().catch((error) => {
