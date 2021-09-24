@@ -3,6 +3,18 @@
 const cp = require('child_process');
 const fs = require('fs');
 
+const commandNames = [
+  '<command>',
+  'create',
+  'upload',
+  'start',
+  'list',
+  'tag',
+  'clean-up',
+  'redeploy',
+  'flush-cache',
+];
+
 async function getCommandUsage(commandName) {
   return new Promise((resolve, reject) => {
     cp.exec(
@@ -20,32 +32,31 @@ async function getCommandUsage(commandName) {
   });
 }
 
-async function replaceCommandUsage(readmeText, commandName) {
+function replaceCommandUsage(readmeText, commandName, usage) {
   const regExp = new RegExp(
     `\`\`\`\\s(?:Usage: )?aws-simple ${commandName}[\\s\\S]+?\\s\`\`\``
   );
 
-  return readmeText.replace(
-    regExp,
-    `\`\`\`\n${await getCommandUsage(commandName)}\n\`\`\``
-  );
+  return readmeText.replace(regExp, `\`\`\`\n${usage}\n\`\`\``);
 }
 
 (async () => {
-  const readmeText = fs.readFileSync('README.md').toString();
+  const initialReadmeText = fs.readFileSync('README.md').toString();
 
-  let updatedReadmeText = readmeText;
+  const commandUsages = await Promise.all(
+    commandNames.map(async (commandName) => ({
+      commandName,
+      usage: await getCommandUsage(commandName),
+    }))
+  );
 
-  updatedReadmeText = await replaceCommandUsage(updatedReadmeText, '<command>');
-  updatedReadmeText = await replaceCommandUsage(updatedReadmeText, 'create');
-  updatedReadmeText = await replaceCommandUsage(updatedReadmeText, 'upload');
-  updatedReadmeText = await replaceCommandUsage(updatedReadmeText, 'start');
-  updatedReadmeText = await replaceCommandUsage(updatedReadmeText, 'list');
-  updatedReadmeText = await replaceCommandUsage(updatedReadmeText, 'tag');
-  updatedReadmeText = await replaceCommandUsage(updatedReadmeText, 'clean-up');
-  updatedReadmeText = await replaceCommandUsage(updatedReadmeText, 'redeploy');
+  const updatedReadmeText = commandUsages.reduce(
+    (readmeText, {commandName, usage}) =>
+      replaceCommandUsage(readmeText, commandName, usage),
+    initialReadmeText
+  );
 
-  if (process.env.GITHUB_ACTION && updatedReadmeText !== readmeText) {
+  if (process.env.GITHUB_ACTION && updatedReadmeText !== initialReadmeText) {
     throw new Error('The README is not up to date.');
   }
 

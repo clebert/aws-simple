@@ -616,6 +616,21 @@ Examples:
   npx aws-simple redeploy
 ```
 
+### Flush the cache of the API Gateway
+
+```
+aws-simple flush-cache [options]
+
+Flush the cache of the API Gateway
+
+Options:
+      --version  Show version number                                   [boolean]
+  -h, --help     Show help                                             [boolean]
+
+Examples:
+  npx aws-simple flush-cache
+```
+
 ---
 
 Copyright 2019-2021 Clemens Akens. All rights reserved.
