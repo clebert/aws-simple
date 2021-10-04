@@ -53,6 +53,11 @@ export interface FunctionRoute extends CommonRoute {
   readonly catchAll?: boolean;
 
   /**
+   * a secretId supporting wildcard to allow read access to secrets.
+   */
+  readonly secretId?: string;
+
+  /**
    * Default: `'GET'`
    */
   readonly method?: FunctionMethod;

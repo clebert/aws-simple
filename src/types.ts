@@ -38,6 +38,10 @@ export interface LambdaConfig {
   readonly httpMethod: LambdaHttpMethod;
   readonly publicPath: string;
   readonly localPath: string;
+  /**
+   * a secretId supporting wildcard to allow read access to secrets.
+   */
+  readonly secretId?: string;
 
   /**
    * A description can be useful to find a Lambda function in the AWS console.

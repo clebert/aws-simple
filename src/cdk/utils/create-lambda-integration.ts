@@ -1,5 +1,11 @@
 import * as path from 'path';
-import {Duration, Stack, aws_apigateway, aws_lambda} from 'aws-cdk-lib';
+import {
+  Duration,
+  Stack,
+  aws_apigateway,
+  aws_lambda,
+  aws_iam,
+} from 'aws-cdk-lib';
 import {LambdaConfig} from '../../types';
 import {createShortHash} from '../../utils/create-short-hash';
 import {getLambdaModuleName} from '../../utils/get-lambda-module-name';
@@ -22,6 +28,7 @@ export function createLambdaIntegration(
     acceptedParameters = {},
     environment,
     authenticationRequired,
+    secretId,
   } = lambdaConfig;
 
   if (timeoutInSeconds > 28) {
@@ -49,6 +56,18 @@ export function createLambdaIntegration(
       environment,
     }
   );
+
+  if (secretId) {
+    const secretsManagerPolicyStatement = new aws_iam.PolicyStatement({
+      effect: aws_iam.Effect.ALLOW,
+      actions: ['secretsmanager:GetSecretValue'],
+      resources: [
+        `arn:aws:secretsmanager:${stack.region}:${stack.account}:secret:${secretId}`,
+      ],
+    });
+
+    lambdaFunction.addToRolePolicy(secretsManagerPolicyStatement);
+  }
 
   const methodOptions: aws_apigateway.MethodOptions = {
     authorizationType: authenticationRequired

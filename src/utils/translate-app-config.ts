@@ -56,6 +56,7 @@ export function translateAppConfig(app: App): AppConfig {
             environment: route.environment,
             authenticationRequired: route.enableAuthentication,
             devServer: route.devServer,
+            secretId: route.secretId,
           };
 
           lambdaConfigs.push(lambdaConfig);
