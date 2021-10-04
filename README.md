@@ -614,6 +614,22 @@ Examples:
   npx aws-simple flush-cache
 ```
 
+## Development
+
+If you want to develop locally on this project, please make sure you have
+installed the latest `16.x` version of Node.js and the latest `7.x` version of
+npm. Please run the following commands in the order given to get started:
+
+```sh
+npm install
+npm run setup
+npm run ci
+```
+
+**Note:** This project uses [onecmd](https://github.com/clebert/onecmd). The
+configuration files are created using onecmd with the `npm run setup` command
+and hidden in VS Code.
+
 ---
 
 Copyright 2019-2021 Clemens Akens. All rights reserved.
