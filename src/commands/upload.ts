@@ -1,5 +1,8 @@
+import {animate, list, render} from '@rtmpl/terminal';
 import {CloudFormation} from 'aws-sdk';
-import Listr from 'listr';
+import {green, red, yellow} from 'chalk';
+import {dots} from 'cli-spinners';
+import {TemplateNode} from 'rtmpl';
 import joinUrl from 'url-join';
 import {Argv} from 'yargs';
 import {createStackBaseUrl} from '../sdk/create-stack-base-url';
@@ -28,8 +31,9 @@ export async function upload(
   const stack = await findStack(appConfig, clientConfig);
   const stackConfig = appConfig.createStackConfig();
   const baseUrl = createStackBaseUrl(stackConfig, stack);
-  const listrTasks: Listr.ListrTask[] = [];
   const {s3Configs = []} = stackConfig;
+  const nodes: TemplateNode<string>[] = [];
+  const promises: Promise<void>[] = [];
 
   for (const s3Config of s3Configs) {
     for (const s3UploadConfig of resolveS3UploadConfigs(s3Config)) {
@@ -39,26 +43,35 @@ export async function upload(
         s3UploadConfig
       );
 
-      listrTasks.push({
-        title: `Uploading file: ${filename}`,
-        task: async (_, listrTask) => {
-          try {
-            await promise;
+      const spinnerNode = TemplateNode.create<string>``;
 
-            const url = joinUrl(baseUrl, s3UploadConfig.publicPath);
-
-            listrTask.title = `Successfully uploaded file: ${url}`;
-          } catch (error) {
-            listrTask.title = `Error while uploading file: ${filename}`;
-
-            throw error;
-          }
-        },
+      animate(spinnerNode, {
+        ...dots,
+        frames: dots.frames.map((frame) => yellow(frame)),
       });
+
+      const node = TemplateNode.create`  ${spinnerNode} Uploading file: ${filename}`;
+      const url = joinUrl(baseUrl, s3UploadConfig.publicPath);
+
+      promise
+        .then(
+          () => node.update`  ${green('✔')} Successfully uploaded file: ${url}`
+        )
+        .catch(
+          () =>
+            node.update`  ${red('✖')} Error while uploading file: ${filename}`
+        );
+
+      nodes.push(node);
+      promises.push(promise);
     }
   }
 
-  await new Listr(listrTasks, {concurrent: true, exitOnError: true}).run();
+  render(TemplateNode.create(...list(nodes, {separator: '\n'})), {
+    debounce: true,
+  });
+
+  await Promise.allSettled(promises).catch(() => process.exit(1));
 }
 
 upload.describe = (argv: Argv) =>
