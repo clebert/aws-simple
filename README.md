@@ -68,31 +68,14 @@ with programmatic access and the following attached policy:
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": ["sts:AssumeRole"],
-      "Resource": "arn:aws:iam::*:role/cdk-*"
-    },
-    {
       "Action": [
-        "ssm:GetParameter",
-        "ssm:GetParameters",
-        "ssm:PutParameter",
-        "ssm:DeleteParameter"
+        "apigateway:*",
+        "cloudformation:*",
+        "iam:*",
+        "lambda:*",
+        "route53:*",
+        "s3:*"
       ],
-      "Resource": "arn:aws:ssm:*:*:parameter/cdk-bootstrap/*",
-      "Effect": "Allow"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ecr:DescribeRepositories",
-        "ecr:CreateRepository",
-        "ecr:DeleteRepository"
-      ],
-      "Resource": "arn:aws:ecr:*:*:repository/cdk-*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": ["apigateway:*", "cloudformation:*", "s3:*"],
       "Resource": "*"
     }
   ]
