@@ -38,8 +38,9 @@ export interface LambdaConfig {
   readonly httpMethod: LambdaHttpMethod;
   readonly publicPath: string;
   readonly localPath: string;
+
   /**
-   * a secretId supporting wildcard to allow read access to secrets.
+   * A secret ID supporting wildcard to allow read access to secrets.
    */
   readonly secretId?: string;
 
