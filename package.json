@@ -36,7 +36,7 @@
     "update-readme": "node update-readme.js"
   },
   "dependencies": {
-    "@rtmpl/terminal": "^1.1.0",
+    "@rtmpl/terminal": "^2.2.0",
     "aws-cdk-lib": "^2.0.0-rc.21",
     "aws-sdk": "^2.984.0",
     "chalk": "^4.1.2",

@@ -1,4 +1,4 @@
-import {animate, list, render} from '@rtmpl/terminal';
+import {Terminal, animate, list} from '@rtmpl/terminal';
 import {CloudFormation} from 'aws-sdk';
 import {green, red, yellow} from 'chalk';
 import {dots} from 'cli-spinners';
@@ -32,7 +32,7 @@ export async function upload(
   const stackConfig = appConfig.createStackConfig();
   const baseUrl = createStackBaseUrl(stackConfig, stack);
   const {s3Configs = []} = stackConfig;
-  const nodes: TemplateNode<string>[] = [];
+  const Tasks: TemplateNode<string>[] = [];
   const promises: Promise<void>[] = [];
 
   for (const s3Config of s3Configs) {
@@ -43,35 +43,41 @@ export async function upload(
         s3UploadConfig
       );
 
-      const spinnerNode = TemplateNode.create<string>``;
+      const Spinner = TemplateNode.create<string>``;
 
-      animate(spinnerNode, {
+      animate(Spinner, {
         ...dots,
         frames: dots.frames.map((frame) => yellow(frame)),
       });
 
-      const node = TemplateNode.create`  ${spinnerNode} Uploading file: ${filename}`;
+      const Task = TemplateNode.create`  ${Spinner} Uploading file: ${filename}`;
       const url = joinUrl(baseUrl, s3UploadConfig.publicPath);
 
       promise
         .then(
-          () => node.update`  ${green('✔')} Successfully uploaded file: ${url}`
+          () => Task.update`  ${green('✔')} Successfully uploaded file: ${url}`
         )
         .catch(
           () =>
-            node.update`  ${red('✖')} Error while uploading file: ${filename}`
+            Task.update`  ${red('✖')} Error while uploading file: ${filename}`
         );
 
-      nodes.push(node);
+      Tasks.push(Task);
       promises.push(promise);
     }
   }
 
-  render(TemplateNode.create(...list(nodes, {separator: '\n'})), {
-    debounce: true,
-  });
+  const close = Terminal.open(
+    TemplateNode.create(...list(Tasks, {separator: '\n'}))
+  );
 
-  await Promise.allSettled(promises).catch(() => process.exit(1));
+  try {
+    await Promise.allSettled(promises);
+  } catch {
+    process.exit(1);
+  } finally {
+    close();
+  }
 }
 
 upload.describe = (argv: Argv) =>
