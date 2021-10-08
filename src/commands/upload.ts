@@ -1,8 +1,8 @@
-import {Terminal, animate, list} from '@rtmpl/terminal';
+import {Terminal, animate} from '@rtmpl/terminal';
 import {CloudFormation} from 'aws-sdk';
 import {green, red, yellow} from 'chalk';
 import {dots} from 'cli-spinners';
-import {TemplateNode} from 'rtmpl';
+import {TemplateNode, TemplateNodeList} from 'rtmpl';
 import joinUrl from 'url-join';
 import {Argv} from 'yargs';
 import {createStackBaseUrl} from '../sdk/create-stack-base-url';
@@ -32,8 +32,8 @@ export async function upload(
   const stackConfig = appConfig.createStackConfig();
   const baseUrl = createStackBaseUrl(stackConfig, stack);
   const {s3Configs = []} = stackConfig;
-  const Tasks: TemplateNode<string>[] = [];
-  const promises: Promise<void>[] = [];
+  const uploadNodeList = new TemplateNodeList({separator: '\n'});
+  const uploadPromises: Promise<void>[] = [];
 
   for (const s3Config of s3Configs) {
     for (const s3UploadConfig of resolveS3UploadConfigs(s3Config)) {
@@ -43,36 +43,33 @@ export async function upload(
         s3UploadConfig
       );
 
-      const Spinner = TemplateNode.create<string>``;
+      const spinnerNode = TemplateNode.create<string>``;
 
-      animate(Spinner, {
+      animate(spinnerNode, {
         ...dots,
         frames: dots.frames.map((frame) => yellow(frame)),
       });
 
-      const Task = TemplateNode.create`  ${Spinner} Uploading file: ${filename}`;
+      const node = uploadNodeList.add`  ${spinnerNode} Uploading file: ${filename}`;
       const url = joinUrl(baseUrl, s3UploadConfig.publicPath);
 
       promise
         .then(
-          () => Task.update`  ${green('✔')} Successfully uploaded file: ${url}`
+          () => node.update`  ${green('✔')} Successfully uploaded file: ${url}`
         )
         .catch(
           () =>
-            Task.update`  ${red('✖')} Error while uploading file: ${filename}`
+            node.update`  ${red('✖')} Error while uploading file: ${filename}`
         );
 
-      Tasks.push(Task);
-      promises.push(promise);
+      uploadPromises.push(promise);
     }
   }
 
-  const close = Terminal.open(
-    TemplateNode.create(...list(Tasks, {separator: '\n'}))
-  );
+  const close = Terminal.open(uploadNodeList.node);
 
   try {
-    await Promise.allSettled(promises);
+    await Promise.allSettled(uploadPromises);
   } catch {
     process.exit(1);
   } finally {
