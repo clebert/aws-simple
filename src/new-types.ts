@@ -19,6 +19,8 @@ export interface Authentication {
   readonly username: string;
   readonly password: string;
   readonly cacheTtlInSeconds?: number;
+  readonly realm?: string;
+  readonly interactivePromptForXhr?: boolean;
 }
 
 export interface Routes {

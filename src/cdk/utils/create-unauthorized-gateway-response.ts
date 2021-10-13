@@ -10,6 +10,23 @@ export function createUnauthorizedGatewayResponse(
     return;
   }
 
+  const {interactivePromptForXhr, realm} =
+    stackConfig.basicAuthenticationConfig;
+
+  const corsHeader: {[key: string]: string} = stackConfig.enableCors
+    ? interactivePromptForXhr
+      ? {
+          'gatewayresponse.header.Access-Control-Allow-Origin':
+            'method.request.header.origin',
+          'gatewayresponse.header.Access-Control-Allow-Credentials': "'true'",
+          'gatewayresponse.header.Access-Control-Allow-Headers':
+            "'Authorization,*'",
+        }
+      : {
+          'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+        }
+    : {};
+
   // TODO: use GatewayResponse instead of CfnGatewayResponse
   new aws_apigateway.CfnGatewayResponse(
     stack,
@@ -19,10 +36,10 @@ export function createUnauthorizedGatewayResponse(
       responseType: 'UNAUTHORIZED',
       restApiId: restApi.restApiId,
       responseParameters: {
-        'gatewayresponse.header.WWW-Authenticate': "'Basic'",
-        ...(stackConfig.enableCors
-          ? {'gatewayresponse.header.Access-Control-Allow-Origin': "'*'"}
-          : {}),
+        'gatewayresponse.header.WWW-Authenticate': realm
+          ? `'Basic realm=${realm}'`
+          : "'Basic'",
+        ...corsHeader,
       },
       responseTemplates: {
         'application/json': '{"message":$context.error.messageString}',
