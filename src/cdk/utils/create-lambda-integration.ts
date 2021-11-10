@@ -3,8 +3,8 @@ import {
   Duration,
   Stack,
   aws_apigateway,
-  aws_lambda,
   aws_iam,
+  aws_lambda,
 } from 'aws-cdk-lib';
 import {LambdaConfig} from '../../types';
 import {createShortHash} from '../../utils/create-short-hash';
