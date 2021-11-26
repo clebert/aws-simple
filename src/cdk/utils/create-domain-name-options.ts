@@ -1,5 +1,4 @@
 import {Stack, aws_apigateway, aws_certificatemanager} from 'aws-cdk-lib';
-import {SecurityPolicy} from 'aws-cdk-lib/lib/aws-apigateway';
 import {StackConfig} from '../../types';
 
 export function createDomainNameOptions(
@@ -23,6 +22,6 @@ export function createDomainNameOptions(
       'Certificate',
       certificateArn
     ),
-    securityPolicy: SecurityPolicy.TLS_1_2,
+    securityPolicy: aws_apigateway.SecurityPolicy.TLS_1_2,
   };
 }
