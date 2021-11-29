@@ -1,6 +1,10 @@
 declare module 'lambda-local' {
-  import {APIGatewayProxyEvent, ProxyHandler, ProxyResult} from 'aws-lambda';
-  import {Logger} from 'winston';
+  import type {
+    APIGatewayProxyEvent,
+    ProxyHandler,
+    ProxyResult,
+  } from 'aws-lambda';
+  import type {Logger} from 'winston';
 
   export interface LambdaLocalExecuteOptions {
     readonly event?: Partial<APIGatewayProxyEvent>;

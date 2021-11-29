@@ -1,4 +1,4 @@
-import {CloudFormation} from 'aws-sdk';
+import type {CloudFormation} from 'aws-sdk';
 import {useApp} from 'ink';
 import React from 'react';
 import {AppConfigContext} from '../contexts/app-config-context';

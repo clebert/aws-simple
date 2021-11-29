@@ -1,6 +1,6 @@
-import {Argv} from 'yargs';
+import type {Argv} from 'yargs';
 import {createStack} from '../cdk/create-stack';
-import {AppConfig} from '../types';
+import type {AppConfig} from '../types';
 
 interface CreateArgv {
   readonly _: ['create'];

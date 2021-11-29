@@ -1,15 +1,15 @@
 import {Terminal, animate} from '@rtmpl/terminal';
-import {CloudFormation} from 'aws-sdk';
+import type {CloudFormation} from 'aws-sdk';
 import {green, red, yellow} from 'chalk';
 import {dots} from 'cli-spinners';
 import {TemplateNode, TemplateNodeList} from 'rtmpl';
 import joinUrl from 'url-join';
-import {Argv} from 'yargs';
+import type {Argv} from 'yargs';
 import {createStackBaseUrl} from '../sdk/create-stack-base-url';
 import {findStack} from '../sdk/find-stack';
 import {resolveS3UploadConfigs} from '../sdk/resolve-s3-upload-configs';
 import {uploadFileToS3} from '../sdk/upload-file-to-s3';
-import {AppConfig} from '../types';
+import type {AppConfig} from '../types';
 
 interface UploadArgv {
   readonly _: ['upload'];

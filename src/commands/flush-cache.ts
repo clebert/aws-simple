@@ -1,9 +1,9 @@
-import {CloudFormation} from 'aws-sdk';
+import type {CloudFormation} from 'aws-sdk';
 import Listr from 'listr';
-import {Argv} from 'yargs';
+import type {Argv} from 'yargs';
 import {findStack} from '../sdk/find-stack';
 import {flushApiGatewayCache} from '../sdk/flush-api-gateway-cache';
-import {AppConfig} from '../types';
+import type {AppConfig} from '../types';
 
 interface FlushCacheArgv {
   readonly _: ['flush-cache'];

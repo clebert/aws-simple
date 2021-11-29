@@ -1,8 +1,6 @@
-import {CloudFormation} from 'aws-sdk';
-import {
-  ExportName,
-  createUniqueExportName,
-} from '../utils/create-unique-export-name';
+import type {CloudFormation} from 'aws-sdk';
+import type {ExportName} from '../utils/create-unique-export-name';
+import {createUniqueExportName} from '../utils/create-unique-export-name';
 
 export function findStackOutput(
   stack: CloudFormation.Stack,

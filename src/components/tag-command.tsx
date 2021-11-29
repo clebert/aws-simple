@@ -1,6 +1,6 @@
 import {Text} from 'ink';
 import React from 'react';
-import {Argv} from 'yargs';
+import type {Argv} from 'yargs';
 import {useUpdateStackTags} from '../hooks/use-update-stack-tags';
 import {Confirm} from './confirm';
 import {Spinner} from './spinner';

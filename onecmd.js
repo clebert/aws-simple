@@ -5,7 +5,6 @@ const nodeVersion = '16';
 
 /** @type {readonly import('onecmd').Plugin[]} */
 const plugins = [
-  std.babel(),
   std.editorconfig(),
   std.eslint(),
   std.git(),
@@ -15,6 +14,7 @@ const plugins = [
   std.npm(),
   std.prettier(),
   std.react(),
+  std.swc(),
   std.typescript('node', 'package'),
   std.vscode({showFilesInEditor: false}),
 

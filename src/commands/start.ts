@@ -1,6 +1,6 @@
-import {Argv} from 'yargs';
+import type {Argv} from 'yargs';
 import {startDevServer} from '../express/start-dev-server';
-import {AppConfig} from '../types';
+import type {AppConfig} from '../types';
 
 interface StartArgv {
   readonly _: ['start'];

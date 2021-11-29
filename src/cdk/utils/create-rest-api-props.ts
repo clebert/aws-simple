@@ -1,5 +1,6 @@
-import {Stack, aws_apigateway} from 'aws-cdk-lib';
-import {StackConfig} from '../../types';
+import type {Stack} from 'aws-cdk-lib';
+import {aws_apigateway} from 'aws-cdk-lib';
+import type {StackConfig} from '../../types';
 import {createDomainNameOptions} from './create-domain-name-options';
 import {createStageOptions} from './create-stage-options';
 

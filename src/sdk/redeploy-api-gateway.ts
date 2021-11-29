@@ -1,4 +1,5 @@
-import {APIGateway, CloudFormation} from 'aws-sdk';
+import type {CloudFormation} from 'aws-sdk';
+import {APIGateway} from 'aws-sdk';
 import {findStackOutput} from './find-stack-output';
 
 const stageName = 'prod';

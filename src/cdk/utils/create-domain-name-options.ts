@@ -1,5 +1,6 @@
-import {Stack, aws_apigateway, aws_certificatemanager} from 'aws-cdk-lib';
-import {StackConfig} from '../../types';
+import type {Stack} from 'aws-cdk-lib';
+import {aws_apigateway, aws_certificatemanager} from 'aws-cdk-lib';
+import type {StackConfig} from '../../types';
 
 export function createDomainNameOptions(
   stackConfig: StackConfig,

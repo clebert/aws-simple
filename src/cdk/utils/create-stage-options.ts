@@ -1,6 +1,6 @@
 import * as path from 'path';
 import {Duration, aws_apigateway} from 'aws-cdk-lib';
-import {LambdaLoggingLevel, StackConfig} from '../../types';
+import type {LambdaLoggingLevel, StackConfig} from '../../types';
 
 export interface MethodConfig {
   readonly publicPath: string;

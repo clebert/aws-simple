@@ -1,6 +1,6 @@
 import * as path from 'path';
 import express from 'express';
-import {S3Config} from '../../types';
+import type {S3Config} from '../../types';
 import {createExpressPath} from './create-express-path';
 
 export function registerS3Route(

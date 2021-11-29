@@ -1,6 +1,7 @@
 import {render} from 'ink-testing-library';
 import React from 'react';
-import {Column, Table} from './table';
+import type {Column} from './table';
+import {Table} from './table';
 
 interface TestEntry {
   readonly foo: string;

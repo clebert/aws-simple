@@ -1,11 +1,6 @@
-import {
-  Duration,
-  Stack,
-  aws_apigateway,
-  aws_route53,
-  aws_route53_targets,
-} from 'aws-cdk-lib';
-import {StackConfig} from '../../types';
+import type {Stack, aws_apigateway} from 'aws-cdk-lib';
+import {Duration, aws_route53, aws_route53_targets} from 'aws-cdk-lib';
+import type {StackConfig} from '../../types';
 
 export function createARecord(
   stackConfig: StackConfig,

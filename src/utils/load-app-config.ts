@@ -1,5 +1,5 @@
 import path from 'path';
-import {App, AppConfig} from '../types';
+import type {App, AppConfig} from '../types';
 import {isObject} from './is-object';
 import {translateAppConfig} from './translate-app-config';
 

@@ -1,12 +1,7 @@
 import * as path from 'path';
-import {
-  Duration,
-  Stack,
-  aws_apigateway,
-  aws_iam,
-  aws_lambda,
-} from 'aws-cdk-lib';
-import {LambdaConfig} from '../../types';
+import type {Stack} from 'aws-cdk-lib';
+import {Duration, aws_apigateway, aws_iam, aws_lambda} from 'aws-cdk-lib';
+import type {LambdaConfig} from '../../types';
 import {createShortHash} from '../../utils/create-short-hash';
 import {getLambdaModuleName} from '../../utils/get-lambda-module-name';
 

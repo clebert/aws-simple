@@ -1,5 +1,5 @@
-import express from 'express';
-import {LambdaHttpMethod} from '../../types';
+import type express from 'express';
+import type {LambdaHttpMethod} from '../../types';
 
 export function getRouterMatcher(
   app: express.Express,

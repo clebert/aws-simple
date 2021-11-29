@@ -1,5 +1,5 @@
 import {CloudFormation} from 'aws-sdk';
-import {AppConfig} from '../types';
+import type {AppConfig} from '../types';
 import {createStackName} from '../utils/stack-name';
 
 export async function findStack(

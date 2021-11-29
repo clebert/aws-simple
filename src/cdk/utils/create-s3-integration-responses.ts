@@ -1,5 +1,5 @@
 import {aws_apigateway} from 'aws-cdk-lib';
-import {S3Config, StackConfig} from '../../types';
+import type {S3Config, StackConfig} from '../../types';
 
 export function createS3IntegrationResponses(
   stackConfig: StackConfig,

@@ -1,4 +1,5 @@
-import {CloudFormation, S3} from 'aws-sdk';
+import type {CloudFormation} from 'aws-sdk';
+import {S3} from 'aws-sdk';
 
 export async function deleteS3Bucket(
   clientConfig: CloudFormation.ClientConfiguration,

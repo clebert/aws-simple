@@ -1,6 +1,6 @@
 import {Box, Static, Text} from 'ink';
 import React from 'react';
-import {AppConfig} from '../types';
+import type {AppConfig} from '../types';
 import {Label} from './label';
 
 export interface AppInfoProps {

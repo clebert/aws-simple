@@ -1,6 +1,6 @@
 import {lstatSync, readdirSync} from 'fs';
 import * as path from 'path';
-import {S3Config} from '../types';
+import type {S3Config} from '../types';
 
 export interface S3UploadConfig {
   readonly publicPath: string;

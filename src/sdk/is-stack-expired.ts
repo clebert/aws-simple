@@ -1,4 +1,4 @@
-import {CloudFormation} from 'aws-sdk';
+import type {CloudFormation} from 'aws-sdk';
 import {getAgeInDays} from '../utils/get-age-in-days';
 
 export function isStackExpired(

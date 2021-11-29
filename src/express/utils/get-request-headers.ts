@@ -1,5 +1,5 @@
-import {APIGatewayProxyEvent} from 'aws-lambda';
-import express from 'express';
+import type {APIGatewayProxyEvent} from 'aws-lambda';
+import type express from 'express';
 
 export function getRequestHeaders(
   req: express.Request

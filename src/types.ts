@@ -1,4 +1,4 @@
-import {DevServerOptions} from './new-types';
+import type {DevServerOptions} from './new-types';
 
 export * from './new-types';
 

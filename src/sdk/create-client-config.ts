@@ -1,5 +1,5 @@
+import type {CloudFormation} from 'aws-sdk';
 import {
-  CloudFormation,
   CredentialProviderChain,
   EnvironmentCredentials,
   SharedIniFileCredentials,

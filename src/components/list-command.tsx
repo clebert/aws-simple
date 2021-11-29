@@ -1,13 +1,14 @@
-import {CloudFormation} from 'aws-sdk';
+import type {CloudFormation} from 'aws-sdk';
 import {Box, Text} from 'ink';
 import React from 'react';
-import {Argv} from 'yargs';
+import type {Argv} from 'yargs';
 import {useFindStacks} from '../hooks/use-find-stacks';
 import {getAgeInDays} from '../utils/get-age-in-days';
 import {plural} from '../utils/plural';
 import {parseStackName} from '../utils/stack-name';
 import {Spinner} from './spinner';
-import {Column, Table} from './table';
+import type {Column} from './table';
+import {Table} from './table';
 
 export interface ListCommandProps {
   readonly argv: {readonly _: unknown[]};

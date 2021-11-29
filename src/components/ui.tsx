@@ -1,8 +1,8 @@
-import {CloudFormation} from 'aws-sdk';
+import type {CloudFormation} from 'aws-sdk';
 import React from 'react';
 import {AppConfigContext} from '../contexts/app-config-context';
 import {ClientConfigContext} from '../contexts/client-config-context';
-import {AppConfig} from '../types';
+import type {AppConfig} from '../types';
 import {AppInfo} from './app-info';
 import {ListCommand} from './list-command';
 import {RedeployCommand} from './redeploy-command';

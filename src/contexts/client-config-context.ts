@@ -1,4 +1,4 @@
-import {CloudFormation} from 'aws-sdk';
+import type {CloudFormation} from 'aws-sdk';
 import React from 'react';
 
 export const ClientConfigContext =

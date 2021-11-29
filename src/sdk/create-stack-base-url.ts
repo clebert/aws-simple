@@ -1,5 +1,5 @@
-import {CloudFormation} from 'aws-sdk';
-import {StackConfig} from '../types';
+import type {CloudFormation} from 'aws-sdk';
+import type {StackConfig} from '../types';
 import {findStackOutput} from './find-stack-output';
 
 export function createStackBaseUrl(

@@ -1,4 +1,4 @@
-import {
+import type {
   App,
   AppConfig,
   LambdaConfig,
@@ -10,6 +10,7 @@ export function translateAppConfig(app: App): AppConfig {
   return {
     appName: app.appName,
     appVersion: app.appVersion ?? 'latest',
+    // eslint-disable-next-line complexity
     createStackConfig: (port?: number) => {
       const routes = app.routes(port);
       const binaryMediaTypes = new Set<string>();

@@ -1,5 +1,5 @@
 import {CloudFormation} from 'aws-sdk';
-import {AppConfig} from '../types';
+import type {AppConfig} from '../types';
 import {getAgeInDays} from '../utils/get-age-in-days';
 import {parseStackName} from '../utils/stack-name';
 

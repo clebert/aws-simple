@@ -1,6 +1,7 @@
 import path from 'path';
-import {Duration, Stack, aws_apigateway, aws_lambda} from 'aws-cdk-lib';
-import {StackConfig} from '../../types';
+import type {Stack} from 'aws-cdk-lib';
+import {Duration, aws_apigateway, aws_lambda} from 'aws-cdk-lib';
+import type {StackConfig} from '../../types';
 
 export function createBasicAuthorizer(
   appName: string,

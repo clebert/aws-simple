@@ -1,6 +1,6 @@
-import {APIGatewayProxyResult} from 'aws-lambda';
-import express from 'express';
-import {LambdaConfig} from '../../types';
+import type {APIGatewayProxyResult} from 'aws-lambda';
+import type express from 'express';
+import type {LambdaConfig} from '../../types';
 import {createExpressPath} from './create-express-path';
 import {createLambdaRequestHandler} from './create-lambda-request-handler';
 import {getRouterMatcher} from './get-router-matcher';

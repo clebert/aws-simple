@@ -6,7 +6,7 @@ import {
   aws_iam,
   aws_s3,
 } from 'aws-cdk-lib';
-import {AppConfig} from '../types';
+import type {AppConfig} from '../types';
 import {createUniqueExportName} from '../utils/create-unique-export-name';
 import {createStackName} from '../utils/stack-name';
 import {createARecord} from './utils/create-a-record';

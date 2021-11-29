@@ -1,6 +1,6 @@
 import {Text, useApp} from 'ink';
 import React from 'react';
-import {Argv} from 'yargs';
+import type {Argv} from 'yargs';
 import {AppConfigContext} from '../contexts/app-config-context';
 import {ClientConfigContext} from '../contexts/client-config-context';
 import {findStack} from '../sdk/find-stack';

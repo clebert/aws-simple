@@ -64,8 +64,8 @@
     "yargs": "^17.1.1"
   },
   "devDependencies": {
-    "@onecmd/standard-plugins": "^0.12.0",
-    "@types/aws-lambda": "^8.10.83",
+    "@onecmd/standard-plugins": "^0.13.1",
+    "@types/aws-lambda": "^8.10.85",
     "@types/compose-function": "^0.0.30",
     "@types/compression": "^1.7.2",
     "@types/express": "^4.17.13",
@@ -73,10 +73,10 @@
     "@types/mime-types": "^2.1.1",
     "@types/mkdirp": "^1.0.2",
     "@types/prompts": "^2.0.14",
-    "@types/react": "^17.0.20",
+    "@types/react": "^17.0.37",
     "@types/signal-exit": "^3.0.1",
     "@types/url-join": "^4.0.1",
-    "@types/yargs": "^17.0.2",
+    "@types/yargs": "^17.0.7",
     "ink-testing-library": "^2.1.0",
     "npm-run-all": "^4.1.5"
   }

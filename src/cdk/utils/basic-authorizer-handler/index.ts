@@ -1,4 +1,4 @@
-import {CustomAuthorizerHandler, CustomAuthorizerResult} from 'aws-lambda';
+import type {CustomAuthorizerHandler, CustomAuthorizerResult} from 'aws-lambda';
 
 function isValidBasicAuthHeader(headerValue?: string): boolean {
   if (!headerValue) {
