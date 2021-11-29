@@ -20,18 +20,11 @@ const plugins = [
 
   {
     setup: () => [
-      {
-        type: 'mod',
-        path: 'jest.config.json',
-        is: std.isObject,
-
-        update: (input) => ({
-          ...input,
-          coveragePathIgnorePatterns: [
-            'src/cdk/utils/basic-authorizer-handler/index.ts',
-          ],
-        }),
-      },
+      std.jest.configFile.merge(() => ({
+        coveragePathIgnorePatterns: [
+          'src/cdk/utils/basic-authorizer-handler/index.ts',
+        ],
+      })),
     ],
   },
 ];

@@ -64,7 +64,7 @@
     "yargs": "^17.1.1"
   },
   "devDependencies": {
-    "@onecmd/standard-plugins": "^0.13.1",
+    "@onecmd/standard-plugins": "^0.14.0",
     "@types/aws-lambda": "^8.10.85",
     "@types/compose-function": "^0.0.30",
     "@types/compression": "^1.7.2",
