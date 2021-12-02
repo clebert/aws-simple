@@ -20,8 +20,8 @@ export function createARecord(
     aliasRecordTtlInSeconds,
   } = customDomainConfig;
 
-  const aRecord = new aws_route53.ARecord(stack, 'ARecord', {
-    zone: aws_route53.HostedZone.fromHostedZoneAttributes(stack, 'HostedZone', {
+  const aRecord = new aws_route53.ARecord(stack, `ARecord`, {
+    zone: aws_route53.HostedZone.fromHostedZoneAttributes(stack, `HostedZone`, {
       hostedZoneId,
       zoneName: hostedZoneName,
     }),

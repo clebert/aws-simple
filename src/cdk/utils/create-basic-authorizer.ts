@@ -16,17 +16,17 @@ export function createBasicAuthorizer(
   const {username, password, cacheTtlInSeconds} =
     stackConfig.basicAuthenticationConfig;
 
-  return new aws_apigateway.RequestAuthorizer(stack, 'BasicAuthorizer', {
-    handler: new aws_lambda.Function(stack, 'AuthorizerLambda', {
+  return new aws_apigateway.RequestAuthorizer(stack, `BasicAuthorizer`, {
+    handler: new aws_lambda.Function(stack, `AuthorizerLambda`, {
       description: `${appName} Authorizer Lambda ${appVersion}`,
       runtime: aws_lambda.Runtime.NODEJS_14_X,
       code: aws_lambda.Code.fromAsset(
-        path.dirname(require.resolve('./basic-authorizer-handler'))
+        path.dirname(require.resolve(`./basic-authorizer-handler`))
       ),
-      handler: 'index.handler',
+      handler: `index.handler`,
       environment: {USERNAME: username, PASSWORD: password},
     }),
-    identitySources: [aws_apigateway.IdentitySource.header('Authorization')],
+    identitySources: [aws_apigateway.IdentitySource.header(`Authorization`)],
     resultsCacheTtl: cacheTtlInSeconds
       ? Duration.seconds(cacheTtlInSeconds)
       : undefined,

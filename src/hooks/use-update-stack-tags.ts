@@ -39,15 +39,15 @@ export function useUpdateStackTags(
   const {exit} = useApp();
 
   const [state, setState] = React.useState<UpdateStackTagsHookState>(
-    performImmediately ? 'initialized' : 'uninitialized'
+    performImmediately ? `initialized` : `uninitialized`
   );
 
   const perform = React.useCallback((cancel: boolean) => {
     setState((currentState) =>
-      currentState === 'uninitialized'
+      currentState === `uninitialized`
         ? cancel
-          ? 'canceled'
-          : 'initialized'
+          ? `canceled`
+          : `initialized`
         : currentState
     );
   }, []);
@@ -55,7 +55,7 @@ export function useUpdateStackTags(
   const [completed, setCompleted] = React.useState(false);
 
   React.useEffect(() => {
-    if (state !== 'initialized') {
+    if (state !== `initialized`) {
       return;
     }
 
@@ -68,9 +68,9 @@ export function useUpdateStackTags(
     })().catch(exit);
   }, [state]);
 
-  return state === 'uninitialized'
+  return state === `uninitialized`
     ? {state, perform}
-    : state === 'initialized'
+    : state === `initialized`
     ? {state, completed}
     : {state};
 }

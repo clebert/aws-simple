@@ -12,7 +12,7 @@ export async function deleteS3Bucket(
     .promise();
 
   const objectIdentifiers = Contents.filter(
-    (object): object is S3.ObjectIdentifier => typeof object.Key === 'string'
+    (object): object is S3.ObjectIdentifier => typeof object.Key === `string`
   ).map(({Key}) => ({Key}));
 
   if (objectIdentifiers.length > 0) {

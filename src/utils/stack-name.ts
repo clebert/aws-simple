@@ -6,9 +6,9 @@ export interface StackNameParts {
 function assertPart(value: string, valueName: string): void {
   if (
     !value ||
-    value.startsWith('-') ||
-    value.endsWith('-') ||
-    value.includes('--') ||
+    value.startsWith(`-`) ||
+    value.endsWith(`-`) ||
+    value.includes(`--`) ||
     /[^A-Za-z0-9-]/.test(value)
   ) {
     throw new Error(
@@ -20,8 +20,8 @@ function assertPart(value: string, valueName: string): void {
 export function createStackName(parts: StackNameParts): string {
   const {appName, appVersion} = parts;
 
-  assertPart(appName, 'app name');
-  assertPart(appVersion, 'app version');
+  assertPart(appName, `app name`);
+  assertPart(appVersion, `app version`);
 
   return `aws-simple--${appName}--${appVersion}`;
 }

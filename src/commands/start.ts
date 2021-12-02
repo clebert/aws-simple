@@ -10,7 +10,7 @@ interface StartArgv {
 }
 
 function isStartArgv(argv: {readonly _: unknown[]}): argv is StartArgv {
-  return argv._[0] === 'start';
+  return argv._[0] === `start`;
 }
 
 export async function start(
@@ -29,29 +29,29 @@ export async function start(
 }
 
 start.describe = (argv: Argv) =>
-  argv.command('start [options]', 'Start a local DEV server', (commandArgv) =>
+  argv.command(`start [options]`, `Start a local DEV server`, (commandArgv) =>
     commandArgv
       .describe(
-        'port',
-        'The port to listen on if available, otherwise listen on a random port'
+        `port`,
+        `The port to listen on if available, otherwise listen on a random port`
       )
-      .number('port')
-      .default('port', 3000)
+      .number(`port`)
+      .default(`port`, 3000)
 
       .describe(
-        'cache',
-        'Enable caching of successful caching-enabled Lambda function results per request URL'
+        `cache`,
+        `Enable caching of successful caching-enabled Lambda function results per request URL`
       )
-      .boolean('cache')
-      .default('cache', false)
+      .boolean(`cache`)
+      .default(`cache`, false)
 
       .describe(
-        'verbose',
-        'Enable logging of successful Lambda function results'
+        `verbose`,
+        `Enable logging of successful Lambda function results`
       )
-      .boolean('verbose')
-      .default('verbose', false)
+      .boolean(`verbose`)
+      .default(`verbose`, false)
 
-      .example('npx $0 start', '')
-      .example('npx $0 start --port 3001 --cache --verbose', '')
+      .example(`npx $0 start`, ``)
+      .example(`npx $0 start --port 3001 --cache --verbose`, ``)
   );

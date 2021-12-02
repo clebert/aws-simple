@@ -23,20 +23,20 @@ export function createStack(appConfig: AppConfig): void {
 
   const restApi = new aws_apigateway.RestApi(
     stack,
-    'RestApi',
+    `RestApi`,
     createRestApiProps(`${appName} ${appVersion}`, stackConfig, stack)
   );
 
-  const restApiIdOutput = new CfnOutput(stack, 'RestApiIdOutput', {
+  const restApiIdOutput = new CfnOutput(stack, `RestApiIdOutput`, {
     value: restApi.restApiId,
-    exportName: createUniqueExportName(stack.stackName, 'RestApiId'),
+    exportName: createUniqueExportName(stack.stackName, `RestApiId`),
   });
 
   restApiIdOutput.node.addDependency(restApi);
 
-  const restApiUrlOutput = new CfnOutput(stack, 'RestApiUrlOutput', {
+  const restApiUrlOutput = new CfnOutput(stack, `RestApiUrlOutput`, {
     value: restApi.url,
-    exportName: createUniqueExportName(stack.stackName, 'RestApiUrl'),
+    exportName: createUniqueExportName(stack.stackName, `RestApiUrl`),
   });
 
   restApiUrlOutput.node.addDependency(restApi);
@@ -44,26 +44,26 @@ export function createStack(appConfig: AppConfig): void {
   createARecord(stackConfig, stack, restApi);
   createUnauthorizedGatewayResponse(stackConfig, stack, restApi);
 
-  const s3Bucket = new aws_s3.Bucket(stack, 'S3Bucket', {
+  const s3Bucket = new aws_s3.Bucket(stack, `S3Bucket`, {
     publicReadAccess: false,
     blockPublicAccess: aws_s3.BlockPublicAccess.BLOCK_ALL,
     encryption: aws_s3.BucketEncryption.S3_MANAGED,
   });
 
-  const s3BucketNameOutput = new CfnOutput(stack, 'S3BucketNameOutput', {
+  const s3BucketNameOutput = new CfnOutput(stack, `S3BucketNameOutput`, {
     value: s3Bucket.bucketName,
-    exportName: createUniqueExportName(stack.stackName, 'S3BucketName'),
+    exportName: createUniqueExportName(stack.stackName, `S3BucketName`),
   });
 
   s3BucketNameOutput.node.addDependency(s3Bucket);
 
-  const s3IntegrationRole = new aws_iam.Role(stack, 'S3IntegrationRole', {
-    assumedBy: new aws_iam.ServicePrincipal('apigateway.amazonaws.com'),
+  const s3IntegrationRole = new aws_iam.Role(stack, `S3IntegrationRole`, {
+    assumedBy: new aws_iam.ServicePrincipal(`apigateway.amazonaws.com`),
   });
 
-  const s3IntegrationPolicy = new aws_iam.Policy(stack, 'S3IntegrationPolicy', {
+  const s3IntegrationPolicy = new aws_iam.Policy(stack, `S3IntegrationPolicy`, {
     statements: [
-      new aws_iam.PolicyStatement({actions: ['s3:*'], resources: ['*']}),
+      new aws_iam.PolicyStatement({actions: [`s3:*`], resources: [`*`]}),
     ],
     roles: [s3IntegrationRole],
   });

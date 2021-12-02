@@ -7,5 +7,5 @@ export interface SpinnerProps {
 }
 
 export const Spinner = ({children}: SpinnerProps): JSX.Element => (
-  <Label name={<InkSpinner type={'dots'} />}>{children}</Label>
+  <Label name={<InkSpinner type={`dots`} />}>{children}</Label>
 );

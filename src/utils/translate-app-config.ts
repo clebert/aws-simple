@@ -9,7 +9,7 @@ import type {
 export function translateAppConfig(app: App): AppConfig {
   return {
     appName: app.appName,
-    appVersion: app.appVersion ?? 'latest',
+    appVersion: app.appVersion ?? `latest`,
     // eslint-disable-next-line complexity
     createStackConfig: (port?: number) => {
       const routes = app.routes(port);
@@ -22,7 +22,7 @@ export function translateAppConfig(app: App): AppConfig {
       for (const [path, route] of Object.entries(routes)) {
         if (route.enableAuthentication && !app.authentication) {
           throw new Error(
-            'Unable to enable authentication due to missing configuration.'
+            `Unable to enable authentication due to missing configuration.`
           );
         }
 
@@ -30,17 +30,17 @@ export function translateAppConfig(app: App): AppConfig {
           enableCors = true;
         }
 
-        if (route.kind === 'function') {
+        if (route.kind === `function`) {
           const lambdaConfig: LambdaConfig = {
-            httpMethod: route.method ?? 'GET',
+            httpMethod: route.method ?? `GET`,
             publicPath: path,
             localPath: route.filename,
             description: route.description,
             catchAll: route.catchAll,
-            handler: route.handler ?? 'handler',
+            handler: route.handler ?? `handler`,
             memorySize: route.memorySize ?? 128,
             timeoutInSeconds: route.timeoutInSeconds ?? 28,
-            loggingLevel: route.loggingLevel ?? 'INFO',
+            loggingLevel: route.loggingLevel ?? `INFO`,
             cachingEnabled: (route.cacheTtlInSeconds ?? 0) > 0,
             cacheTtlInSeconds: route.cacheTtlInSeconds,
             acceptedParameters: Object.entries(route.parameters ?? {}).reduce(
@@ -61,13 +61,13 @@ export function translateAppConfig(app: App): AppConfig {
           };
 
           lambdaConfigs.push(lambdaConfig);
-        } else if (route.kind === 'file') {
+        } else if (route.kind === `file`) {
           if (route.binaryMediaType) {
             binaryMediaTypes.add(route.binaryMediaType);
           }
 
           const s3Config: S3Config = {
-            type: 'file',
+            type: `file`,
             binary: Boolean(route.binaryMediaType),
             publicPath: path,
             localPath: route.filename,
@@ -84,7 +84,7 @@ export function translateAppConfig(app: App): AppConfig {
             s3Configs.push({
               ...s3Config,
               publicPath:
-                path + (path.endsWith('/') ? '{proxy+}' : '/{proxy+}'),
+                path + (path.endsWith(`/`) ? `{proxy+}` : `/{proxy+}`),
             });
           }
         } else {
@@ -95,7 +95,7 @@ export function translateAppConfig(app: App): AppConfig {
           }
 
           s3Configs.push({
-            type: 'folder',
+            type: `folder`,
             binary: Boolean(route.binaryMediaTypes),
             publicPath: path,
             localPath: route.dirname,

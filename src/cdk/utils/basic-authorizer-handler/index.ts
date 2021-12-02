@@ -6,15 +6,15 @@ function isValidBasicAuthHeader(headerValue?: string): boolean {
   }
 
   // Strip 'Basic ' from the front to get the raw value:
-  const encoded = headerValue.substr('Basic '.length);
+  const encoded = headerValue.substr(`Basic `.length);
 
-  const [username, ...password] = Buffer.from(encoded, 'base64')
+  const [username, ...password] = Buffer.from(encoded, `base64`)
     .toString()
-    .split(':');
+    .split(`:`);
 
   return (
     username === process.env.USERNAME &&
-    password.join(':') === process.env.PASSWORD
+    password.join(`:`) === process.env.PASSWORD
   );
 }
 
@@ -22,17 +22,17 @@ function createAllowPolicy(
   principalId: string,
   resource: string
 ): CustomAuthorizerResult {
-  const [arn, partition, service, region, accountId] = resource.split(':');
+  const [arn, partition, service, region, accountId] = resource.split(`:`);
 
   return {
     principalId,
     policyDocument: {
-      Version: '2012-10-17',
+      Version: `2012-10-17`,
       Statement: [
         {
-          Action: 'execute-api:Invoke',
-          Effect: 'Allow',
-          Resource: [arn, partition, service, region, accountId, '*'].join(':'),
+          Action: `execute-api:Invoke`,
+          Effect: `Allow`,
+          Resource: [arn, partition, service, region, accountId, `*`].join(`:`),
         },
       ],
     },
@@ -52,15 +52,15 @@ function getHeaderValue(
 export function getAuthHeaderValue(
   headers: Record<string, string> = {}
 ): string | undefined {
-  return getHeaderValue(headers, 'authorization');
+  return getHeaderValue(headers, `authorization`);
 }
 
 export const handler: CustomAuthorizerHandler = (event, _context, callback) => {
   if (!process.env.USERNAME) {
-    callback(new Error('USERNAME is not defined.'));
+    callback(new Error(`USERNAME is not defined.`));
   } else if (isValidBasicAuthHeader(getAuthHeaderValue(event.headers))) {
     callback(null, createAllowPolicy(process.env.USERNAME, event.methodArn));
   } else {
-    callback('Unauthorized');
+    callback(`Unauthorized`);
   }
 };

@@ -32,8 +32,8 @@ export async function findStacks(
     .filter(
       ({DeletionTime, StackStatus}) =>
         !DeletionTime ||
-        StackStatus === 'ROLLBACK_COMPLETE' ||
-        StackStatus === 'DELETE_FAILED'
+        StackStatus === `ROLLBACK_COMPLETE` ||
+        StackStatus === `DELETE_FAILED`
     )
     .sort(
       (stack1, stack2) =>

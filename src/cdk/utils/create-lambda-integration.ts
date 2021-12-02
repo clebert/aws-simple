@@ -17,7 +17,7 @@ export function createLambdaIntegration(
     localPath,
     description,
     catchAll,
-    handler = 'handler',
+    handler = `handler`,
     memorySize = 3008,
     timeoutInSeconds = 28,
     acceptedParameters = {},
@@ -28,7 +28,7 @@ export function createLambdaIntegration(
 
   if (timeoutInSeconds > 28) {
     console.warn(
-      'Due to the default timeout of the API Gateway, the maximum Lambda timeout is limited to 28 seconds.'
+      `Due to the default timeout of the API Gateway, the maximum Lambda timeout is limited to 28 seconds.`
     );
   }
 
@@ -55,7 +55,7 @@ export function createLambdaIntegration(
   if (secretId) {
     const secretsManagerPolicyStatement = new aws_iam.PolicyStatement({
       effect: aws_iam.Effect.ALLOW,
-      actions: ['secretsmanager:GetSecretValue'],
+      actions: [`secretsmanager:GetSecretValue`],
       resources: [
         `arn:aws:secretsmanager:${stack.region}:${stack.account}:secret:${secretId}`,
       ],
@@ -98,7 +98,7 @@ export function createLambdaIntegration(
   if (catchAll) {
     restApi.root
       .resourceForPath(
-        publicPath + (publicPath.endsWith('/') ? '{proxy+}' : '/{proxy+}')
+        publicPath + (publicPath.endsWith(`/`) ? `{proxy+}` : `/{proxy+}`)
       )
       .addMethod(httpMethod, lambdaIntegration, methodOptions);
   }

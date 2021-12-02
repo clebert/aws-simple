@@ -6,25 +6,25 @@ export function getRouterMatcher(
   httpMethod: LambdaHttpMethod
 ): express.IRouterMatcher<express.Express> {
   switch (httpMethod) {
-    case 'DELETE': {
+    case `DELETE`: {
       return app.delete.bind(app);
     }
-    case 'GET': {
+    case `GET`: {
       return app.get.bind(app);
     }
-    case 'HEAD': {
+    case `HEAD`: {
       return app.head.bind(app);
     }
-    case 'OPTIONS': {
+    case `OPTIONS`: {
       return app.options.bind(app);
     }
-    case 'PATCH': {
+    case `PATCH`: {
       return app.patch.bind(app);
     }
-    case 'POST': {
+    case `POST`: {
       return app.post.bind(app);
     }
-    case 'PUT': {
+    case `PUT`: {
       return app.put.bind(app);
     }
   }

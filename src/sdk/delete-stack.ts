@@ -10,7 +10,7 @@ export async function deleteStack(
   await cloudFormation.deleteStack({StackName}).promise();
 
   await cloudFormation
-    .waitFor('stackDeleteComplete', {
+    .waitFor(`stackDeleteComplete`, {
       StackName,
       $waiter: {delay: 5, maxAttempts: 3600 / 5},
     })

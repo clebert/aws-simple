@@ -16,7 +16,7 @@ interface TagArgv {
 }
 
 function isRedeployArgv(argv: {readonly _: unknown[]}): argv is TagArgv {
-  return argv._[0] === 'redeploy';
+  return argv._[0] === `redeploy`;
 }
 
 export const RedeployCommand = (
@@ -52,7 +52,7 @@ export const RedeployCommand = (
 
 RedeployCommand.describe = (argv: Argv) =>
   argv.command(
-    'redeploy [options]',
-    'Redeploy the API Gateway',
-    (commandArgv) => commandArgv.example('npx $0 redeploy', '')
+    `redeploy [options]`,
+    `Redeploy the API Gateway`,
+    (commandArgv) => commandArgv.example(`npx $0 redeploy`, ``)
   );

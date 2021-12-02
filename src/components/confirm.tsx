@@ -21,20 +21,20 @@ export const Confirm = ({
     const handleData = (data: string): void => {
       const input = data.toLowerCase();
 
-      if (input === 'y' || input === 'n') {
-        stdin?.off('data', handleData);
+      if (input === `y` || input === `n`) {
+        stdin?.off(`data`, handleData);
 
-        const result = input === 'y';
+        const result = input === `y`;
 
         setConfirmed(result);
         callback(result);
       }
     };
 
-    stdin?.on('data', handleData);
+    stdin?.on(`data`, handleData);
 
     return () => {
-      stdin?.off('data', handleData);
+      stdin?.off(`data`, handleData);
 
       if (isRawModeSupported && setRawMode) {
         setRawMode(false);

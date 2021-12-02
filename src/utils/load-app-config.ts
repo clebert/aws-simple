@@ -9,7 +9,7 @@ function isApp(value: unknown): value is App {
   }
 
   return (
-    typeof value.appName === 'string' && typeof value.routes === 'function'
+    typeof value.appName === `string` && typeof value.routes === `function`
   );
 }
 
@@ -19,8 +19,8 @@ function isAppConfig(value: unknown): value is AppConfig {
   }
 
   return (
-    typeof value.appName === 'string' &&
-    typeof value.createStackConfig === 'function'
+    typeof value.appName === `string` &&
+    typeof value.createStackConfig === `function`
   );
 }
 
@@ -28,19 +28,19 @@ export function loadAppConfig(): AppConfig {
   let appConfig;
 
   try {
-    const absoluteConfigFilename = path.resolve('aws-simple.config.js');
+    const absoluteConfigFilename = path.resolve(`aws-simple.config.js`);
 
     appConfig = require(absoluteConfigFilename).default;
   } catch (error) {
-    console.error('The aws-simple config file cannot be loaded.');
+    console.error(`The aws-simple config file cannot be loaded.`);
 
     throw error;
   }
 
   if (isAppConfig(appConfig)) {
     console.warn(
-      'aws-simple:',
-      'You are using a deprecated configuration format.'
+      `aws-simple:`,
+      `You are using a deprecated configuration format.`
     );
 
     return appConfig;
@@ -51,6 +51,6 @@ export function loadAppConfig(): AppConfig {
   }
 
   throw new Error(
-    'The aws-simple config file does not have a valid default export.'
+    `The aws-simple config file does not have a valid default export.`
   );
 }

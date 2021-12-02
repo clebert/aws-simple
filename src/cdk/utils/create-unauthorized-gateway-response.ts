@@ -17,34 +17,32 @@ export function createUnauthorizedGatewayResponse(
   const corsHeader: {[key: string]: string} = stackConfig.enableCors
     ? interactivePromptForXhr
       ? {
-          'gatewayresponse.header.Access-Control-Allow-Origin':
-            'method.request.header.origin',
-          'gatewayresponse.header.Access-Control-Allow-Credentials': "'true'",
-          'gatewayresponse.header.Access-Control-Allow-Headers':
-            "'Authorization,*'",
+          'gatewayresponse.header.Access-Control-Allow-Origin': `method.request.header.origin`,
+          'gatewayresponse.header.Access-Control-Allow-Credentials': `'true'`,
+          'gatewayresponse.header.Access-Control-Allow-Headers': `'Authorization,*'`,
         }
       : {
-          'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+          'gatewayresponse.header.Access-Control-Allow-Origin': `'*'`,
         }
     : {};
 
   // TODO: use GatewayResponse instead of CfnGatewayResponse
   new aws_apigateway.CfnGatewayResponse(
     stack,
-    'ApiGatewayUnauthorizedResponse',
+    `ApiGatewayUnauthorizedResponse`,
     {
-      statusCode: '401',
-      responseType: 'UNAUTHORIZED',
+      statusCode: `401`,
+      responseType: `UNAUTHORIZED`,
       restApiId: restApi.restApiId,
       responseParameters: {
         'gatewayresponse.header.WWW-Authenticate': realm
           ? `'Basic realm=${realm}'`
-          : "'Basic'",
+          : `'Basic'`,
         ...corsHeader,
       },
       responseTemplates: {
-        'application/json': '{"message":$context.error.messageString}',
-        'text/html': '$context.error.message',
+        'application/json': `{"message":$context.error.messageString}`,
+        'text/html': `$context.error.message`,
       },
     }
   );

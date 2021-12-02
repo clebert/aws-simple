@@ -19,12 +19,12 @@ interface ListArgv {
 }
 
 function isListArgv(argv: {readonly _: unknown[]}): argv is ListArgv {
-  return argv._[0] === 'list';
+  return argv._[0] === `list`;
 }
 
 const appVersionColumn: Column<CloudFormation.Stack, 'StackName'> = {
   headerCell: <Text underline>App Version</Text>,
-  entryKey: 'StackName',
+  entryKey: `StackName`,
   createEntryCell: (value) => {
     const parts = parseStackName(value);
 
@@ -34,19 +34,19 @@ const appVersionColumn: Column<CloudFormation.Stack, 'StackName'> = {
 
 const ageColumn: Column<CloudFormation.Stack, 'CreationTime'> = {
   headerCell: <Text underline>Age</Text>,
-  entryKey: 'CreationTime',
+  entryKey: `CreationTime`,
   createEntryCell: (value) => {
     const ageInDays = getAgeInDays(value);
 
-    return `${ageInDays} day${ageInDays === 1 ? '' : 's'}`;
+    return `${ageInDays} day${ageInDays === 1 ? `` : `s`}`;
   },
 };
 
 const tagsColumn: Column<CloudFormation.Stack, 'Tags'> = {
   headerCell: <Text underline>Tags</Text>,
-  entryKey: 'Tags',
+  entryKey: `Tags`,
   createEntryCell: (value) =>
-    value ? value.map(({Key}) => Key).join(', ') : '',
+    value ? value.map(({Key}) => Key).join(`, `) : ``,
 };
 
 export const ListCommand = (props: ListCommandProps): JSX.Element | null => {
@@ -68,7 +68,7 @@ export const ListCommand = (props: ListCommandProps): JSX.Element | null => {
     <>
       <Box marginBottom={1}>
         <Text color="green">
-          {stacks.length} deployed {plural('stack', stacks)} found.
+          {stacks.length} deployed {plural(`stack`, stacks)} found.
         </Text>
       </Box>
       <Table
@@ -80,6 +80,6 @@ export const ListCommand = (props: ListCommandProps): JSX.Element | null => {
 };
 
 ListCommand.describe = (argv: Argv) =>
-  argv.command('list [options]', 'List all deployed stacks', (commandArgv) =>
-    commandArgv.example('npx $0 list', '')
+  argv.command(`list [options]`, `List all deployed stacks`, (commandArgv) =>
+    commandArgv.example(`npx $0 list`, ``)
   );

@@ -12,7 +12,7 @@ export async function updateStackTags(
     ...Tags,
     ...tagsToAdd
       .filter((tag) => Tags.every(({Key}) => Key !== tag))
-      .map((tag) => ({Key: tag, Value: 'true'})),
+      .map((tag) => ({Key: tag, Value: `true`})),
   ].filter(({Key}) => !tagsToRemove.includes(Key));
 
   const cloudFormation = new CloudFormation(clientConfig);
@@ -28,7 +28,7 @@ export async function updateStackTags(
     .promise();
 
   await cloudFormation
-    .waitFor('stackUpdateComplete', {
+    .waitFor(`stackUpdateComplete`, {
       StackName,
       $waiter: {delay: 5, maxAttempts: 60},
     })

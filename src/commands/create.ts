@@ -7,7 +7,7 @@ interface CreateArgv {
 }
 
 function isCreateArgv(argv: {readonly _: unknown[]}): argv is CreateArgv {
-  return argv._[0] === 'create';
+  return argv._[0] === `create`;
 }
 
 export function create(
@@ -21,10 +21,10 @@ export function create(
 
 create.describe = (argv: Argv) =>
   argv.command(
-    'create [options]',
-    'Create a stack using the CDK',
+    `create [options]`,
+    `Create a stack using the CDK`,
     (commandArgv) =>
       commandArgv
-        .example('npx $0 create', '')
-        .example("npx cdk deploy --app 'npx $0 create'", '')
+        .example(`npx $0 create`, ``)
+        .example(`npx cdk deploy --app 'npx $0 create'`, ``)
   );

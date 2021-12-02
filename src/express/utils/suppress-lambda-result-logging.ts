@@ -6,7 +6,7 @@ export function suppressLambdaResultLogging(): void {
 
   logger.format = format.combine(
     format((info) => {
-      if ('statusCode' in info && 'headers' in info && 'body' in info) {
+      if (`statusCode` in info && `headers` in info && `body` in info) {
         return false;
       }
 

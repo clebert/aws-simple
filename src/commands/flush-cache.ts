@@ -12,7 +12,7 @@ interface FlushCacheArgv {
 function isFlushCacheArgv(argv: {
   readonly _: unknown[];
 }): argv is FlushCacheArgv {
-  return argv._[0] === 'flush-cache';
+  return argv._[0] === `flush-cache`;
 }
 
 export async function flushCache(
@@ -26,16 +26,16 @@ export async function flushCache(
 
   const listr = new Listr([
     {
-      title: 'Flushing API Gateway Cache',
+      title: `Flushing API Gateway Cache`,
       task: async (_, listrTask) => {
         try {
           const stack = await findStack(appConfig, clientConfig);
 
           await flushApiGatewayCache(clientConfig, stack);
 
-          listrTask.title = 'Successfully flushed API Gateway Cache';
+          listrTask.title = `Successfully flushed API Gateway Cache`;
         } catch (error) {
-          listrTask.title = 'Error while flushing API Gateway Cache';
+          listrTask.title = `Error while flushing API Gateway Cache`;
 
           throw error;
         }
@@ -48,7 +48,7 @@ export async function flushCache(
 
 flushCache.describe = (argv: Argv) =>
   argv.command(
-    'flush-cache [options]',
-    'Flush the cache of the API Gateway',
-    (commandArgv) => commandArgv.example('npx $0 flush-cache', '')
+    `flush-cache [options]`,
+    `Flush the cache of the API Gateway`,
+    (commandArgv) => commandArgv.example(`npx $0 flush-cache`, ``)
   );

@@ -24,13 +24,13 @@ export const Table = <TEntry extends object>({
           flexDirection="column"
           marginRight={columnIndex < columns.length - 1 ? 2 : 0}
         >
-          <Text wrap="truncate">{headerCell || ' '}</Text>
+          <Text wrap="truncate">{headerCell || ` `}</Text>
           {entries.map((entry: any, entryIndex) => {
             const value = createEntryCell && createEntryCell(entry[entryKey]);
 
             return (
               <Text key={entryIndex} wrap="truncate">
-                {value || ' '}
+                {value || ` `}
               </Text>
             );
           })}

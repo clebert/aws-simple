@@ -17,7 +17,7 @@ interface TagArgv {
 }
 
 function isTagArgv(argv: {readonly _: unknown[]}): argv is TagArgv {
-  return argv._[0] === 'tag';
+  return argv._[0] === `tag`;
 }
 
 export const TagCommand = (props: TagCommandProps): JSX.Element | null => {
@@ -31,7 +31,7 @@ export const TagCommand = (props: TagCommandProps): JSX.Element | null => {
 
   const updateStackTagsHook = useUpdateStackTags(add, remove, yes);
 
-  if (updateStackTagsHook.state === 'uninitialized') {
+  if (updateStackTagsHook.state === `uninitialized`) {
     return (
       <Confirm callback={(result) => updateStackTagsHook.perform(!result)}>
         Should the stack update be performed?
@@ -39,7 +39,7 @@ export const TagCommand = (props: TagCommandProps): JSX.Element | null => {
     );
   }
 
-  if (updateStackTagsHook.state === 'canceled') {
+  if (updateStackTagsHook.state === `canceled`) {
     return <Text color="yellow">The stack update was canceled.</Text>;
   }
 
@@ -51,23 +51,23 @@ export const TagCommand = (props: TagCommandProps): JSX.Element | null => {
 };
 
 TagCommand.describe = (argv: Argv) =>
-  argv.command('tag [options]', 'Tag a deployed stack', (commandArgv) =>
+  argv.command(`tag [options]`, `Tag a deployed stack`, (commandArgv) =>
     commandArgv
-      .describe('add', 'The tags to add')
-      .array('add')
-      .default('add', [])
+      .describe(`add`, `The tags to add`)
+      .array(`add`)
+      .default(`add`, [])
 
-      .describe('remove', 'The tags to remove')
-      .array('remove')
-      .default('remove', [])
+      .describe(`remove`, `The tags to remove`)
+      .array(`remove`)
+      .default(`remove`, [])
 
       .describe(
-        'yes',
-        'The confirmation message will automatically be answered with yes'
+        `yes`,
+        `The confirmation message will automatically be answered with yes`
       )
-      .boolean('yes')
-      .default('yes', false)
+      .boolean(`yes`)
+      .default(`yes`, false)
 
-      .example('npx $0 tag --add latest release --remove prerelease', '')
-      .example('npx $0 tag --add prerelease --yes', '')
+      .example(`npx $0 tag --add latest release --remove prerelease`, ``)
+      .example(`npx $0 tag --add prerelease --yes`, ``)
   );

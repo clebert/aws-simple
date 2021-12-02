@@ -12,12 +12,12 @@ export function resolveS3UploadConfigs(s3Config: S3Config): S3UploadConfig[] {
   const s3UploadConfigs: S3UploadConfig[] = [];
   const {publicPath, localPath, bucketPath = publicPath} = s3Config;
 
-  if (s3Config.type === 'file') {
+  if (s3Config.type === `file`) {
     s3UploadConfigs.push({publicPath, localPath, bucketPath});
   } else {
-    if (publicPath.includes('{proxy+}')) {
+    if (publicPath.includes(`{proxy+}`)) {
       throw new Error(
-        'A catch-all S3 config is only supported for single files.'
+        `A catch-all S3 config is only supported for single files.`
       );
     }
 

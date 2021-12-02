@@ -2,8 +2,8 @@ import express from 'express';
 import type {ExpressAppPrivateApi} from './remove-all-routes';
 import {removeAllRoutes} from './remove-all-routes';
 
-describe('removeAllRoutes()', () => {
-  it('uses a private Express API, which still behaves as expected', () => {
+describe(`removeAllRoutes()`, () => {
+  it(`uses a private Express API, which still behaves as expected`, () => {
     const app: ExpressAppPrivateApi = express();
 
     expect(app._router).toBeUndefined();
@@ -12,8 +12,8 @@ describe('removeAllRoutes()', () => {
 
     expect(app._router).toBeUndefined();
 
-    (app as express.Express).get('/foo', jest.fn());
-    (app as express.Express).get('/bar', jest.fn());
+    (app as express.Express).get(`/foo`, jest.fn());
+    (app as express.Express).get(`/bar`, jest.fn());
 
     expect(app._router).toStrictEqual(expect.any(Function));
     expect(app._router!.stack).toStrictEqual(expect.any(Array));

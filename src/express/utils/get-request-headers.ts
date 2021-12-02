@@ -10,7 +10,7 @@ export function getRequestHeaders(
   for (const [key, value] of Object.entries(req.headers)) {
     if (Array.isArray(value)) {
       multiValueHeaders[key] = value;
-    } else if (typeof value === 'string') {
+    } else if (typeof value === `string`) {
       headers[key] = value;
     }
   }

@@ -20,7 +20,7 @@ import {createClientConfig} from './sdk/create-client-config';
 import {loadAppConfig} from './utils/load-app-config';
 
 (async () => {
-  const {description} = require('../../package.json');
+  const {description} = require(`../../package.json`);
 
   const argv = compose(
     flushCache.describe,
@@ -33,9 +33,9 @@ import {loadAppConfig} from './utils/load-app-config';
     create.describe
   )(
     yargs
-      .usage('Usage: $0 <command> [options]')
-      .help('h')
-      .alias('h', 'help')
+      .usage(`Usage: $0 <command> [options]`)
+      .help(`h`)
+      .alias(`h`, `help`)
       .detectLocale(false)
       .demandCommand()
       .epilogue(description)

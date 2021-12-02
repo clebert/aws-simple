@@ -16,7 +16,7 @@ interface UploadArgv {
 }
 
 function isUploadArgv(argv: {readonly _: unknown[]}): argv is UploadArgv {
-  return argv._[0] === 'upload';
+  return argv._[0] === `upload`;
 }
 
 export async function upload(
@@ -32,7 +32,7 @@ export async function upload(
   const stackConfig = appConfig.createStackConfig();
   const baseUrl = createStackBaseUrl(stackConfig, stack);
   const {s3Configs = []} = stackConfig;
-  const uploadNodeList = new TemplateNodeList({separator: '\n'});
+  const uploadNodeList = new TemplateNodeList({separator: `\n`});
   const uploadPromises: Promise<void>[] = [];
 
   for (const s3Config of s3Configs) {
@@ -55,11 +55,11 @@ export async function upload(
 
       promise
         .then(
-          () => node.update`  ${green('✔')} Successfully uploaded file: ${url}`
+          () => node.update`  ${green(`✔`)} Successfully uploaded file: ${url}`
         )
         .catch(
           () =>
-            node.update`  ${red('✖')} Error while uploading file: ${filename}`
+            node.update`  ${red(`✖`)} Error while uploading file: ${filename}`
         );
 
       uploadPromises.push(promise);
@@ -78,6 +78,6 @@ export async function upload(
 }
 
 upload.describe = (argv: Argv) =>
-  argv.command('upload [options]', 'Upload files to S3', (commandArgv) =>
-    commandArgv.example('npx $0 upload', '')
+  argv.command(`upload [options]`, `Upload files to S3`, (commandArgv) =>
+    commandArgv.example(`npx $0 upload`, ``)
   );

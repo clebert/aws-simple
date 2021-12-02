@@ -16,7 +16,7 @@ export function uploadFileToS3(
   s3UploadConfig: S3UploadConfig
 ): S3UploadTask {
   const s3 = new S3(clientConfig);
-  const s3BucketName = findStackOutput(stack, 'S3BucketName');
+  const s3BucketName = findStackOutput(stack, `S3BucketName`);
   const {localPath, bucketPath} = s3UploadConfig;
 
   return {
@@ -26,7 +26,7 @@ export function uploadFileToS3(
         .upload({
           ContentType: mimeTypes.lookup(localPath) || undefined,
           Bucket: s3BucketName,
-          Key: bucketPath.replace(/^\//, ''),
+          Key: bucketPath.replace(/^\//, ``),
           Body: readFileSync(localPath),
         })
         .promise();

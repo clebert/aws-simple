@@ -20,7 +20,7 @@ export function createDomainNameOptions(
       : hostedZoneName,
     certificate: aws_certificatemanager.Certificate.fromCertificateArn(
       stack,
-      'Certificate',
+      `Certificate`,
       certificateArn
     ),
     securityPolicy: aws_apigateway.SecurityPolicy.TLS_1_2,

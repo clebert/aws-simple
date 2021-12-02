@@ -30,7 +30,7 @@ function splitLambdaConfigs(lambdaConfigs: LambdaConfig[]): LambdaConfig[] {
       allLambdaConfigs.push({
         ...lambdaConfig,
         publicPath:
-          publicPath + (publicPath.endsWith('/') ? '{proxy+}' : '/{proxy+}'),
+          publicPath + (publicPath.endsWith(`/`) ? `{proxy+}` : `/{proxy+}`),
       });
     }
   }
@@ -58,7 +58,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
     enableCors = false,
   } = stackConfig;
 
-  if (typeof minimumCompressionSizeInBytes === 'number') {
+  if (typeof minimumCompressionSizeInBytes === `number`) {
     app.use(compression({threshold: minimumCompressionSizeInBytes}));
   }
 
@@ -70,7 +70,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
   const routeConfigs = [...lambdaConfigs, ...s3Configs];
 
   for (const routeConfig of sortRouteConfigs(routeConfigs)) {
-    if ('httpMethod' in routeConfig) {
+    if (`httpMethod` in routeConfig) {
       if (lambdaCaches && routeConfig.cachingEnabled) {
         lambdaCaches.set(routeConfig, new Map());
 
@@ -118,7 +118,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
       removeAllRoutes(app);
 
       for (const routeConfig of sortRouteConfigs(routeConfigs)) {
-        if ('httpMethod' in routeConfig) {
+        if (`httpMethod` in routeConfig) {
           registerLambdaRoute(app, routeConfig, lambdaCaches?.get(routeConfig));
         } else {
           registerS3Route(app, routeConfig, enableCors);
@@ -127,7 +127,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
 
       logInfo(
         `Reregistered DEV server routes because of changed ${
-          changedLambdaConfigs.length ? 'Lambda' : 'S3'
+          changedLambdaConfigs.length ? `Lambda` : `S3`
         } file: ${changedLocalPath}`
       );
     };
@@ -138,7 +138,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
       mkdirp.sync(path.dirname(localPath));
     }
 
-    watch(localPaths, {ignoreInitial: true}).on('add', handleLocalPathChanges);
-    watch(localPaths).on('change', handleLocalPathChanges);
+    watch(localPaths, {ignoreInitial: true}).on(`add`, handleLocalPathChanges);
+    watch(localPaths).on(`change`, handleLocalPathChanges);
   });
 }

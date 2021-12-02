@@ -27,36 +27,36 @@ export function createS3Integration(
   }
 
   const s3Integration = new aws_apigateway.AwsIntegration({
-    service: 's3',
+    service: `s3`,
     path: path.join(
       s3Bucket.bucketName,
       bucketPath,
-      ...(type === 'folder' ? ['{file}'] : [])
+      ...(type === `folder` ? [`{file}`] : [])
     ),
-    integrationHttpMethod: 'GET',
+    integrationHttpMethod: `GET`,
     options: {
       credentialsRole: s3IntegrationRole,
       integrationResponses: createS3IntegrationResponses(stackConfig, s3Config),
       requestParameters:
-        type === 'folder'
-          ? {'integration.request.path.file': 'method.request.path.file'}
+        type === `folder`
+          ? {'integration.request.path.file': `method.request.path.file`}
           : {},
-      cacheKeyParameters: type === 'folder' ? ['method.request.path.file'] : [],
+      cacheKeyParameters: type === `folder` ? [`method.request.path.file`] : [],
     },
   });
 
   let resource = restApi.root.resourceForPath(publicPath);
 
-  if (type === 'folder') {
-    resource = resource.addResource('{file}');
+  if (type === `folder`) {
+    resource = resource.addResource(`{file}`);
   }
 
-  resource.addMethod('GET', s3Integration, {
+  resource.addMethod(`GET`, s3Integration, {
     authorizationType: authenticationRequired
       ? aws_apigateway.AuthorizationType.CUSTOM
       : aws_apigateway.AuthorizationType.NONE,
     authorizer: authenticationRequired ? authorizer : undefined,
     methodResponses: createS3MethodResponses(stackConfig, s3Config),
-    requestParameters: {'method.request.path.file': type === 'folder'},
+    requestParameters: {'method.request.path.file': type === `folder`},
   });
 }

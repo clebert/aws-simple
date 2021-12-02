@@ -23,7 +23,7 @@ interface CleanUpArgv {
 }
 
 function isCleanUpArgv(argv: {readonly _: unknown[]}): argv is CleanUpArgv {
-  return argv._[0] === 'clean-up';
+  return argv._[0] === `clean-up`;
 }
 
 function printStacksTable(stacks: CloudFormation.Stack[]): void {
@@ -31,10 +31,10 @@ function printStacksTable(stacks: CloudFormation.Stack[]): void {
   const padding: [number, number, number, number] = [0, 1, 0, 0];
 
   ui.div(
-    {text: chalk.bold('App Version'), border: true, padding},
-    {text: chalk.bold('Age'), border: true, padding, width: 11},
-    {text: chalk.bold('Status'), border: true, padding},
-    {text: chalk.bold('Tags'), border: true}
+    {text: chalk.bold(`App Version`), border: true, padding},
+    {text: chalk.bold(`Age`), border: true, padding, width: 11},
+    {text: chalk.bold(`Status`), border: true, padding},
+    {text: chalk.bold(`Tags`), border: true}
   );
 
   for (const stack of stacks) {
@@ -44,13 +44,13 @@ function printStacksTable(stacks: CloudFormation.Stack[]): void {
 
     ui.div(
       {text: parts ? parts.appVersion : StackName, padding},
-      {text: `${age} day${age === 1 ? '' : 's'}`, padding, width: 11},
+      {text: `${age} day${age === 1 ? `` : `s`}`, padding, width: 11},
       {text: StackStatus, padding},
-      Tags.map(({Key}) => Key).join(', ') || ''
+      Tags.map(({Key}) => Key).join(`, `) || ``
     );
   }
 
-  console.info(ui.toString(), '\n');
+  console.info(ui.toString(), `\n`);
 }
 
 export async function cleanUp(
@@ -69,7 +69,7 @@ export async function cleanUp(
   );
 
   if (expiredStacks.length === 0) {
-    console.info('No stacks found to delete.');
+    console.info(`No stacks found to delete.`);
 
     return;
   }
@@ -78,10 +78,10 @@ export async function cleanUp(
     printStacksTable(expiredStacks);
 
     const {deleteConfirmation} = await prompts({
-      type: 'confirm',
-      name: 'deleteConfirmation',
+      type: `confirm`,
+      name: `deleteConfirmation`,
       message: chalk.bold(
-        chalk.red('The listed stacks will be deleted. Continue?')
+        chalk.red(`The listed stacks will be deleted. Continue?`)
       ),
     });
 
@@ -101,7 +101,7 @@ export async function cleanUp(
         new Listr(
           [
             {
-              title: 'Deleting stack',
+              title: `Deleting stack`,
               task: async (_, listrSubTask) =>
                 pRetry(async () => deleteStack(clientConfig, expiredStack), {
                   retries: 10,
@@ -111,15 +111,15 @@ export async function cleanUp(
                 }),
             },
             {
-              title: 'Deleting S3 bucket',
+              title: `Deleting S3 bucket`,
               task: async (_, listrSubTask) => {
                 let s3BucketName: string;
 
                 try {
-                  s3BucketName = findStackOutput(expiredStack, 'S3BucketName');
+                  s3BucketName = findStackOutput(expiredStack, `S3BucketName`);
                 } catch (error) {
                   listrSubTask.skip(
-                    error instanceof Error ? error.message : 'No bucket name.'
+                    error instanceof Error ? error.message : `No bucket name.`
                   );
 
                   return;
@@ -128,9 +128,9 @@ export async function cleanUp(
                 try {
                   await deleteS3Bucket(clientConfig, s3BucketName);
                 } catch (error) {
-                  if (isObject(error) && error.code === 'NoSuchBucket') {
+                  if (isObject(error) && error.code === `NoSuchBucket`) {
                     listrSubTask.skip(
-                      error instanceof Error ? error.message : 'No such bucket.'
+                      error instanceof Error ? error.message : `No such bucket.`
                     );
                   } else {
                     throw error;
@@ -149,32 +149,32 @@ export async function cleanUp(
 
 cleanUp.describe = (argv: Argv) =>
   argv.command(
-    'clean-up [options]',
-    'Clean up old deployed stacks',
+    `clean-up [options]`,
+    `Clean up old deployed stacks`,
     (commandArgv) =>
       commandArgv
         .describe(
-          'min-age',
-          'The minimum age (in days) of a stack for deletion'
+          `min-age`,
+          `The minimum age (in days) of a stack for deletion`
         )
-        .number('min-age')
-        .default('min-age', 30)
+        .number(`min-age`)
+        .default(`min-age`, 30)
 
-        .describe('exclude', 'Tags that exclude a stack from deletion')
-        .array('exclude')
-        .default('exclude', [])
+        .describe(`exclude`, `Tags that exclude a stack from deletion`)
+        .array(`exclude`)
+        .default(`exclude`, [])
 
         .describe(
-          'yes',
-          'The confirmation message will automatically be answered with yes'
+          `yes`,
+          `The confirmation message will automatically be answered with yes`
         )
-        .boolean('yes')
-        .default('yes', false)
+        .boolean(`yes`)
+        .default(`yes`, false)
 
-        .example('npx $0 clean-up', '')
+        .example(`npx $0 clean-up`, ``)
 
         .example(
-          'npx $0 clean-up --min-age 14 --exclude release prerelease --yes',
-          ''
+          `npx $0 clean-up --min-age 14 --exclude release prerelease --yes`,
+          ``
         )
   );

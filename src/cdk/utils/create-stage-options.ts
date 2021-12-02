@@ -28,13 +28,13 @@ function createMethodOption(
 }
 
 function createMethodPath(methodConfig: MethodConfig): string {
-  const {publicPath, httpMethod = 'GET', type} = methodConfig;
+  const {publicPath, httpMethod = `GET`, type} = methodConfig;
 
-  if (type === 'folder') {
-    return path.join(publicPath, '{file}', httpMethod);
+  if (type === `folder`) {
+    return path.join(publicPath, `{file}`, httpMethod);
   }
 
-  return publicPath === '/'
+  return publicPath === `/`
     ? `//${httpMethod}`
     : path.join(publicPath, httpMethod);
 }

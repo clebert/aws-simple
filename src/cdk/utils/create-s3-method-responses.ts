@@ -21,8 +21,8 @@ export function createS3MethodResponses(
   }
 
   return [
-    {statusCode: '200', responseParameters: status200ResponseParameters},
-    {statusCode: '404', responseParameters: corsResponseParameters},
-    {statusCode: '500', responseParameters: corsResponseParameters},
+    {statusCode: `200`, responseParameters: status200ResponseParameters},
+    {statusCode: `404`, responseParameters: corsResponseParameters},
+    {statusCode: `500`, responseParameters: corsResponseParameters},
   ];
 }
