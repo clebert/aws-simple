@@ -71,10 +71,23 @@ with programmatic access and the following attached policy:
       "Action": [
         "apigateway:*",
         "cloudformation:*",
-        "iam:*",
+        "ecr:CreateRepository",
+        "ecr:DeleteRepository",
+        "ecr:DescribeRepositories",
+        "iam:AttachRolePolicy",
+        "iam:CreateRole",
+        "iam:DeleteRole",
+        "iam:DeleteRolePolicy",
+        "iam:DetachRolePolicy",
+        "iam:GetRole",
+        "iam:PassRole",
+        "iam:PutRolePolicy",
         "lambda:*",
         "route53:*",
-        "s3:*"
+        "s3:*",
+        "ssm:DeleteParameter",
+        "ssm:Get*",
+        "ssm:PutParameter"
       ],
       "Resource": "*"
     }
