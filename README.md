@@ -25,7 +25,7 @@ started to emulate the resulting AWS infrastructure.
 ### Install dependencies
 
 ```
-npm install aws-simple aws-cdk@next --save-dev
+npm install aws-simple aws-cdk --save-dev
 ```
 
 ### Create a config file
