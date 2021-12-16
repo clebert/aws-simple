@@ -1,18 +1,21 @@
 import {CloudFormation} from 'aws-sdk';
 
+export interface Tag {
+  readonly key: string;
+  readonly value?: string;
+}
+
 export async function updateStackTags(
   clientConfig: CloudFormation.ClientConfiguration,
   stack: CloudFormation.Stack,
-  tagsToAdd: string[],
+  tagsToAdd: Tag[],
   tagsToRemove: string[]
 ): Promise<void> {
   const {StackName, Capabilities, Parameters, Tags = []} = stack;
 
   const tagObjects = [
-    ...Tags,
-    ...tagsToAdd
-      .filter((tag) => Tags.every(({Key}) => Key !== tag))
-      .map((tag) => ({Key: tag, Value: `true`})),
+    ...Tags.filter(({Key}) => tagsToAdd.every((tag) => tag.key !== Key)),
+    ...tagsToAdd.map((tag) => ({Key: tag.key, Value: tag.value || `true`})),
   ].filter(({Key}) => !tagsToRemove.includes(Key));
 
   const cloudFormation = new CloudFormation(clientConfig);
