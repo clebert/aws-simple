@@ -22,7 +22,7 @@ function isTagArgv(argv: {readonly _: unknown[]}): argv is TagArgv {
 }
 
 function createTag(tag: string): Tag {
-  const [key = tag, value] = tag.split(`=`);
+  const [key, value] = tag.split(`=`) as [string, ...string[]];
 
   return {key, value};
 }
