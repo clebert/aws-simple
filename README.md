@@ -573,6 +573,7 @@ Options:
 
 Examples:
   npx aws-simple tag --add latest release --remove prerelease
+  npx aws-simple tag --add foo=something bar="something else"
   npx aws-simple tag --add prerelease --yes
 ```
 

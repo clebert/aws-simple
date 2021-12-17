@@ -46,7 +46,11 @@ const tagsColumn: Column<CloudFormation.Stack, 'Tags'> = {
   headerCell: <Text underline>Tags</Text>,
   entryKey: `Tags`,
   createEntryCell: (value) =>
-    value ? value.map(({Key}) => Key).join(`, `) : ``,
+    value
+      ? value
+          .map(({Key, Value}) => `${Key}=${JSON.stringify(Value)}`)
+          .join(`, `)
+      : ``,
 };
 
 export const ListCommand = (props: ListCommandProps): JSX.Element | null => {

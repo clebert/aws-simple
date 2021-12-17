@@ -3,6 +3,7 @@ import React from 'react';
 import {AppConfigContext} from '../contexts/app-config-context';
 import {ClientConfigContext} from '../contexts/client-config-context';
 import {findStack} from '../sdk/find-stack';
+import type {Tag} from '../sdk/update-stack-tags';
 import {updateStackTags} from '../sdk/update-stack-tags';
 
 export type UpdateStackTagsHookState =
@@ -30,7 +31,7 @@ export type UpdateStackTagsHook =
   | CanceledUpdateStackTagsHook;
 
 export function useUpdateStackTags(
-  tagsToAdd: string[],
+  tagsToAdd: Tag[],
   tagsToRemove: string[],
   performImmediately: boolean
 ): UpdateStackTagsHook {

@@ -2,6 +2,7 @@ import {Text} from 'ink';
 import React from 'react';
 import type {Argv} from 'yargs';
 import {useUpdateStackTags} from '../hooks/use-update-stack-tags';
+import type {Tag} from '../sdk/update-stack-tags';
 import {Confirm} from './confirm';
 import {Spinner} from './spinner';
 
@@ -20,6 +21,12 @@ function isTagArgv(argv: {readonly _: unknown[]}): argv is TagArgv {
   return argv._[0] === `tag`;
 }
 
+function createTag(tag: string): Tag {
+  const [key, value] = tag.split(`=`) as [string, ...string[]];
+
+  return {key, value};
+}
+
 export const TagCommand = (props: TagCommandProps): JSX.Element | null => {
   if (!isTagArgv(props.argv)) {
     return null;
@@ -29,7 +36,11 @@ export const TagCommand = (props: TagCommandProps): JSX.Element | null => {
     argv: {add, remove, yes},
   } = props;
 
-  const updateStackTagsHook = useUpdateStackTags(add, remove, yes);
+  const updateStackTagsHook = useUpdateStackTags(
+    add.map(createTag),
+    remove,
+    yes
+  );
 
   if (updateStackTagsHook.state === `uninitialized`) {
     return (
@@ -69,5 +80,6 @@ TagCommand.describe = (argv: Argv) =>
       .default(`yes`, false)
 
       .example(`npx $0 tag --add latest release --remove prerelease`, ``)
+      .example(`npx $0 tag --add foo=something bar="something else"`, ``)
       .example(`npx $0 tag --add prerelease --yes`, ``)
   );
