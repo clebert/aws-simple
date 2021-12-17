@@ -4,7 +4,7 @@ import {findStackOutput} from './find-stack-output';
 
 export function createStackBaseUrl(
   stackConfig: StackConfig,
-  stack: CloudFormation.Stack
+  stack: CloudFormation.Stack,
 ): string {
   const {customDomainConfig} = stackConfig;
 

@@ -40,7 +40,7 @@ export function loadAppConfig(): AppConfig {
   if (isAppConfig(appConfig)) {
     console.warn(
       `aws-simple:`,
-      `You are using a deprecated configuration format.`
+      `You are using a deprecated configuration format.`,
     );
 
     return appConfig;
@@ -51,6 +51,6 @@ export function loadAppConfig(): AppConfig {
   }
 
   throw new Error(
-    `The aws-simple config file does not have a valid default export.`
+    `The aws-simple config file does not have a valid default export.`,
   );
 }

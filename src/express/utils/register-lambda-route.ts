@@ -8,12 +8,12 @@ import {getRouterMatcher} from './get-router-matcher';
 export function registerLambdaRoute(
   app: express.Express,
   lambdaConfig: LambdaConfig,
-  lambdaCache: Map<string, APIGatewayProxyResult> | undefined
+  lambdaCache: Map<string, APIGatewayProxyResult> | undefined,
 ): void {
   const {httpMethod, publicPath} = lambdaConfig;
 
   getRouterMatcher(app, httpMethod)(
     createExpressPath(publicPath),
-    createLambdaRequestHandler(lambdaConfig, lambdaCache)
+    createLambdaRequestHandler(lambdaConfig, lambdaCache),
   );
 }

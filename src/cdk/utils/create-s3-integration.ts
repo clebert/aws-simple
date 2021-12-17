@@ -11,7 +11,7 @@ export function createS3Integration(
   s3Bucket: aws_s3.Bucket,
   s3IntegrationRole: aws_iam.Role,
   s3Config: S3Config,
-  authorizer: aws_apigateway.IAuthorizer | undefined
+  authorizer: aws_apigateway.IAuthorizer | undefined,
 ): void {
   const {
     type,
@@ -22,7 +22,7 @@ export function createS3Integration(
 
   if (authenticationRequired && !authorizer) {
     throw new Error(
-      `The S3 config for "${publicPath}" requires authentication but no basicAuthenticationConfig has been defined.`
+      `The S3 config for "${publicPath}" requires authentication but no basicAuthenticationConfig has been defined.`,
     );
   }
 
@@ -31,7 +31,7 @@ export function createS3Integration(
     path: path.join(
       s3Bucket.bucketName,
       bucketPath,
-      ...(type === `folder` ? [`{file}`] : [])
+      ...(type === `folder` ? [`{file}`] : []),
     ),
     integrationHttpMethod: `GET`,
     options: {

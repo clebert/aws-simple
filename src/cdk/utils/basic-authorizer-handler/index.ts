@@ -20,7 +20,7 @@ function isValidBasicAuthHeader(headerValue?: string): boolean {
 
 function createAllowPolicy(
   principalId: string,
-  resource: string
+  resource: string,
 ): CustomAuthorizerResult {
   const [arn, partition, service, region, accountId] = resource.split(`:`);
 
@@ -41,16 +41,16 @@ function createAllowPolicy(
 
 function getHeaderValue(
   headers: Record<string, string> = {},
-  name: string
+  name: string,
 ): string | undefined {
   const searchedHeaderName = name.toLowerCase();
   return Object.entries(headers).find(
-    ([headerName]) => headerName.toLowerCase() === searchedHeaderName
+    ([headerName]) => headerName.toLowerCase() === searchedHeaderName,
   )?.[1];
 }
 
 export function getAuthHeaderValue(
-  headers: Record<string, string> = {}
+  headers: Record<string, string> = {},
 ): string | undefined {
   return getHeaderValue(headers, `authorization`);
 }

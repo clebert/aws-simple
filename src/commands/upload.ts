@@ -22,7 +22,7 @@ function isUploadArgv(argv: {readonly _: unknown[]}): argv is UploadArgv {
 export async function upload(
   appConfig: AppConfig,
   clientConfig: CloudFormation.ClientConfiguration,
-  argv: {readonly _: unknown[]}
+  argv: {readonly _: unknown[]},
 ): Promise<void> {
   if (!isUploadArgv(argv)) {
     return;
@@ -40,7 +40,7 @@ export async function upload(
       const {filename, promise} = uploadFileToS3(
         clientConfig,
         stack,
-        s3UploadConfig
+        s3UploadConfig,
       );
 
       const spinnerNode = TemplateNode.create<string>``;
@@ -55,11 +55,11 @@ export async function upload(
 
       promise
         .then(
-          () => node.update`  ${green(`✔`)} Successfully uploaded file: ${url}`
+          () => node.update`  ${green(`✔`)} Successfully uploaded file: ${url}`,
         )
         .catch(
           () =>
-            node.update`  ${red(`✖`)} Error while uploading file: ${filename}`
+            node.update`  ${red(`✖`)} Error while uploading file: ${filename}`,
         );
 
       uploadPromises.push(promise);
@@ -79,5 +79,5 @@ export async function upload(
 
 upload.describe = (argv: Argv) =>
   argv.command(`upload [options]`, `Upload files to S3`, (commandArgv) =>
-    commandArgv.example(`npx $0 upload`, ``)
+    commandArgv.example(`npx $0 upload`, ``),
   );

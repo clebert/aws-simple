@@ -9,7 +9,7 @@ const stageName = `prod`;
  */
 export async function redeployApiGateway(
   clientConfig: CloudFormation.ClientConfiguration,
-  stack: CloudFormation.Stack
+  stack: CloudFormation.Stack,
 ): Promise<void> {
   const restApiId = findStackOutput(stack, `RestApiId`);
   const apiGateway = new APIGateway(clientConfig);

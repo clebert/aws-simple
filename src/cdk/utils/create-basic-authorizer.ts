@@ -7,7 +7,7 @@ export function createBasicAuthorizer(
   appName: string,
   appVersion: string,
   stackConfig: StackConfig,
-  stack: Stack
+  stack: Stack,
 ): aws_apigateway.RequestAuthorizer | undefined {
   if (!stackConfig.basicAuthenticationConfig) {
     return undefined;
@@ -21,7 +21,7 @@ export function createBasicAuthorizer(
       description: `${appName} Authorizer Lambda ${appVersion}`,
       runtime: aws_lambda.Runtime.NODEJS_14_X,
       code: aws_lambda.Code.fromAsset(
-        path.dirname(require.resolve(`./basic-authorizer-handler`))
+        path.dirname(require.resolve(`./basic-authorizer-handler`)),
       ),
       handler: `index.handler`,
       environment: {USERNAME: username, PASSWORD: password},

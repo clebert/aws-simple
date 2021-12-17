@@ -75,7 +75,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
         lambdaCaches.set(routeConfig, new Map());
 
         logInfo(
-          `Initialized DEV server cache for Lambda: ${routeConfig.publicPath} -> ${routeConfig.localPath}`
+          `Initialized DEV server cache for Lambda: ${routeConfig.publicPath} -> ${routeConfig.localPath}`,
         );
       }
 
@@ -95,14 +95,14 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
           devServer?.localPathDependencies?.some((localPathDependency) => {
             if (localPathDependency === changedLocalPath) {
               logInfo(
-                `Changed local DEV path dependency detected for Lambda: ${publicPath} depends on ${localPathDependency}`
+                `Changed local DEV path dependency detected for Lambda: ${publicPath} depends on ${localPathDependency}`,
               );
 
               return true;
             }
 
             return false;
-          })
+          }),
       );
 
       for (const changedLambdaConfig of changedLambdaConfigs) {
@@ -110,7 +110,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
           lambdaCaches.set(changedLambdaConfig, new Map());
 
           logInfo(
-            `Invalidated DEV server cache for Lambda: ${changedLambdaConfig.publicPath} -> ${changedLambdaConfig.localPath}`
+            `Invalidated DEV server cache for Lambda: ${changedLambdaConfig.publicPath} -> ${changedLambdaConfig.localPath}`,
           );
         }
       }
@@ -128,7 +128,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
       logInfo(
         `Reregistered DEV server routes because of changed ${
           changedLambdaConfigs.length ? `Lambda` : `S3`
-        } file: ${changedLocalPath}`
+        } file: ${changedLocalPath}`,
       );
     };
 

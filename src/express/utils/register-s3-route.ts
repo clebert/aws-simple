@@ -6,7 +6,7 @@ import {createExpressPath} from './create-express-path';
 export function registerS3Route(
   app: express.Express,
   s3Config: S3Config,
-  enableCors: boolean
+  enableCors: boolean,
 ): void {
   const {type, publicPath, localPath} = s3Config;
 
@@ -27,7 +27,7 @@ export function registerS3Route(
             res.setHeader(`Access-Control-Allow-Origin`, `*`);
           }
         },
-      })
+      }),
     );
   }
 }

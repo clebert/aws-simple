@@ -74,7 +74,7 @@ describe(`Table`, () => {
           `     b2  c2`,
           `a3       c3`,
           `a4   b4`,
-        ].join(`\n`)
+        ].join(`\n`),
       );
     });
   });

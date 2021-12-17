@@ -2,7 +2,7 @@ import {CloudFormation} from 'aws-sdk';
 
 export async function deleteStack(
   clientConfig: CloudFormation.ClientConfiguration,
-  stack: CloudFormation.Stack
+  stack: CloudFormation.Stack,
 ): Promise<void> {
   const cloudFormation = new CloudFormation(clientConfig);
   const {StackName} = stack;

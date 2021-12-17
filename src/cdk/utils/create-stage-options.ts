@@ -12,7 +12,7 @@ export interface MethodConfig {
 }
 
 function createMethodOption(
-  methodConfig: MethodConfig
+  methodConfig: MethodConfig,
 ): aws_apigateway.MethodDeploymentOptions {
   const {cachingEnabled, cacheTtlInSeconds, loggingLevel} = methodConfig;
 
@@ -40,7 +40,7 @@ function createMethodPath(methodConfig: MethodConfig): string {
 }
 
 export function createStageOptions(
-  stackConfig: StackConfig
+  stackConfig: StackConfig,
 ): aws_apigateway.StageOptions {
   const {lambdaConfigs = [], s3Configs = []} = stackConfig;
 

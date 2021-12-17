@@ -34,7 +34,7 @@ function printStacksTable(stacks: CloudFormation.Stack[]): void {
     {text: chalk.bold(`App Version`), border: true, padding},
     {text: chalk.bold(`Age`), border: true, padding, width: 11},
     {text: chalk.bold(`Status`), border: true, padding},
-    {text: chalk.bold(`Tags`), border: true}
+    {text: chalk.bold(`Tags`), border: true},
   );
 
   for (const stack of stacks) {
@@ -46,7 +46,7 @@ function printStacksTable(stacks: CloudFormation.Stack[]): void {
       {text: parts ? parts.appVersion : StackName, padding},
       {text: `${age} day${age === 1 ? `` : `s`}`, padding, width: 11},
       {text: StackStatus, padding},
-      Tags.map(({Key}) => Key).join(`, `) || ``
+      Tags.map(({Key}) => Key).join(`, `) || ``,
     );
   }
 
@@ -56,7 +56,7 @@ function printStacksTable(stacks: CloudFormation.Stack[]): void {
 export async function cleanUp(
   appConfig: AppConfig,
   clientConfig: CloudFormation.ClientConfiguration,
-  argv: {readonly _: unknown[]}
+  argv: {readonly _: unknown[]},
 ): Promise<void> {
   if (!isCleanUpArgv(argv)) {
     return;
@@ -65,7 +65,7 @@ export async function cleanUp(
   const stacks = await findStacks(appConfig, clientConfig);
 
   const expiredStacks = stacks.filter((stack) =>
-    isStackExpired(stack, argv.minAge, argv.exclude)
+    isStackExpired(stack, argv.minAge, argv.exclude),
   );
 
   if (expiredStacks.length === 0) {
@@ -81,7 +81,7 @@ export async function cleanUp(
       type: `confirm`,
       name: `deleteConfirmation`,
       message: chalk.bold(
-        chalk.red(`The listed stacks will be deleted. Continue?`)
+        chalk.red(`The listed stacks will be deleted. Continue?`),
       ),
     });
 
@@ -119,7 +119,7 @@ export async function cleanUp(
                   s3BucketName = findStackOutput(expiredStack, `S3BucketName`);
                 } catch (error) {
                   listrSubTask.skip(
-                    error instanceof Error ? error.message : `No bucket name.`
+                    error instanceof Error ? error.message : `No bucket name.`,
                   );
 
                   return;
@@ -130,7 +130,9 @@ export async function cleanUp(
                 } catch (error) {
                   if (isObject(error) && error.code === `NoSuchBucket`) {
                     listrSubTask.skip(
-                      error instanceof Error ? error.message : `No such bucket.`
+                      error instanceof Error
+                        ? error.message
+                        : `No such bucket.`,
                     );
                   } else {
                     throw error;
@@ -139,7 +141,7 @@ export async function cleanUp(
               },
             },
           ],
-          {exitOnError: true}
+          {exitOnError: true},
         ),
     });
   }
@@ -155,7 +157,7 @@ cleanUp.describe = (argv: Argv) =>
       commandArgv
         .describe(
           `min-age`,
-          `The minimum age (in days) of a stack for deletion`
+          `The minimum age (in days) of a stack for deletion`,
         )
         .number(`min-age`)
         .default(`min-age`, 30)
@@ -166,7 +168,7 @@ cleanUp.describe = (argv: Argv) =>
 
         .describe(
           `yes`,
-          `The confirmation message will automatically be answered with yes`
+          `The confirmation message will automatically be answered with yes`,
         )
         .boolean(`yes`)
         .default(`yes`, false)
@@ -175,6 +177,6 @@ cleanUp.describe = (argv: Argv) =>
 
         .example(
           `npx $0 clean-up --min-age 14 --exclude release prerelease --yes`,
-          ``
-        )
+          ``,
+        ),
   );

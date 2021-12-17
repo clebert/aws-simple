@@ -5,15 +5,15 @@ const validPart = `ABCDEFGHIJKLMNOPQRSTUVWXYZ-abcdefghijklmnopqrstuvwxyz-0123456
 describe(`createStackName`, () => {
   it(`returns the created stack name`, () => {
     expect(createStackName({appName: validPart, appVersion: validPart})).toBe(
-      `aws-simple--${validPart}--${validPart}`
+      `aws-simple--${validPart}--${validPart}`,
     );
 
     expect(createStackName({appName: `foo`, appVersion: `bar`})).toBe(
-      `aws-simple--foo--bar`
+      `aws-simple--foo--bar`,
     );
 
     expect(createStackName({appName: `f-o-o`, appVersion: `b-a-r`})).toBe(
-      `aws-simple--f-o-o--b-a-r`
+      `aws-simple--f-o-o--b-a-r`,
     );
   });
 
@@ -27,7 +27,7 @@ describe(`createStackName`, () => {
       {appName: `f.o.o`, appVersion: `bar`},
     ]) {
       expect(() => createStackName(invalidParts)).toThrowError(
-        `The specified app name is invalid. It can only include letters (A-Z and a-z), numbers (0-9), and single hyphens (-).`
+        `The specified app name is invalid. It can only include letters (A-Z and a-z), numbers (0-9), and single hyphens (-).`,
       );
     }
 
@@ -40,7 +40,7 @@ describe(`createStackName`, () => {
       {appName: `foo`, appVersion: `b.a.r`},
     ]) {
       expect(() => createStackName(invalidParts)).toThrowError(
-        `The specified app version is invalid. It can only include letters (A-Z and a-z), numbers (0-9), and single hyphens (-).`
+        `The specified app version is invalid. It can only include letters (A-Z and a-z), numbers (0-9), and single hyphens (-).`,
       );
     }
   });

@@ -12,7 +12,7 @@ function assertPart(value: string, valueName: string): void {
     /[^A-Za-z0-9-]/.test(value)
   ) {
     throw new Error(
-      `The specified ${valueName} is invalid. It can only include letters (A-Z and a-z), numbers (0-9), and single hyphens (-).`
+      `The specified ${valueName} is invalid. It can only include letters (A-Z and a-z), numbers (0-9), and single hyphens (-).`,
     );
   }
 }

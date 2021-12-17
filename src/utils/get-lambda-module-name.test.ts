@@ -12,7 +12,7 @@ describe(`getLambdaModuleName()`, () => {
 
   it(`checks the file name for valid characters`, () => {
     const expectedError = new Error(
-      `The Lambda file name (without file extension) must match the following pattern: /^[A-Za-z0-9-_]+$/`
+      `The Lambda file name (without file extension) must match the following pattern: /^[A-Za-z0-9-_]+$/`,
     );
 
     expect(() => getLambdaModuleName(`.js`)).toThrow(expectedError);

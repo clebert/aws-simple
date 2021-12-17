@@ -6,7 +6,7 @@ export function getLambdaModuleName(localPath: string): string {
 
   if (!regExp.test(lambdaModuleName)) {
     throw new Error(
-      `The Lambda file name (without file extension) must match the following pattern: ${regExp}`
+      `The Lambda file name (without file extension) must match the following pattern: ${regExp}`,
     );
   }
 

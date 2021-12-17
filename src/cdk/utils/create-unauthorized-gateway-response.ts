@@ -5,7 +5,7 @@ import type {StackConfig} from '../../types';
 export function createUnauthorizedGatewayResponse(
   stackConfig: StackConfig,
   stack: Stack,
-  restApi: aws_apigateway.RestApi
+  restApi: aws_apigateway.RestApi,
 ): void {
   if (!stackConfig.basicAuthenticationConfig) {
     return;
@@ -44,7 +44,7 @@ export function createUnauthorizedGatewayResponse(
         'application/json': `{"message":$context.error.messageString}`,
         'text/html': `$context.error.message`,
       },
-    }
+    },
   );
 
   // Intentionally not adding the restApi as a dependency here. With a defined

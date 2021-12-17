@@ -33,14 +33,14 @@ export type UpdateStackTagsHook =
 export function useUpdateStackTags(
   tagsToAdd: Tag[],
   tagsToRemove: string[],
-  performImmediately: boolean
+  performImmediately: boolean,
 ): UpdateStackTagsHook {
   const appConfig = React.useContext(AppConfigContext);
   const clientConfig = React.useContext(ClientConfigContext);
   const {exit} = useApp();
 
   const [state, setState] = React.useState<UpdateStackTagsHookState>(
-    performImmediately ? `initialized` : `uninitialized`
+    performImmediately ? `initialized` : `uninitialized`,
   );
 
   const perform = React.useCallback((cancel: boolean) => {
@@ -49,7 +49,7 @@ export function useUpdateStackTags(
         ? cancel
           ? `canceled`
           : `initialized`
-        : currentState
+        : currentState,
     );
   }, []);
 

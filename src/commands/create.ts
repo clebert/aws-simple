@@ -12,7 +12,7 @@ function isCreateArgv(argv: {readonly _: unknown[]}): argv is CreateArgv {
 
 export function create(
   appConfig: AppConfig,
-  argv: {readonly _: unknown[]}
+  argv: {readonly _: unknown[]},
 ): void {
   if (isCreateArgv(argv)) {
     createStack(appConfig);
@@ -26,5 +26,5 @@ create.describe = (argv: Argv) =>
     (commandArgv) =>
       commandArgv
         .example(`npx $0 create`, ``)
-        .example(`npx cdk deploy --app 'npx $0 create'`, ``)
+        .example(`npx cdk deploy --app 'npx $0 create'`, ``),
   );

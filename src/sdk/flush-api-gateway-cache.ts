@@ -4,7 +4,7 @@ import {findStackOutput} from './find-stack-output';
 
 export async function flushApiGatewayCache(
   clientConfig: CloudFormation.ClientConfiguration,
-  stack: CloudFormation.Stack
+  stack: CloudFormation.Stack,
 ): Promise<void> {
   const restApiId = findStackOutput(stack, `RestApiId`);
   const apiGateway = new APIGateway(clientConfig);

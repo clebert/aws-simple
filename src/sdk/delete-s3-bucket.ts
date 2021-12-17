@@ -3,7 +3,7 @@ import {S3} from 'aws-sdk';
 
 export async function deleteS3Bucket(
   clientConfig: CloudFormation.ClientConfiguration,
-  s3BucketName: string
+  s3BucketName: string,
 ): Promise<void> {
   const s3 = new S3(clientConfig);
 
@@ -12,7 +12,7 @@ export async function deleteS3Bucket(
     .promise();
 
   const objectIdentifiers = Contents.filter(
-    (object): object is S3.ObjectIdentifier => typeof object.Key === `string`
+    (object): object is S3.ObjectIdentifier => typeof object.Key === `string`,
   ).map(({Key}) => ({Key}));
 
   if (objectIdentifiers.length > 0) {

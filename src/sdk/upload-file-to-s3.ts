@@ -13,7 +13,7 @@ export interface S3UploadTask {
 export function uploadFileToS3(
   clientConfig: CloudFormation.ClientConfiguration,
   stack: CloudFormation.Stack,
-  s3UploadConfig: S3UploadConfig
+  s3UploadConfig: S3UploadConfig,
 ): S3UploadTask {
   const s3 = new S3(clientConfig);
   const s3BucketName = findStackOutput(stack, `S3BucketName`);

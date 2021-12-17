@@ -8,7 +8,7 @@ import {logInfo} from './log-info';
 
 export function createLambdaRequestHandler(
   lambdaConfig: LambdaConfig,
-  lambdaCache: Map<string, APIGatewayProxyResult> | undefined
+  lambdaCache: Map<string, APIGatewayProxyResult> | undefined,
 ): express.RequestHandler {
   const {
     localPath,

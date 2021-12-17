@@ -3,7 +3,7 @@ import type {LambdaHttpMethod} from '../../types';
 
 export function getRouterMatcher(
   app: express.Express,
-  httpMethod: LambdaHttpMethod
+  httpMethod: LambdaHttpMethod,
 ): express.IRouterMatcher<express.Express> {
   switch (httpMethod) {
     case `DELETE`: {

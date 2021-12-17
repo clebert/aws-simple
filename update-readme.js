@@ -27,14 +27,14 @@ async function getCommandUsage(commandName) {
         } else {
           resolve(stdout.trim().replace(/index\.js/g, `aws-simple`));
         }
-      }
+      },
     );
   });
 }
 
 function replaceCommandUsage(readmeText, commandName, usage) {
   const regExp = new RegExp(
-    `\`\`\`\\s(?:Usage: )?aws-simple ${commandName}[\\s\\S]+?\\s\`\`\``
+    `\`\`\`\\s(?:Usage: )?aws-simple ${commandName}[\\s\\S]+?\\s\`\`\``,
   );
 
   return readmeText.replace(regExp, `\`\`\`\n${usage}\n\`\`\``);
@@ -47,13 +47,13 @@ function replaceCommandUsage(readmeText, commandName, usage) {
     commandNames.map(async (commandName) => ({
       commandName,
       usage: await getCommandUsage(commandName),
-    }))
+    })),
   );
 
   const updatedReadmeText = commandUsages.reduce(
     (readmeText, {commandName, usage}) =>
       replaceCommandUsage(readmeText, commandName, usage),
-    initialReadmeText
+    initialReadmeText,
   );
 
   if (process.env.GITHUB_ACTION && updatedReadmeText !== initialReadmeText) {

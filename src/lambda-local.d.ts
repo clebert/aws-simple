@@ -17,7 +17,7 @@ declare module 'lambda-local' {
   }
 
   export function execute(
-    options: LambdaLocalExecuteOptions
+    options: LambdaLocalExecuteOptions,
   ): Promise<ProxyResult>;
 
   export function getLogger(): Logger;

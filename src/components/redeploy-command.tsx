@@ -20,7 +20,7 @@ function isRedeployArgv(argv: {readonly _: unknown[]}): argv is TagArgv {
 }
 
 export const RedeployCommand = (
-  props: RedeployCommandProps
+  props: RedeployCommandProps,
 ): JSX.Element | null => {
   if (!isRedeployArgv(props.argv)) {
     return null;
@@ -54,5 +54,5 @@ RedeployCommand.describe = (argv: Argv) =>
   argv.command(
     `redeploy [options]`,
     `Redeploy the API Gateway`,
-    (commandArgv) => commandArgv.example(`npx $0 redeploy`, ``)
+    (commandArgv) => commandArgv.example(`npx $0 redeploy`, ``),
   );

@@ -13,8 +13,8 @@ describe(`sortRouteConfigs()`, () => {
           {publicPath: `/assets/foo`},
           {publicPath: `/assets/bar/baz`},
           {publicPath: `/assets/bar/baz/{proxy+}`},
-        ])
-      )
+        ]),
+      ),
     ).toEqual([
       {publicPath: `/`},
       {publicPath: `/assets/bar/baz`},

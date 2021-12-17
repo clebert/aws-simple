@@ -18,7 +18,7 @@ function isFlushCacheArgv(argv: {
 export async function flushCache(
   appConfig: AppConfig,
   clientConfig: CloudFormation.ClientConfiguration,
-  argv: {readonly _: unknown[]}
+  argv: {readonly _: unknown[]},
 ): Promise<void> {
   if (!isFlushCacheArgv(argv)) {
     return;
@@ -50,5 +50,5 @@ flushCache.describe = (argv: Argv) =>
   argv.command(
     `flush-cache [options]`,
     `Flush the cache of the API Gateway`,
-    (commandArgv) => commandArgv.example(`npx $0 flush-cache`, ``)
+    (commandArgv) => commandArgv.example(`npx $0 flush-cache`, ``),
   );

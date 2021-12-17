@@ -5,7 +5,7 @@ import {parseStackName} from '../utils/stack-name';
 
 export async function findStacks(
   appConfig: AppConfig,
-  clientConfig: CloudFormation.ClientConfiguration
+  clientConfig: CloudFormation.ClientConfiguration,
 ): Promise<CloudFormation.Stack[]> {
   const stacks: CloudFormation.Stack[] = [];
 
@@ -33,10 +33,10 @@ export async function findStacks(
       ({DeletionTime, StackStatus}) =>
         !DeletionTime ||
         StackStatus === `ROLLBACK_COMPLETE` ||
-        StackStatus === `DELETE_FAILED`
+        StackStatus === `DELETE_FAILED`,
     )
     .sort(
       (stack1, stack2) =>
-        getAgeInDays(stack1.CreationTime) - getAgeInDays(stack2.CreationTime)
+        getAgeInDays(stack1.CreationTime) - getAgeInDays(stack2.CreationTime),
     );
 }

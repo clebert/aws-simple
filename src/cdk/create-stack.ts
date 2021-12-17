@@ -24,7 +24,7 @@ export function createStack(appConfig: AppConfig): void {
   const restApi = new aws_apigateway.RestApi(
     stack,
     `RestApi`,
-    createRestApiProps(`${appName} ${appVersion}`, stackConfig, stack)
+    createRestApiProps(`${appName} ${appVersion}`, stackConfig, stack),
   );
 
   const restApiIdOutput = new CfnOutput(stack, `RestApiIdOutput`, {
@@ -74,7 +74,7 @@ export function createStack(appConfig: AppConfig): void {
     appName,
     appVersion,
     stackConfig,
-    stack
+    stack,
   );
 
   const {lambdaConfigs = [], s3Configs = []} = stackConfig;
@@ -90,7 +90,7 @@ export function createStack(appConfig: AppConfig): void {
       s3Bucket,
       s3IntegrationRole,
       s3Config,
-      authorizer
+      authorizer,
     );
   }
 }

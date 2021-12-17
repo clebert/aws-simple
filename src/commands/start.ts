@@ -15,7 +15,7 @@ function isStartArgv(argv: {readonly _: unknown[]}): argv is StartArgv {
 
 export async function start(
   appConfig: AppConfig,
-  argv: {readonly _: unknown[]}
+  argv: {readonly _: unknown[]},
 ): Promise<boolean> {
   if (!isStartArgv(argv)) {
     return false;
@@ -33,25 +33,25 @@ start.describe = (argv: Argv) =>
     commandArgv
       .describe(
         `port`,
-        `The port to listen on if available, otherwise listen on a random port`
+        `The port to listen on if available, otherwise listen on a random port`,
       )
       .number(`port`)
       .default(`port`, 3000)
 
       .describe(
         `cache`,
-        `Enable caching of successful caching-enabled Lambda function results per request URL`
+        `Enable caching of successful caching-enabled Lambda function results per request URL`,
       )
       .boolean(`cache`)
       .default(`cache`, false)
 
       .describe(
         `verbose`,
-        `Enable logging of successful Lambda function results`
+        `Enable logging of successful Lambda function results`,
       )
       .boolean(`verbose`)
       .default(`verbose`, false)
 
       .example(`npx $0 start`, ``)
-      .example(`npx $0 start --port 3001 --cache --verbose`, ``)
+      .example(`npx $0 start --port 3001 --cache --verbose`, ``),
   );

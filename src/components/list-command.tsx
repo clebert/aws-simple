@@ -85,5 +85,5 @@ export const ListCommand = (props: ListCommandProps): JSX.Element | null => {
 
 ListCommand.describe = (argv: Argv) =>
   argv.command(`list [options]`, `List all deployed stacks`, (commandArgv) =>
-    commandArgv.example(`npx $0 list`, ``)
+    commandArgv.example(`npx $0 list`, ``),
   );

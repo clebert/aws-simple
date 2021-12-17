@@ -4,7 +4,7 @@ import {createStackName} from '../utils/stack-name';
 
 export async function findStack(
   appConfig: AppConfig,
-  clientConfig: CloudFormation.ClientConfiguration
+  clientConfig: CloudFormation.ClientConfiguration,
 ): Promise<CloudFormation.Stack> {
   const stackName = createStackName(appConfig);
 

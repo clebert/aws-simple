@@ -7,7 +7,7 @@ import {createStageOptions} from './create-stage-options';
 export function createRestApiProps(
   resourceName: string,
   stackConfig: StackConfig,
-  stack: Stack
+  stack: Stack,
 ): aws_apigateway.RestApiProps {
   const {binaryMediaTypes, minimumCompressionSizeInBytes, enableCors} =
     stackConfig;

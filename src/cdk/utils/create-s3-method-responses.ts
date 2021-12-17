@@ -3,7 +3,7 @@ import type {S3Config, StackConfig} from '../../types';
 
 export function createS3MethodResponses(
   stackConfig: StackConfig,
-  s3Config: S3Config
+  s3Config: S3Config,
 ): aws_apigateway.MethodResponse[] {
   const corsResponseParameters: Record<string, boolean> = stackConfig.enableCors
     ? {'method.response.header.Access-Control-Allow-Origin': true}

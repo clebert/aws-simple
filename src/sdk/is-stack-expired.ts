@@ -4,7 +4,7 @@ import {getAgeInDays} from '../utils/get-age-in-days';
 export function isStackExpired(
   stack: CloudFormation.Stack,
   minAgeInDays: number,
-  excludedTags: string[]
+  excludedTags: string[],
 ): boolean {
   const {CreationTime, Tags = []} = stack;
 

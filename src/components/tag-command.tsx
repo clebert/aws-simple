@@ -39,7 +39,7 @@ export const TagCommand = (props: TagCommandProps): JSX.Element | null => {
   const updateStackTagsHook = useUpdateStackTags(
     add.map(createTag),
     remove,
-    yes
+    yes,
   );
 
   if (updateStackTagsHook.state === `uninitialized`) {
@@ -74,12 +74,12 @@ TagCommand.describe = (argv: Argv) =>
 
       .describe(
         `yes`,
-        `The confirmation message will automatically be answered with yes`
+        `The confirmation message will automatically be answered with yes`,
       )
       .boolean(`yes`)
       .default(`yes`, false)
 
       .example(`npx $0 tag --add latest release --remove prerelease`, ``)
       .example(`npx $0 tag --add foo=something bar="something else"`, ``)
-      .example(`npx $0 tag --add prerelease --yes`, ``)
+      .example(`npx $0 tag --add prerelease --yes`, ``),
   );

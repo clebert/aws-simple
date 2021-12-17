@@ -2,7 +2,7 @@ import type {APIGatewayProxyEvent} from 'aws-lambda';
 import type express from 'express';
 
 export function getRequestHeaders(
-  req: express.Request
+  req: express.Request,
 ): Pick<APIGatewayProxyEvent, 'headers' | 'multiValueHeaders'> {
   const headers: Record<string, string> = {};
   const multiValueHeaders: Record<string, string[]> = {};

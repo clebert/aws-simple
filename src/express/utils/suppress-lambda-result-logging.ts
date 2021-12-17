@@ -12,6 +12,6 @@ export function suppressLambdaResultLogging(): void {
 
       return info;
     })(),
-    logger.format
+    logger.format,
   );
 }

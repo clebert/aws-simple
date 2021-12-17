@@ -4,7 +4,7 @@ import type {StackConfig} from '../../types';
 
 export function createDomainNameOptions(
   stackConfig: StackConfig,
-  stack: Stack
+  stack: Stack,
 ): aws_apigateway.DomainNameOptions | undefined {
   const {customDomainConfig} = stackConfig;
 
@@ -21,7 +21,7 @@ export function createDomainNameOptions(
     certificate: aws_certificatemanager.Certificate.fromCertificateArn(
       stack,
       `Certificate`,
-      certificateArn
+      certificateArn,
     ),
     securityPolicy: aws_apigateway.SecurityPolicy.TLS_1_2,
   };

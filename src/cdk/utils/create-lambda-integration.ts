@@ -9,7 +9,7 @@ export function createLambdaIntegration(
   stack: Stack,
   restApi: aws_apigateway.RestApi,
   lambdaConfig: LambdaConfig,
-  authorizer: aws_apigateway.IAuthorizer | undefined
+  authorizer: aws_apigateway.IAuthorizer | undefined,
 ): void {
   const {
     httpMethod,
@@ -28,13 +28,13 @@ export function createLambdaIntegration(
 
   if (timeoutInSeconds > 28) {
     console.warn(
-      `Due to the default timeout of the API Gateway, the maximum Lambda timeout is limited to 28 seconds.`
+      `Due to the default timeout of the API Gateway, the maximum Lambda timeout is limited to 28 seconds.`,
     );
   }
 
   if (authenticationRequired && !authorizer) {
     throw new Error(
-      `The Lambda config for "${httpMethod} ${publicPath}" requires authentication but no basicAuthenticationConfig has been defined.`
+      `The Lambda config for "${httpMethod} ${publicPath}" requires authentication but no basicAuthenticationConfig has been defined.`,
     );
   }
 
@@ -49,7 +49,7 @@ export function createLambdaIntegration(
       timeout: Duration.seconds(timeoutInSeconds > 28 ? 28 : timeoutInSeconds),
       memorySize,
       environment,
-    }
+    },
   );
 
   if (secretId) {
@@ -76,7 +76,7 @@ export function createLambdaIntegration(
 
         return requestParameters;
       },
-      {} as Record<string, boolean>
+      {} as Record<string, boolean>,
     ),
   };
 
@@ -85,10 +85,10 @@ export function createLambdaIntegration(
     {
       cacheKeyParameters: Object.keys(acceptedParameters)
         .filter(
-          (parameterName) => acceptedParameters[parameterName]!.isCacheKey
+          (parameterName) => acceptedParameters[parameterName]!.isCacheKey,
         )
         .map((parameterName) => `method.request.querystring.${parameterName}`),
-    }
+    },
   );
 
   restApi.root
@@ -98,7 +98,7 @@ export function createLambdaIntegration(
   if (catchAll) {
     restApi.root
       .resourceForPath(
-        publicPath + (publicPath.endsWith(`/`) ? `{proxy+}` : `/{proxy+}`)
+        publicPath + (publicPath.endsWith(`/`) ? `{proxy+}` : `/{proxy+}`),
       )
       .addMethod(httpMethod, lambdaIntegration, methodOptions);
   }

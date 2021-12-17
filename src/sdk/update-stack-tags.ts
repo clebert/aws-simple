@@ -9,7 +9,7 @@ export async function updateStackTags(
   clientConfig: CloudFormation.ClientConfiguration,
   stack: CloudFormation.Stack,
   tagsToAdd: Tag[],
-  tagsToRemove: string[]
+  tagsToRemove: string[],
 ): Promise<void> {
   const {StackName, Capabilities, Parameters, Tags = []} = stack;
 

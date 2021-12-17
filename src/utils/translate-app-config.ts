@@ -22,7 +22,7 @@ export function translateAppConfig(app: App): AppConfig {
       for (const [path, route] of Object.entries(routes)) {
         if (route.enableAuthentication && !app.authentication) {
           throw new Error(
-            `Unable to enable authentication due to missing configuration.`
+            `Unable to enable authentication due to missing configuration.`,
           );
         }
 
@@ -52,7 +52,7 @@ export function translateAppConfig(app: App): AppConfig {
 
                 return parameters;
               },
-              {} as Record<string, LambdaParameterOptions>
+              {} as Record<string, LambdaParameterOptions>,
             ),
             environment: route.environment,
             authenticationRequired: route.enableAuthentication,

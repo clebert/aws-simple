@@ -30,7 +30,7 @@ import {loadAppConfig} from './utils/load-app-config';
     ListCommand.describe,
     start.describe,
     upload.describe,
-    create.describe
+    create.describe,
   )(
     yargs
       .usage(`Usage: $0 <command> [options]`)
@@ -39,7 +39,7 @@ import {loadAppConfig} from './utils/load-app-config';
       .detectLocale(false)
       .demandCommand()
       .epilogue(description)
-      .strict()
+      .strict(),
   ).argv as {readonly _: (string | number)[]};
 
   const appConfig = loadAppConfig();
@@ -52,7 +52,7 @@ import {loadAppConfig} from './utils/load-app-config';
 
   // New UI
   const exitPromise = render(
-    <Ui appConfig={appConfig} clientConfig={clientConfig} argv={argv} />
+    <Ui appConfig={appConfig} clientConfig={clientConfig} argv={argv} />,
   ).waitUntilExit();
 
   create(appConfig, argv);
