@@ -471,14 +471,15 @@ a stack do not work, the `aws-simple redeploy` command might help.
 Usage: aws-simple <command> [options]
 
 Commands:
-  aws-simple create [options]       Create a stack using the CDK
-  aws-simple upload [options]       Upload files to S3
-  aws-simple start [options]        Start a local DEV server
-  aws-simple list [options]         List all deployed stacks
-  aws-simple tag [options]          Tag a deployed stack
-  aws-simple clean-up [options]     Clean up old deployed stacks
-  aws-simple redeploy [options]     Redeploy the API Gateway
-  aws-simple flush-cache [options]  Flush the cache of the API Gateway
+  aws-simple delete-stack [options]  Deletes the stack
+  aws-simple create [options]        Create a stack using the CDK
+  aws-simple upload [options]        Upload files to S3
+  aws-simple start [options]         Start a local DEV server
+  aws-simple list [options]          List all deployed stacks
+  aws-simple tag [options]           Tag a deployed stack
+  aws-simple clean-up [options]      Clean up old deployed stacks
+  aws-simple redeploy [options]      Redeploy the API Gateway
+  aws-simple flush-cache [options]   Flush the cache of the API Gateway
 
 Options:
       --version  Show version number                                   [boolean]
@@ -596,6 +597,23 @@ Options:
 Examples:
   npx aws-simple clean-up
   npx aws-simple clean-up --min-age 14 --exclude release prerelease --yes
+```
+
+### Delete a single stack
+
+```
+aws-simple delete-stack [options]
+
+Deletes the stack and remove all attached AWS resources
+
+Options:
+      --version  Show version number                                   [boolean]
+  -h, --help     Show help                                             [boolean]
+      --yes      The confirmation message will automatically be answered with
+                 yes                                  [boolean] [default: false]
+
+Examples:
+  npx index.js delete-stack --yes
 ```
 
 ### Redeploy the API Gateway

@@ -8,6 +8,7 @@ import signalExit from 'signal-exit';
 import yargs from 'yargs';
 import {cleanUp} from './commands/clean-up';
 import {create} from './commands/create';
+import {deleteStack} from './commands/delete-stack';
 import {flushCache} from './commands/flush-cache';
 import {start} from './commands/start';
 import {upload} from './commands/upload';
@@ -31,6 +32,7 @@ import {loadAppConfig} from './utils/load-app-config';
     start.describe,
     upload.describe,
     create.describe,
+    deleteStack.describe
   )(
     yargs
       .usage(`Usage: $0 <command> [options]`)
@@ -61,6 +63,7 @@ import {loadAppConfig} from './utils/load-app-config';
   await upload(appConfig, clientConfig, argv);
   await cleanUp(appConfig, clientConfig, argv);
   await flushCache(appConfig, clientConfig, argv);
+  await deleteStack(appConfig, clientConfig, argv);
 
   await exitPromise;
 })().catch((error) => {
