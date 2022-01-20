@@ -37,8 +37,8 @@
   },
   "dependencies": {
     "@rtmpl/terminal": "^3.0.0",
-    "aws-cdk-lib": "^2.0.0",
-    "aws-sdk": "^2.984.0",
+    "aws-cdk-lib": "^2.8.0",
+    "aws-sdk": "^2.1060.0",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.2",
     "cli-spinners": "^2.6.1",
