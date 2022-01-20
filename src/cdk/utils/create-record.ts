@@ -2,10 +2,11 @@ import type {Stack, aws_apigateway} from 'aws-cdk-lib';
 import {Duration, aws_route53, aws_route53_targets} from 'aws-cdk-lib';
 import type {StackConfig} from '../../types';
 
-export function createARecord(
+export function createRecord(
   stackConfig: StackConfig,
   stack: Stack,
   restApi: aws_apigateway.RestApi,
+  type: 'a' | 'aaaa',
 ): void {
   const {customDomainConfig} = stackConfig;
 
@@ -20,7 +21,9 @@ export function createARecord(
     aliasRecordTtlInSeconds,
   } = customDomainConfig;
 
-  const aRecord = new aws_route53.ARecord(stack, `ARecord`, {
+  const constructorName = type === `a` ? `ARecord` : `AaaaRecord`;
+
+  const record = new aws_route53[constructorName](stack, constructorName, {
     zone: aws_route53.HostedZone.fromHostedZoneAttributes(stack, `HostedZone`, {
       hostedZoneId,
       zoneName: hostedZoneName,
@@ -35,5 +38,5 @@ export function createARecord(
         : undefined,
   });
 
-  aRecord.node.addDependency(restApi);
+  record.node.addDependency(restApi);
 }
