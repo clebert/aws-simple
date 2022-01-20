@@ -11,7 +11,7 @@ export interface MethodConfig {
   readonly type?: 'file' | 'folder';
 }
 
-function createMethodOption(
+function createMethodOptions(
   methodConfig: MethodConfig,
 ): aws_apigateway.MethodDeploymentOptions {
   const {cachingEnabled, cacheTtlInSeconds, loggingLevel} = methodConfig;
@@ -42,7 +42,7 @@ function createMethodPath(methodConfig: MethodConfig): string {
 export function createStageOptions(
   stackConfig: StackConfig,
 ): aws_apigateway.StageOptions {
-  const {lambdaConfigs = [], s3Configs = []} = stackConfig;
+  const {lambdaConfigs = [], s3Configs = [], throttling} = stackConfig;
 
   const methodOptions: Record<string, aws_apigateway.MethodDeploymentOptions> =
     {};
@@ -55,7 +55,7 @@ export function createStageOptions(
     }
 
     methodOptions[createMethodPath(lambdaConfig)] =
-      createMethodOption(lambdaConfig);
+      createMethodOptions(lambdaConfig);
   }
 
   for (const s3Config of s3Configs) {
@@ -63,8 +63,18 @@ export function createStageOptions(
       cacheClusterEnabled = true;
     }
 
-    methodOptions[createMethodPath(s3Config)] = createMethodOption(s3Config);
+    methodOptions[createMethodPath(s3Config)] = createMethodOptions(s3Config);
   }
 
-  return {cacheClusterEnabled, cachingEnabled: false, methodOptions};
+  return {
+    cacheClusterEnabled,
+    cachingEnabled: false,
+    methodOptions,
+    ...(throttling
+      ? {
+          throttlingBurstLimit: throttling.burstLimit,
+          throttlingRateLimit: throttling.rateLimit,
+        }
+      : {}),
+  };
 }

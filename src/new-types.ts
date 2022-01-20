@@ -4,6 +4,7 @@ export interface App {
   readonly customDomain?: CustomDomain;
   readonly authentication?: Authentication;
   readonly disableCompression?: boolean;
+  readonly throttling?: Throttling;
   readonly routes: (port?: number) => Routes;
 }
 
@@ -21,6 +22,11 @@ export interface Authentication {
   readonly cacheTtlInSeconds?: number;
   readonly realm?: string;
   readonly interactivePromptForXhr?: boolean;
+}
+
+export interface Throttling {
+  readonly burstLimit: number;
+  readonly rateLimit: number;
 }
 
 export interface Routes {

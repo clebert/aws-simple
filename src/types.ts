@@ -1,4 +1,4 @@
-import type {DevServerOptions} from './new-types';
+import type {DevServerOptions, Throttling} from './new-types';
 
 export * from './new-types';
 
@@ -101,6 +101,7 @@ export interface StackConfig {
   readonly lambdaConfigs?: LambdaConfig[];
   readonly s3Configs?: S3Config[];
   readonly basicAuthenticationConfig?: BasicAuthenticationConfig;
+  readonly throttling?: Throttling;
 
   /**
    * Note: Additionally, Lambda handlers must explicitly set any required CORS

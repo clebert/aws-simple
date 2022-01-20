@@ -118,6 +118,7 @@ export function translateAppConfig(app: App): AppConfig {
         s3Configs,
         basicAuthenticationConfig: app.authentication,
         enableCors,
+        throttling: app.throttling,
       };
     },
   };
