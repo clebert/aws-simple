@@ -5,6 +5,7 @@ import {
   aws_apigateway,
   aws_iam,
   aws_s3,
+  aws_wafv2,
 } from 'aws-cdk-lib';
 import type {AppConfig} from '../types';
 import {createUniqueExportName} from '../utils/create-unique-export-name';
@@ -40,6 +41,13 @@ export function createStack(appConfig: AppConfig): void {
   });
 
   restApiUrlOutput.node.addDependency(restApi);
+
+  if (stackConfig.webAclArn) {
+    new aws_wafv2.CfnWebACLAssociation(stack, `WebACLAssociation`, {
+      resourceArn: restApi.arnForExecuteApi(),
+      webAclArn: stackConfig.webAclArn,
+    });
+  }
 
   createRecord(stackConfig, stack, restApi, `a`);
   createRecord(stackConfig, stack, restApi, `aaaa`);

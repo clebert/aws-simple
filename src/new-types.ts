@@ -4,6 +4,7 @@ export interface App {
   readonly customDomain?: CustomDomain;
   readonly authentication?: Authentication;
   readonly disableCompression?: boolean;
+  readonly webAclArn?: string;
   readonly throttling?: Throttling;
   readonly routes: (port?: number) => Routes;
 }

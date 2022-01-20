@@ -101,6 +101,7 @@ export interface StackConfig {
   readonly lambdaConfigs?: LambdaConfig[];
   readonly s3Configs?: S3Config[];
   readonly basicAuthenticationConfig?: BasicAuthenticationConfig;
+  readonly webAclArn?: string;
   readonly throttling?: Throttling;
 
   /**
