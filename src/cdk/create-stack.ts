@@ -55,9 +55,9 @@ export function createStack(appConfig: AppConfig): void {
   createUnauthorizedGatewayResponse(stackConfig, stack, restApi);
 
   const s3Bucket = new aws_s3.Bucket(stack, `S3Bucket`, {
-    publicReadAccess: false,
     blockPublicAccess: aws_s3.BlockPublicAccess.BLOCK_ALL,
     encryption: aws_s3.BucketEncryption.S3_MANAGED,
+    enforceSSL: true,
     removalPolicy: RemovalPolicy.DESTROY,
     autoDeleteObjects: true,
   });
