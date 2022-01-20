@@ -1,5 +1,6 @@
 import * as path from 'path';
 import {Duration, aws_apigateway} from 'aws-cdk-lib';
+import type {Throttling} from '../../new-types';
 import type {LambdaLoggingLevel, StackConfig} from '../../types';
 
 export interface MethodConfig {
@@ -13,6 +14,7 @@ export interface MethodConfig {
 
 function createMethodOptions(
   methodConfig: MethodConfig,
+  throttling: Throttling | undefined,
 ): aws_apigateway.MethodDeploymentOptions {
   const {cachingEnabled, cacheTtlInSeconds, loggingLevel} = methodConfig;
 
@@ -24,6 +26,12 @@ function createMethodOptions(
         : undefined,
     loggingLevel:
       loggingLevel && aws_apigateway.MethodLoggingLevel[loggingLevel],
+    ...(throttling
+      ? {
+          throttlingBurstLimit: throttling.burstLimit,
+          throttlingRateLimit: throttling.rateLimit,
+        }
+      : {}),
   };
 }
 
@@ -54,8 +62,10 @@ export function createStageOptions(
       cacheClusterEnabled = true;
     }
 
-    methodOptions[createMethodPath(lambdaConfig)] =
-      createMethodOptions(lambdaConfig);
+    methodOptions[createMethodPath(lambdaConfig)] = createMethodOptions(
+      lambdaConfig,
+      throttling,
+    );
   }
 
   for (const s3Config of s3Configs) {
@@ -63,7 +73,10 @@ export function createStageOptions(
       cacheClusterEnabled = true;
     }
 
-    methodOptions[createMethodPath(s3Config)] = createMethodOptions(s3Config);
+    methodOptions[createMethodPath(s3Config)] = createMethodOptions(
+      s3Config,
+      throttling,
+    );
   }
 
   return {
