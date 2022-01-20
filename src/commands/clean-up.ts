@@ -5,14 +5,11 @@ import Listr from 'listr';
 import pRetry from 'p-retry';
 import prompts from 'prompts';
 import type {Argv} from 'yargs';
-import {deleteS3Bucket} from '../sdk/delete-s3-bucket';
 import {deleteStack} from '../sdk/delete-stack';
-import {findStackOutput} from '../sdk/find-stack-output';
 import {findStacks} from '../sdk/find-stacks';
 import {isStackExpired} from '../sdk/is-stack-expired';
 import type {AppConfig} from '../types';
 import {getAgeInDays} from '../utils/get-age-in-days';
-import {isObject} from '../utils/is-object';
 import {parseStackName} from '../utils/stack-name';
 
 interface CleanUpArgv {
@@ -96,7 +93,7 @@ export async function cleanUp(
     const {StackName: stackName} = expiredStack;
 
     listrTasks.push({
-      title: `Deleting stack ${stackName} and associated S3 bucket`,
+      title: `Deleting stack ${stackName}`,
       task: () =>
         new Listr(
           [
@@ -109,36 +106,6 @@ export async function cleanUp(
                     listrSubTask.title = `Attempt ${attemptNumber} to delete the stack failed. There are ${retriesLeft} retries left.`;
                   },
                 }),
-            },
-            {
-              title: `Deleting S3 bucket`,
-              task: async (_, listrSubTask) => {
-                let s3BucketName: string;
-
-                try {
-                  s3BucketName = findStackOutput(expiredStack, `S3BucketName`);
-                } catch (error) {
-                  listrSubTask.skip(
-                    error instanceof Error ? error.message : `No bucket name.`,
-                  );
-
-                  return;
-                }
-
-                try {
-                  await deleteS3Bucket(clientConfig, s3BucketName);
-                } catch (error) {
-                  if (isObject(error) && error.code === `NoSuchBucket`) {
-                    listrSubTask.skip(
-                      error instanceof Error
-                        ? error.message
-                        : `No such bucket.`,
-                    );
-                  } else {
-                    throw error;
-                  }
-                }
-              },
             },
           ],
           {exitOnError: true},

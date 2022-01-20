@@ -1,6 +1,7 @@
 import {
   App,
   CfnOutput,
+  RemovalPolicy,
   Stack,
   aws_apigateway,
   aws_iam,
@@ -57,6 +58,8 @@ export function createStack(appConfig: AppConfig): void {
     publicReadAccess: false,
     blockPublicAccess: aws_s3.BlockPublicAccess.BLOCK_ALL,
     encryption: aws_s3.BucketEncryption.S3_MANAGED,
+    removalPolicy: RemovalPolicy.DESTROY,
+    autoDeleteObjects: true,
   });
 
   const s3BucketNameOutput = new CfnOutput(stack, `S3BucketNameOutput`, {
