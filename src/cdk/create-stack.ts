@@ -44,10 +44,17 @@ export function createStack(appConfig: AppConfig): void {
   restApiUrlOutput.node.addDependency(restApi);
 
   if (stackConfig.webAclArn) {
-    new aws_wafv2.CfnWebACLAssociation(stack, `WebACLAssociation`, {
-      resourceArn: `arn:aws:apigateway:${stack.region}::/restapis/${restApi.restApiId}/stages/prod`,
-      webAclArn: stackConfig.webAclArn,
-    });
+    const webAclAssociation = new aws_wafv2.CfnWebACLAssociation(
+      stack,
+      `WebACLAssociation`,
+      {
+        // https://docs.aws.amazon.com/apigateway/latest/developerguide/arn-format-reference.html
+        resourceArn: `arn:aws:apigateway:${stack.region}::/restapis/${restApi.restApiId}/stages/prod`,
+        webAclArn: stackConfig.webAclArn,
+      },
+    );
+
+    webAclAssociation.node.addDependency(restApi);
   }
 
   createRecord(stackConfig, stack, restApi, `a`);
