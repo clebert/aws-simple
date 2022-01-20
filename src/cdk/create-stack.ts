@@ -45,7 +45,7 @@ export function createStack(appConfig: AppConfig): void {
 
   if (stackConfig.webAclArn) {
     new aws_wafv2.CfnWebACLAssociation(stack, `WebACLAssociation`, {
-      resourceArn: restApi.arnForExecuteApi(),
+      resourceArn: `arn:aws:apigateway:${stack.region}::/restapis/${restApi.restApiId}/stages/prod`,
       webAclArn: stackConfig.webAclArn,
     });
   }
