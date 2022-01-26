@@ -6,8 +6,10 @@ declare module 'lambda-local' {
   } from 'aws-lambda';
   import type {Logger} from 'winston';
 
+  type DeepPartial<T extends {}> = {[k in keyof T]?: DeepPartial<T[k]>};
+
   export interface LambdaLocalExecuteOptions {
-    readonly event?: Partial<APIGatewayProxyEvent>;
+    readonly event?: DeepPartial<APIGatewayProxyEvent>;
     readonly environment?: {readonly [key: string]: string};
     readonly lambdaPath?: string;
     readonly lambdaFunc?: ProxyHandler;

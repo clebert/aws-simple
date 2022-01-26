@@ -48,6 +48,7 @@ export async function startDevServer(init: DevServerInit): Promise<void> {
   const app = express();
 
   app.use(express.text());
+  app.use(express.json());
 
   const port = await getPort({port: requestedPort});
   const stackConfig = appConfig.createStackConfig(port);

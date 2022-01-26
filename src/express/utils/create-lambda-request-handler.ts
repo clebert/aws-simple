@@ -3,6 +3,7 @@ import type express from 'express';
 import * as lambdaLocal from 'lambda-local';
 import type {LambdaConfig} from '../../types';
 import {getLambdaModuleName as checkLambdaModuleName} from '../../utils/get-lambda-module-name';
+import {getQueryStringParameters} from './get-querystring-parameters';
 import {getRequestHeaders} from './get-request-headers';
 import {logInfo} from './log-info';
 
@@ -22,15 +23,8 @@ export function createLambdaRequestHandler(
   return async (req, res) => {
     try {
       const cachedResult = lambdaCache?.get(req.url);
-      const queryStringParameters: Record<string, string> = {};
-
-      for (const key of Object.keys(req.query)) {
-        const parameter = req.query[key];
-
-        if (typeof parameter === `string`) {
-          queryStringParameters[key] = parameter;
-        }
-      }
+      const {queryStringParameters, multiValueQueryStringParameters} =
+        getQueryStringParameters(req.query);
 
       const result =
         cachedResult ||
@@ -41,9 +35,17 @@ export function createLambdaRequestHandler(
           environment,
           event: {
             ...getRequestHeaders(req),
+            requestContext: {
+              protocol: req.protocol,
+              httpMethod: req.method,
+              path: req.path,
+              stage: `prod`,
+              resourcePath: req.path,
+            },
             path: req.path,
             httpMethod: req.method,
             queryStringParameters,
+            multiValueQueryStringParameters,
             body: req.body
               ? typeof req.body === `string`
                 ? req.body
