@@ -92,7 +92,13 @@ export function createStack(appConfig: AppConfig): void {
   const {lambdaConfigs = [], s3Configs = []} = stackConfig;
 
   for (const lambdaConfig of lambdaConfigs) {
-    createLambdaIntegration(stack, restApi, lambdaConfig, authorizer);
+    createLambdaIntegration(
+      stackConfig,
+      stack,
+      restApi,
+      lambdaConfig,
+      authorizer,
+    );
   }
 
   for (const s3Config of s3Configs) {

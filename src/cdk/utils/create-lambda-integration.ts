@@ -7,11 +7,13 @@ import {
   aws_lambda,
   aws_logs,
 } from 'aws-cdk-lib';
-import type {LambdaConfig} from '../../types';
-import {createShortHash} from '../../utils/create-short-hash';
+import type {LambdaConfig, StackConfig} from '../../types';
+import {getFullyQualifiedDomainName} from '../../utils/get-fully-qualified-domain-name';
+import {getFunctionName} from '../../utils/get-function-name';
 import {getLambdaModuleName} from '../../utils/get-lambda-module-name';
 
 export function createLambdaIntegration(
+  stackConfig: StackConfig,
   stack: Stack,
   restApi: aws_apigateway.RestApi,
   lambdaConfig: LambdaConfig,
@@ -44,21 +46,23 @@ export function createLambdaIntegration(
     );
   }
 
-  const lambdaFunction = new aws_lambda.Function(
-    stack,
-    `Lambda${httpMethod}${createShortHash(publicPath)}`,
-    {
-      description,
-      runtime: aws_lambda.Runtime.NODEJS_14_X,
-      code: aws_lambda.Code.fromAsset(path.dirname(localPath)),
-      handler: `${getLambdaModuleName(localPath)}.${handler}`,
-      timeout: Duration.seconds(timeoutInSeconds > 28 ? 28 : timeoutInSeconds),
-      memorySize,
-      environment,
-      tracing: aws_lambda.Tracing.PASS_THROUGH,
-      logRetention: aws_logs.RetentionDays.ONE_WEEK,
-    },
+  const functionName = getFunctionName(
+    getFullyQualifiedDomainName(stackConfig),
+    publicPath,
   );
+
+  const lambdaFunction = new aws_lambda.Function(stack, functionName, {
+    functionName,
+    description,
+    runtime: aws_lambda.Runtime.NODEJS_14_X,
+    code: aws_lambda.Code.fromAsset(path.dirname(localPath)),
+    handler: `${getLambdaModuleName(localPath)}.${handler}`,
+    timeout: Duration.seconds(timeoutInSeconds > 28 ? 28 : timeoutInSeconds),
+    memorySize,
+    environment,
+    tracing: aws_lambda.Tracing.PASS_THROUGH,
+    logRetention: aws_logs.RetentionDays.ONE_WEEK,
+  });
 
   if (secretId) {
     const secretsManagerPolicyStatement = new aws_iam.PolicyStatement({
