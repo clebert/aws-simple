@@ -94,22 +94,13 @@ export async function cleanUp(
 
     listrTasks.push({
       title: `Deleting stack ${stackName}`,
-      task: () =>
-        new Listr(
-          [
-            {
-              title: `Deleting stack`,
-              task: async (_, listrSubTask) =>
-                pRetry(async () => deleteStack(clientConfig, expiredStack), {
-                  retries: 10,
-                  onFailedAttempt: ({attemptNumber, retriesLeft}) => {
-                    listrSubTask.title = `Attempt ${attemptNumber} to delete the stack failed. There are ${retriesLeft} retries left.`;
-                  },
-                }),
-            },
-          ],
-          {exitOnError: true},
-        ),
+      task: async (task) =>
+        pRetry(async () => deleteStack(clientConfig, expiredStack), {
+          retries: 10,
+          onFailedAttempt: ({attemptNumber, retriesLeft}) => {
+            task.title = `Attempt ${attemptNumber} to delete the stack failed. There are ${retriesLeft} retries left.`;
+          },
+        }),
     });
   }
 
