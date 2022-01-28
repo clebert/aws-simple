@@ -49,6 +49,7 @@ export function createLambdaIntegration(
       timeout: Duration.seconds(timeoutInSeconds > 28 ? 28 : timeoutInSeconds),
       memorySize,
       environment,
+      tracing: aws_lambda.Tracing.PASS_THROUGH,
     },
   );
 

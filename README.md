@@ -502,6 +502,23 @@ exports.default = {
 };
 ```
 
+### Enable tracing with AWS X-Ray
+
+To enable tracing with [AWS X-Ray](https://aws.amazon.com/xray/) for the API
+Gateway REST API, all Lambdas, and the S3 bucket you can set the `enableTracing`
+property to `true`:
+
+```js
+exports.default = {
+  appName: 'my-app',
+  customDomain: {
+    hostedZoneName: 'example.com',
+  },
+  enableTracing: true,
+  /* ... */
+};
+```
+
 ### Troubleshooting
 
 [Some changes](https://docs.aws.amazon.com/apigateway/latest/developerguide/updating-api.html)

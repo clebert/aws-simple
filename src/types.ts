@@ -108,6 +108,7 @@ export interface StackConfig {
    * headers like `Access-Control-Allow-Origin` on their response.
    */
   readonly enableCors?: boolean;
+  readonly enableTracing?: boolean;
 }
 
 /**
