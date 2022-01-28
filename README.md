@@ -258,7 +258,8 @@ exports.default = {
 A stack that is deployed with `aws-simple` is accessed through an API Gateway
 custom domain. For that
 [a public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/CreatingHostedZone.html)
-must be created manually. The custom domain is configured as follows:
+must be created manually. It must be ensured that the hosted zone is accessible
+from the Internet. The custom domain is configured as follows:
 
 ```js
 exports.default = {
