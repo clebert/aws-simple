@@ -13,6 +13,7 @@ export function createRestApiProps(
     stackConfig;
 
   return {
+    endpointTypes: [aws_apigateway.EndpointType.REGIONAL],
     restApiName: resourceName,
     domainName: createDomainNameOptions(stackConfig, stack),
     disableExecuteApiEndpoint: true,

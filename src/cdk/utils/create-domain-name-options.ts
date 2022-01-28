@@ -32,6 +32,7 @@ export function createDomainNameOptions(
       );
 
   return {
+    endpointType: aws_apigateway.EndpointType.REGIONAL,
     domainName,
     certificate,
     securityPolicy: aws_apigateway.SecurityPolicy.TLS_1_2,
