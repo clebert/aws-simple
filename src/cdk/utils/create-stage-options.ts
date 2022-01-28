@@ -13,6 +13,7 @@ export interface MethodConfig {
 }
 
 function createMethodOptions(
+  stackConfig: StackConfig,
   methodConfig: MethodConfig,
   throttling: Throttling | undefined,
 ): aws_apigateway.MethodDeploymentOptions {
@@ -26,6 +27,7 @@ function createMethodOptions(
         : undefined,
     loggingLevel:
       loggingLevel && aws_apigateway.MethodLoggingLevel[loggingLevel],
+    metricsEnabled: stackConfig.enableMetrics,
     ...(throttling
       ? {
           throttlingBurstLimit: throttling.burstLimit,
@@ -68,6 +70,7 @@ export function createStageOptions(
     }
 
     methodOptions[createMethodPath(lambdaConfig)] = createMethodOptions(
+      stackConfig,
       lambdaConfig,
       throttling,
     );
@@ -79,6 +82,7 @@ export function createStageOptions(
     }
 
     methodOptions[createMethodPath(s3Config)] = createMethodOptions(
+      stackConfig,
       s3Config,
       throttling,
     );
@@ -88,12 +92,6 @@ export function createStageOptions(
     cacheClusterEnabled,
     cachingEnabled: false,
     methodOptions,
-    ...(throttling
-      ? {
-          throttlingBurstLimit: throttling.burstLimit,
-          throttlingRateLimit: throttling.rateLimit,
-        }
-      : {}),
     tracingEnabled: enableTracing,
   };
 }

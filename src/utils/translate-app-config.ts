@@ -121,6 +121,7 @@ export function translateAppConfig(app: App): AppConfig {
         webAclArn: app.webAclArn,
         throttling: app.throttling,
         enableTracing: app.enableTracing,
+        enableMetrics: app.enableMetrics,
       };
     },
   };
