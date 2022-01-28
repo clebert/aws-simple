@@ -30,7 +30,7 @@ export async function upload(
 
   const stack = await findStack(appConfig, clientConfig);
   const stackConfig = appConfig.createStackConfig();
-  const baseUrl = createStackBaseUrl(stackConfig, stack);
+  const baseUrl = createStackBaseUrl(stackConfig);
   const {s3Configs = []} = stackConfig;
   const uploadNodeList = new TemplateNodeList({separator: `\n`});
   const uploadPromises: Promise<void>[] = [];

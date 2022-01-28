@@ -10,24 +10,16 @@ export function createRecord(
 ): void {
   const {customDomainConfig} = stackConfig;
 
-  if (!customDomainConfig) {
-    return;
-  }
-
-  const {
-    hostedZoneId,
-    hostedZoneName,
-    aliasRecordName,
-    aliasRecordTtlInSeconds,
-  } = customDomainConfig;
+  const {hostedZoneName, aliasRecordName, aliasRecordTtlInSeconds} =
+    customDomainConfig;
 
   const constructorName = type === `a` ? `ARecord` : `AaaaRecord`;
 
   const record = new aws_route53[constructorName](stack, constructorName, {
-    zone: aws_route53.HostedZone.fromHostedZoneAttributes(
+    zone: aws_route53.HostedZone.fromLookup(
       stack,
       `${constructorName}HostedZoneLookup`,
-      {hostedZoneId, zoneName: hostedZoneName},
+      {domainName: hostedZoneName},
     ),
     recordName: aliasRecordName,
     target: aws_route53.RecordTarget.fromAlias(

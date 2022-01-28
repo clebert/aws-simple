@@ -1,7 +1,7 @@
 export interface App {
   readonly appName: string;
   readonly appVersion?: string;
-  readonly customDomain?: CustomDomain;
+  readonly customDomain: CustomDomain;
   readonly authentication?: Authentication;
   readonly disableCompression?: boolean;
   readonly webAclArn?: string;
@@ -10,8 +10,7 @@ export interface App {
 }
 
 export interface CustomDomain {
-  readonly certificateArn: string;
-  readonly hostedZoneId: string;
+  readonly certificateArn?: string;
   readonly hostedZoneName: string;
   readonly aliasRecordName?: string;
   readonly aliasRecordTtlInSeconds?: number;

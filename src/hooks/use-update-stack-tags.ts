@@ -1,10 +1,10 @@
 import {useApp} from 'ink';
 import React from 'react';
-import {AppConfigContext} from '../contexts/app-config-context';
 import {ClientConfigContext} from '../contexts/client-config-context';
 import {findStack} from '../sdk/find-stack';
 import type {Tag} from '../sdk/update-stack-tags';
 import {updateStackTags} from '../sdk/update-stack-tags';
+import {useAppConfig} from './use-app-config';
 
 export type UpdateStackTagsHookState =
   | 'uninitialized'
@@ -35,7 +35,7 @@ export function useUpdateStackTags(
   tagsToRemove: string[],
   performImmediately: boolean,
 ): UpdateStackTagsHook {
-  const appConfig = React.useContext(AppConfigContext);
+  const appConfig = useAppConfig();
   const clientConfig = React.useContext(ClientConfigContext);
   const {exit} = useApp();
 
