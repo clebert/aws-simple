@@ -120,6 +120,7 @@ export function translateAppConfig(app: App): AppConfig {
         enableCors,
         webAclArn: app.webAclArn,
         throttling: app.throttling,
+        enableTracing: app.enableTracing,
       };
     },
   };

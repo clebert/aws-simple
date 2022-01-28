@@ -50,7 +50,12 @@ function createMethodPath(methodConfig: MethodConfig): string {
 export function createStageOptions(
   stackConfig: StackConfig,
 ): aws_apigateway.StageOptions {
-  const {lambdaConfigs = [], s3Configs = [], throttling} = stackConfig;
+  const {
+    lambdaConfigs = [],
+    s3Configs = [],
+    throttling,
+    enableTracing,
+  } = stackConfig;
 
   const methodOptions: Record<string, aws_apigateway.MethodDeploymentOptions> =
     {};
@@ -89,5 +94,6 @@ export function createStageOptions(
           throttlingRateLimit: throttling.rateLimit,
         }
       : {}),
+    tracingEnabled: enableTracing,
   };
 }

@@ -6,6 +6,7 @@ export interface App {
   readonly disableCompression?: boolean;
   readonly webAclArn?: string;
   readonly throttling?: Throttling;
+  readonly enableTracing?: boolean;
   readonly routes: (port?: number) => Routes;
 }
 
