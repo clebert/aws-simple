@@ -12,5 +12,5 @@ export function getFunctionName(domainName: string, pathname: string): string {
   return `${(normalizedPathname
     ? [normalizedDomainName, normalizedPathname].join(`-`)
     : normalizedDomainName
-  ).slice(0, 57)}-${createShortHash(pathname)}`;
+  ).slice(0, 56)}-${createShortHash(pathname)}`;
 }

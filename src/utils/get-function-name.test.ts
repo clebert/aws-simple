@@ -14,12 +14,20 @@ describe(`getFunctionName()`, () => {
   });
 
   it(`generates a function name with a max length of 64 characters`, () => {
-    let longPathname = ``;
+    const domainName = `test.example.com`;
+    let pathname = ``;
 
-    for (let i = 0; i < 17; longPathname += `/${i++}`) {}
+    for (let i = 0; i < 17; pathname += `/${i++}`) {}
 
-    expect(getFunctionName(`test.example.com`, longPathname)).toBe(
-      `test_example_com-0_1_2_3_4_5_6_7_8_9_10_11_12_13_14_15_16-e7f243b`,
+    const functionName = getFunctionName(domainName, pathname);
+    const hash = `e7f243b`;
+
+    expect(pathname).toHaveLength(41);
+    expect(`${domainName}-${pathname}-${hash}`).toHaveLength(66);
+    expect(functionName).toHaveLength(64);
+
+    expect(functionName).toBe(
+      `test_example_com-0_1_2_3_4_5_6_7_8_9_10_11_12_13_14_15_1-${hash}`,
     );
   });
 });
