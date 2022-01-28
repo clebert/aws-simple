@@ -21,7 +21,13 @@ import {createUnauthorizedGatewayResponse} from './utils/create-unauthorized-gat
 export function createStack(appConfig: AppConfig): void {
   const {appName, appVersion, createStackConfig} = appConfig;
   const stackConfig = createStackConfig();
-  const stack = new Stack(new App(), createStackName(appConfig));
+
+  const stack = new Stack(new App(), createStackName(appConfig), {
+    env: {
+      account: process.env.CDK_DEFAULT_ACCOUNT,
+      region: process.env.CDK_DEFAULT_REGION,
+    },
+  });
 
   const restApi = new aws_apigateway.RestApi(
     stack,
