@@ -4,7 +4,7 @@ import type {Argv} from 'yargs';
 import {ClientConfigContext} from '../contexts/client-config-context';
 import {useAppConfig} from '../hooks/use-app-config';
 import {findStack} from '../sdk/find-stack';
-import {redeployApiGateway} from '../sdk/redeploy-api-gateway';
+import {redeployRestApi} from '../sdk/redeploy-rest-api';
 import {Spinner} from './spinner';
 
 export interface RedeployCommandProps {
@@ -35,7 +35,7 @@ export const RedeployCommand = (
     (async () => {
       const stack = await findStack(appConfig, clientConfig);
 
-      await redeployApiGateway(clientConfig, stack);
+      await redeployRestApi(clientConfig, stack);
 
       setCompleted(true);
     })().catch(exit);
@@ -43,16 +43,14 @@ export const RedeployCommand = (
 
   return completed ? (
     <Text color="green">
-      The redeployment of the API Gateway was completed successfully.
+      The redeployment of the REST API was completed successfully.
     </Text>
   ) : (
-    <Spinner>The redeployment of the API Gateway is in progress.</Spinner>
+    <Spinner>The redeployment of the REST API is in progress.</Spinner>
   );
 };
 
 RedeployCommand.describe = (argv: Argv) =>
-  argv.command(
-    `redeploy [options]`,
-    `Redeploy the API Gateway`,
-    (commandArgv) => commandArgv.example(`npx $0 redeploy`, ``),
+  argv.command(`redeploy [options]`, `Redeploy the REST API`, (commandArgv) =>
+    commandArgv.example(`npx $0 redeploy`, ``),
   );

@@ -2,7 +2,7 @@ import type {CloudFormation} from 'aws-sdk';
 import Listr from 'listr';
 import type {Argv} from 'yargs';
 import {findStack} from '../sdk/find-stack';
-import {flushApiGatewayCache} from '../sdk/flush-api-gateway-cache';
+import {flushRestApiCache} from '../sdk/flush-rest-api-cache';
 import type {AppConfig} from '../types';
 
 interface FlushCacheArgv {
@@ -26,16 +26,16 @@ export async function flushCache(
 
   const listr = new Listr([
     {
-      title: `Flushing API Gateway Cache`,
+      title: `Flushing REST API cache`,
       task: async (_, listrTask) => {
         try {
           const stack = await findStack(appConfig, clientConfig);
 
-          await flushApiGatewayCache(clientConfig, stack);
+          await flushRestApiCache(clientConfig, stack);
 
-          listrTask.title = `Successfully flushed API Gateway Cache`;
+          listrTask.title = `Successfully flushed REST API cache`;
         } catch (error) {
-          listrTask.title = `Error while flushing API Gateway Cache`;
+          listrTask.title = `Error while flushing REST API cache`;
 
           throw error;
         }
@@ -49,6 +49,6 @@ export async function flushCache(
 flushCache.describe = (argv: Argv) =>
   argv.command(
     `flush-cache [options]`,
-    `Flush the cache of the API Gateway`,
+    `Flush the cache of the REST API`,
     (commandArgv) => commandArgv.example(`npx $0 flush-cache`, ``),
   );

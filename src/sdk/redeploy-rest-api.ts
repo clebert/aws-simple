@@ -7,7 +7,7 @@ const stageName = `prod`;
 /**
  * https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-deployments.html
  */
-export async function redeployApiGateway(
+export async function redeployRestApi(
   clientConfig: CloudFormation.ClientConfiguration,
   stack: CloudFormation.Stack,
 ): Promise<void> {

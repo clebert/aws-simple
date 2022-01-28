@@ -47,12 +47,12 @@ export function createUnauthorizedGatewayResponse(
     },
   );
 
-  // Intentionally not adding the restApi as a dependency here. With a defined
-  // dependency the api gateway would be deployed first, and only afterwards the
-  // gateway response would be added. This would require an additional
+  // Intentionally not adding the `restApi` as a dependency here. With a defined
+  // dependency the REST API would be deployed first, and only afterwards the
+  // API Gateway response would be added. This would require an additional
   // deployment. We don't really need the dependency, since we are only
-  // interested in the restApiId (see above), which can be computed beforehand.
-  // Omitting the dependency allows the CDK to deploy the api gateway already
-  // with the gateway response defined, so that no additional deployment would
-  // be needed.
+  // interested in the `restApiId` (see above), which can be computed
+  // beforehand. Omitting the dependency allows the CDK to deploy the REST API
+  // already with the API Gateway response defined, so that no additional
+  // deployment would be needed.
 }
