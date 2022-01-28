@@ -8,6 +8,7 @@ export interface App {
   readonly throttling?: Throttling;
   readonly enableTracing?: boolean;
   readonly enableMetrics?: boolean;
+  readonly enableAccessLogging?: boolean;
   readonly routes: (port?: number) => Routes;
 }
 

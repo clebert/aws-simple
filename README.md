@@ -535,6 +535,22 @@ exports.default = {
 };
 ```
 
+### Enable access logging
+
+To enable access logging for the API Gateway REST API you can set the
+`enableAccessLogging` property to `true`:
+
+```js
+exports.default = {
+  appName: 'my-app',
+  customDomain: {
+    hostedZoneName: 'example.com',
+  },
+  enableAccessLogging: true,
+  /* ... */
+};
+```
+
 ### Troubleshooting
 
 [Some changes](https://docs.aws.amazon.com/apigateway/latest/developerguide/updating-api.html)

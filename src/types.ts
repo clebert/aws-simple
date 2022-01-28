@@ -110,6 +110,7 @@ export interface StackConfig {
   readonly enableCors?: boolean;
   readonly enableTracing?: boolean;
   readonly enableMetrics?: boolean;
+  readonly enableAccessLogging?: boolean;
 }
 
 /**
