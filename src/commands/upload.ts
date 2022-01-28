@@ -5,11 +5,11 @@ import {dots} from 'cli-spinners';
 import {TemplateNode, TemplateNodeList} from 'rtmpl';
 import joinUrl from 'url-join';
 import type {Argv} from 'yargs';
-import {createStackBaseUrl} from '../sdk/create-stack-base-url';
 import {findStack} from '../sdk/find-stack';
 import {resolveS3UploadConfigs} from '../sdk/resolve-s3-upload-configs';
 import {uploadFileToS3} from '../sdk/upload-file-to-s3';
 import type {AppConfig} from '../types';
+import {getFullyQualifiedDomainName} from '../utils/get-fully-qualified-domain-name';
 
 interface UploadArgv {
   readonly _: ['upload'];
@@ -30,7 +30,7 @@ export async function upload(
 
   const stack = await findStack(appConfig, clientConfig);
   const stackConfig = appConfig.createStackConfig();
-  const baseUrl = createStackBaseUrl(stackConfig);
+  const baseUrl = `https://${getFullyQualifiedDomainName(stackConfig)}`;
   const {s3Configs = []} = stackConfig;
   const uploadNodeList = new TemplateNodeList({separator: `\n`});
   const uploadPromises: Promise<void>[] = [];

@@ -502,6 +502,22 @@ exports.default = {
 };
 ```
 
+### Enable CloudWatch metrics
+
+To enable detailed CloudWatch metrics for the API Gateway REST API you can set
+the `enableMetrics` property to `true`:
+
+```js
+exports.default = {
+  appName: 'my-app',
+  customDomain: {
+    hostedZoneName: 'example.com',
+  },
+  enableMetrics: true,
+  /* ... */
+};
+```
+
 ### Enable tracing with AWS X-Ray
 
 To enable tracing with [AWS X-Ray](https://aws.amazon.com/xray/) for the API
@@ -515,6 +531,22 @@ exports.default = {
     hostedZoneName: 'example.com',
   },
   enableTracing: true,
+  /* ... */
+};
+```
+
+### Enable access logging
+
+To enable access logging for the API Gateway REST API you can set the
+`enableAccessLogging` property to `true`:
+
+```js
+exports.default = {
+  appName: 'my-app',
+  customDomain: {
+    hostedZoneName: 'example.com',
+  },
+  enableAccessLogging: true,
   /* ... */
 };
 ```

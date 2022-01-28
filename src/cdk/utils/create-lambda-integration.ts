@@ -1,6 +1,12 @@
 import * as path from 'path';
 import type {Stack} from 'aws-cdk-lib';
-import {Duration, aws_apigateway, aws_iam, aws_lambda} from 'aws-cdk-lib';
+import {
+  Duration,
+  aws_apigateway,
+  aws_iam,
+  aws_lambda,
+  aws_logs,
+} from 'aws-cdk-lib';
 import type {LambdaConfig} from '../../types';
 import {createShortHash} from '../../utils/create-short-hash';
 import {getLambdaModuleName} from '../../utils/get-lambda-module-name';
@@ -50,6 +56,7 @@ export function createLambdaIntegration(
       memorySize,
       environment,
       tracing: aws_lambda.Tracing.PASS_THROUGH,
+      logRetention: aws_logs.RetentionDays.ONE_WEEK,
     },
   );
 

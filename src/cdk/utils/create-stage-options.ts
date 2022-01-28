@@ -1,7 +1,9 @@
 import * as path from 'path';
-import {Duration, aws_apigateway} from 'aws-cdk-lib';
+import type {Stack} from 'aws-cdk-lib';
+import {Duration, RemovalPolicy, aws_apigateway, aws_logs} from 'aws-cdk-lib';
 import type {Throttling} from '../../new-types';
 import type {LambdaLoggingLevel, StackConfig} from '../../types';
+import {getFullyQualifiedDomainName} from '../../utils/get-fully-qualified-domain-name';
 
 export interface MethodConfig {
   readonly publicPath: string;
@@ -13,6 +15,7 @@ export interface MethodConfig {
 }
 
 function createMethodOptions(
+  stackConfig: StackConfig,
   methodConfig: MethodConfig,
   throttling: Throttling | undefined,
 ): aws_apigateway.MethodDeploymentOptions {
@@ -26,6 +29,7 @@ function createMethodOptions(
         : undefined,
     loggingLevel:
       loggingLevel && aws_apigateway.MethodLoggingLevel[loggingLevel],
+    metricsEnabled: stackConfig.enableMetrics,
     ...(throttling
       ? {
           throttlingBurstLimit: throttling.burstLimit,
@@ -49,12 +53,14 @@ function createMethodPath(methodConfig: MethodConfig): string {
 
 export function createStageOptions(
   stackConfig: StackConfig,
+  stack: Stack,
 ): aws_apigateway.StageOptions {
   const {
     lambdaConfigs = [],
     s3Configs = [],
     throttling,
     enableTracing,
+    enableAccessLogging,
   } = stackConfig;
 
   const methodOptions: Record<string, aws_apigateway.MethodDeploymentOptions> =
@@ -68,6 +74,7 @@ export function createStageOptions(
     }
 
     methodOptions[createMethodPath(lambdaConfig)] = createMethodOptions(
+      stackConfig,
       lambdaConfig,
       throttling,
     );
@@ -79,21 +86,31 @@ export function createStageOptions(
     }
 
     methodOptions[createMethodPath(s3Config)] = createMethodOptions(
+      stackConfig,
       s3Config,
       throttling,
     );
   }
 
+  const accessLogDestination = enableAccessLogging
+    ? new aws_apigateway.LogGroupLogDestination(
+        new aws_logs.LogGroup(stack, `AccessLogGroup`, {
+          logGroupName: `/aws/apigateway/accessLogs/${getFullyQualifiedDomainName(
+            stackConfig,
+          )}`,
+          retention: aws_logs.RetentionDays.ONE_WEEK,
+          removalPolicy: RemovalPolicy.DESTROY,
+        }),
+      )
+    : undefined;
+
   return {
     cacheClusterEnabled,
     cachingEnabled: false,
     methodOptions,
-    ...(throttling
-      ? {
-          throttlingBurstLimit: throttling.burstLimit,
-          throttlingRateLimit: throttling.rateLimit,
-        }
-      : {}),
     tracingEnabled: enableTracing,
+    accessLogDestination,
+    accessLogFormat:
+      accessLogDestination && aws_apigateway.AccessLogFormat.clf(),
   };
 }

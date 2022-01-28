@@ -18,7 +18,7 @@ export function createRestApiProps(
     disableExecuteApiEndpoint: true,
     binaryMediaTypes,
     minimumCompressionSize: minimumCompressionSizeInBytes,
-    deployOptions: createStageOptions(stackConfig),
+    deployOptions: createStageOptions(stackConfig, stack),
     defaultCorsPreflightOptions: enableCors
       ? {
           allowOrigins: aws_apigateway.Cors.ALL_ORIGINS,
