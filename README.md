@@ -15,8 +15,8 @@ A Node.js interface for **AWS** that allows easy configuration and deployment of
 
 ## Introduction
 
-`aws-simple` allows you to easily create and deploy an API Gateway with a custom
-domain and optional alias record, host static web resources via S3, and
+`aws-simple` allows you to easily create and deploy an API Gateway REST API with
+a custom domain and optional alias record, host static web resources via S3, and
 provision public backend APIs via Lambda. In addition, a local DEV server can be
 started to emulate the resulting AWS infrastructure.
 
@@ -522,8 +522,8 @@ exports.default = {
 ### Troubleshooting
 
 [Some changes](https://docs.aws.amazon.com/apigateway/latest/developerguide/updating-api.html)
-to an existing stack require a redeployment of the API Gateway. So if changes to
-a stack do not work, the `aws-simple redeploy` command might help.
+to an existing stack require a redeployment of the API Gateway REST API. So if
+changes to a stack do not work, the `aws-simple redeploy` command might help.
 
 ## CLI Usage
 
@@ -537,8 +537,8 @@ Commands:
   aws-simple list [options]         List all deployed stacks
   aws-simple tag [options]          Tag a deployed stack
   aws-simple clean-up [options]     Clean up old deployed stacks
-  aws-simple redeploy [options]     Redeploy the API Gateway
-  aws-simple flush-cache [options]  Flush the cache of the API Gateway
+  aws-simple redeploy [options]     Redeploy the REST API
+  aws-simple flush-cache [options]  Flush the cache of the REST API
 
 Options:
       --version  Show version number                                   [boolean]
@@ -658,12 +658,12 @@ Examples:
   npx aws-simple clean-up --min-age 14 --exclude release prerelease --yes
 ```
 
-### Redeploy the API Gateway
+### Redeploy the REST API
 
 ```
 aws-simple redeploy [options]
 
-Redeploy the API Gateway
+Redeploy the REST API
 
 Options:
       --version  Show version number                                   [boolean]
@@ -673,12 +673,12 @@ Examples:
   npx aws-simple redeploy
 ```
 
-### Flush the cache of the API Gateway
+### Flush the cache of the REST API
 
 ```
 aws-simple flush-cache [options]
 
-Flush the cache of the API Gateway
+Flush the cache of the REST API
 
 Options:
       --version  Show version number                                   [boolean]
