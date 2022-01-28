@@ -1,6 +1,6 @@
 {
   "name": "aws-simple",
-  "version": "10.0.1",
+  "version": "10.0.2",
   "description": "A Node.js interface for AWS that allows easy configuration and deployment of simple web apps.",
   "bugs": {
     "url": "https://github.com/clebert/aws-simple/issues"
