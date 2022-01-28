@@ -41,6 +41,9 @@ consisting of a single static HTML file:
 ```js
 exports.default = {
   appName: 'my-app',
+  customDomain: {
+    hostedZoneName: 'example.com',
+  },
   routes: (port) => ({
     '/': {kind: 'file', filename: 'dist/index.html'},
   }),
@@ -246,19 +249,48 @@ TypeScript 2.3 and later support type-checking in `*.js` files by adding a
  */
 exports.default = {
   appName: 'my-app',
-  routes: () => ({
-    /* ... */
-  }),
+  /* ... */
 };
 ```
 
 ### Configure a custom domain
 
-In order to use a custom domain,
-[a public certificate](https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html)
-and
+A stack that is deployed with `aws-simple` is accessed through an API Gateway
+custom domain. For that
 [a public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/CreatingHostedZone.html)
-must be created manually. You can then configure a custom domain as follows:
+must be created manually. The custom domain is configured as follows:
+
+```js
+exports.default = {
+  appName: 'my-app',
+  customDomain: {
+    hostedZoneName: 'example.com',
+  },
+  /* ... */
+};
+```
+
+A DNS validated certificate for this domain is created automatically.
+Alternatively
+[a wild-card certificate](https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html)
+can be created manually and referenced by its ARN:
+
+```js
+exports.default = {
+  appName: 'my-app',
+  customDomain: {
+    certificateArn:
+      'arn:aws:acm:eu-central-1:************:certificate/********-****-****-****-************',
+    hostedZoneName: 'example.com',
+  },
+  /* ... */
+};
+```
+
+Different app versions allow multiple stacks of the same app to be deployed
+simultaneously. In this case the optional `aliasRecordName` property is used to
+give each stack its own URL, e.g. `example.com` or `beta.example.com`
+(`APP_VERSION=beta`):
 
 ```js
 const appVersion = process.env.APP_VERSION;
@@ -267,22 +299,12 @@ exports.default = {
   appName: 'my-app',
   appVersion,
   customDomain: {
-    certificateArn:
-      'arn:aws:acm:eu-central-1:************:certificate/********-****-****-****-************',
-    hostedZoneId: '**************',
     hostedZoneName: 'example.com',
     aliasRecordName: appVersion ? appVersion : undefined,
   },
-  routes: () => ({
-    /* ... */
-  }),
+  /* ... */
 };
 ```
-
-**Note:** Different app versions allow multiple stacks of the same app to be
-deployed simultaneously. In this case the optional `aliasRecordName` property is
-used to give each stack its own URL, e.g. `example.com` or `beta.example.com`
-(`APP_VERSION=beta`).
 
 ### Configure a Lambda function
 
@@ -292,6 +314,9 @@ the `/hello` path as follows:
 ```js
 exports.default = {
   appName: 'my-app',
+  customDomain: {
+    hostedZoneName: 'example.com',
+  },
   routes: () => ({
     '/hello': {kind: 'function', filename: 'dist/hello.js'},
   }),
@@ -324,6 +349,9 @@ path as follows:
 ```js
 exports.default = {
   appName: 'my-app',
+  customDomain: {
+    hostedZoneName: 'example.com',
+  },
   routes: () => ({
     '/': {kind: 'file', filename: 'dist/index.html'},
   }),
@@ -338,6 +366,9 @@ You can configure an S3 folder that can be accessed via GET request under the
 ```js
 exports.default = {
   appName: 'my-app',
+  customDomain: {
+    hostedZoneName: 'example.com',
+  },
   routes: () => ({
     '/assets': {kind: 'folder', dirname: 'dist/assets'},
   }),
@@ -359,6 +390,9 @@ to be treated as binary as follows:
 ```js
 exports.default = {
   appName: 'my-app',
+  customDomain: {
+    hostedZoneName: 'example.com',
+  },
   routes: () => ({
     '/images': {
       kind: 'folder',
@@ -378,6 +412,9 @@ To enable CORS for a route, you can set its `enableCors` property to `true`:
 ```js
 exports.default = {
   appName: 'my-app',
+  customDomain: {
+    hostedZoneName: 'example.com',
+  },
   routes: () => ({
     '/': {kind: 'file', filename: 'dist/index.html', enableCors: true},
     '/assets': {kind: 'folder', dirname: 'dist/assets', enableCors: true},
@@ -416,6 +453,9 @@ To enable basic authentication for a route, you can set its
 ```js
 exports.default = {
   appName: 'my-app',
+  customDomain: {
+    hostedZoneName: 'example.com',
+  },
   authentication: {
     username: process.env.USERNAME,
     password: process.env.PASSWORD,
@@ -451,6 +491,9 @@ property of a file or function route to `true`:
 ```js
 exports.default = {
   appName: 'my-app',
+  customDomain: {
+    hostedZoneName: 'example.com',
+  },
   routes: (port) => ({
     '/': {kind: 'file', filename: 'dist/index.html', catchAll: true},
     '/assets': {kind: 'folder', dirname: 'dist/assets'},

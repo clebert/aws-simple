@@ -36,13 +36,6 @@ export function createStack(appConfig: AppConfig): void {
 
   restApiIdOutput.node.addDependency(restApi);
 
-  const restApiUrlOutput = new CfnOutput(stack, `RestApiUrlOutput`, {
-    value: restApi.url,
-    exportName: createUniqueExportName(stack.stackName, `RestApiUrl`),
-  });
-
-  restApiUrlOutput.node.addDependency(restApi);
-
   if (stackConfig.webAclArn) {
     const webAclAssociation = new aws_wafv2.CfnWebACLAssociation(
       stack,

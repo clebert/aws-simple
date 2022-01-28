@@ -15,6 +15,7 @@ export function createRestApiProps(
   return {
     restApiName: resourceName,
     domainName: createDomainNameOptions(stackConfig, stack),
+    disableExecuteApiEndpoint: true,
     binaryMediaTypes,
     minimumCompressionSize: minimumCompressionSizeInBytes,
     deployOptions: createStageOptions(stackConfig),

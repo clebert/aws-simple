@@ -3,8 +3,7 @@ import type {DevServerOptions, Throttling} from './new-types';
 export * from './new-types';
 
 export interface CustomDomainConfig {
-  readonly certificateArn: string;
-  readonly hostedZoneId: string;
+  readonly certificateArn?: string;
   readonly hostedZoneName: string;
   readonly aliasRecordName?: string;
   readonly aliasRecordTtlInSeconds?: number;
@@ -95,7 +94,7 @@ export interface BasicAuthenticationConfig {
 }
 
 export interface StackConfig {
-  readonly customDomainConfig?: CustomDomainConfig;
+  readonly customDomainConfig: CustomDomainConfig;
   readonly binaryMediaTypes?: string[];
   readonly minimumCompressionSizeInBytes?: number;
   readonly lambdaConfigs?: LambdaConfig[];
