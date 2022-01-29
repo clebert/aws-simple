@@ -65,38 +65,90 @@ You need to
 [create an AWS IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html)
 with programmatic access and the following attached policy:
 
+<details>
+  <summary>Click to show policy</summary>
+
 ```json
 {
   "Version": "2012-10-17",
   "Statement": [
     {
+      "Sid": "Bootstrap0",
       "Effect": "Allow",
-      "Action": [
-        "apigateway:*",
-        "cloudformation:*",
-        "ecr:CreateRepository",
-        "ecr:DeleteRepository",
-        "ecr:DescribeRepositories",
-        "iam:AttachRolePolicy",
-        "iam:CreateRole",
-        "iam:DeleteRole",
-        "iam:DeleteRolePolicy",
-        "iam:DetachRolePolicy",
-        "iam:GetRole",
-        "iam:PassRole",
-        "iam:PutRolePolicy",
-        "lambda:*",
-        "route53:*",
-        "s3:*",
-        "ssm:DeleteParameter",
-        "ssm:Get*",
-        "ssm:PutParameter"
-      ],
+      "Action": "cloudformation:*",
+      "Resource": "arn:aws:cloudformation:*:*:stack/CDKToolkit/*"
+    },
+    {
+      "Sid": "Bootstrap1",
+      "Effect": "Allow",
+      "Action": "iam:*",
+      "Resource": "arn:aws:iam::*:role/cdk-*"
+    },
+    {
+      "Sid": "Bootstrap2",
+      "Effect": "Allow",
+      "Action": "ssm:*",
+      "Resource": "arn:aws:ssm:*:*:parameter/cdk-bootstrap/*"
+    },
+    {
+      "Sid": "Bootstrap3",
+      "Effect": "Allow",
+      "Action": "ecr:*",
+      "Resource": "arn:aws:ecr:*:*:repository/cdk-*"
+    },
+    {
+      "Sid": "Bootstrap4",
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": "arn:aws:s3:::cdk-*"
+    },
+    {
+      "Sid": "AwsSimple0",
+      "Effect": "Allow",
+      "Action": "route53:ListHostedZonesByName",
       "Resource": "*"
+    },
+    {
+      "Sid": "AwsSimple1",
+      "Effect": "Allow",
+      "Action": "cloudformation:*",
+      "Resource": "arn:aws:cloudformation:*:*:stack/aws-simple-*"
+    },
+    {
+      "Sid": "AwsSimple2",
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": "arn:aws:s3:::aws-simple-*"
+    },
+    {
+      "Sid": "AwsSimple3",
+      "Effect": "Allow",
+      "Action": "apigateway:POST",
+      "Resource": "arn:aws:apigateway:*::/restapis/*/deployments"
+    },
+    {
+      "Sid": "AwsSimple4",
+      "Effect": "Allow",
+      "Action": "apigateway:PATCH",
+      "Resource": "arn:aws:apigateway:*::/restapis/*/stages/prod"
+    },
+    {
+      "Sid": "AwsSimple5",
+      "Effect": "Allow",
+      "Action": "cloudformation:DescribeStacks",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AwsSimple6",
+      "Effect": "Allow",
+      "Action": "apigateway:DELETE",
+      "Resource": "arn:aws:apigateway:*::/restapis/*/stages/prod/cache/data"
     }
   ]
 }
 ```
+
+</details>
 
 ### Optional: Create an AWS profile
 
