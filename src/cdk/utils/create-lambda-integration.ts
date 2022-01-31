@@ -49,6 +49,7 @@ export function createLambdaIntegration(
   const functionName = getFunctionName(
     getFullyQualifiedDomainName(stackConfig),
     publicPath,
+    httpMethod,
   );
 
   const lambdaFunction = new aws_lambda.Function(stack, functionName, {
