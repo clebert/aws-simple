@@ -1,9 +1,9 @@
+import type {Stack} from 'aws-cdk-lib';
 import {aws_route53} from 'aws-cdk-lib';
 import type {RestApiBase} from 'aws-cdk-lib/aws-apigateway';
 import type {IHostedZone, IRecordSet} from 'aws-cdk-lib/aws-route53';
 import {RecordTarget} from 'aws-cdk-lib/aws-route53';
 import {ApiGateway} from 'aws-cdk-lib/aws-route53-targets';
-import type {Stack} from 'aws-cdk-lib/core';
 
 export interface RecordInit {
   readonly stack: Stack;

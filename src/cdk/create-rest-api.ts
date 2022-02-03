@@ -1,3 +1,5 @@
+import type {Stack} from 'aws-cdk-lib';
+import {CfnOutput} from 'aws-cdk-lib';
 import type {RestApiBase, StageOptions} from 'aws-cdk-lib/aws-apigateway';
 import {
   EndpointType,
@@ -5,8 +7,6 @@ import {
   SecurityPolicy,
 } from 'aws-cdk-lib/aws-apigateway';
 import type {ICertificate} from 'aws-cdk-lib/aws-certificatemanager';
-import type {Stack} from 'aws-cdk-lib/core';
-import {CfnOutput} from 'aws-cdk-lib/core';
 
 export interface RestApiInit {
   readonly stack: Stack;

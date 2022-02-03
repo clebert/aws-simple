@@ -1,7 +1,7 @@
+import {RemovalPolicy} from 'aws-cdk-lib';
+import type {Stack} from 'aws-cdk-lib';
 import type {ILogGroup} from 'aws-cdk-lib/aws-logs';
 import {LogGroup, RetentionDays} from 'aws-cdk-lib/aws-logs';
-import type {Stack} from 'aws-cdk-lib/core';
-import {RemovalPolicy} from 'aws-cdk-lib/core';
 
 export interface AccessLogGroupInit {
   readonly stack: Stack;

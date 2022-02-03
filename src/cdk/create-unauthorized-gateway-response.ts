@@ -1,6 +1,6 @@
+import type {Stack} from 'aws-cdk-lib';
 import type {IGatewayResponse, RestApiBase} from 'aws-cdk-lib/aws-apigateway';
 import {GatewayResponse, ResponseType} from 'aws-cdk-lib/aws-apigateway';
-import type {Stack} from 'aws-cdk-lib/core';
 
 export interface UnauthorizedGatewayResponseInit {
   readonly stack: Stack;

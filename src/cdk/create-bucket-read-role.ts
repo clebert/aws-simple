@@ -1,7 +1,7 @@
+import type {Stack} from 'aws-cdk-lib';
 import type {IRole} from 'aws-cdk-lib/aws-iam';
 import {Role, ServicePrincipal} from 'aws-cdk-lib/aws-iam';
 import type {IBucket} from 'aws-cdk-lib/aws-s3';
-import type {Stack} from 'aws-cdk-lib/core';
 
 export interface BucketReadRoleInit {
   readonly stack: Stack;

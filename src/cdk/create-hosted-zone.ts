@@ -1,7 +1,7 @@
+import type {Stack} from 'aws-cdk-lib';
+import {CfnOutput} from 'aws-cdk-lib';
 import type {IHostedZone} from 'aws-cdk-lib/aws-route53';
 import {HostedZone} from 'aws-cdk-lib/aws-route53';
-import type {Stack} from 'aws-cdk-lib/core';
-import {CfnOutput} from 'aws-cdk-lib/core';
 
 export interface HostedZoneInit {
   readonly stack: Stack;

@@ -1,7 +1,7 @@
+import type {Stack} from 'aws-cdk-lib';
+import {Duration} from 'aws-cdk-lib';
 import type {IAuthorizer} from 'aws-cdk-lib/aws-apigateway';
 import {IdentitySource, RequestAuthorizer} from 'aws-cdk-lib/aws-apigateway';
-import type {Stack} from 'aws-cdk-lib/core';
-import {Duration} from 'aws-cdk-lib/core';
 import {createLambdaFunction} from './create-lambda-function';
 
 export interface RequestAuthorizerInit {

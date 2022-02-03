@@ -1,4 +1,4 @@
-import {App, Stack} from 'aws-cdk-lib/core';
+import {App, Stack} from 'aws-cdk-lib';
 
 export interface StackInit {
   readonly stackName: string;

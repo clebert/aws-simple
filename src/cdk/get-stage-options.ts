@@ -1,4 +1,5 @@
 import {join} from 'path';
+import {Duration} from 'aws-cdk-lib';
 import type {
   MethodDeploymentOptions,
   StageOptions,
@@ -9,7 +10,6 @@ import {
   MethodLoggingLevel,
 } from 'aws-cdk-lib/aws-apigateway';
 import type {ILogGroup} from 'aws-cdk-lib/aws-logs';
-import {Duration} from 'aws-cdk-lib/core';
 
 export interface StageOptionsInit {
   readonly accessLogGroup: ILogGroup | undefined;

@@ -1,7 +1,7 @@
+import type {Stack} from 'aws-cdk-lib';
+import {CfnOutput, RemovalPolicy} from 'aws-cdk-lib';
 import type {IBucket} from 'aws-cdk-lib/aws-s3';
 import {BlockPublicAccess, Bucket, BucketEncryption} from 'aws-cdk-lib/aws-s3';
-import type {Stack} from 'aws-cdk-lib/core';
-import {CfnOutput, RemovalPolicy} from 'aws-cdk-lib/core';
 
 export interface BucketInit {
   readonly stack: Stack;

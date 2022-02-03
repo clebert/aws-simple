@@ -1,4 +1,6 @@
 import {basename, dirname, extname} from 'path';
+import type {Stack} from 'aws-cdk-lib';
+import {Duration} from 'aws-cdk-lib';
 import type {FunctionBase} from 'aws-cdk-lib/aws-lambda';
 import {
   Code,
@@ -7,8 +9,6 @@ import {
   Tracing,
 } from 'aws-cdk-lib/aws-lambda';
 import {RetentionDays} from 'aws-cdk-lib/aws-logs';
-import type {Stack} from 'aws-cdk-lib/core';
-import {Duration} from 'aws-cdk-lib/core';
 import {getHash} from './get-hash';
 
 export interface LambdaFunctionInit {
