@@ -17,3 +17,5 @@ lib
 tsconfig.tsbuildinfo
 .envrc
 .swc
+cdk.out
+cdk.context.json

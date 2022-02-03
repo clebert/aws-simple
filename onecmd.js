@@ -25,6 +25,8 @@ const plugins = [
       {type: `ref`, path: `tsconfig.tsbuildinfo`},
       {type: `ref`, path: `.envrc`},
       {type: `ref`, path: `.swc`},
+      {type: `ref`, path: `cdk.out`},
+      {type: `ref`, path: `cdk.context.json`},
     ],
   },
 ];
