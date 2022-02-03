@@ -9,7 +9,7 @@ import {
   Tracing,
 } from 'aws-cdk-lib/aws-lambda';
 import {RetentionDays} from 'aws-cdk-lib/aws-logs';
-import {getHash} from './get-hash';
+import {getHash} from '../utils/get-hash';
 
 export interface LambdaFunctionInit {
   readonly stack: Stack;

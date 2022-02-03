@@ -1,20 +1,20 @@
-import {addLambdaResource} from '../cdk/add-lambda-resource';
-import {addS3Resource} from '../cdk/add-s3-resource';
-import {createAccessLogGroup} from '../cdk/create-access-log-group';
-import {createBucket} from '../cdk/create-bucket';
-import {createBucketReadRole} from '../cdk/create-bucket-read-role';
-import {createCertificate} from '../cdk/create-certificate';
-import {createHostedZone} from '../cdk/create-hosted-zone';
-import {createLambdaFunction} from '../cdk/create-lambda-function';
-import {createRecord} from '../cdk/create-record';
-import {createRequestAuthorizer} from '../cdk/create-request-authorizer';
-import {createRestApi} from '../cdk/create-rest-api';
-import {createStack} from '../cdk/create-stack';
-import {createUnauthorizedGatewayResponse} from '../cdk/create-unauthorized-gateway-response';
-import {getHash} from '../cdk/get-hash';
-import {getNormalizedName} from '../cdk/get-normalized-name';
-import {getStageOptions} from '../cdk/get-stage-options';
-import type {StackConfig} from '../stack-config';
+import {addLambdaResource} from './cdk/add-lambda-resource';
+import {addS3Resource} from './cdk/add-s3-resource';
+import {createAccessLogGroup} from './cdk/create-access-log-group';
+import {createBucket} from './cdk/create-bucket';
+import {createBucketReadRole} from './cdk/create-bucket-read-role';
+import {createCertificate} from './cdk/create-certificate';
+import {createHostedZone} from './cdk/create-hosted-zone';
+import {createLambdaFunction} from './cdk/create-lambda-function';
+import {createRecord} from './cdk/create-record';
+import {createRequestAuthorizer} from './cdk/create-request-authorizer';
+import {createRestApi} from './cdk/create-rest-api';
+import {createStack} from './cdk/create-stack';
+import {createUnauthorizedGatewayResponse} from './cdk/create-unauthorized-gateway-response';
+import {getStageOptions} from './cdk/get-stage-options';
+import type {StackConfig} from './get-stack-config';
+import {getHash} from './utils/get-hash';
+import {getNormalizedName} from './utils/get-normalized-name';
 
 const fileFunctionProxyName = `proxy`;
 const folderProxyName = `folder`;
@@ -39,18 +39,19 @@ export function synthesize(stackConfig: StackConfig): void {
     ? `${subdomainName}.${hostedZoneName}`
     : hostedZoneName;
 
-  // Example: aws_simple-foo_example_com
-  const stackName = `aws_simple-${getNormalizedName(domainName)}`;
+  // Stack name must match the regular expression: /^[A-Za-z][A-Za-z0-9-]*$/
+  // Example: aws-simple-foo-example-com
+  const stackName = `aws-simple-${getNormalizedName(domainName)}`;
 
-  // Example: foo_example_com
+  // Example: foo-example-com
   const restApiName = getNormalizedName(domainName);
 
-  // Example: aws_simple-request_authorizer-1234567
-  const requestAuthorizerFunctionName = `aws_simple-request_authorizer-${getHash(
+  // Example: aws-simple-request-authorizer-1234567
+  const requestAuthorizerFunctionName = `aws-simple-request-authorizer-${getHash(
     domainName,
   )}`;
 
-  // Example: POST-foo_bar_baz-1234567
+  // Example: POST-foo-bar-baz-1234567
   const getFunctionName = (httpMethod: string, identifier: string) => {
     const functionName = `${httpMethod}-${getNormalizedName(
       identifier,

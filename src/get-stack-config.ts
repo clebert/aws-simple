@@ -1,6 +1,7 @@
+import path from 'path';
+import type {Stack} from 'aws-cdk-lib';
 import type {RestApiBase} from 'aws-cdk-lib/aws-apigateway';
 import type {FunctionBase} from 'aws-cdk-lib/aws-lambda';
-import type {Stack} from 'aws-cdk-lib/core';
 
 export interface StackConfig {
   readonly hostedZoneName: string;
@@ -97,4 +98,22 @@ export interface DevServerOptions {
 
 export interface LambdaFunctionConstructs extends StackConstructs {
   readonly lambdaFunction: FunctionBase;
+}
+
+export function getStackConfig(port?: number): StackConfig {
+  let defaultExport;
+
+  try {
+    defaultExport = require(path.resolve(`aws-simple.config.js`)).default;
+  } catch (error) {
+    throw new Error(`The aws-simple config file cannot be found.`);
+  }
+
+  if (typeof defaultExport !== `function`) {
+    throw new Error(
+      `The aws-simple config file does not have a valid default export.`,
+    );
+  }
+
+  return defaultExport(port);
 }
