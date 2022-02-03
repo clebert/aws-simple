@@ -115,7 +115,6 @@ export interface LambdaFunctionConstructs extends StackConstructs {
   readonly lambdaFunction: FunctionBase;
 }
 
-const namePrefix = `aws_simple-`;
 const fileFunctionProxyName = `proxy`;
 const folderProxyName = `folder`;
 
@@ -140,27 +139,28 @@ export function synthesize(stackConfig: StackConfig): void {
     : hostedZoneName;
 
   // Example: aws_simple-foo_example_com
-  const stackName = namePrefix + getNormalizedName(domainName);
+  const stackName = `aws_simple-${getNormalizedName(domainName)}`;
 
   // Example: foo_example_com
   const restApiName = getNormalizedName(domainName);
 
-  const getFunctionName = (identifier: string) => {
-    const nameSuffix = `-${getHash(domainName)}`;
-    const normalizedIdentifier = getNormalizedName(identifier);
+  // Example: aws_simple-request_authorizer-1234567
+  const requestAuthorizerFunctionName = `aws_simple-request_authorizer-${getHash(
+    domainName,
+  )}`;
 
-    if (
-      normalizedIdentifier.length >
-      64 - namePrefix.length - nameSuffix.length
-    ) {
+  // Example: POST-foo_bar_baz-1234567
+  const getFunctionName = (httpMethod: string, identifier: string) => {
+    const functionName = `${httpMethod}-${getNormalizedName(
+      identifier,
+    )}-${getHash(domainName)}`;
+
+    if (functionName.length > 64) {
       throw new Error(`Invalid Lambda function name.`);
     }
 
-    return namePrefix + normalizedIdentifier + nameSuffix;
+    return functionName;
   };
-
-  // Example: aws_simple-request_authorizer-1234567
-  const requestAuthorizerFunctionName = getFunctionName(`request_authorizer`);
 
   const stack = createStack({stackName});
   const hostedZone = createHostedZone({stack, hostedZoneName});
@@ -245,7 +245,7 @@ export function synthesize(stackConfig: StackConfig): void {
 
       const lambdaFunction = createLambdaFunction({
         stack,
-        functionName: getFunctionName(identifier),
+        functionName: getFunctionName(httpMethod, identifier),
         filename,
         memorySize,
         timeoutInSeconds,
