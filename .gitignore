@@ -15,3 +15,5 @@ tsconfig.json
 .vscode
 lib
 tsconfig.tsbuildinfo
+.envrc
+.swc
