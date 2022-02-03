@@ -1,4 +1,6 @@
+import type {LambdaResourceInit} from './cdk/add-lambda-resource';
 import {addLambdaResource} from './cdk/add-lambda-resource';
+import type {S3ResourceInit} from './cdk/add-s3-resource';
 import {addS3Resource} from './cdk/add-s3-resource';
 import {createAccessLogGroup} from './cdk/create-access-log-group';
 import {createBucket} from './cdk/create-bucket';
@@ -11,6 +13,7 @@ import {createRequestAuthorizer} from './cdk/create-request-authorizer';
 import {createRestApi} from './cdk/create-rest-api';
 import {createStack} from './cdk/create-stack';
 import {createUnauthorizedGatewayResponse} from './cdk/create-unauthorized-gateway-response';
+import type {MethodDeployment} from './cdk/get-stage-options';
 import {getStageOptions} from './cdk/get-stage-options';
 import type {StackConfig} from './get-stack-config';
 import {getHash} from './utils/get-hash';
@@ -19,6 +22,7 @@ import {getNormalizedName} from './utils/get-normalized-name';
 const fileFunctionProxyName = `proxy`;
 const folderProxyName = `folder`;
 
+// eslint-disable-next-line complexity
 export function synthesize(stackConfig: StackConfig): void {
   const {
     hostedZoneName,
@@ -58,7 +62,9 @@ export function synthesize(stackConfig: StackConfig): void {
     )}-${getHash(domainName)}`;
 
     if (functionName.length > 64) {
-      throw new Error(`Invalid Lambda function name.`);
+      throw new Error(
+        `The name of a Lambda function must not be longer than 64 characters.`,
+      );
     }
 
     return functionName;
@@ -67,25 +73,70 @@ export function synthesize(stackConfig: StackConfig): void {
   const stack = createStack({stackName});
   const hostedZone = createHostedZone({stack, hostedZoneName});
   const certificate = createCertificate({stack, hostedZone, domainName});
+  const methodDeployments: MethodDeployment[] = [];
+
+  for (const route of routes) {
+    const {type, publicPath, cacheTtlInSeconds} = route;
+
+    if (type === `file`) {
+      methodDeployments.push({
+        httpMethod: `GET`,
+        publicPath,
+        proxyName: undefined,
+        cacheTtlInSeconds,
+      });
+    } else if (type === `file+`) {
+      methodDeployments.push(
+        {
+          httpMethod: `GET`,
+          publicPath,
+          proxyName: undefined,
+          cacheTtlInSeconds,
+        },
+        {
+          httpMethod: `GET`,
+          publicPath,
+          proxyName: fileFunctionProxyName,
+          cacheTtlInSeconds,
+        },
+      );
+    } else if (type === `folder+`) {
+      methodDeployments.push({
+        httpMethod: `GET`,
+        publicPath,
+        proxyName: folderProxyName,
+        cacheTtlInSeconds,
+      });
+    } else if (type === `function`) {
+      methodDeployments.push({
+        httpMethod: route.httpMethod,
+        publicPath,
+        proxyName: undefined,
+        cacheTtlInSeconds,
+      });
+    } else if (type === `function+`) {
+      methodDeployments.push(
+        {
+          httpMethod: route.httpMethod,
+          publicPath,
+          proxyName: undefined,
+          cacheTtlInSeconds,
+        },
+        {
+          httpMethod: route.httpMethod,
+          publicPath,
+          proxyName: fileFunctionProxyName,
+          cacheTtlInSeconds,
+        },
+      );
+    }
+  }
 
   const stageOptions = getStageOptions({
     accessLogGroup: accessLoggingEnabled
       ? createAccessLogGroup({stack, domainName})
       : undefined,
-    methodDeployments: routes.map((route) => ({
-      httpMethod:
-        route.type === `function` || route.type === `function+`
-          ? route.httpMethod
-          : `GET`,
-      publicPath: route.publicPath,
-      proxyName:
-        route.type === `function+` || route.type === `file+`
-          ? fileFunctionProxyName
-          : route.type === `folder+`
-          ? folderProxyName
-          : undefined,
-      cacheTtlInSeconds: route.cacheTtlInSeconds,
-    })),
+    methodDeployments,
     throttling,
     loggingEnabled,
     metricsEnabled,
@@ -154,7 +205,7 @@ export function synthesize(stackConfig: StackConfig): void {
         environment,
       });
 
-      addLambdaResource({
+      const lambdaResourceInit: LambdaResourceInit = {
         restApi,
         lambdaFunction,
         requestAuthorizer: authenticationEnabled
@@ -162,7 +213,7 @@ export function synthesize(stackConfig: StackConfig): void {
           : undefined,
         httpMethod,
         publicPath,
-        proxyName: type === `function+` ? fileFunctionProxyName : undefined,
+        proxyName: undefined,
         cacheKeyRequestParameterNames:
           requestParameters &&
           Object.entries(requestParameters)
@@ -174,7 +225,16 @@ export function synthesize(stackConfig: StackConfig): void {
             .filter(([, {required}]) => required)
             .map(([parameterName]) => parameterName),
         corsEnabled,
-      });
+      };
+
+      addLambdaResource(lambdaResourceInit);
+
+      if (type === `function+`) {
+        addLambdaResource({
+          ...lambdaResourceInit,
+          proxyName: fileFunctionProxyName,
+        });
+      }
 
       route.onSynthesize?.({stack, restApi, lambdaFunction});
     } else if (
@@ -184,22 +244,33 @@ export function synthesize(stackConfig: StackConfig): void {
     ) {
       const {type, publicPath, responseHeaders, corsEnabled} = route;
 
-      addS3Resource({
+      const s3ResourceInit: S3ResourceInit = {
         restApi,
         bucketReadRole,
         requestAuthorizer,
         publicPath,
         bucketName: bucket.bucketName,
         bucketPath: type === `folder+` ? route.dirname : route.filename,
-        proxy:
-          type === `folder+`
-            ? {folder: true, proxyName: folderProxyName}
-            : type === `file+`
-            ? {folder: false, proxyName: fileFunctionProxyName}
-            : undefined,
+        proxy: undefined,
         responseHeaders,
         corsEnabled,
-      });
+      };
+
+      if (type === `folder+`) {
+        addS3Resource({
+          ...s3ResourceInit,
+          proxy: {folder: true, proxyName: folderProxyName},
+        });
+      } else {
+        addS3Resource(s3ResourceInit);
+
+        if (type === `file+`) {
+          addS3Resource({
+            ...s3ResourceInit,
+            proxy: {folder: false, proxyName: fileFunctionProxyName},
+          });
+        }
+      }
     }
   }
 }

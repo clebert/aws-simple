@@ -36,7 +36,7 @@ export function addS3Resource(init: S3ResourceInit): void {
   } = init;
 
   if (isAbsolute(bucketPath)) {
-    throw new Error(`Invalid S3 bucket path.`);
+    throw new Error(`The path of an S3 bucket must not be absolute.`);
   }
 
   const s3Integration = new AwsIntegration({
@@ -52,9 +52,7 @@ export function addS3Resource(init: S3ResourceInit): void {
   });
 
   const resource = proxy
-    ? restApi.root
-        .resourceForPath(publicPath)
-        .addResource(`{${proxy.proxyName}+}`)
+    ? restApi.root.resourceForPath(join(publicPath, `{${proxy.proxyName}+}`))
     : restApi.root.resourceForPath(publicPath);
 
   if (corsEnabled) {

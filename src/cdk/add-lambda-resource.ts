@@ -1,3 +1,4 @@
+import {join} from 'path';
 import type {IAuthorizer, RestApiBase} from 'aws-cdk-lib/aws-apigateway';
 import {Cors, LambdaIntegration} from 'aws-cdk-lib/aws-apigateway';
 import type {FunctionBase} from 'aws-cdk-lib/aws-lambda';
@@ -35,7 +36,7 @@ export function addLambdaResource(init: LambdaResourceInit): void {
   );
 
   const resource = proxyName
-    ? restApi.root.resourceForPath(publicPath).addResource(`{${proxyName}+}`)
+    ? restApi.root.resourceForPath(join(publicPath, `{${proxyName}+}`))
     : restApi.root.resourceForPath(publicPath);
 
   if (corsEnabled) {
