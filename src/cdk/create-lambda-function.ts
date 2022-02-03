@@ -53,6 +53,6 @@ export function createLambdaFunction(init: LambdaFunctionInit): FunctionBase {
     timeout: Duration.seconds(Math.min(timeoutInSeconds, maxTimeoutInSeconds)),
     runtime: Runtime.NODEJS_14_X,
     tracing: Tracing.PASS_THROUGH,
-    logRetention: RetentionDays.TWO_WEEKS,
+    logRetention: RetentionDays.TWO_WEEKS, // TODO: make configurable
   });
 }

@@ -13,18 +13,16 @@ const plugins = [
   std.node(nodeVersion),
   std.npm(),
   std.prettier(),
-  std.react(),
   std.swc(),
-  std.typescript(`node`, `package`),
+  std.typescript(`node`, `bundle`),
   std.vscode({showFilesInEditor: false}),
-
   {
     setup: () => [
-      std.jest.configFile.merge(() => ({
-        coveragePathIgnorePatterns: [
-          `src/cdk/utils/basic-authorizer-handler/index.ts`,
-        ],
+      std.typescript.configFile.merge(() => ({
+        compilerOptions: {module: `commonjs`, outDir: `lib`},
       })),
+      {type: `ref`, path: `lib`},
+      {type: `ref`, path: `tsconfig.tsbuildinfo`},
     ],
   },
 ];

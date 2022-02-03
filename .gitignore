@@ -10,9 +10,8 @@ node_modules
 .prettierignore
 .swcrc
 tsconfig.json
-tsconfig.cjs.json
-tsconfig.esm.json
-lib
 .vscode/extensions.json
 .vscode/settings.json
 .vscode
+lib
+tsconfig.tsbuildinfo

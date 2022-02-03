@@ -13,7 +13,7 @@ export function createAccessLogGroup(init: AccessLogGroupInit): ILogGroup {
 
   return new LogGroup(stack, `AccessLogGroup`, {
     logGroupName: `/aws/apigateway/accessLogs/${domainName}}`,
-    retention: RetentionDays.TWO_WEEKS,
+    retention: RetentionDays.TWO_WEEKS, // TODO: make configurable
     removalPolicy: RemovalPolicy.DESTROY,
   });
 }
