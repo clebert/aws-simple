@@ -4,10 +4,10 @@ import chalk from 'chalk';
 import yargs from 'yargs';
 import {getStackConfig} from './get-stack-config';
 import {synthesize} from './synthesize';
+import {upload} from './upload';
 
 export type GetStackConfig = typeof getStackConfig;
 
-// eslint-disable-next-line @typescript-eslint/require-await
 (async () => {
   const {description} = require(`../package.json`);
 
@@ -24,10 +24,20 @@ export type GetStackConfig = typeof getStackConfig;
       `Synthesize a stack using the CDK`,
       (commandArgv) =>
         commandArgv.example(`npx cdk deploy --app 'npx $0 synthesize'`, ``),
-    ).argv as {readonly _: readonly string[]};
+    )
+    .command(`upload [options]`, `Upload files to S3`, (commandArgv) =>
+      commandArgv.example(`npx $0 upload`, ``),
+    ).argv as unknown as {readonly _: readonly ['synthesize' | 'upload']};
 
-  if (argv._[0] === `synthesize`) {
-    synthesize(getStackConfig());
+  switch (argv._[0]) {
+    case `synthesize`: {
+      synthesize(getStackConfig());
+      break;
+    }
+    case `upload`: {
+      await upload(getStackConfig());
+      break;
+    }
   }
 })().catch((error) => {
   console.error(chalk.red(String(error)));

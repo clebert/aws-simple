@@ -19,7 +19,12 @@ const plugins = [
   {
     setup: () => [
       std.typescript.configFile.merge(() => ({
-        compilerOptions: {module: `commonjs`, outDir: `lib`, declaration: true},
+        compilerOptions: {
+          lib: [`dom`],
+          module: `commonjs`,
+          outDir: `lib`,
+          declaration: true,
+        },
       })),
       {type: `ref`, path: `lib`},
       {type: `ref`, path: `tsconfig.tsbuildinfo`},

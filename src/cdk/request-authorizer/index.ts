@@ -10,7 +10,7 @@ export const handler: Handler<
   // eslint-disable-next-line @typescript-eslint/require-await
 > = async (event) => {
   if (!process.env.USERNAME) {
-    throw new Error(`USERNAME is not defined.`);
+    throw new Error(`The environment variable is not defined: USERNAME`);
   }
 
   const [, partition, service, region, accountId] = event.methodArn.split(`:`);
