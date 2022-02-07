@@ -1,21 +1,14 @@
 import type {Stack} from 'aws-cdk-lib';
-import {CfnOutput, RemovalPolicy} from 'aws-cdk-lib';
-import type {IBucket} from 'aws-cdk-lib/aws-s3';
-import {BlockPublicAccess, Bucket, BucketEncryption} from 'aws-cdk-lib/aws-s3';
+import {CfnOutput, RemovalPolicy, aws_s3} from 'aws-cdk-lib';
 
-export interface BucketInit {
-  readonly stack: Stack;
-}
-
-export function createBucket(init: BucketInit): IBucket {
-  const {stack} = init;
-
-  const bucket = new Bucket(stack, `Bucket`, {
-    blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
-    encryption: BucketEncryption.S3_MANAGED,
+export function createBucket(stack: Stack): aws_s3.IBucket {
+  const bucket = new aws_s3.Bucket(stack, `Bucket`, {
+    blockPublicAccess: aws_s3.BlockPublicAccess.BLOCK_ALL,
+    encryption: aws_s3.BucketEncryption.S3_MANAGED,
     enforceSSL: true,
     removalPolicy: RemovalPolicy.DESTROY,
     autoDeleteObjects: true,
+    objectOwnership: aws_s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
   });
 
   new CfnOutput(stack, `BucketNameOutput`, {

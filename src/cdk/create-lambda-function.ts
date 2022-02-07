@@ -1,42 +1,26 @@
 import {basename, dirname, extname} from 'path';
 import type {Stack} from 'aws-cdk-lib';
-import {Duration} from 'aws-cdk-lib';
-import type {FunctionBase} from 'aws-cdk-lib/aws-lambda';
-import {
-  Code,
-  Function as LambdaFunction,
-  Runtime,
-  Tracing,
-} from 'aws-cdk-lib/aws-lambda';
-import {RetentionDays} from 'aws-cdk-lib/aws-logs';
+import {Duration, aws_lambda, aws_logs} from 'aws-cdk-lib';
+import type {LambdaRoute, StackConfig} from '../get-stack-config';
+import {getAbsoluteDomainName} from '../utils/get-absolute-domain-name';
 import {getHash} from '../utils/get-hash';
-
-export interface LambdaFunctionInit {
-  readonly stack: Stack;
-  readonly functionName: string;
-  readonly filename: string;
-  readonly memorySize: number | undefined;
-  readonly timeoutInSeconds: number | undefined;
-  readonly environment: Readonly<Record<string, string>> | undefined;
-}
+import {getNormalizedName} from '../utils/get-normalized-name';
 
 const maxTimeoutInSeconds = 28;
 
-export function createLambdaFunction(init: LambdaFunctionInit): FunctionBase {
+export function createLambdaFunction(
+  stackConfig: StackConfig,
+  route: LambdaRoute,
+  stack: Stack,
+): aws_lambda.FunctionBase {
   const {
-    stack,
+    httpMethod,
+    path,
     functionName,
-    filename,
     memorySize = 128,
     timeoutInSeconds = maxTimeoutInSeconds,
     environment,
-  } = init;
-
-  const moduleName = basename(filename, extname(filename));
-
-  if (/^[\w-]+$/.test(moduleName)) {
-    throw new Error(`Invalid Lambda function filename.`);
-  }
+  } = route;
 
   if (timeoutInSeconds > maxTimeoutInSeconds) {
     console.warn(
@@ -44,15 +28,33 @@ export function createLambdaFunction(init: LambdaFunctionInit): FunctionBase {
     );
   }
 
-  return new LambdaFunction(stack, `LambdaFunction${getHash(functionName)}`, {
+  const domainName = getAbsoluteDomainName(stackConfig);
+
+  // Example: POST-foo-bar-baz-1234567
+  const uniqueFunctionName = `${httpMethod}-${getNormalizedName(
     functionName,
-    code: Code.fromAsset(dirname(filename)),
-    handler: `${moduleName}.handler`,
-    memorySize,
-    environment,
-    timeout: Duration.seconds(Math.min(timeoutInSeconds, maxTimeoutInSeconds)),
-    runtime: Runtime.NODEJS_14_X,
-    tracing: Tracing.PASS_THROUGH,
-    logRetention: RetentionDays.TWO_WEEKS, // TODO: make configurable
-  });
+  )}-${getHash(functionName, domainName)}`;
+
+  if (uniqueFunctionName.length > 64) {
+    throw new Error(
+      `The name of a Lambda function must not be longer than 64 characters.`,
+    );
+  }
+
+  return new aws_lambda.Function(
+    stack,
+    `Function${getHash(uniqueFunctionName)}`,
+    {
+      functionName: uniqueFunctionName,
+      code: aws_lambda.Code.fromAsset(dirname(path)),
+      handler: `${basename(path, extname(path))}.handler`,
+      description: domainName,
+      memorySize,
+      environment,
+      timeout: Duration.seconds(timeoutInSeconds),
+      runtime: aws_lambda.Runtime.NODEJS_14_X,
+      tracing: aws_lambda.Tracing.PASS_THROUGH,
+      logRetention: aws_logs.RetentionDays.TWO_WEEKS,
+    },
+  );
 }

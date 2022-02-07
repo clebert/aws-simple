@@ -1,103 +1,81 @@
 import path from 'path';
-import type {Stack} from 'aws-cdk-lib';
-import type {RestApiBase} from 'aws-cdk-lib/aws-apigateway';
-import type {FunctionBase} from 'aws-cdk-lib/aws-lambda';
+import type {Stack, aws_apigateway, aws_lambda} from 'aws-cdk-lib';
 
 export interface StackConfig {
-  readonly hostedZoneName: string;
+  readonly domainName: string;
   readonly subdomainName?: string;
-  readonly authentication?: Authentication;
-  readonly throttling?: Throttling;
-  readonly monitoring?: Monitoring;
+  readonly cachingEnabled?: boolean;
+
+  readonly authentication?: {
+    readonly username: string;
+    readonly password: string;
+    readonly realm?: string;
+    /** Default: `300` seconds (if caching is enabled) */
+    readonly cacheTtlInSeconds?: number;
+  };
+
+  readonly monitoring?: {
+    readonly accessLoggingEnabled?: boolean;
+    readonly loggingEnabled?: boolean;
+    readonly metricsEnabled?: boolean;
+    readonly tracingEnabled?: boolean;
+  };
+
+  readonly throttling?: {
+    /** Default: `10000` requests per second */
+    readonly rateLimit: number;
+    /** Default: `5000` requests */
+    readonly burstLimit: number;
+  };
+
   readonly routes: readonly [Route, ...Route[]];
-  readonly onSynthesize?: (constructs: StackConstructs) => void;
+
+  readonly onSynthesize?: (constructs: {
+    readonly stack: Stack;
+    readonly restApi: aws_apigateway.RestApiBase;
+  }) => void;
 }
 
-export interface Authentication {
-  readonly username: string;
-  readonly password: string;
-  readonly realm?: string;
-  readonly cacheTtlInSeconds?: number;
-}
+export type Route = LambdaRoute | S3Route;
 
-export interface Throttling {
-  readonly burstLimit: number;
-  readonly rateLimit: number;
-}
-
-export interface Monitoring {
-  readonly accessLoggingEnabled?: boolean;
-  readonly loggingEnabled?: boolean;
-  readonly metricsEnabled?: boolean;
-  readonly tracingEnabled?: boolean;
-}
-
-export interface StackConstructs {
-  readonly stack: Stack;
-  readonly restApi: RestApiBase;
-}
-
-export type Route = S3Route | LambdaFunctionRoute;
-export type S3Route = S3FileRoute | S3FolderRoute;
-
-export interface RouteBase {
+export interface LambdaRoute extends RouteOptions {
+  readonly type: 'function';
+  readonly httpMethod: 'DELETE' | 'GET' | 'HEAD' | 'PATCH' | 'POST' | 'PUT';
   readonly publicPath: string;
-  readonly cacheTtlInSeconds?: number;
-  readonly authenticationEnabled?: boolean;
-  readonly corsEnabled?: boolean;
-}
-
-export interface S3FileRoute extends RouteBase {
-  readonly type: 'file' | 'file+';
-  readonly filename: string;
-  readonly responseHeaders?: Readonly<Record<string, string>>;
-}
-
-export interface S3FolderRoute extends RouteBase {
-  readonly type: 'folder+';
-  readonly dirname: string;
-  readonly responseHeaders?: Readonly<Record<string, string>>;
-}
-
-export interface LambdaFunctionRoute extends RouteBase {
-  readonly type: 'function' | 'function+';
-  readonly httpMethod: HttpMethod;
-  readonly identifier: string;
-  readonly filename: string;
+  readonly path: string;
+  readonly functionName: string;
+  /** Default: `128` MB */
   readonly memorySize?: number;
+  /** Default: `28` seconds (this is the maximum timeout) */
   readonly timeoutInSeconds?: number;
   readonly environment?: Readonly<Record<string, string>>;
-  readonly requestParameters?: Readonly<
-    Record<string, RequestParameterOptions>
-  >;
-  readonly devServerOptions?: DevServerOptions;
-  readonly onSynthesize?: (constructs: LambdaFunctionConstructs) => void;
+  readonly requestParameters?: Readonly<Record<string, LambdaRequestParameter>>;
+
+  readonly onSynthesize?: (constructs: {
+    readonly stack: Stack;
+    readonly restApi: aws_apigateway.RestApiBase;
+    readonly lambdaFunction: aws_lambda.FunctionBase;
+  }) => void;
 }
 
-export type HttpMethod =
-  | 'DELETE'
-  | 'GET'
-  | 'HEAD'
-  | 'OPTIONS'
-  | 'PATCH'
-  | 'POST'
-  | 'PUT';
-
-export interface RequestParameterOptions {
+export interface LambdaRequestParameter {
   readonly cacheKey?: boolean;
   readonly required?: boolean;
 }
 
-export interface DevServerOptions {
-  /**
-   * Shared file dependencies from all Lambda functions that should be included
-   * in the files watched for cache invalidation.
-   */
-  readonly sharedFileDependencies?: string[];
+export interface S3Route extends RouteOptions {
+  readonly type: 'file' | 'folder';
+  readonly httpMethod?: 'GET';
+  readonly publicPath: string;
+  readonly path: string;
+  readonly responseHeaders?: Readonly<Record<string, string>>;
 }
 
-export interface LambdaFunctionConstructs extends StackConstructs {
-  readonly lambdaFunction: FunctionBase;
+export interface RouteOptions {
+  /** Default: `300` seconds (if caching is enabled) */
+  readonly cacheTtlInSeconds?: number;
+  readonly authenticationEnabled?: boolean;
+  readonly corsEnabled?: boolean;
 }
 
 export function getStackConfig(port?: number): StackConfig {
@@ -106,13 +84,11 @@ export function getStackConfig(port?: number): StackConfig {
   try {
     defaultExport = require(path.resolve(`aws-simple.config.js`)).default;
   } catch (error) {
-    throw new Error(`The aws-simple config file cannot be found.`);
+    throw new Error(`The config file cannot be found.`);
   }
 
   if (typeof defaultExport !== `function`) {
-    throw new Error(
-      `The aws-simple config file does not have a valid default export.`,
-    );
+    throw new Error(`The config file does not have a valid default export.`);
   }
 
   return defaultExport(port);

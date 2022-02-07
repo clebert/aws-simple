@@ -1,34 +1,44 @@
+import {dirname} from 'path';
 import type {Stack} from 'aws-cdk-lib';
-import {Duration} from 'aws-cdk-lib';
-import type {IAuthorizer} from 'aws-cdk-lib/aws-apigateway';
-import {IdentitySource, RequestAuthorizer} from 'aws-cdk-lib/aws-apigateway';
-import {createLambdaFunction} from './create-lambda-function';
-
-export interface RequestAuthorizerInit {
-  readonly stack: Stack;
-  readonly functionName: string;
-  readonly username: string;
-  readonly password: string;
-  readonly cacheTtlInSeconds: number | undefined;
-}
+import {Duration, aws_apigateway, aws_lambda, aws_logs} from 'aws-cdk-lib';
+import type {StackConfig} from '../get-stack-config';
+import {getAbsoluteDomainName} from '../utils/get-absolute-domain-name';
+import {getHash} from '../utils/get-hash';
 
 export function createRequestAuthorizer(
-  init: RequestAuthorizerInit,
-): IAuthorizer {
-  const {stack, functionName, username, password, cacheTtlInSeconds} = init;
+  stackConfig: StackConfig,
+  stack: Stack,
+): aws_apigateway.IAuthorizer | undefined {
+  const {authentication} = stackConfig;
 
-  return new RequestAuthorizer(stack, `RequestAuthorizer`, {
-    handler: createLambdaFunction({
+  if (!authentication) {
+    return;
+  }
+
+  const domainName = getAbsoluteDomainName(stackConfig);
+  const functionName = `aws-simple-request-authorizer-${getHash(domainName)}`;
+
+  return new aws_apigateway.RequestAuthorizer(stack, `RequestAuthorizer`, {
+    handler: new aws_lambda.Function(
       stack,
-      functionName,
-      filename: require.resolve(`./request-authorizer`),
-      memorySize: undefined,
-      timeoutInSeconds: undefined,
-      environment: {USERNAME: username, PASSWORD: password},
-    }),
-    identitySources: [IdentitySource.header(`Authorization`)],
-    resultsCacheTtl: cacheTtlInSeconds
-      ? Duration.seconds(cacheTtlInSeconds)
-      : undefined,
+      `Function${getHash(functionName)}`,
+      {
+        functionName,
+        code: aws_lambda.Code.fromAsset(
+          dirname(require.resolve(`./request-authorizer`)),
+        ),
+        handler: `index.handler`,
+        description: domainName,
+        environment: {
+          USERNAME: authentication.username,
+          PASSWORD: authentication.password,
+        },
+        runtime: aws_lambda.Runtime.NODEJS_14_X,
+        tracing: aws_lambda.Tracing.PASS_THROUGH,
+        logRetention: aws_logs.RetentionDays.TWO_WEEKS,
+      },
+    ),
+    identitySources: [aws_apigateway.IdentitySource.header(`Authorization`)],
+    resultsCacheTtl: Duration.seconds(authentication.cacheTtlInSeconds ?? 300),
   });
 }

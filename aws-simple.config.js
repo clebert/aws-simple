@@ -3,7 +3,11 @@
 /** @type {import('./lib/index').GetStackConfig} */
 exports.default = function () {
   return {
-    hostedZoneName: `example.com`,
-    routes: [{type: `file+`, publicPath: `/`, filename: `index.html`}],
+    domainName: `example.com`,
+    subdomainName: `foo`,
+    routes: [
+      {type: `file`, publicPath: `/`, path: `dist/index.html`},
+      {type: `folder`, publicPath: `/*`, path: `dist`},
+    ],
   };
 };

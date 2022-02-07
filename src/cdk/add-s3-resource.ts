@@ -1,75 +1,138 @@
-import {isAbsolute, join} from 'path';
-import type {IAuthorizer, RestApiBase} from 'aws-cdk-lib/aws-apigateway';
-import {AwsIntegration, Cors} from 'aws-cdk-lib/aws-apigateway';
-import type {IRole} from 'aws-cdk-lib/aws-iam';
-import {getS3IntegrationOptions} from './get-s3-integration-options';
-import {getS3MethodOptions} from './get-s3-method-options';
+import {join} from 'path';
+import type {aws_iam, aws_s3} from 'aws-cdk-lib';
+import {aws_apigateway} from 'aws-cdk-lib';
+import type {S3Route} from '../get-stack-config';
 
-export interface S3ResourceInit {
-  readonly restApi: RestApiBase;
-  readonly bucketReadRole: IRole;
-  readonly requestAuthorizer: IAuthorizer | undefined;
-  readonly publicPath: string;
-  readonly bucketName: string;
-  readonly bucketPath: string;
-  readonly proxy: Proxy | undefined;
-  readonly responseHeaders: Readonly<Record<string, string>> | undefined;
-  readonly corsEnabled: boolean | undefined;
-}
+export function addS3Resource(
+  route: S3Route,
+  restApi: aws_apigateway.RestApiBase,
+  bucket: aws_s3.IBucket,
+  bucketReadRole: aws_iam.IRole,
+  requestAuthorizer: aws_apigateway.IAuthorizer | undefined,
+): void {
+  const {type, publicPath, path, authenticationEnabled, corsEnabled} = route;
 
-export interface Proxy {
-  readonly folder: boolean;
-  readonly proxyName: string;
-}
-
-export function addS3Resource(init: S3ResourceInit): void {
-  const {
-    restApi,
-    bucketReadRole,
-    requestAuthorizer,
-    publicPath,
-    bucketName,
-    bucketPath,
-    proxy,
-    responseHeaders,
-    corsEnabled,
-  } = init;
-
-  if (isAbsolute(bucketPath)) {
-    throw new Error(`The path of an S3 bucket must not be absolute.`);
+  if (type === `folder` && !publicPath.endsWith(`/*`)) {
+    throw new Error(
+      `The public path of an S3 folder route must end with "/*".`,
+    );
   }
 
-  const s3Integration = new AwsIntegration({
+  if (authenticationEnabled && !requestAuthorizer) {
+    throw new Error(
+      `Authentication cannot be enabled because no authentication options are configured.`,
+    );
+  }
+
+  const s3Integration = new aws_apigateway.AwsIntegration({
     service: `s3`,
-    path: join(bucketName, bucketPath),
+    path:
+      type === `folder`
+        ? join(bucket.bucketName, path, `{proxy}`)
+        : join(bucket.bucketName, path),
     integrationHttpMethod: `GET`,
-    options: getS3IntegrationOptions({
-      bucketReadRole,
-      responseHeaders,
-      corsEnabled,
-      folderProxyName: proxy?.folder ? proxy.proxyName : undefined,
-    }),
+    options: getS3IntegrationOptions(route, bucketReadRole),
   });
 
-  const resource = proxy
-    ? restApi.root.resourceForPath(join(publicPath, `{${proxy.proxyName}+}`))
-    : restApi.root.resourceForPath(publicPath);
+  const resource = restApi.root.resourceForPath(
+    publicPath.replace(`/*`, `/{proxy+}`),
+  );
 
   if (corsEnabled) {
     resource.addCorsPreflight({
-      allowOrigins: Cors.ALL_ORIGINS,
-      allowCredentials: Boolean(requestAuthorizer),
+      allowOrigins: aws_apigateway.Cors.ALL_ORIGINS,
+      allowCredentials: authenticationEnabled,
     });
   }
 
   resource.addMethod(
     `GET`,
     s3Integration,
-    getS3MethodOptions({
-      requestAuthorizer,
-      responseHeaders,
-      corsEnabled,
-      folderProxyName: proxy?.folder ? proxy.proxyName : undefined,
-    }),
+    getS3MethodOptions(route, requestAuthorizer),
   );
+}
+
+function getS3IntegrationOptions(
+  route: S3Route,
+  bucketReadRole: aws_iam.IRole,
+): aws_apigateway.IntegrationOptions {
+  const {type, responseHeaders, corsEnabled} = route;
+
+  const corsResponseParameters: Record<string, string> = corsEnabled
+    ? {'method.response.header.Access-Control-Allow-Origin': `'*'`}
+    : {};
+
+  const responseParameters = {
+    'method.response.header.Content-Type': `integration.response.header.Content-Type`,
+    ...corsResponseParameters,
+    ...Object.entries(responseHeaders ?? {}).reduce(
+      (parameters, [key, value]) => ({
+        ...parameters,
+        [`method.response.header.${key}`]: `'${value}'`,
+      }),
+      {} as Record<string, string>,
+    ),
+  };
+
+  return {
+    credentialsRole: bucketReadRole,
+    integrationResponses: [
+      {
+        selectionPattern: `200`,
+        statusCode: `200`,
+        responseParameters,
+      },
+      {
+        selectionPattern: `404`,
+        statusCode: `404`,
+        responseParameters: corsResponseParameters,
+      },
+      {
+        selectionPattern: `5\\d{2}`,
+        statusCode: `500`,
+        responseParameters: corsResponseParameters,
+      },
+    ],
+    requestParameters:
+      type === `folder`
+        ? {'integration.request.path.proxy': `method.request.path.proxy`}
+        : {},
+    cacheKeyParameters: type === `folder` ? [`method.request.path.proxy`] : [],
+  };
+}
+
+function getS3MethodOptions(
+  route: S3Route,
+  requestAuthorizer: aws_apigateway.IAuthorizer | undefined,
+): aws_apigateway.MethodOptions {
+  const {type, responseHeaders, authenticationEnabled, corsEnabled} = route;
+
+  const corsResponseParameters: Record<string, boolean> = corsEnabled
+    ? {'method.response.header.Access-Control-Allow-Origin': true}
+    : {};
+
+  const responseHeaderNames = Object.keys(responseHeaders ?? []);
+
+  const responseParameters = {
+    'method.response.header.Content-Type': true,
+    ...corsResponseParameters,
+    ...responseHeaderNames.reduce(
+      (parameters, headerName) => ({...parameters, [headerName]: true}),
+      {} as Record<string, boolean>,
+    ),
+  };
+
+  return {
+    authorizationType: authenticationEnabled
+      ? aws_apigateway.AuthorizationType.CUSTOM
+      : aws_apigateway.AuthorizationType.NONE,
+    authorizer: requestAuthorizer,
+    methodResponses: [
+      {statusCode: `200`, responseParameters},
+      {statusCode: `404`, responseParameters: corsResponseParameters},
+      {statusCode: `500`, responseParameters: corsResponseParameters},
+    ],
+    requestParameters:
+      type === `folder` ? {'method.request.path.proxy': true} : {},
+  };
 }
