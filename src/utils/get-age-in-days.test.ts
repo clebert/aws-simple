@@ -2,6 +2,8 @@ import {getAgeInDays} from './get-age-in-days';
 
 describe(`getAgeInDays()`, () => {
   test(`returns the age in days`, () => {
+    expect(getAgeInDays(new Date())).toBe(0);
+
     const today = new Date(`Oct 9 2019 14:00`);
 
     expect(getAgeInDays(today, today)).toBe(0);
