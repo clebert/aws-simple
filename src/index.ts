@@ -25,21 +25,21 @@ const buildListCommand: yargs.BuilderCallback<{}, {}> = (argv) =>
   argv
     .describe(
       `all`,
-      `List all deployed stacks no matter which domain name they belong to`,
+      `List all stacks no matter which domain name they belong to`,
     )
     .boolean(`all`)
     .default(`all`, false)
 
     .describe(
       `hosted-zone-name`,
-      `List the deployed stacks that belong to the specified hosted zone name, ` +
+      `List the stacks that belong to the specified hosted zone name, ` +
         `if none is specified, the hosted zone name is read from the config file`,
     )
     .string(`hosted-zone-name`)
 
     .describe(
       `legacy-app-name`,
-      `List the deployed stacks that belong to the specified app name`,
+      `List the stacks that belong to the specified app name`,
     )
     .string(`legacy-app-name`)
 
