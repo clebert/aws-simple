@@ -1,4 +1,10 @@
-import * as CLI from './cli';
+import {
+  formatHeadline,
+  printConfirmation,
+  printList,
+  printSuccess,
+  printWarning,
+} from './cli';
 import type {StackConfig} from './get-stack-config';
 import {findStack} from './sdk/find-stack';
 import {getOutputValue} from './sdk/get-output-value';
@@ -33,20 +39,20 @@ export async function upload(
   }
 
   if (filePaths.size === 0) {
-    CLI.warning(`No files found to upload.`);
+    printWarning(`No files found to upload.`);
     return;
   }
 
-  CLI.listItem(0, CLI.headline(`Files`));
+  printList(0, formatHeadline(`Files`));
 
   for (const filePath of filePaths) {
-    CLI.listItem(1, filePath);
+    printList(1, filePath);
   }
 
   if (args.yes) {
-    CLI.warning(`The upload was started automatically...`);
+    printWarning(`The upload was started automatically...`);
   } else {
-    const confirmed = await CLI.confirmation(
+    const confirmed = await printConfirmation(
       `Start uploading the listed files?`,
     );
 
@@ -59,5 +65,5 @@ export async function upload(
     [...filePaths].map(async (filePath) => uploadFile(bucketName, filePath)),
   );
 
-  CLI.success(`All files have been uploaded successfully.`);
+  printSuccess(`All files have been uploaded successfully.`);
 }

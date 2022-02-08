@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import yargs from 'yargs';
-import * as CLI from './cli';
+import {printError} from './cli';
 import {getStackConfig} from './get-stack-config';
 import {list} from './list';
 import {synthesize} from './synthesize';
@@ -83,6 +83,6 @@ const buildListCommand: yargs.BuilderCallback<{}, {}> = (argv) =>
     }
   }
 })().catch((error) => {
-  CLI.error(String(error));
+  printError(String(error));
   process.exit(1);
 });

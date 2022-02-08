@@ -1,7 +1,14 @@
-import * as CLI from './cli';
+import {
+  formatDate,
+  formatEntry,
+  formatHeadline,
+  formatSubheadline,
+  printList,
+  printSuccess,
+  printWarning,
+} from './cli';
 import type {StackConfig} from './get-stack-config';
 import {findStacks} from './sdk/find-stacks';
-import {getAgeInDays} from './utils/get-age-in-days';
 
 export interface ListArgs {
   readonly all: boolean;
@@ -17,9 +24,9 @@ export async function list(
   const hostedZoneName = args.hostedZoneName || stackConfig.hostedZoneName;
 
   if (all) {
-    CLI.success(`No filters set.`);
+    printSuccess(`No filters set.`);
   } else {
-    CLI.warning(
+    printWarning(
       `Filter by hosted zone name: ${hostedZoneName}`,
       legacyAppName && `or filter by legacy app name: ${legacyAppName}`,
     );
@@ -28,30 +35,22 @@ export async function list(
   const stacks = await findStacks(all ? {} : {hostedZoneName, legacyAppName});
 
   if (stacks.length === 0) {
-    CLI.warning(`No matching stacks found.`);
+    printWarning(`No matching stacks found.`);
     return;
   }
 
   for (const stack of stacks) {
-    CLI.listItem(0, CLI.headline(`Stack`));
-    CLI.listItem(1, CLI.entry(`Name`, stack.StackName!));
-    CLI.listItem(1, CLI.entry(`Created`, formatDate(stack.CreationTime!)));
-    CLI.listItem(1, CLI.entry(`Updated`, formatDate(stack.LastUpdatedTime!)));
+    printList(0, formatHeadline(`Stack`));
+    printList(1, formatEntry(`Name`, stack.StackName!));
+    printList(1, formatEntry(`Created`, formatDate(stack.CreationTime!)));
+    printList(1, formatEntry(`Updated`, formatDate(stack.LastUpdatedTime!)));
 
     if (stack.Tags && stack.Tags?.length > 0) {
-      CLI.listItem(1, CLI.subheadline(`Tags`));
+      printList(1, formatSubheadline(`Tags`));
 
       for (const {Key, Value} of stack.Tags) {
-        CLI.listItem(2, CLI.entry(Key!, Value!));
+        printList(2, formatEntry(Key!, Value!));
       }
     }
   }
-}
-
-function formatDate(date: Date): string {
-  const ageInDays = getAgeInDays(date);
-
-  return `${ageInDays} day${
-    ageInDays === 1 ? `` : `s`
-  } ago (${date.toLocaleDateString()})`;
 }
