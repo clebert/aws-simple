@@ -1,70 +1,68 @@
-import {green, red, yellow} from 'chalk';
+import {bold, green, red, underline, yellow} from 'chalk';
 import prompts from 'prompts';
 
-export interface MessageOptions {
-  readonly indentationLevel?: number;
-  readonly messageType?: MessageType;
+export function entry(key: string, value: string): string {
+  return `${bold(key.trim())}: ${value}`;
 }
 
-export type MessageType = 'error' | 'info' | 'success' | 'warning';
+export function headline(text: string): string {
+  return `${underline(bold(text))}:`;
+}
 
-export class Cli {
-  #printed = false;
+export function subheadline(text: string): string {
+  return `${bold(text)}:`;
+}
 
-  bullet(message: string, options: MessageOptions = {}): void {
-    this.#print(`• ${message}`, options);
-  }
+export function listItem(indentationLevel: 0 | 1 | 2 | 3, text: string): void {
+  text = `• ${text}`;
 
-  async confirmation(message: string): Promise<boolean> {
-    if (this.#printed) {
-      console.log(``);
-    }
-
-    const {result} = await prompts({type: `confirm`, name: `result`, message});
-
-    return result;
-  }
-
-  paragraph(message: string, options: MessageOptions = {}): void {
-    if (this.#printed) {
-      console.log(``);
-    }
-
-    this.#print(message, options);
-  }
-
-  span(message: string, options: MessageOptions = {}): void {
-    this.#print(message, options);
-  }
-
-  #print(message: string, options: MessageOptions): void {
-    const {indentationLevel = 0, messageType = `info`} = options;
-
-    message = message.trim();
-
-    if (!message) {
-      throw new Error(`Unexpectedly blank message.`);
-    }
-
-    this.#printed = true;
-
+  if (indentationLevel === 0) {
+    paragraph(text);
+  } else {
     for (let i = 0; i < indentationLevel; i += 1) {
-      message = `  ${message}`;
+      text = `  ${text}`;
     }
 
-    switch (messageType) {
-      case `error`:
-        return console.log(red(message));
-      case `info`:
-        return console.log(message);
-      case `success`:
-        return console.log(green(message));
-      case `warning`:
-        return console.log(yellow(message));
-      default:
-        assertUnreachable(messageType);
-    }
+    span(text);
   }
 }
 
-function assertUnreachable(_: never) {}
+export function error(...lines: readonly (string | undefined)[]): void {
+  paragraph(red(lines.filter(Boolean).join(`\n`)));
+}
+
+export function success(...lines: readonly (string | undefined)[]): void {
+  paragraph(green(lines.filter(Boolean).join(`\n`)));
+}
+
+export function warning(...lines: readonly (string | undefined)[]): void {
+  paragraph(yellow(lines.filter(Boolean).join(`\n`)));
+}
+
+let printed = false;
+
+export async function confirmation(message: string): Promise<boolean> {
+  if (printed) {
+    console.log(``);
+  }
+
+  printed = true;
+
+  const {result} = await prompts({type: `confirm`, name: `result`, message});
+
+  return result;
+}
+
+function paragraph(text: string): void {
+  if (printed) {
+    console.log(``);
+  }
+
+  span(text);
+}
+
+function span(text: string): void {
+  printed = true;
+
+  console.log(text);
+}

@@ -1,5 +1,4 @@
-import chalk from 'chalk';
-import type {Cli} from './cli';
+import * as CLI from './cli';
 import type {StackConfig} from './get-stack-config';
 import {findStack} from './sdk/find-stack';
 import {getOutputValue} from './sdk/get-output-value';
@@ -11,7 +10,6 @@ export interface UploadArgs {
 }
 
 export async function upload(
-  cli: Cli,
   stackConfig: StackConfig,
   args: UploadArgs,
 ): Promise<void> {
@@ -35,22 +33,20 @@ export async function upload(
   }
 
   if (filePaths.size === 0) {
-    cli.paragraph(`No files found to upload.`, {messageType: `warning`});
+    CLI.warning(`No files found to upload.`);
     return;
   }
 
-  cli.paragraph(`${chalk.bold(chalk.underline(`Files`))}:`);
+  CLI.listItem(0, CLI.headline(`Files`));
 
   for (const filePath of filePaths) {
-    cli.bullet(filePath, {indentationLevel: 1});
+    CLI.listItem(1, filePath);
   }
 
   if (args.yes) {
-    cli.paragraph(`The upload was started automatically...`, {
-      messageType: `warning`,
-    });
+    CLI.warning(`The upload was started automatically...`);
   } else {
-    const confirmed = await cli.confirmation(
+    const confirmed = await CLI.confirmation(
       `Start uploading the listed files?`,
     );
 
@@ -63,7 +59,5 @@ export async function upload(
     [...filePaths].map(async (filePath) => uploadFile(bucketName, filePath)),
   );
 
-  cli.paragraph(`All files have been uploaded successfully.`, {
-    messageType: `success`,
-  });
+  CLI.success(`All files have been uploaded successfully.`);
 }

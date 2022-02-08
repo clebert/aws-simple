@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import yargs from 'yargs';
-import {Cli} from './cli';
+import * as CLI from './cli';
 import {getStackConfig} from './get-stack-config';
 import {list} from './list';
 import {synthesize} from './synthesize';
@@ -48,8 +48,6 @@ const buildListCommand: yargs.BuilderCallback<{}, {}> = (argv) =>
     .example(`npx $0 list --domain-name=example.com`, ``)
     .example(`npx $0 list --legacy-app-name=example`, ``);
 
-const cli = new Cli();
-
 (async () => {
   const {description} = require(`../package.json`);
 
@@ -76,15 +74,15 @@ const cli = new Cli();
       break;
     }
     case `upload`: {
-      await upload(cli, getStackConfig(), argv);
+      await upload(getStackConfig(), argv);
       break;
     }
     case `list`: {
-      await list(cli, getStackConfig(), argv);
+      await list(getStackConfig(), argv);
       break;
     }
   }
 })().catch((error) => {
-  cli.paragraph(String(error), {messageType: `error`});
+  CLI.error(String(error));
   process.exit(1);
 });
