@@ -2,7 +2,7 @@ import {basename, dirname, extname} from 'path';
 import type {Stack} from 'aws-cdk-lib';
 import {Duration, aws_lambda, aws_logs} from 'aws-cdk-lib';
 import type {LambdaRoute, StackConfig} from '../get-stack-config';
-import {getAbsoluteDomainName} from '../utils/get-absolute-domain-name';
+import {getDomainName} from '../utils/get-absolute-domain-name';
 import {getHash} from '../utils/get-hash';
 import {getNormalizedName} from '../utils/get-normalized-name';
 
@@ -28,7 +28,7 @@ export function createLambdaFunction(
     );
   }
 
-  const domainName = getAbsoluteDomainName(stackConfig);
+  const domainName = getDomainName(stackConfig);
 
   // Example: POST-foo-bar-baz-1234567
   const uniqueFunctionName = `${httpMethod}-${getNormalizedName(

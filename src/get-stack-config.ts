@@ -2,8 +2,8 @@ import path from 'path';
 import type {Stack, aws_apigateway, aws_lambda} from 'aws-cdk-lib';
 
 export interface StackConfig {
-  readonly domainName: string;
-  readonly subdomainName?: string;
+  readonly hostedZoneName: string;
+  readonly aliasRecordName?: string;
   readonly cachingEnabled?: boolean;
 
   readonly authentication?: {

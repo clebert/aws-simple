@@ -11,7 +11,7 @@ import {
   aws_route53_targets,
 } from 'aws-cdk-lib';
 import type {StackConfig} from '../get-stack-config';
-import {getAbsoluteDomainName} from '../utils/get-absolute-domain-name';
+import {getDomainName} from '../utils/get-absolute-domain-name';
 import {getHash} from '../utils/get-hash';
 import {getNormalizedName} from '../utils/get-normalized-name';
 
@@ -22,12 +22,14 @@ export function createRestApi(
   const hostedZone = aws_route53.HostedZone.fromLookup(
     stack,
     `HostedZoneLookup`,
-    {domainName: stackConfig.domainName},
+    {domainName: stackConfig.hostedZoneName},
   );
 
-  new CfnOutput(stack, `HostedZoneNameOutput`, {value: stackConfig.domainName});
+  new CfnOutput(stack, `HostedZoneNameOutput`, {
+    value: stackConfig.hostedZoneName,
+  });
 
-  const domainName = getAbsoluteDomainName(stackConfig);
+  const domainName = getDomainName(stackConfig);
 
   const certificate = new aws_certificatemanager.DnsValidatedCertificate(
     stack,
@@ -57,13 +59,13 @@ export function createRestApi(
 
   new aws_route53.ARecord(stack, `ARecord`, {
     zone: hostedZone,
-    recordName: stackConfig.subdomainName,
+    recordName: stackConfig.aliasRecordName,
     target: recordTarget,
   }).node.addDependency(restApi);
 
   new aws_route53.AaaaRecord(stack, `AaaaRecord`, {
     zone: hostedZone,
-    recordName: stackConfig.subdomainName,
+    recordName: stackConfig.aliasRecordName,
     target: recordTarget,
   }).node.addDependency(restApi);
 
@@ -108,7 +110,7 @@ function getStageOptions(
     };
   }, {} as Record<string, aws_apigateway.MethodDeploymentOptions>);
 
-  const domainName = getAbsoluteDomainName(stackConfig);
+  const domainName = getDomainName(stackConfig);
 
   const accessLogDestination = monitoring?.accessLoggingEnabled
     ? new aws_apigateway.LogGroupLogDestination(

@@ -43,11 +43,11 @@ export type GetStackConfig = typeof getStackConfig;
         .default(`all`, false)
 
         .describe(
-          `domain-name`,
-          `List the deployed stacks that belong to the specified domain name, ` +
-            `if none is specified, the domain name is read from the config file`,
+          `hosted-zone-name`,
+          `List the deployed stacks that belong to the specified hosted zone name, ` +
+            `if none is specified, the hosted zone name is read from the config file`,
         )
-        .string(`domain-name`)
+        .string(`hosted-zone-name`)
 
         .describe(
           `legacy-app-name`,
@@ -73,14 +73,15 @@ export type GetStackConfig = typeof getStackConfig;
       break;
     }
     case `list`: {
-      const {all, domainName, legacyAppName} = argv;
+      const {all, hostedZoneName, legacyAppName} = argv;
 
       list(
         await findStacks(
           all
             ? {}
             : {
-                domainName: domainName || getStackConfig().domainName,
+                hostedZoneName:
+                  hostedZoneName || getStackConfig().hostedZoneName,
                 legacyAppName,
               },
         ),

@@ -6,7 +6,7 @@ import {
 import {getOutputValue} from './get-output-value';
 
 export interface FindStacksOptions {
-  readonly domainName?: string;
+  readonly hostedZoneName?: string;
   readonly legacyAppName?: string;
 }
 
@@ -34,13 +34,13 @@ export async function findStacks(
     StackName?.startsWith(`aws-simple`),
   );
 
-  const {domainName, legacyAppName} = options;
+  const {hostedZoneName, legacyAppName} = options;
 
-  return domainName || legacyAppName
+  return hostedZoneName || legacyAppName
     ? allStacks.filter(
         (stack) =>
-          (domainName &&
-            getOutputValue(stack, `HostedZoneName`) === domainName) ||
+          (hostedZoneName &&
+            getOutputValue(stack, `HostedZoneName`) === hostedZoneName) ||
           (legacyAppName &&
             stack.StackName?.startsWith(`aws-simple--${legacyAppName}--`)),
       )

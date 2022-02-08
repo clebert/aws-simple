@@ -1,7 +1,9 @@
 import type {StackConfig} from '../get-stack-config';
 
-export function getAbsoluteDomainName(stackConfig: StackConfig): string {
-  const {domainName, subdomainName} = stackConfig;
+export function getDomainName(stackConfig: StackConfig): string {
+  const {hostedZoneName, aliasRecordName} = stackConfig;
 
-  return subdomainName ? `${subdomainName}.${domainName}` : domainName;
+  return aliasRecordName
+    ? `${aliasRecordName}.${hostedZoneName}`
+    : hostedZoneName;
 }

@@ -2,7 +2,7 @@ import {dirname} from 'path';
 import type {Stack} from 'aws-cdk-lib';
 import {Duration, aws_apigateway, aws_lambda, aws_logs} from 'aws-cdk-lib';
 import type {StackConfig} from '../get-stack-config';
-import {getAbsoluteDomainName} from '../utils/get-absolute-domain-name';
+import {getDomainName} from '../utils/get-absolute-domain-name';
 import {getHash} from '../utils/get-hash';
 
 export function createRequestAuthorizer(
@@ -15,7 +15,7 @@ export function createRequestAuthorizer(
     return;
   }
 
-  const domainName = getAbsoluteDomainName(stackConfig);
+  const domainName = getDomainName(stackConfig);
   const functionName = `aws-simple-request-authorizer-${getHash(domainName)}`;
 
   return new aws_apigateway.RequestAuthorizer(stack, `RequestAuthorizer`, {
