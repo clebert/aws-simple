@@ -4,7 +4,6 @@ import chalk from 'chalk';
 import yargs from 'yargs';
 import {getStackConfig} from './get-stack-config';
 import {list} from './list';
-import {findStacks} from './sdk/find-stacks';
 import {synthesize} from './synthesize';
 import {upload} from './upload';
 
@@ -73,20 +72,7 @@ export type GetStackConfig = typeof getStackConfig;
       break;
     }
     case `list`: {
-      const {all, hostedZoneName, legacyAppName} = argv;
-
-      list(
-        await findStacks(
-          all
-            ? {}
-            : {
-                hostedZoneName:
-                  hostedZoneName || getStackConfig().hostedZoneName,
-                legacyAppName,
-              },
-        ),
-      );
-
+      await list(getStackConfig(), argv);
       break;
     }
   }
