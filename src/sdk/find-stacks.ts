@@ -3,8 +3,16 @@ import {
   CloudFormationClient,
   DescribeStacksCommand,
 } from '@aws-sdk/client-cloudformation';
+import {getOutputValue} from './get-output-value';
 
-export async function findStacks(): Promise<readonly Stack[]> {
+export interface FindStacksOptions {
+  readonly domainName?: string;
+  readonly legacyAppName?: string;
+}
+
+export async function findStacks(
+  options: FindStacksOptions = {},
+): Promise<readonly Stack[]> {
   const client = new CloudFormationClient({});
   const stacks: Stack[] = [];
 
@@ -22,5 +30,19 @@ export async function findStacks(): Promise<readonly Stack[]> {
     nextToken = output.NextToken;
   } while (nextToken);
 
-  return stacks.filter(({StackName}) => StackName?.startsWith(`aws-simple`));
+  const allStacks = stacks.filter(({StackName}) =>
+    StackName?.startsWith(`aws-simple`),
+  );
+
+  const {domainName, legacyAppName} = options;
+
+  return domainName || legacyAppName
+    ? allStacks.filter(
+        (stack) =>
+          (domainName &&
+            getOutputValue(stack, `HostedZoneName`) === domainName) ||
+          (legacyAppName &&
+            stack.StackName?.startsWith(`aws-simple--${legacyAppName}--`)),
+      )
+    : allStacks;
 }

@@ -28,7 +28,7 @@ const plugins = [
       })),
       {type: `ref`, path: `lib`},
       {type: `ref`, path: `tsconfig.tsbuildinfo`},
-      {type: `ref`, path: `.envrc`},
+      {type: `ref`, path: `.envrc`, attrs: {visible: true}},
       {type: `ref`, path: `.swc`},
       {type: `ref`, path: `cdk.out`},
       {type: `ref`, path: `cdk.context.json`},

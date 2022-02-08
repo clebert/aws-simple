@@ -21,6 +21,10 @@ export async function upload(stackConfig: StackConfig): Promise<void> {
   const stack = await findStack(stackConfig);
   const bucketName = getOutputValue(stack, `BucketName`);
 
+  if (!bucketName) {
+    throw new Error(`The bucket name cannot be found.`);
+  }
+
   await Promise.all(
     [...filePaths].map(async (filePath) => {
       console.log(`• Uploading file: ${filePath}`);
