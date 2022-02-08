@@ -44,9 +44,11 @@ export async function upload(
     console.log(`  • ${filePath}`);
   }
 
-  if (!args.yes) {
-    console.log();
+  console.log(``);
 
+  if (args.yes) {
+    console.log(chalk.yellow(`The upload was started automatically...`));
+  } else {
     const {uploadConfirmation} = await prompts({
       type: `confirm`,
       name: `uploadConfirmation`,
