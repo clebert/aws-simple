@@ -29,7 +29,13 @@ export type GetStackConfig = typeof getStackConfig;
     )
 
     .command(`upload [options]`, `Upload files to S3`, (commandArgv) =>
-      commandArgv.example(`npx $0 upload`, ``),
+      commandArgv
+        .describe(`yes`, `Automatically confirm the upload`)
+        .boolean(`yes`)
+        .default(`yes`, false)
+
+        .example(`npx $0 upload`, ``)
+        .example(`npx $0 upload --yes`, ``),
     )
 
     .command(`list [options]`, `List deployed stacks`, (commandArgv) =>
@@ -68,7 +74,7 @@ export type GetStackConfig = typeof getStackConfig;
       break;
     }
     case `upload`: {
-      await upload(getStackConfig());
+      await upload(getStackConfig(), argv);
       break;
     }
     case `list`: {
