@@ -1,4 +1,5 @@
-import chalk from 'chalk';
+import {bold, underline} from 'chalk';
+import type {Cli} from './cli';
 import type {StackConfig} from './get-stack-config';
 import {findStacks} from './sdk/find-stacks';
 import {getAgeInDays} from './utils/get-age-in-days';
@@ -10,6 +11,7 @@ export interface ListArgs {
 }
 
 export async function list(
+  cli: Cli,
   stackConfig: StackConfig,
   args: ListArgs,
 ): Promise<void> {
@@ -17,21 +19,16 @@ export async function list(
   const hostedZoneName = args.hostedZoneName || stackConfig.hostedZoneName;
 
   if (all) {
-    console.log(chalk.bold(chalk.green(`No filters set.`)));
+    cli.paragraph(bold(`No filters set.`), {messageType: `success`});
   } else {
-    console.log(
-      chalk.bold(chalk.yellow(`Filter by hosted zone name: ${hostedZoneName}`)),
-    );
+    cli.paragraph(bold(`Filter by hosted zone name: ${hostedZoneName}`), {
+      messageType: `warning`,
+    });
 
     if (legacyAppName) {
-      console.log(
-        chalk.bold(
-          chalk.yellow(
-            `${chalk.underline(
-              `OR`,
-            )} Filter by legacy app name: ${legacyAppName}`,
-          ),
-        ),
+      cli.span(
+        bold(`${underline(`OR`)} Filter by legacy app name: ${legacyAppName}`),
+        {messageType: `warning`},
       );
     }
   }
@@ -39,39 +36,39 @@ export async function list(
   const stacks = await findStacks(all ? {} : {hostedZoneName, legacyAppName});
 
   if (stacks.length === 0) {
-    console.log(chalk.yellow(`\nNo matching stacks found.`));
+    cli.paragraph(bold(`No matching stacks found.`), {messageType: `warning`});
 
     return;
   }
 
   for (const stack of stacks) {
-    console.log(
-      `\n• ${chalk.bold(chalk.underline(`Stack`))}: ${stack.StackName}`,
-    );
+    cli.paragraph(`${bold(underline(`Stack`))}: ${stack.StackName}`);
 
     const createdTimeInDays = getAgeInDays(stack.CreationTime!);
 
-    console.log(
-      `  • ${chalk.bold(`Created`)}: ${createdTimeInDays} day${
+    cli.bullet(
+      `${bold(`Created`)}: ${createdTimeInDays} day${
         createdTimeInDays === 1 ? `` : `s`
       } ago (${stack.CreationTime!.toLocaleDateString()})`,
+      {indentationLevel: 1},
     );
 
     const updatedTimeInDays = getAgeInDays(stack.LastUpdatedTime!);
 
     if (updatedTimeInDays !== createdTimeInDays) {
-      console.log(
-        `  • ${chalk.bold(`Updated`)}: ${updatedTimeInDays} day${
+      cli.bullet(
+        `${bold(`Updated`)}: ${updatedTimeInDays} day${
           updatedTimeInDays === 1 ? `` : `s`
         } ago (${stack.LastUpdatedTime!.toLocaleDateString()})`,
+        {indentationLevel: 1},
       );
     }
 
     if (stack.Tags && stack.Tags?.length > 0) {
-      console.log(`  • ${chalk.bold(`Tags`)}:`);
+      cli.bullet(`${bold(`Tags`)}:`, {indentationLevel: 1});
 
       for (const {Key, Value} of stack.Tags) {
-        console.log(`    • ${Key}: ${Value?.trim()}`);
+        cli.bullet(`${Key}=${Value?.trim()}`, {indentationLevel: 2});
       }
     }
   }

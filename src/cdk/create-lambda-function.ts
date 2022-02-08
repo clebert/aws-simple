@@ -23,7 +23,7 @@ export function createLambdaFunction(
   } = route;
 
   if (timeoutInSeconds > maxTimeoutInSeconds) {
-    console.warn(
+    throw new Error(
       `The timeout of a Lambda function must be less than the maximum API gateway integration timeout of 29 seconds.`,
     );
   }

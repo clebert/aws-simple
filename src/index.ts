@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import chalk from 'chalk';
 import yargs from 'yargs';
+import {Cli} from './cli';
 import {getStackConfig} from './get-stack-config';
 import {list} from './list';
 import {synthesize} from './synthesize';
@@ -48,10 +48,12 @@ const buildListCommand: yargs.BuilderCallback<{}, {}> = (argv) =>
     .example(`npx $0 list --domain-name=example.com`, ``)
     .example(`npx $0 list --legacy-app-name=example`, ``);
 
+const cli = new Cli();
+
 (async () => {
   const {description} = require(`../package.json`);
 
-  const cli = yargs
+  const argv = yargs
     .usage(`Usage: $0 <command> [options]`)
     .help(`h`)
     .alias(`h`, `help`)
@@ -65,9 +67,8 @@ const buildListCommand: yargs.BuilderCallback<{}, {}> = (argv) =>
       buildSynthesizeCommand,
     )
     .command(`upload [options]`, `Upload files to S3`, buildUploadCommand)
-    .command(`list [options]`, `List deployed stacks`, buildListCommand);
-
-  const argv = cli.argv as any;
+    .command(`list [options]`, `List deployed stacks`, buildListCommand)
+    .argv as any;
 
   switch (argv._[0]) {
     case `synthesize`: {
@@ -75,15 +76,15 @@ const buildListCommand: yargs.BuilderCallback<{}, {}> = (argv) =>
       break;
     }
     case `upload`: {
-      await upload(getStackConfig(), argv);
+      await upload(cli, getStackConfig(), argv);
       break;
     }
     case `list`: {
-      await list(getStackConfig(), argv);
+      await list(cli, getStackConfig(), argv);
       break;
     }
   }
 })().catch((error) => {
-  console.error(chalk.red(String(error)));
+  cli.paragraph(String(error), {messageType: `error`});
   process.exit(1);
 });

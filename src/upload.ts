@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import prompts from 'prompts';
+import type {Cli} from './cli';
 import type {StackConfig} from './get-stack-config';
 import {findStack} from './sdk/find-stack';
 import {getOutputValue} from './sdk/get-output-value';
@@ -11,6 +11,7 @@ export interface UploadArgs {
 }
 
 export async function upload(
+  cli: Cli,
   stackConfig: StackConfig,
   args: UploadArgs,
 ): Promise<void> {
@@ -34,28 +35,26 @@ export async function upload(
   }
 
   if (filePaths.size === 0) {
-    console.log(chalk.yellow(`No files found to upload.`));
+    cli.paragraph(`No files found to upload.`, {messageType: `warning`});
     return;
   }
 
-  console.log(`${chalk.bold(chalk.underline(`Files`))}:`);
+  cli.paragraph(`${chalk.bold(chalk.underline(`Files`))}:`);
 
   for (const filePath of filePaths) {
-    console.log(`  • ${filePath}`);
+    cli.bullet(filePath, {indentationLevel: 1});
   }
 
-  console.log(``);
-
   if (args.yes) {
-    console.log(chalk.yellow(`The upload was started automatically...`));
-  } else {
-    const {uploadConfirmation} = await prompts({
-      type: `confirm`,
-      name: `uploadConfirmation`,
-      message: `Start uploading the listed files?`,
+    cli.paragraph(`The upload was started automatically...`, {
+      messageType: `warning`,
     });
+  } else {
+    const confirmed = await cli.confirmation(
+      `Start uploading the listed files?`,
+    );
 
-    if (!uploadConfirmation) {
+    if (!confirmed) {
       return;
     }
   }
@@ -64,5 +63,7 @@ export async function upload(
     [...filePaths].map(async (filePath) => uploadFile(bucketName, filePath)),
   );
 
-  console.log(`\n${chalk.green(`All files have been uploaded successfully.`)}`);
+  cli.paragraph(`All files have been uploaded successfully.`, {
+    messageType: `success`,
+  });
 }
