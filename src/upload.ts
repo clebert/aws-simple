@@ -12,7 +12,9 @@ import {readStackConfig} from './read-stack-config';
 import {findStack} from './sdk/find-stack';
 import {getOutputValue} from './sdk/get-output-value';
 import {uploadFile} from './sdk/upload-file';
+import {getDomainName} from './utils/get-domain-name';
 import {getFilePaths} from './utils/get-file-paths';
+import {getStackName} from './utils/get-stack-name';
 
 export interface UploadArgs {
   readonly yes: boolean;
@@ -41,11 +43,11 @@ export async function upload(args: UploadArgs): Promise<void> {
     }
   }
 
-  const stack = await findStack(stackConfig);
-  const bucketName = getOutputValue(stack, `BucketName`);
+  const stackName = getStackName(getDomainName(stackConfig));
+  const bucketName = getOutputValue(await findStack(stackName), `BucketName`);
 
   if (!bucketName) {
-    throw new Error(`The bucket name cannot be found.`);
+    throw new Error(`The bucket of the stack cannot be found: ${stackName}`);
   }
 
   if (filePaths.size === 0) {
@@ -60,10 +62,12 @@ export async function upload(args: UploadArgs): Promise<void> {
   }
 
   if (args.yes) {
-    printWarning(`The listed files will be uploaded.`);
+    printWarning(
+      `The listed files will be uploaded to the bucket of the stack: ${stackName}`,
+    );
   } else {
     const confirmed = await printConfirmation(
-      `Confirm to upload the listed files.`,
+      `Confirm to upload the listed files to the bucket of the stack: ${stackName}`,
     );
 
     if (!confirmed) {

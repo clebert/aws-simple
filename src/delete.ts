@@ -5,7 +5,7 @@ import {deleteStack} from './sdk/delete-stack';
 import {getDomainName} from './utils/get-domain-name';
 import {getStackName} from './utils/get-stack-name';
 
-export interface DeleteStackArgs {
+export interface DeleteArgs {
   readonly yes: boolean;
   readonly hostedZoneName: string | undefined;
   readonly aliasRecordName: string | undefined;
@@ -34,7 +34,7 @@ const command: yargs.BuilderCallback<{}, {}> = (argv) =>
     .example(`npx $0 delete --hosted-zone-name=example.com`, ``)
     .example(`npx $0 delete --alias-record-name=test`, ``);
 
-export async function delete_(args: DeleteStackArgs): Promise<void> {
+export async function delete_(args: DeleteArgs): Promise<void> {
   const stackConfig = readStackConfig();
 
   const stackName = getStackName(
