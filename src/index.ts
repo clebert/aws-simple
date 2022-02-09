@@ -2,6 +2,7 @@
 
 import yargs from 'yargs';
 import {printError} from './cli';
+import {delete_} from './delete';
 import type {getStackConfig} from './get-stack-config';
 import {list} from './list';
 import {synthesize} from './synthesize';
@@ -20,14 +21,10 @@ export type GetStackConfig = typeof getStackConfig;
     .demandCommand()
     .epilogue(description)
     .strict()
-    .command(
-      `synthesize [options]`,
-      `Synthesize a stack using the CDK`,
-      synthesize.command,
-    )
+    .command(`synthesize [options]`, `Synthesize a stack`, synthesize.command)
     .command(`upload [options]`, `Upload files to S3`, upload.command)
-    .command(`list [options]`, `List deployed stacks`, list.command)
-    .argv as any;
+    .command(`list [options]`, `List stacks`, list.command)
+    .command(`delete [options]`, `Delete a stack`, delete_.command).argv as any;
 
   switch (argv._[0]) {
     case `synthesize`: {
@@ -40,6 +37,10 @@ export type GetStackConfig = typeof getStackConfig;
     }
     case `list`: {
       await list(argv);
+      break;
+    }
+    case `delete`: {
+      await delete_(argv);
       break;
     }
   }

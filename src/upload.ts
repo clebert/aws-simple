@@ -3,6 +3,7 @@ import {
   formatHeadline,
   printConfirmation,
   printError,
+  printInfo,
   printList,
   printSuccess,
   printWarning,
@@ -19,7 +20,7 @@ export interface UploadArgs {
 
 const command: yargs.BuilderCallback<{}, {}> = (argv) =>
   argv
-    .describe(`yes`, `Automatically confirm the upload`)
+    .describe(`yes`, `Confirm the upload`)
     .boolean(`yes`)
     .default(`yes`, false)
 
@@ -59,16 +60,18 @@ export async function upload(args: UploadArgs): Promise<void> {
   }
 
   if (args.yes) {
-    printWarning(`The upload was started automatically...`);
+    printWarning(`The listed files will be uploaded.`);
   } else {
     const confirmed = await printConfirmation(
-      `Start uploading the listed files?`,
+      `Confirm to upload the listed files.`,
     );
 
     if (!confirmed) {
       return;
     }
   }
+
+  printInfo(`The upload process is running...`);
 
   const results = await Promise.allSettled(
     [...filePaths].map(async (filePath) => uploadFile(bucketName, filePath)),

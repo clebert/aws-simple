@@ -1,7 +1,10 @@
-import type {StackConfig} from '../get-stack-config';
+export interface DomainNameParts {
+  readonly hostedZoneName: string;
+  readonly aliasRecordName?: string;
+}
 
-export function getDomainName(stackConfig: StackConfig): string {
-  const {hostedZoneName, aliasRecordName} = stackConfig;
+export function getDomainName(parts: DomainNameParts): string {
+  const {hostedZoneName, aliasRecordName} = parts;
 
   return aliasRecordName
     ? `${aliasRecordName}.${hostedZoneName}`

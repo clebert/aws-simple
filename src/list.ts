@@ -4,8 +4,8 @@ import {
   formatEntry,
   formatHeadline,
   formatSubheadline,
+  printInfo,
   printList,
-  printSuccess,
   printWarning,
 } from './cli';
 import {getStackConfig} from './get-stack-config';
@@ -19,29 +19,22 @@ export interface ListArgs {
 
 const command: yargs.BuilderCallback<{}, {}> = (argv) =>
   argv
-    .describe(
-      `all`,
-      `List all stacks no matter which domain name they belong to`,
-    )
+    .describe(`all`, `List all stacks, without any filtering`)
     .boolean(`all`)
     .default(`all`, false)
 
     .describe(
       `hosted-zone-name`,
-      `List the stacks that belong to the specified hosted zone name, ` +
-        `if none is specified, the hosted zone name is read from the config file`,
+      `Filter the stacks by the specified name, if not specified, the name is read from the config file`,
     )
     .string(`hosted-zone-name`)
 
-    .describe(
-      `legacy-app-name`,
-      `List the stacks that belong to the specified app name`,
-    )
+    .describe(`legacy-app-name`, `(OR) Filter the stacks by the specified name`)
     .string(`legacy-app-name`)
 
     .example(`npx $0 list`, ``)
     .example(`npx $0 list --all`, ``)
-    .example(`npx $0 list --domain-name=example.com`, ``)
+    .example(`npx $0 list --hosted-zone-name=example.com`, ``)
     .example(`npx $0 list --legacy-app-name=example`, ``);
 
 export async function list(args: ListArgs): Promise<void> {
@@ -50,13 +43,15 @@ export async function list(args: ListArgs): Promise<void> {
   const hostedZoneName = args.hostedZoneName || stackConfig.hostedZoneName;
 
   if (all) {
-    printSuccess(`No filters set.`);
+    printInfo(`No filters set.`);
   } else {
-    printWarning(
+    printInfo(
       `Filter by hosted zone name: ${hostedZoneName}`,
       legacyAppName && `or filter by legacy app name: ${legacyAppName}`,
     );
   }
+
+  printInfo(`The listing process is running...`);
 
   const stacks = await findStacks(all ? {} : {hostedZoneName, legacyAppName});
 

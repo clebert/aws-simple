@@ -1,4 +1,4 @@
-import {bold, green, red, underline, yellow} from 'chalk';
+import {bold, gray, green, red, underline, yellow} from 'chalk';
 import prompts from 'prompts';
 import {getAgeInDays} from './utils/get-age-in-days';
 
@@ -34,6 +34,10 @@ export function printList(indentationLevel: 0 | 1 | 2 | 3, text: string): void {
 
     printSpan(text);
   }
+}
+
+export function printInfo(...lines: readonly (string | undefined)[]): void {
+  printParagraph(gray(lines.filter(Boolean).join(`\n`)));
 }
 
 export function printError(...lines: readonly (string | undefined)[]): void {
