@@ -42,6 +42,7 @@ export async function list(
   for (const stack of stacks) {
     printList(0, formatHeadline(`Stack`));
     printList(1, formatEntry(`Name`, stack.StackName!));
+    printList(1, formatEntry(`Status`, stack.StackStatus!));
     printList(1, formatEntry(`Created`, formatDate(stack.CreationTime!)));
     printList(1, formatEntry(`Updated`, formatDate(stack.LastUpdatedTime!)));
 
