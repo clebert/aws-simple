@@ -1,6 +1,6 @@
 import type yargs from 'yargs';
 import {printConfirmation, printInfo, printSuccess, printWarning} from './cli';
-import {getStackConfig} from './get-stack-config';
+import {readStackConfig} from './read-stack-config';
 import {deleteStack} from './sdk/delete-stack';
 import {getDomainName} from './utils/get-domain-name';
 import {getStackName} from './utils/get-stack-name';
@@ -35,7 +35,7 @@ const command: yargs.BuilderCallback<{}, {}> = (argv) =>
     .example(`npx $0 delete --alias-record-name=test`, ``);
 
 export async function delete_(args: DeleteStackArgs): Promise<void> {
-  const stackConfig = getStackConfig();
+  const stackConfig = readStackConfig();
 
   const stackName = getStackName(
     getDomainName({

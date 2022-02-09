@@ -8,7 +8,7 @@ import {
   printSuccess,
   printWarning,
 } from './cli';
-import {getStackConfig} from './get-stack-config';
+import {readStackConfig} from './read-stack-config';
 import {findStack} from './sdk/find-stack';
 import {getOutputValue} from './sdk/get-output-value';
 import {uploadFile} from './sdk/upload-file';
@@ -28,7 +28,7 @@ const command: yargs.BuilderCallback<{}, {}> = (argv) =>
     .example(`npx $0 upload --yes`, ``);
 
 export async function upload(args: UploadArgs): Promise<void> {
-  const stackConfig = getStackConfig();
+  const stackConfig = readStackConfig();
   const filePaths = new Set<string>();
 
   for (const route of stackConfig.routes) {

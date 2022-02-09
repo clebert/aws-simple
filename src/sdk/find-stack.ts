@@ -1,5 +1,5 @@
 import type {Stack} from '@aws-sdk/client-cloudformation';
-import type {StackConfig} from '../get-stack-config';
+import type {StackConfig} from '../read-stack-config';
 import {getDomainName} from '../utils/get-domain-name';
 import {getStackName} from '../utils/get-stack-name';
 import {findStacks} from './find-stacks';

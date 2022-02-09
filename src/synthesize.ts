@@ -6,13 +6,13 @@ import {createBucketReadRole} from './cdk/create-bucket-read-role';
 import {createRequestAuthorizer} from './cdk/create-request-authorizer';
 import {createRestApi} from './cdk/create-rest-api';
 import {createStack} from './cdk/create-stack';
-import {getStackConfig} from './get-stack-config';
+import {readStackConfig} from './read-stack-config';
 
 const command: yargs.BuilderCallback<{}, {}> = (argv) =>
   argv.example(`npx cdk deploy --app 'npx $0 synthesize'`, ``);
 
 export function synthesize(): void {
-  const stackConfig = getStackConfig();
+  const stackConfig = readStackConfig();
   const stack = createStack(stackConfig);
   const restApi = createRestApi(stackConfig, stack);
   const bucket = createBucket(stack);

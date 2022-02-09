@@ -1,6 +1,6 @@
 // @ts-check
 
-/** @type {import('./lib/index').GetStackConfig} */
+/** @type {import('./lib/index').ConfigFileDefaultExport} */
 exports.default = function () {
   return {
     hostedZoneName: `example.com`,

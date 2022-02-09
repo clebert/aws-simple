@@ -8,7 +8,7 @@ import {
   printList,
   printWarning,
 } from './cli';
-import {getStackConfig} from './get-stack-config';
+import {readStackConfig} from './read-stack-config';
 import {findStacks} from './sdk/find-stacks';
 
 export interface ListArgs {
@@ -38,7 +38,7 @@ const command: yargs.BuilderCallback<{}, {}> = (argv) =>
     .example(`npx $0 list --legacy-app-name=example`, ``);
 
 export async function list(args: ListArgs): Promise<void> {
-  const stackConfig = getStackConfig();
+  const stackConfig = readStackConfig();
   const {all, legacyAppName} = args;
   const hostedZoneName = args.hostedZoneName || stackConfig.hostedZoneName;
 

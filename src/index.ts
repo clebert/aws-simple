@@ -3,12 +3,13 @@
 import yargs from 'yargs';
 import {printError} from './cli';
 import {delete_} from './delete';
-import type {getStackConfig} from './get-stack-config';
 import {list} from './list';
+import type {StackConfig, readStackConfig} from './read-stack-config';
 import {synthesize} from './synthesize';
 import {upload} from './upload';
 
-export type GetStackConfig = typeof getStackConfig;
+export type {StackConfig};
+export type ConfigFileDefaultExport = typeof readStackConfig;
 
 (async () => {
   const {description} = require(`../package.json`);

@@ -1,7 +1,7 @@
 import {basename, dirname, extname} from 'path';
 import type {Stack} from 'aws-cdk-lib';
 import {Duration, aws_lambda, aws_logs} from 'aws-cdk-lib';
-import type {LambdaRoute, StackConfig} from '../get-stack-config';
+import type {LambdaRoute, StackConfig} from '../read-stack-config';
 import {getDomainName} from '../utils/get-domain-name';
 import {getHash} from '../utils/get-hash';
 import {getNormalizedName} from '../utils/get-normalized-name';

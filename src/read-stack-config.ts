@@ -1,4 +1,4 @@
-import path from 'path';
+import {resolve} from 'path';
 import type {Stack, aws_apigateway, aws_lambda} from 'aws-cdk-lib';
 
 export interface StackConfig {
@@ -78,17 +78,21 @@ export interface RouteOptions {
   readonly corsEnabled?: boolean;
 }
 
-export function getStackConfig(port?: number): StackConfig {
+export function readStackConfig(port?: number): StackConfig {
   let defaultExport;
 
+  const path = resolve(`aws-simple.config.js`);
+
   try {
-    defaultExport = require(path.resolve(`aws-simple.config.js`)).default;
+    defaultExport = require(path).default;
   } catch (error) {
-    throw new Error(`The config file cannot be found.`);
+    throw new Error(`The config file cannot be read: ${path}`);
   }
 
   if (typeof defaultExport !== `function`) {
-    throw new Error(`The config file does not have a valid default export.`);
+    throw new Error(
+      `The config file does not have a valid default export: ${path}`,
+    );
   }
 
   return defaultExport(port);
