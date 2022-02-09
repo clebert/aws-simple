@@ -6,12 +6,12 @@ import {
 import {getOutputValue} from './get-output-value';
 
 export interface FindStacksOptions {
-  readonly hostedZoneName?: string;
+  readonly hostedZoneName: string;
   readonly legacyAppName?: string;
 }
 
 export async function findStacks(
-  options: FindStacksOptions = {},
+  options?: FindStacksOptions,
 ): Promise<readonly Stack[]> {
   const client = new CloudFormationClient({});
   const stacks: Stack[] = [];
@@ -34,15 +34,16 @@ export async function findStacks(
     StackName?.startsWith(`aws-simple`),
   );
 
+  if (!options) {
+    return allStacks;
+  }
+
   const {hostedZoneName, legacyAppName} = options;
 
-  return hostedZoneName || legacyAppName
-    ? allStacks.filter(
-        (stack) =>
-          (hostedZoneName &&
-            getOutputValue(stack, `HostedZoneName`) === hostedZoneName) ||
-          (legacyAppName &&
-            stack.StackName?.startsWith(`aws-simple--${legacyAppName}--`)),
-      )
-    : allStacks;
+  return allStacks.filter(
+    (stack) =>
+      getOutputValue(stack, `HostedZoneName`) === hostedZoneName ||
+      (legacyAppName &&
+        stack.StackName?.startsWith(`aws-simple--${legacyAppName}--`)),
+  );
 }

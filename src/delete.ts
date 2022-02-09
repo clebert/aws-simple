@@ -7,8 +7,6 @@ import {getStackName} from './utils/get-stack-name';
 
 export interface DeleteArgs {
   readonly yes: boolean;
-  readonly hostedZoneName: string | undefined;
-  readonly aliasRecordName: string | undefined;
 }
 
 const command: yargs.BuilderCallback<{}, {}> = (argv) =>
@@ -17,32 +15,11 @@ const command: yargs.BuilderCallback<{}, {}> = (argv) =>
     .boolean(`yes`)
     .default(`yes`, false)
 
-    .describe(
-      `hosted-zone-name`,
-      `If not specified, the name is read from the config file`,
-    )
-    .string(`hosted-zone-name`)
-
-    .describe(
-      `alias-record-name`,
-      `If not specified, the name is read from the config file`,
-    )
-    .string(`alias-record-name`)
-
     .example(`npx $0 delete`, ``)
-    .example(`npx $0 delete --yes`, ``)
-    .example(`npx $0 delete --hosted-zone-name=example.com`, ``)
-    .example(`npx $0 delete --alias-record-name=test`, ``);
+    .example(`npx $0 delete --yes`, ``);
 
 export async function delete_(args: DeleteArgs): Promise<void> {
-  const stackConfig = readStackConfig();
-
-  const stackName = getStackName(
-    getDomainName({
-      hostedZoneName: args.hostedZoneName || stackConfig.hostedZoneName,
-      aliasRecordName: args.aliasRecordName || stackConfig.aliasRecordName,
-    }),
-  );
+  const stackName = getStackName(getDomainName(readStackConfig()));
 
   if (args.yes) {
     printWarning(`The stack will be deleted: ${stackName}`);
