@@ -1,6 +1,7 @@
 import {
   formatHeadline,
   printConfirmation,
+  printError,
   printList,
   printSuccess,
   printWarning,
@@ -61,9 +62,18 @@ export async function upload(
     }
   }
 
-  await Promise.all(
+  const results = await Promise.allSettled(
     [...filePaths].map(async (filePath) => uploadFile(bucketName, filePath)),
   );
 
-  printSuccess(`All files have been uploaded successfully.`);
+  const rejectedResults = results.filter(
+    (result): result is PromiseRejectedResult => result.status === `rejected`,
+  );
+
+  if (rejectedResults.length > 0) {
+    printError(...rejectedResults.map(({reason}) => String(reason)));
+    process.exit(1);
+  } else {
+    printSuccess(`All files have been uploaded successfully.`);
+  }
 }
