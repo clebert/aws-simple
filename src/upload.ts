@@ -1,3 +1,4 @@
+import type yargs from 'yargs';
 import {
   formatHeadline,
   printConfirmation,
@@ -6,7 +7,7 @@ import {
   printSuccess,
   printWarning,
 } from './cli';
-import type {StackConfig} from './get-stack-config';
+import {getStackConfig} from './get-stack-config';
 import {findStack} from './sdk/find-stack';
 import {getOutputValue} from './sdk/get-output-value';
 import {uploadFile} from './sdk/upload-file';
@@ -16,10 +17,17 @@ export interface UploadArgs {
   readonly yes: boolean;
 }
 
-export async function upload(
-  stackConfig: StackConfig,
-  args: UploadArgs,
-): Promise<void> {
+const command: yargs.BuilderCallback<{}, {}> = (argv) =>
+  argv
+    .describe(`yes`, `Automatically confirm the upload`)
+    .boolean(`yes`)
+    .default(`yes`, false)
+
+    .example(`npx $0 upload`, ``)
+    .example(`npx $0 upload --yes`, ``);
+
+export async function upload(args: UploadArgs): Promise<void> {
+  const stackConfig = getStackConfig();
   const filePaths = new Set<string>();
 
   for (const route of stackConfig.routes) {
@@ -77,3 +85,5 @@ export async function upload(
     printSuccess(`All files have been uploaded successfully.`);
   }
 }
+
+upload.command = command;

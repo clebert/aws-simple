@@ -1,3 +1,4 @@
+import type yargs from 'yargs';
 import {
   formatDate,
   formatEntry,
@@ -7,7 +8,7 @@ import {
   printSuccess,
   printWarning,
 } from './cli';
-import type {StackConfig} from './get-stack-config';
+import {getStackConfig} from './get-stack-config';
 import {findStacks} from './sdk/find-stacks';
 
 export interface ListArgs {
@@ -16,10 +17,35 @@ export interface ListArgs {
   readonly legacyAppName: string | undefined;
 }
 
-export async function list(
-  stackConfig: StackConfig,
-  args: ListArgs,
-): Promise<void> {
+const command: yargs.BuilderCallback<{}, {}> = (argv) =>
+  argv
+    .describe(
+      `all`,
+      `List all stacks no matter which domain name they belong to`,
+    )
+    .boolean(`all`)
+    .default(`all`, false)
+
+    .describe(
+      `hosted-zone-name`,
+      `List the stacks that belong to the specified hosted zone name, ` +
+        `if none is specified, the hosted zone name is read from the config file`,
+    )
+    .string(`hosted-zone-name`)
+
+    .describe(
+      `legacy-app-name`,
+      `List the stacks that belong to the specified app name`,
+    )
+    .string(`legacy-app-name`)
+
+    .example(`npx $0 list`, ``)
+    .example(`npx $0 list --all`, ``)
+    .example(`npx $0 list --domain-name=example.com`, ``)
+    .example(`npx $0 list --legacy-app-name=example`, ``);
+
+export async function list(args: ListArgs): Promise<void> {
+  const stackConfig = getStackConfig();
   const {all, legacyAppName} = args;
   const hostedZoneName = args.hostedZoneName || stackConfig.hostedZoneName;
 
@@ -55,3 +81,5 @@ export async function list(
     }
   }
 }
+
+list.command = command;
