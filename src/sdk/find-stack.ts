@@ -7,7 +7,7 @@ export async function findStack(stackName: string): Promise<Stack> {
   );
 
   if (!stack) {
-    throw new Error(`The stack cannot be found: ${stackName}`);
+    throw new Error(`The searched stack cannot be found: ${stackName}`);
   }
 
   return stack;

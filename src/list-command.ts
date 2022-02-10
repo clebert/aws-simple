@@ -11,40 +11,43 @@ import {
 import {readStackConfig} from './read-stack-config';
 import {findStacks} from './sdk/find-stacks';
 
-export interface ListArgs {
-  readonly all: boolean;
+export interface ListCommandArgs {
+  readonly any: boolean;
   readonly legacyAppName: string | undefined;
 }
 
-const command: yargs.BuilderCallback<{}, {}> = (argv) =>
+const commandName = `list`;
+
+const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
   argv
-    .describe(`all`, `List all stacks without filtering by hosted zone name`)
-    .boolean(`all`)
-    .default(`all`, false)
+    .describe(
+      `any`,
+      `List any deployed stacks without filtering by hosted zone name`,
+    )
+    .boolean(`any`)
+    .default(`any`, false)
 
     .describe(`legacy-app-name`, `The app name to identify legacy stacks`)
     .string(`legacy-app-name`)
 
-    .example(`npx $0 list`, ``)
-    .example(`npx $0 list --all`, ``)
-    .example(`npx $0 list --legacy-app-name foo`, ``);
+    .example(`npx $0 ${commandName}`, ``)
+    .example(`npx $0 ${commandName} --any`, ``)
+    .example(`npx $0 ${commandName} --legacy-app-name foo`, ``);
 
-export async function list(args: ListArgs): Promise<void> {
+export async function listCommand(args: ListCommandArgs): Promise<void> {
   const {hostedZoneName} = readStackConfig();
-  const {all, legacyAppName} = args;
+  const {any, legacyAppName} = args;
 
-  if (all) {
-    printInfo(`No filters set.`);
-  } else {
+  if (!any) {
     printInfo(
-      `Filter by hosted zone name: ${hostedZoneName}`,
-      legacyAppName && `or filter by legacy app name: ${legacyAppName}`,
+      `Hosted zone name: ${hostedZoneName}`,
+      legacyAppName && `Legacy app name: ${legacyAppName}`,
     );
   }
 
-  printInfo(`The listing process is running...`);
+  printInfo(`Searching stacks...`);
 
-  const stacks = all
+  const stacks = any
     ? await findStacks()
     : await findStacks({hostedZoneName, legacyAppName});
 
@@ -70,4 +73,6 @@ export async function list(args: ListArgs): Promise<void> {
   }
 }
 
-list.command = command;
+listCommand.commandName = commandName;
+listCommand.description = `List all deployed stacks associated with the configured hosted zone name.`;
+listCommand.builder = builder;

@@ -8,10 +8,12 @@ import {createRestApi} from './cdk/create-rest-api';
 import {createStack} from './cdk/create-stack';
 import {readStackConfig} from './read-stack-config';
 
-const command: yargs.BuilderCallback<{}, {}> = (argv) =>
-  argv.example(`npx cdk deploy --app 'npx $0 synthesize'`, ``);
+const commandName = `synthesize`;
 
-export function synthesize(): void {
+const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
+  argv.example(`npx cdk deploy --app 'npx $0 ${commandName}'`, ``);
+
+export function synthesizeCommand(): void {
   const stackConfig = readStackConfig();
   const stack = createStack(stackConfig);
   const restApi = createRestApi(stackConfig, stack);
@@ -38,4 +40,6 @@ export function synthesize(): void {
   stackConfig.onSynthesize?.({stack, restApi});
 }
 
-synthesize.command = command;
+synthesizeCommand.commandName = commandName;
+synthesizeCommand.description = `Synthesize the configured stack using the CDK.`;
+synthesizeCommand.builder = builder;

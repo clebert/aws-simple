@@ -16,20 +16,22 @@ import {getDomainName} from './utils/get-domain-name';
 import {getFilePaths} from './utils/get-file-paths';
 import {getStackName} from './utils/get-stack-name';
 
-export interface UploadArgs {
+export interface UploadCommandArgs {
   readonly yes: boolean;
 }
 
-const command: yargs.BuilderCallback<{}, {}> = (argv) =>
+const commandName = `upload`;
+
+const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
   argv
-    .describe(`yes`, `Confirm the upload`)
+    .describe(`yes`, `Confirm the upload automatically`)
     .boolean(`yes`)
     .default(`yes`, false)
 
-    .example(`npx $0 upload`, ``)
-    .example(`npx $0 upload --yes`, ``);
+    .example(`npx $0 ${commandName}`, ``)
+    .example(`npx $0 ${commandName} --yes`, ``);
 
-export async function upload(args: UploadArgs): Promise<void> {
+export async function uploadCommand(args: UploadCommandArgs): Promise<void> {
   const stackConfig = readStackConfig();
   const filePaths = new Set<string>();
 
@@ -44,10 +46,15 @@ export async function upload(args: UploadArgs): Promise<void> {
   }
 
   const stackName = getStackName(getDomainName(stackConfig));
+
+  printInfo(`Stack: ${stackName}`);
+
   const bucketName = getOutputValue(await findStack(stackName), `BucketName`);
 
   if (!bucketName) {
-    throw new Error(`The bucket of the stack cannot be found: ${stackName}`);
+    throw new Error(
+      `The S3 bucket name of the configured stack cannot be found.`,
+    );
   }
 
   if (filePaths.size === 0) {
@@ -63,11 +70,11 @@ export async function upload(args: UploadArgs): Promise<void> {
 
   if (args.yes) {
     printWarning(
-      `The listed files will be uploaded to the bucket of the stack: ${stackName}`,
+      `The listed files will be uploaded automatically to the S3 bucket of the configured stack.`,
     );
   } else {
     const confirmed = await printConfirmation(
-      `Confirm to upload the listed files to the bucket of the stack: ${stackName}`,
+      `Confirm to upload the listed files to the S3 bucket of the configured stack.`,
     );
 
     if (!confirmed) {
@@ -75,7 +82,7 @@ export async function upload(args: UploadArgs): Promise<void> {
     }
   }
 
-  printInfo(`The upload process is running...`);
+  printInfo(`Uploading files...`);
 
   const results = await Promise.allSettled(
     [...filePaths].map(async (filePath) => uploadFile(bucketName, filePath)),
@@ -89,8 +96,10 @@ export async function upload(args: UploadArgs): Promise<void> {
     printError(...rejectedResults.map(({reason}) => String(reason)));
     process.exit(1);
   } else {
-    printSuccess(`All files have been uploaded successfully.`);
+    printSuccess(`All listed files have been successfully uploaded.`);
   }
 }
 
-upload.command = command;
+uploadCommand.commandName = commandName;
+uploadCommand.description = `Upload the associated files to the S3 bucket of the configured stack.`;
+uploadCommand.builder = builder;

@@ -2,11 +2,11 @@
 
 import yargs from 'yargs';
 import {printError} from './cli';
-import {delete_} from './delete';
-import {list} from './list';
+import {deleteCommand} from './delete-command';
+import {listCommand} from './list-command';
 import type {StackConfig, readStackConfig} from './read-stack-config';
-import {synthesize} from './synthesize';
-import {upload} from './upload';
+import {synthesizeCommand} from './synthesize-command';
+import {uploadCommand} from './upload-command';
 
 export type {StackConfig};
 export type ConfigFileDefaultExport = typeof readStackConfig;
@@ -22,26 +22,42 @@ export type ConfigFileDefaultExport = typeof readStackConfig;
     .demandCommand()
     .epilogue(description)
     .strict()
-    .command(`synthesize [options]`, `Synthesize a stack`, synthesize.command)
-    .command(`upload [options]`, `Upload files to S3`, upload.command)
-    .command(`list [options]`, `List stacks`, list.command)
-    .command(`delete [options]`, `Delete a stack`, delete_.command).argv as any;
+    .command(
+      `${synthesizeCommand.commandName} [options]`,
+      synthesizeCommand.description,
+      synthesizeCommand.builder,
+    )
+    .command(
+      `${uploadCommand.commandName} [options]`,
+      uploadCommand.description,
+      uploadCommand.builder,
+    )
+    .command(
+      `${listCommand.commandName} [options]`,
+      listCommand.description,
+      listCommand.builder,
+    )
+    .command(
+      `${deleteCommand.commandName} [options]`,
+      deleteCommand.description,
+      deleteCommand.builder,
+    ).argv as any;
 
   switch (argv._[0]) {
-    case `synthesize`: {
-      synthesize();
+    case synthesizeCommand.commandName: {
+      synthesizeCommand();
       break;
     }
-    case `upload`: {
-      await upload(argv);
+    case uploadCommand.commandName: {
+      await uploadCommand(argv);
       break;
     }
-    case `list`: {
-      await list(argv);
+    case listCommand.commandName: {
+      await listCommand(argv);
       break;
     }
-    case `delete`: {
-      await delete_(argv);
+    case deleteCommand.commandName: {
+      await deleteCommand(argv);
       break;
     }
   }
