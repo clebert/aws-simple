@@ -11,7 +11,10 @@ import {readStackConfig} from './read-stack-config';
 const commandName = `synthesize`;
 
 const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
-  argv.example(`npx cdk deploy --app 'npx $0 ${commandName}'`, ``);
+  argv
+    .example(`npx cdk bootstrap --app 'npx $0 ${commandName}'`, ``)
+    .example(`npx cdk deploy --app 'npx $0 ${commandName}'`, ``)
+    .example(`npx cdk diff --app 'npx $0 ${commandName}'`, ``);
 
 export function synthesizeCommand(): void {
   const stackConfig = readStackConfig();
