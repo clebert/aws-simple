@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
 import yargs from 'yargs';
-import {printError} from './cli';
 import {deleteCommand} from './delete-command';
 import {listCommand} from './list-command';
 import type {StackConfig, readStackConfig} from './read-stack-config';
 import {synthesizeCommand} from './synthesize-command';
 import {tagCommand} from './tag-command';
 import {uploadCommand} from './upload-command';
+import {print} from './utils/print';
 
 export type {StackConfig};
 export type ConfigFileDefaultExport = typeof readStackConfig;
@@ -72,6 +72,6 @@ export type ConfigFileDefaultExport = typeof readStackConfig;
     }
   }
 })().catch((error) => {
-  printError(String(error));
+  print.error(String(error));
   process.exit(1);
 });

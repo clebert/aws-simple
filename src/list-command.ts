@@ -1,15 +1,8 @@
 import type yargs from 'yargs';
-import {
-  formatDate,
-  formatEntry,
-  formatHeadline,
-  formatSubheadline,
-  printInfo,
-  printList,
-  printWarning,
-} from './cli';
 import {readStackConfig} from './read-stack-config';
 import {findStacks} from './sdk/find-stacks';
+import {getFormattedAgeInDays} from './utils/get-formatted-age-in-days';
+import {print} from './utils/print';
 
 export interface ListCommandArgs {
   readonly any: boolean;
@@ -27,7 +20,10 @@ const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
     .boolean(`any`)
     .default(`any`, false)
 
-    .describe(`legacy-app-name`, `The app name to identify legacy stacks`)
+    .describe(
+      `legacy-app-name`,
+      `An additional app name to identify legacy stacks`,
+    )
     .string(`legacy-app-name`)
 
     .example(`npx $0 ${commandName}`, ``)
@@ -39,35 +35,50 @@ export async function listCommand(args: ListCommandArgs): Promise<void> {
   const {any, legacyAppName} = args;
 
   if (!any) {
-    printInfo(
+    print.info(
       `Hosted zone name: ${hostedZoneName}`,
       legacyAppName && `Legacy app name: ${legacyAppName}`,
     );
   }
 
-  printInfo(`Searching stacks...`);
+  print.info(`Searching stacks...`);
 
   const stacks = any
     ? await findStacks()
     : await findStacks({hostedZoneName, legacyAppName});
 
   if (stacks.length === 0) {
-    printWarning(`No matching stacks found.`);
+    print.warning(`No matching stacks found.`);
     return;
   }
 
   for (const stack of stacks) {
-    printList(0, formatHeadline(`Stack`));
-    printList(1, formatEntry(`Name`, stack.StackName!));
-    printList(1, formatEntry(`Status`, stack.StackStatus!));
-    printList(1, formatEntry(`Created`, formatDate(stack.CreationTime!)));
-    printList(1, formatEntry(`Updated`, formatDate(stack.LastUpdatedTime!)));
+    print.listItem(0, {type: `headline`, text: `Stack`});
+    print.listItem(1, {type: `entry`, key: `Name`, value: stack.StackName!});
+
+    print.listItem(1, {
+      type: `entry`,
+      key: `Status`,
+      value: stack.StackStatus!,
+    });
+
+    print.listItem(1, {
+      type: `entry`,
+      key: `Created`,
+      value: getFormattedAgeInDays(stack.CreationTime!),
+    });
+
+    print.listItem(1, {
+      type: `entry`,
+      key: `Updated`,
+      value: getFormattedAgeInDays(stack.LastUpdatedTime!),
+    });
 
     if (stack.Tags && stack.Tags?.length > 0) {
-      printList(1, formatSubheadline(`Tags`));
+      print.listItem(1, {type: `headline`, text: `Tags`});
 
       for (const {Key, Value} of stack.Tags) {
-        printList(2, formatEntry(Key!, Value!));
+        print.listItem(2, {type: `entry`, key: Key!, value: Value!});
       }
     }
   }

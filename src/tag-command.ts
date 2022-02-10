@@ -1,9 +1,9 @@
 import type yargs from 'yargs';
-import {printConfirmation, printInfo, printSuccess, printWarning} from './cli';
 import {readStackConfig} from './read-stack-config';
 import {updateStack} from './sdk/update-stack';
 import {getDomainName} from './utils/get-domain-name';
 import {getStackName} from './utils/get-stack-name';
+import {print} from './utils/print';
 
 export interface TagCommandArgs {
   readonly add: readonly string[];
@@ -37,14 +37,14 @@ const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
 export async function tagCommand(args: TagCommandArgs): Promise<void> {
   const stackName = getStackName(getDomainName(readStackConfig()));
 
-  printInfo(`Stack: ${stackName}`);
+  print.info(`Stack: ${stackName}`);
 
   if (args.yes) {
-    printWarning(
+    print.warning(
       `The specified tags of the configured stack will be updated automatically.`,
     );
   } else {
-    const confirmed = await printConfirmation(
+    const confirmed = await print.confirmation(
       `Confirm to update the specified tags of the configured stack.`,
     );
 
@@ -53,7 +53,7 @@ export async function tagCommand(args: TagCommandArgs): Promise<void> {
     }
   }
 
-  printInfo(`Updating stack...`);
+  print.info(`Updating stack...`);
 
   await updateStack(stackName, {
     tagsToAdd: args.add.map((tag) => ({
@@ -63,7 +63,7 @@ export async function tagCommand(args: TagCommandArgs): Promise<void> {
     tagKeysToRemove: args.remove.map((tag) => tag.trim()).filter(Boolean),
   });
 
-  printSuccess(`All specified tags have been successfully updated.`);
+  print.success(`All specified tags have been successfully updated.`);
 }
 
 tagCommand.commandName = commandName;

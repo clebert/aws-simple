@@ -1,13 +1,4 @@
 import type yargs from 'yargs';
-import {
-  formatHeadline,
-  printConfirmation,
-  printError,
-  printInfo,
-  printList,
-  printSuccess,
-  printWarning,
-} from './cli';
 import {readStackConfig} from './read-stack-config';
 import {findStack} from './sdk/find-stack';
 import {getOutputValue} from './sdk/get-output-value';
@@ -15,6 +6,7 @@ import {uploadFile} from './sdk/upload-file';
 import {getDomainName} from './utils/get-domain-name';
 import {getFilePaths} from './utils/get-file-paths';
 import {getStackName} from './utils/get-stack-name';
+import {print} from './utils/print';
 
 export interface UploadCommandArgs {
   readonly yes: boolean;
@@ -47,7 +39,7 @@ export async function uploadCommand(args: UploadCommandArgs): Promise<void> {
 
   const stackName = getStackName(getDomainName(stackConfig));
 
-  printInfo(`Stack: ${stackName}`);
+  print.info(`Stack: ${stackName}`);
 
   const bucketName = getOutputValue(await findStack(stackName), `BucketName`);
 
@@ -58,22 +50,22 @@ export async function uploadCommand(args: UploadCommandArgs): Promise<void> {
   }
 
   if (filePaths.size === 0) {
-    printWarning(`No files found to upload.`);
+    print.warning(`No files found to upload.`);
     return;
   }
 
-  printList(0, formatHeadline(`Files`));
+  print.listItem(0, {type: `headline`, text: `Files`});
 
   for (const filePath of filePaths) {
-    printList(1, filePath);
+    print.listItem(1, filePath);
   }
 
   if (args.yes) {
-    printWarning(
+    print.warning(
       `The listed files will be uploaded automatically to the S3 bucket of the configured stack.`,
     );
   } else {
-    const confirmed = await printConfirmation(
+    const confirmed = await print.confirmation(
       `Confirm to upload the listed files to the S3 bucket of the configured stack.`,
     );
 
@@ -82,7 +74,7 @@ export async function uploadCommand(args: UploadCommandArgs): Promise<void> {
     }
   }
 
-  printInfo(`Uploading files...`);
+  print.info(`Uploading files...`);
 
   const results = await Promise.allSettled(
     [...filePaths].map(async (filePath) => uploadFile(bucketName, filePath)),
@@ -93,10 +85,10 @@ export async function uploadCommand(args: UploadCommandArgs): Promise<void> {
   );
 
   if (rejectedResults.length > 0) {
-    printError(...rejectedResults.map(({reason}) => String(reason)));
+    print.error(...rejectedResults.map(({reason}) => String(reason)));
     process.exit(1);
   } else {
-    printSuccess(`All listed files have been successfully uploaded.`);
+    print.success(`All listed files have been successfully uploaded.`);
   }
 }
 
