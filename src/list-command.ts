@@ -5,7 +5,7 @@ import {getFormattedAgeInDays} from './utils/get-formatted-age-in-days';
 import {print} from './utils/print';
 
 export interface ListCommandArgs {
-  readonly any: boolean;
+  readonly all: boolean;
   readonly legacyAppName: string | undefined;
 }
 
@@ -14,11 +14,11 @@ const commandName = `list`;
 const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
   argv
     .describe(
-      `any`,
-      `List any deployed stacks without filtering by hosted zone name`,
+      `all`,
+      `List all deployed stacks without filtering by hosted zone name`,
     )
-    .boolean(`any`)
-    .default(`any`, false)
+    .boolean(`all`)
+    .default(`all`, false)
 
     .describe(
       `legacy-app-name`,
@@ -27,14 +27,14 @@ const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
     .string(`legacy-app-name`)
 
     .example(`npx $0 ${commandName}`, ``)
-    .example(`npx $0 ${commandName} --any`, ``)
+    .example(`npx $0 ${commandName} --all`, ``)
     .example(`npx $0 ${commandName} --legacy-app-name foo`, ``);
 
 export async function listCommand(args: ListCommandArgs): Promise<void> {
   const {hostedZoneName} = readStackConfig();
-  const {any, legacyAppName} = args;
+  const {all, legacyAppName} = args;
 
-  if (!any) {
+  if (!all) {
     print.info(
       `Hosted zone name: ${hostedZoneName}`,
       legacyAppName && `Legacy app name: ${legacyAppName}`,
@@ -43,7 +43,7 @@ export async function listCommand(args: ListCommandArgs): Promise<void> {
 
   print.info(`Searching stacks...`);
 
-  const stacks = any
+  const stacks = all
     ? await findStacks()
     : await findStacks({hostedZoneName, legacyAppName});
 
@@ -85,5 +85,5 @@ export async function listCommand(args: ListCommandArgs): Promise<void> {
 }
 
 listCommand.commandName = commandName;
-listCommand.description = `List all deployed stacks associated with the configured hosted zone name.`;
+listCommand.description = `List all deployed stacks filtered by the configured hosted zone name.`;
 listCommand.builder = builder;
