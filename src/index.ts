@@ -6,6 +6,7 @@ import {deleteCommand} from './delete-command';
 import {listCommand} from './list-command';
 import type {StackConfig, readStackConfig} from './read-stack-config';
 import {synthesizeCommand} from './synthesize-command';
+import {tagCommand} from './tag-command';
 import {uploadCommand} from './upload-command';
 
 export type {StackConfig};
@@ -41,6 +42,11 @@ export type ConfigFileDefaultExport = typeof readStackConfig;
       `${deleteCommand.commandName} [options]`,
       deleteCommand.description,
       deleteCommand.builder,
+    )
+    .command(
+      `${tagCommand.commandName} [options]`,
+      tagCommand.description,
+      tagCommand.builder,
     ).argv as any;
 
   switch (argv._[0]) {
@@ -58,6 +64,10 @@ export type ConfigFileDefaultExport = typeof readStackConfig;
     }
     case deleteCommand.commandName: {
       await deleteCommand(argv);
+      break;
+    }
+    case tagCommand.commandName: {
+      await tagCommand(argv);
       break;
     }
   }
