@@ -30,7 +30,11 @@ print.warning = (...lines: readonly (string | undefined)[]): void => {
 };
 
 print.error = (...lines: readonly (string | undefined)[]): void => {
-  print.paragraph(red(lines.filter(Boolean).join(`\n`)));
+  if (printed) {
+    console.error(``);
+  }
+
+  console.error(red(lines.filter(Boolean).join(`\n`)));
 };
 
 print.confirmation = async (message: string): Promise<boolean> => {

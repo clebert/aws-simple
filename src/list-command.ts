@@ -6,6 +6,7 @@ import {print} from './utils/print';
 
 export interface ListCommandArgs {
   readonly all: boolean;
+  readonly short: boolean;
   readonly legacyAppName: string | undefined;
 }
 
@@ -20,35 +21,53 @@ const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
     .boolean(`all`)
     .default(`all`, false)
 
+    .describe(`short`, `Give the output in an easy-to-parse format for scripts`)
+    .boolean(`short`)
+    .default(`short`, false)
+
     .describe(
       `legacy-app-name`,
-      `An additional app name to identify legacy stacks`,
+      `An optional app name to identify legacy stacks`,
     )
     .string(`legacy-app-name`)
 
     .example(`npx $0 ${commandName}`, ``)
     .example(`npx $0 ${commandName} --all`, ``)
+    .example(`npx $0 ${commandName} --short`, ``)
     .example(`npx $0 ${commandName} --legacy-app-name foo`, ``);
 
 export async function listCommand(args: ListCommandArgs): Promise<void> {
   const {hostedZoneName} = readStackConfig();
-  const {all, legacyAppName} = args;
+  const {all, short, legacyAppName} = args;
 
-  if (!all) {
-    print.info(
-      `Hosted zone name: ${hostedZoneName}`,
-      legacyAppName && `Legacy app name: ${legacyAppName}`,
-    );
+  if (!short) {
+    if (!all) {
+      print.info(
+        `Hosted zone name: ${hostedZoneName}`,
+        legacyAppName && `Legacy app name: ${legacyAppName}`,
+      );
+    }
+
+    print.info(`Searching stacks...`);
   }
-
-  print.info(`Searching stacks...`);
 
   const stacks = all
     ? await findStacks()
     : await findStacks({hostedZoneName, legacyAppName});
 
   if (stacks.length === 0) {
-    print.warning(`No matching stacks found.`);
+    if (!short) {
+      print.warning(`No matching stacks found.`);
+    }
+
+    return;
+  }
+
+  if (short) {
+    for (const {StackName} of stacks) {
+      print(StackName!);
+    }
+
     return;
   }
 
