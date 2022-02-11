@@ -2,6 +2,7 @@
 
 import yargs from 'yargs';
 import {deleteCommand} from './delete-command';
+import {flushCacheCommand} from './flush-cache-command';
 import {listCommand} from './list-command';
 import {purgeCommand} from './purge-command';
 import type {StackConfig, readStackConfig} from './read-stack-config';
@@ -15,51 +16,29 @@ export type {StackConfig};
 export type ConfigFileDefaultExport = typeof readStackConfig;
 
 (async () => {
-  const {description} = require(`../package.json`);
-
-  const argv = yargs
+  let cli = yargs
     .usage(`Usage: $0 <command> [options]`)
     .help(`h`)
     .alias(`h`, `help`)
     .detectLocale(false)
     .demandCommand()
-    .epilogue(description)
-    .strict()
-    .command(
-      `${synthesizeCommand.commandName} [options]`,
-      synthesizeCommand.description,
-      synthesizeCommand.builder,
-    )
-    .command(
-      `${uploadCommand.commandName} [options]`,
-      uploadCommand.description,
-      uploadCommand.builder,
-    )
-    .command(
-      `${listCommand.commandName} [options]`,
-      listCommand.description,
-      listCommand.builder,
-    )
-    .command(
-      `${deleteCommand.commandName} [options]`,
-      deleteCommand.description,
-      deleteCommand.builder,
-    )
-    .command(
-      `${tagCommand.commandName} [options]`,
-      tagCommand.description,
-      tagCommand.builder,
-    )
-    .command(
-      `${purgeCommand.commandName} [options]`,
-      purgeCommand.description,
-      purgeCommand.builder,
-    )
-    .command(
-      `${redeployCommand.commandName} [options]`,
-      redeployCommand.description,
-      redeployCommand.builder,
-    ).argv as any;
+    .epilogue(require(`../package.json`).description)
+    .strict();
+
+  for (const {commandName, description, builder} of [
+    synthesizeCommand,
+    uploadCommand,
+    listCommand,
+    deleteCommand,
+    tagCommand,
+    purgeCommand,
+    flushCacheCommand,
+    redeployCommand,
+  ]) {
+    cli = cli.command(`${commandName} [options]`, description, builder);
+  }
+
+  const argv = cli.argv as any;
 
   switch (argv._[0]) {
     case synthesizeCommand.commandName: {
@@ -84,6 +63,10 @@ export type ConfigFileDefaultExport = typeof readStackConfig;
     }
     case purgeCommand.commandName: {
       await purgeCommand(argv);
+      break;
+    }
+    case flushCacheCommand.commandName: {
+      await flushCacheCommand(argv);
       break;
     }
     case redeployCommand.commandName: {

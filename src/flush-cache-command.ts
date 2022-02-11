@@ -1,18 +1,18 @@
 import type yargs from 'yargs';
 import {readStackConfig} from './read-stack-config';
 import {findStack} from './sdk/find-stack';
+import {flushRestApiCache} from './sdk/flush-rest-api-cache';
 import {getOutputValue} from './sdk/get-output-value';
-import {redeployRestApi} from './sdk/redeploy-rest-api';
 import {getDomainName} from './utils/get-domain-name';
 import {getStackName} from './utils/get-stack-name';
 import {print} from './utils/print';
 
-export interface RedeployCommandArgs {
+export interface FlushCacheCommandArgs {
   readonly stackName: string | undefined;
   readonly yes: boolean;
 }
 
-const commandName = `redeploy`;
+const commandName = `flush-cache`;
 
 const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
   argv
@@ -22,7 +22,7 @@ const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
     )
     .string(`stack-name`)
 
-    .describe(`yes`, `Confirm the redeployment of the REST API automatically`)
+    .describe(`yes`, `Confirm the flushing of the REST API cache automatically`)
     .boolean(`yes`)
     .default(`yes`, false)
 
@@ -33,8 +33,8 @@ const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
     )
     .example(`npx $0 ${commandName} --yes`, ``);
 
-export async function redeployCommand(
-  args: RedeployCommandArgs,
+export async function flushCacheCommand(
+  args: FlushCacheCommandArgs,
 ): Promise<void> {
   const stackName =
     args.stackName || getStackName(getDomainName(readStackConfig()));
@@ -43,11 +43,11 @@ export async function redeployCommand(
 
   if (args.yes) {
     print.warning(
-      `The REST API of the specified stack will be redeployed automatically.`,
+      `The REST API cache of the specified stack will be flushed automatically.`,
     );
   } else {
     const confirmed = await print.confirmation(
-      `Confirm to redeploy the REST API of the specified stack.`,
+      `Confirm to flush the REST API cache of the specified stack.`,
     );
 
     if (!confirmed) {
@@ -55,7 +55,7 @@ export async function redeployCommand(
     }
   }
 
-  print.info(`Redeploying the REST API...`);
+  print.info(`Flushing the REST API cache...`);
 
   const stack = await findStack(stackName);
   const restApiId = getOutputValue(stack, `RestApiId`);
@@ -64,11 +64,11 @@ export async function redeployCommand(
     throw new Error(`The REST API cannot be found.`);
   }
 
-  await redeployRestApi(restApiId);
+  await flushRestApiCache(restApiId);
 
-  print.success(`The REST API has been successfully redeployed.`);
+  print.success(`The REST API cache has been successfully flushed.`);
 }
 
-redeployCommand.commandName = commandName;
-redeployCommand.description = `Redeploy the REST API of the specified stack.`;
-redeployCommand.builder = builder;
+flushCacheCommand.commandName = commandName;
+flushCacheCommand.description = `Flush the REST API cache of the specified stack.`;
+flushCacheCommand.builder = builder;
