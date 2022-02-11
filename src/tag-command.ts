@@ -52,10 +52,12 @@ export async function tagCommand(args: TagCommandArgs): Promise<void> {
   print.warning(`Stack: ${stackName}`);
 
   if (args.yes) {
-    print.warning(`The specified stack will be updated automatically.`);
+    print.warning(
+      `The tags of the specified stack will be updated automatically.`,
+    );
   } else {
     const confirmed = await print.confirmation(
-      `Confirm to update the specified stack.`,
+      `Confirm to update the tags of the specified stack.`,
     );
 
     if (!confirmed) {
@@ -63,7 +65,7 @@ export async function tagCommand(args: TagCommandArgs): Promise<void> {
     }
   }
 
-  print.info(`Updating the specified stack...`);
+  print.info(`Updating the tags...`);
 
   await updateStack(stackName, {
     tagsToAdd: args.add.map((tag) => ({
@@ -73,7 +75,7 @@ export async function tagCommand(args: TagCommandArgs): Promise<void> {
     tagKeysToRemove: args.remove.map((tag) => tag.trim()).filter(Boolean),
   });
 
-  print.success(`The specified stack has been successfully updated.`);
+  print.success(`The tags have been successfully updated.`);
 }
 
 tagCommand.commandName = commandName;

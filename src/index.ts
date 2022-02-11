@@ -5,6 +5,7 @@ import {deleteCommand} from './delete-command';
 import {listCommand} from './list-command';
 import {purgeCommand} from './purge-command';
 import type {StackConfig, readStackConfig} from './read-stack-config';
+import {redeployCommand} from './redeploy-command';
 import {synthesizeCommand} from './synthesize-command';
 import {tagCommand} from './tag-command';
 import {uploadCommand} from './upload-command';
@@ -53,6 +54,11 @@ export type ConfigFileDefaultExport = typeof readStackConfig;
       `${purgeCommand.commandName} [options]`,
       purgeCommand.description,
       purgeCommand.builder,
+    )
+    .command(
+      `${redeployCommand.commandName} [options]`,
+      redeployCommand.description,
+      redeployCommand.builder,
     ).argv as any;
 
   switch (argv._[0]) {
@@ -78,6 +84,10 @@ export type ConfigFileDefaultExport = typeof readStackConfig;
     }
     case purgeCommand.commandName: {
       await purgeCommand(argv);
+      break;
+    }
+    case redeployCommand.commandName: {
+      await redeployCommand(argv);
       break;
     }
   }

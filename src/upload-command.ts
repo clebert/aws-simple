@@ -25,6 +25,10 @@ const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
 
 export async function uploadCommand(args: UploadCommandArgs): Promise<void> {
   const stackConfig = readStackConfig();
+  const stackName = getStackName(getDomainName(stackConfig));
+
+  print.warning(`Stack: ${stackName}`);
+
   const filePaths = new Set<string>();
 
   for (const route of stackConfig.routes) {
@@ -35,18 +39,6 @@ export async function uploadCommand(args: UploadCommandArgs): Promise<void> {
         filePaths.add(filePath);
       }
     }
-  }
-
-  const stackName = getStackName(getDomainName(stackConfig));
-
-  print.warning(`Stack: ${stackName}`);
-
-  const bucketName = getOutputValue(await findStack(stackName), `BucketName`);
-
-  if (!bucketName) {
-    throw new Error(
-      `The S3 bucket name of the configured stack cannot be found.`,
-    );
   }
 
   if (filePaths.size === 0) {
@@ -75,6 +67,12 @@ export async function uploadCommand(args: UploadCommandArgs): Promise<void> {
   }
 
   print.info(`Uploading all referenced files...`);
+
+  const bucketName = getOutputValue(await findStack(stackName), `BucketName`);
+
+  if (!bucketName) {
+    throw new Error(`The S3 bucket cannot be found.`);
+  }
 
   const results = await Promise.allSettled(
     [...filePaths].map(async (filePath) => uploadFile(bucketName, filePath)),
