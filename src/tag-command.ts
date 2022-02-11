@@ -49,7 +49,7 @@ export async function tagCommand(args: TagCommandArgs): Promise<void> {
   const stackName =
     args.stackName || getStackName(getDomainName(readStackConfig()));
 
-  print.info(`Stack: ${stackName}`);
+  print.warning(`Stack: ${stackName}`);
 
   if (args.yes) {
     print.warning(`The specified stack will be updated automatically.`);

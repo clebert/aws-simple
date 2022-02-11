@@ -39,7 +39,7 @@ export async function uploadCommand(args: UploadCommandArgs): Promise<void> {
 
   const stackName = getStackName(getDomainName(stackConfig));
 
-  print.info(`Stack: ${stackName}`);
+  print.warning(`Stack: ${stackName}`);
 
   const bucketName = getOutputValue(await findStack(stackName), `BucketName`);
 

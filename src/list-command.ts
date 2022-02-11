@@ -52,7 +52,7 @@ export async function listCommand(args: ListCommandArgs): Promise<void> {
 
   if (!short) {
     if (!all) {
-      print.info(`Hosted zone: ${hostedZoneName}`);
+      print.warning(`Hosted zone: ${hostedZoneName}`);
     }
 
     print.info(`Searching stacks...`);
