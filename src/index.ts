@@ -3,6 +3,7 @@
 import yargs from 'yargs';
 import {deleteCommand} from './delete-command';
 import {listCommand} from './list-command';
+import {purgeCommand} from './purge-command';
 import type {StackConfig, readStackConfig} from './read-stack-config';
 import {synthesizeCommand} from './synthesize-command';
 import {tagCommand} from './tag-command';
@@ -47,6 +48,11 @@ export type ConfigFileDefaultExport = typeof readStackConfig;
       `${tagCommand.commandName} [options]`,
       tagCommand.description,
       tagCommand.builder,
+    )
+    .command(
+      `${purgeCommand.commandName} [options]`,
+      purgeCommand.description,
+      purgeCommand.builder,
     ).argv as any;
 
   switch (argv._[0]) {
@@ -68,6 +74,10 @@ export type ConfigFileDefaultExport = typeof readStackConfig;
     }
     case tagCommand.commandName: {
       await tagCommand(argv);
+      break;
+    }
+    case purgeCommand.commandName: {
+      await purgeCommand(argv);
       break;
     }
   }

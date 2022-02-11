@@ -20,7 +20,10 @@ const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
     )
     .string(`stack-name`)
 
-    .describe(`yes`, `Confirm the deletion automatically`)
+    .describe(
+      `yes`,
+      `Confirm the deletion of the specified stack automatically`,
+    )
     .boolean(`yes`)
     .default(`yes`, false)
 
@@ -49,7 +52,7 @@ export async function deleteCommand(args: DeleteCommandArgs): Promise<void> {
     }
   }
 
-  print.info(`Deleting stack...`);
+  print.info(`Deleting the specified stack...`);
 
   await deleteStack(stackName);
 

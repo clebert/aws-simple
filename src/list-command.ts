@@ -55,7 +55,7 @@ export async function listCommand(args: ListCommandArgs): Promise<void> {
       print.warning(`Hosted zone: ${hostedZoneName}`);
     }
 
-    print.info(`Searching stacks...`);
+    print.info(`Searching all deployed stacks...`);
   }
 
   const stacks = all
@@ -64,7 +64,7 @@ export async function listCommand(args: ListCommandArgs): Promise<void> {
 
   if (stacks.length === 0) {
     if (!short) {
-      print.warning(`No matching stacks found.`);
+      print.warning(`No deployed stacks found.`);
     }
 
     return;
@@ -79,7 +79,11 @@ export async function listCommand(args: ListCommandArgs): Promise<void> {
   }
 
   for (const stack of stacks) {
-    print.listItem(0, {type: `entry`, key: `Stack`, value: stack.StackName!});
+    print.listItem(0, {
+      type: `entry`,
+      key: `Deployed stack`,
+      value: stack.StackName!,
+    });
 
     print.listItem(1, {
       type: `entry`,

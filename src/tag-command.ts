@@ -30,7 +30,7 @@ const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
     .array(`remove`)
     .default(`remove`, [])
 
-    .describe(`yes`, `Confirm the update automatically`)
+    .describe(`yes`, `Confirm the update of the specified stack automatically`)
     .boolean(`yes`)
     .default(`yes`, false)
 
@@ -63,7 +63,7 @@ export async function tagCommand(args: TagCommandArgs): Promise<void> {
     }
   }
 
-  print.info(`Updating stack...`);
+  print.info(`Updating the specified stack...`);
 
   await updateStack(stackName, {
     tagsToAdd: args.add.map((tag) => ({

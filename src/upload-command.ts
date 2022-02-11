@@ -16,7 +16,7 @@ const commandName = `upload`;
 
 const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
   argv
-    .describe(`yes`, `Confirm the upload automatically`)
+    .describe(`yes`, `Confirm the upload of all referenced files automatically`)
     .boolean(`yes`)
     .default(`yes`, false)
 
@@ -54,7 +54,7 @@ export async function uploadCommand(args: UploadCommandArgs): Promise<void> {
     return;
   }
 
-  print.listItem(0, {type: `headline`, text: `Files`});
+  print.listItem(0, {type: `headline`, text: `Referenced files`});
 
   for (const filePath of filePaths) {
     print.listItem(1, filePath);
@@ -62,11 +62,11 @@ export async function uploadCommand(args: UploadCommandArgs): Promise<void> {
 
   if (args.yes) {
     print.warning(
-      `The listed files will be uploaded automatically to the S3 bucket of the configured stack.`,
+      `All referenced files will be uploaded automatically to the S3 bucket of the configured stack.`,
     );
   } else {
     const confirmed = await print.confirmation(
-      `Confirm to upload the listed files to the S3 bucket of the configured stack.`,
+      `Confirm to upload all referenced files to the S3 bucket of the configured stack.`,
     );
 
     if (!confirmed) {
@@ -74,7 +74,7 @@ export async function uploadCommand(args: UploadCommandArgs): Promise<void> {
     }
   }
 
-  print.info(`Uploading files...`);
+  print.info(`Uploading all referenced files...`);
 
   const results = await Promise.allSettled(
     [...filePaths].map(async (filePath) => uploadFile(bucketName, filePath)),
@@ -88,10 +88,10 @@ export async function uploadCommand(args: UploadCommandArgs): Promise<void> {
     print.error(...rejectedResults.map(({reason}) => String(reason)));
     process.exit(1);
   } else {
-    print.success(`All listed files have been successfully uploaded.`);
+    print.success(`All referenced files have been successfully uploaded.`);
   }
 }
 
 uploadCommand.commandName = commandName;
-uploadCommand.description = `Upload the associated files to the S3 bucket of the configured stack.`;
+uploadCommand.description = `Upload all referenced files to the S3 bucket of the configured stack.`;
 uploadCommand.builder = builder;
