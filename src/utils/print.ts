@@ -67,10 +67,12 @@ print.listItem = (
   let text =
     typeof item === `string`
       ? `• ${item}`
+      : indentationLevel === 0
+      ? item.type === `entry`
+        ? `• ${underline(bold(item.key))}: ${item.value}`
+        : `• ${underline(bold(item.text))}:`
       : item.type === `entry`
       ? `• ${bold(item.key)}: ${item.value}`
-      : indentationLevel === 0
-      ? `• ${underline(bold(item.text))}:`
       : `• ${bold(item.text)}:`;
 
   if (indentationLevel === 0) {

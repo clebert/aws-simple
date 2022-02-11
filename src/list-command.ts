@@ -6,9 +6,9 @@ import {print} from './utils/print';
 
 export interface ListCommandArgs {
   readonly hostedZoneName: string | undefined;
+  readonly legacyAppName: string | undefined;
   readonly all: boolean;
   readonly short: boolean;
-  readonly legacyAppName: string | undefined;
 }
 
 const commandName = `list`;
@@ -22,6 +22,12 @@ const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
     .string(`hosted-zone-name`)
 
     .describe(
+      `legacy-app-name`,
+      `An optional app name to identify legacy stacks`,
+    )
+    .string(`legacy-app-name`)
+
+    .describe(
       `all`,
       `List all deployed stacks without filtering by hosted zone name`,
     )
@@ -31,12 +37,6 @@ const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
     .describe(`short`, `Give the output in an easy-to-parse format for scripts`)
     .boolean(`short`)
     .default(`short`, false)
-
-    .describe(
-      `legacy-app-name`,
-      `An optional app name to identify legacy stacks`,
-    )
-    .string(`legacy-app-name`)
 
     .example(`npx $0 ${commandName}`, ``)
     .example(`npx $0 ${commandName} --all`, ``)
@@ -48,14 +48,11 @@ export async function listCommand(args: ListCommandArgs): Promise<void> {
   const hostedZoneName =
     args.hostedZoneName || readStackConfig().hostedZoneName;
 
-  const {all, short, legacyAppName} = args;
+  const {legacyAppName, all, short} = args;
 
   if (!short) {
     if (!all) {
-      print.info(
-        `Hosted zone name: ${hostedZoneName}`,
-        legacyAppName && `Legacy app name: ${legacyAppName}`,
-      );
+      print.info(`Hosted zone: ${hostedZoneName}`);
     }
 
     print.info(`Searching stacks...`);
@@ -82,8 +79,7 @@ export async function listCommand(args: ListCommandArgs): Promise<void> {
   }
 
   for (const stack of stacks) {
-    print.listItem(0, {type: `headline`, text: `Stack`});
-    print.listItem(1, {type: `entry`, key: `Name`, value: stack.StackName!});
+    print.listItem(0, {type: `entry`, key: `Stack`, value: stack.StackName!});
 
     print.listItem(1, {
       type: `entry`,
