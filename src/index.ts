@@ -7,6 +7,7 @@ import {listCommand} from './list-command';
 import {purgeCommand} from './purge-command';
 import type {StackConfig, readStackConfig} from './read-stack-config';
 import {redeployCommand} from './redeploy-command';
+import {startCommand} from './start-command';
 import {synthesizeCommand} from './synthesize-command';
 import {tagCommand} from './tag-command';
 import {uploadCommand} from './upload-command';
@@ -34,6 +35,7 @@ export type ConfigFileDefaultExport = typeof readStackConfig;
     purgeCommand,
     flushCacheCommand,
     redeployCommand,
+    startCommand,
   ]) {
     cli = cli.command(`${commandName} [options]`, description, builder);
   }
@@ -71,6 +73,10 @@ export type ConfigFileDefaultExport = typeof readStackConfig;
     }
     case redeployCommand.commandName: {
       await redeployCommand(argv);
+      break;
+    }
+    case startCommand.commandName: {
+      await startCommand(argv);
       break;
     }
   }

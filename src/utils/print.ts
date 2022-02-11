@@ -18,7 +18,13 @@ print.paragraph = (text: string): void => {
 };
 
 print.info = (...lines: readonly (string | undefined)[]): void => {
-  print.paragraph(gray(lines.filter(Boolean).join(`\n`)));
+  print.paragraph(
+    gray(
+      `[${new Date().toLocaleTimeString()}] ${lines
+        .filter(Boolean)
+        .join(`\n`)}`,
+    ),
+  );
 };
 
 print.success = (...lines: readonly (string | undefined)[]): void => {
