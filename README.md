@@ -1,72 +1,81 @@
 # aws-simple
 
-[![][ci-badge]][ci-link] [![][version-badge]][version-link]
-[![][license-badge]][license-link]
+Production-ready AWS website deployment with minimal configuration and
+simulation using a local DEV server.
 
-[ci-badge]: https://github.com/clebert/aws-simple/workflows/CI/badge.svg
-[ci-link]: https://github.com/clebert/aws-simple
-[version-badge]: https://badgen.net/npm/v/aws-simple
-[version-link]: https://www.npmjs.com/package/aws-simple
-[license-badge]: https://badgen.net/npm/license/aws-simple
-[license-link]: https://github.com/clebert/aws-simple/blob/master/LICENSE.md
+## Installation
 
-A Node.js interface for **AWS** that allows easy configuration and deployment of
-**simple** web apps.
-
-## Introduction
-
-`aws-simple` allows you to easily create and deploy an API Gateway REST API with
-a custom domain and optional alias record, host static web resources via S3, and
-provision public backend APIs via Lambda. In addition, a local DEV server can be
-started to emulate the resulting AWS infrastructure.
+```
+npm install aws-simple aws-cdk
+```
 
 ## Getting Started
 
-### Install dependencies
+The following are the steps to deploy a website using `aws-simple` and the AWS
+CDK.
 
-```
-npm install aws-simple aws-cdk --save-dev
-```
+### 1. Create a config file
 
-### Create a config file
-
-To use the `aws-simple` CLI you have to create a top-level config file named
-`aws-simple.config.js` which exports an object compatible to the
-[`App`](https://github.com/clebert/aws-simple/blob/master/src/new-types.ts#L1)
-interface.
-
-For example, a config file with the following content describes a simple app
-consisting of a single static HTML file:
+Create a config file named `aws-simple.config.js`, which exports a function that
+describes a website stack:
 
 ```js
-exports.default = {
-  appName: 'my-app',
-  customDomain: {
-    hostedZoneName: 'example.com',
-  },
-  routes: (port) => ({
-    '/': {kind: 'file', filename: 'dist/index.html'},
-  }),
+// @ts-check
+
+/** @type {import('aws-simple').ConfigFileDefaultExport} */
+exports.default = function (port) {
+  return {
+    hostedZoneName: `example.com`,
+    routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+  };
 };
 ```
 
-**Note:** The `routes` function optionally gets a `port` argument. It is set
-when the function is called in the context of the `aws-simple start [options]`
-CLI command. This gives the opportunity to create different routes for either
-AWS or the local DEV environment.
+The exported function optionally gets a DEV server `port` argument when called
+in the context of the `aws-simple start [options]` CLI command.
 
-**Link:** As a real-world example, you can find the `aws-simple` configuration
-for one of my open source applications
-[here](https://github.com/clebert/bookmark.wtf/blob/main/aws-simple.config.js).
+### 2. Create a public hosted zone on AWS Route 53
 
-### Create an AWS IAM user
+Create a **public** hosted zone on AWS Route 53 to make a website available
+under a particular domain. The required certificate is created automatically by
+`aws-simple` during deployment.
 
-You need to
-[create an AWS IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html)
-with programmatic access and the following attached policy:
+### 3. Create an AWS IAM user
 
-<details>
-  <summary>Click to show policy</summary>
+Create an AWS IAM user with programmatic access and an
+[AWS IAM policy](#aws-iam-policy) with sufficient permissions.
+
+### 4. Set the credentials
+
+Set the credentials of the AWS IAM user using the two environment variables,
+`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. Alternatively, the credentials
+are retrieved using the AWS profile.
+
+### 5. Set the AWS region
+
+Set the AWS region using either the environment variable `AWS_REGION` or
+`AWS_DEFAULT_REGION` evaluated in the specified order. Alternatively, the region
+is retrieved using the AWS profile.
+
+### 6. Bootstrap the AWS environment
+
+```
+npx cdk bootstrap --app 'npx aws-simple synthesize'
+```
+
+### 7. Deploy a website to AWS
+
+```
+npx cdk deploy --app 'npx aws-simple synthesize' && npx aws-simple upload
+```
+
+### 8. Optional: Start a local DEV server
+
+```
+npx aws-simple start
+```
+
+## AWS IAM Policy
 
 ```json
 {
@@ -147,649 +156,3 @@ with programmatic access and the following attached policy:
   ]
 }
 ```
-
-</details>
-
-### Optional: Create an AWS profile
-
-You can install the `aws` CLI, e.g. with:
-
-```
-brew install awscli
-```
-
-You can then set up the AWS profile using the credentials from the AWS IAM user
-you just created:
-
-```
-aws configure
-```
-
-```
-AWS Access Key ID [None]: ********************
-AWS Secret Access Key [None]: ****************************************
-Default region name [None]: eu-central-1
-Default output format [None]: json
-```
-
-If a profile other than the `default` profile is to be set up, the `aws` CLI can
-be called with the `--profile` CLI option, e.g.:
-
-```
-aws configure --profile my-profile
-```
-
-As an alternative to using the `aws` CLI, you can create the following files
-manually:
-
-```
-cat ~/.aws/credentials
-```
-
-```
-[default]
-aws_access_key_id = ********************
-aws_secret_access_key = ****************************************
-```
-
-```
-cat ~/.aws/config
-```
-
-```
-[default]
-output = json
-region = eu-central-1
-```
-
-### Set the AWS profile
-
-The following two environment variables `AWS_PROFILE` and `AWS_DEFAULT_PROFILE`
-are evaluated in the specified order. If neither of the two environment
-variables is set, the `default` profile is used.
-
-The following is an example of setting a specific profile:
-
-```
-AWS_PROFILE=my-profile npx aws-simple list
-```
-
-### Set the AWS credentials
-
-The following two environment variables `AWS_ACCESS_KEY_ID` and
-`AWS_SECRET_ACCESS_KEY` are evaluated. If these are not set, an attempt is made
-to read the credentials from the AWS shared credentials file using the AWS
-profile. The default location of the file (`~/.aws/credentials`) can be
-overwritten by setting the environment variable `AWS_SHARED_CREDENTIALS_FILE`.
-
-### Set the AWS region
-
-The following two environment variables `AWS_REGION` and `AWS_DEFAULT_REGION`
-are evaluated in the specified order. If neither of the two environment
-variables is set, an attempt is made to read the region from the AWS config file
-using the AWS profile. The default location of the file (`~/.aws/config`) can be
-overwritten by setting the environment variable `AWS_CONFIG_FILE`.
-
-### Bootstrap the AWS environment
-
-Before you can use the AWS CDK you must
-[bootstrap your AWS environment](https://docs.aws.amazon.com/cdk/latest/guide/tools.html)
-to create the infrastructure that the AWS CDK CLI needs to deploy your app:
-
-```
-npx cdk bootstrap --app 'npx aws-simple create'
-```
-
-### Start a local DEV server
-
-```
-npx aws-simple start
-```
-
-**Note:** When changing the `aws-simple` config file, the DEV server must be
-restarted. If a bundler such as Parcel or Webpack is used, its watcher must be
-started in addition to the DEV server.
-
-### Deploy a stack to AWS
-
-Create and deploy a stack using the CDK:
-
-```
-npx cdk deploy --app 'npx aws-simple create'
-```
-
-The name of the deployed stack consists of the app name (e.g. `my-app`) in
-combination with the app version (e.g. `latest`) such as
-`aws-simple--my-app--latest`.
-
-**Caution:** Re-deploying an already deployed stack (so a stack with the same
-name) will remove all tags set with `aws-simple tag [options]`.
-
-Upload files to S3:
-
-```
-npx aws-simple upload
-```
-
-Example `package.json` scripts:
-
-```json
-{
-  "scripts": {
-    "deploy": "cdk deploy --app 'npx aws-simple create'",
-    "postdeploy": "aws-simple upload"
-  }
-}
-```
-
-**Note:** In a CI pipeline the `deploy` script should be called with the
-additional argument `--require-approval never`, e.g.
-`npm run deploy -- --require-approval never`.
-
-## Configuration
-
-### Use TypeScript for auto-completion support
-
-TypeScript 2.3 and later support type-checking in `*.js` files by adding a
-`// @ts-check` comment to them:
-
-```js
-// @ts-check
-
-/**
- * @type {import('aws-simple').App}
- */
-exports.default = {
-  appName: 'my-app',
-  /* ... */
-};
-```
-
-### Configure a custom domain
-
-A stack that is deployed with `aws-simple` is accessed through an API Gateway
-custom domain. For that
-[a public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/CreatingHostedZone.html)
-must be created manually. It must be ensured that the hosted zone is accessible
-from the Internet. The custom domain is configured as follows:
-
-```js
-exports.default = {
-  appName: 'my-app',
-  customDomain: {
-    hostedZoneName: 'example.com',
-  },
-  /* ... */
-};
-```
-
-A DNS validated certificate for this domain is created automatically.
-Alternatively
-[a wild-card certificate](https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html)
-can be created manually and referenced by its ARN:
-
-```js
-exports.default = {
-  appName: 'my-app',
-  customDomain: {
-    certificateArn:
-      'arn:aws:acm:eu-central-1:************:certificate/********-****-****-****-************',
-    hostedZoneName: 'example.com',
-  },
-  /* ... */
-};
-```
-
-Different app versions allow multiple stacks of the same app to be deployed
-simultaneously. In this case the optional `aliasRecordName` property is used to
-give each stack its own URL, e.g. `example.com` or `beta.example.com`
-(`APP_VERSION=beta`):
-
-```js
-const appVersion = process.env.APP_VERSION;
-
-exports.default = {
-  appName: 'my-app',
-  appVersion,
-  customDomain: {
-    hostedZoneName: 'example.com',
-    aliasRecordName: appVersion ? appVersion : undefined,
-  },
-  /* ... */
-};
-```
-
-### Configure a Lambda function
-
-You can configure a Lambda function that can be accessed via GET request under
-the `/hello` path as follows:
-
-```js
-exports.default = {
-  appName: 'my-app',
-  customDomain: {
-    hostedZoneName: 'example.com',
-  },
-  routes: () => ({
-    '/hello': {kind: 'function', filename: 'dist/hello.js'},
-  }),
-};
-```
-
-The contents of file `dist/hello.js` could look like this:
-
-```js
-async function handler() {
-  return {
-    statusCode: 200,
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify('Hello, World!'),
-  };
-}
-
-exports.handler = handler;
-```
-
-**Note:** If external modules are to be referenced in the Lambda function, it
-must be bundled with a bundler such as Webpack (in this case you have to set the
-target to node: `{target: 'node'}`) to create a single self-contained file.
-
-### Configure an S3 file
-
-You can configure an S3 file that can be accessed via GET request under the `/`
-path as follows:
-
-```js
-exports.default = {
-  appName: 'my-app',
-  customDomain: {
-    hostedZoneName: 'example.com',
-  },
-  routes: () => ({
-    '/': {kind: 'file', filename: 'dist/index.html'},
-  }),
-};
-```
-
-### Configure an S3 folder
-
-You can configure an S3 folder that can be accessed via GET request under the
-`/assets/*` path as follows:
-
-```js
-exports.default = {
-  appName: 'my-app',
-  customDomain: {
-    hostedZoneName: 'example.com',
-  },
-  routes: () => ({
-    '/assets': {kind: 'folder', dirname: 'dist/assets'},
-  }),
-};
-```
-
-**Note:** All files contained in the folder specified under the `dirname`
-property are loaded into the S3 bucket associated with the stack using the
-`aws-simple upload [options]` command.
-
-**Important:** Nested folders are ignored! Thus a separate route must be created
-for each nested folder.
-
-### Enable binary support
-
-You can specify media types (e.g. `image/png`, `application/octet-stream`, etc.)
-to be treated as binary as follows:
-
-```js
-exports.default = {
-  appName: 'my-app',
-  customDomain: {
-    hostedZoneName: 'example.com',
-  },
-  routes: () => ({
-    '/images': {
-      kind: 'folder',
-      dirname: 'dist/images',
-      binaryMediaTypes: ['image/gif', 'image/jpeg', 'image/png'],
-    },
-  }),
-};
-```
-
-**Important:** Folders may only contain either binary or non-binary files.
-
-### Enable CORS
-
-To enable CORS for a route, you can set its `enableCors` property to `true`:
-
-```js
-exports.default = {
-  appName: 'my-app',
-  customDomain: {
-    hostedZoneName: 'example.com',
-  },
-  routes: () => ({
-    '/': {kind: 'file', filename: 'dist/index.html', enableCors: true},
-    '/assets': {kind: 'folder', dirname: 'dist/assets', enableCors: true},
-    '/hello': {kind: 'function', filename: 'dist/hello.js', enableCors: true},
-  }),
-};
-```
-
-Additionally, Lambda functions must explicitly set any required CORS headers
-like `Access-Control-Allow-Origin` on their response:
-
-```js
-async function handler() {
-  return {
-    statusCode: 200,
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-    },
-    body: JSON.stringify('Hello, World!'),
-  };
-}
-
-exports.handler = handler;
-```
-
-**Caution:** During a transition period, the old configuration format continues
-to be used under the hood. This means that CORS cannot be activated by route. As
-soon as a route has activated CORS, this applies to all routes!
-
-### Enable basic authentication
-
-To enable basic authentication for a route, you can set its
-`enableAuthentication` property to `true`:
-
-```js
-exports.default = {
-  appName: 'my-app',
-  customDomain: {
-    hostedZoneName: 'example.com',
-  },
-  authentication: {
-    username: process.env.USERNAME,
-    password: process.env.PASSWORD,
-  },
-  routes: () => ({
-    '/': {
-      kind: 'file',
-      filename: 'dist/index.html',
-      enableAuthentication: true,
-    },
-    '/assets': {
-      kind: 'folder',
-      dirname: 'dist/assets',
-      enableAuthentication: true,
-    },
-    '/hello': {
-      kind: 'function',
-      filename: 'dist/hello.js',
-      enableAuthentication: true,
-    },
-  }),
-};
-```
-
-**Note:** Basic authentication is not simulated by the local DEV server.
-
-### Configure a single-page application (SPA)
-
-It can be useful to deliver the same single-page application under different
-paths. Instead of specifying multiple routes, you can set the `catchAll`
-property of a file or function route to `true`:
-
-```js
-exports.default = {
-  appName: 'my-app',
-  customDomain: {
-    hostedZoneName: 'example.com',
-  },
-  routes: (port) => ({
-    '/': {kind: 'file', filename: 'dist/index.html', catchAll: true},
-    '/assets': {kind: 'folder', dirname: 'dist/assets'},
-    '/hello': {kind: 'function', filename: 'dist/hello.js'},
-  }),
-};
-```
-
-### Enable CloudWatch metrics
-
-To enable detailed CloudWatch metrics for the API Gateway REST API you can set
-the `enableMetrics` property to `true`:
-
-```js
-exports.default = {
-  appName: 'my-app',
-  customDomain: {
-    hostedZoneName: 'example.com',
-  },
-  enableMetrics: true,
-  /* ... */
-};
-```
-
-### Enable tracing with AWS X-Ray
-
-To enable tracing with [AWS X-Ray](https://aws.amazon.com/xray/) for the API
-Gateway REST API, all Lambdas, and the S3 bucket you can set the `enableTracing`
-property to `true`:
-
-```js
-exports.default = {
-  appName: 'my-app',
-  customDomain: {
-    hostedZoneName: 'example.com',
-  },
-  enableTracing: true,
-  /* ... */
-};
-```
-
-### Enable access logging
-
-To enable access logging for the API Gateway REST API you can set the
-`enableAccessLogging` property to `true`:
-
-```js
-exports.default = {
-  appName: 'my-app',
-  customDomain: {
-    hostedZoneName: 'example.com',
-  },
-  enableAccessLogging: true,
-  /* ... */
-};
-```
-
-### Troubleshooting
-
-[Some changes](https://docs.aws.amazon.com/apigateway/latest/developerguide/updating-api.html)
-to an existing stack require a redeployment of the API Gateway REST API. So if
-changes to a stack do not work, the `aws-simple redeploy` command might help.
-
-## CLI Usage
-
-```
-Usage: aws-simple <command> [options]
-
-Commands:
-  aws-simple create [options]       Create a stack using the CDK
-  aws-simple upload [options]       Upload files to S3
-  aws-simple start [options]        Start a local DEV server
-  aws-simple list [options]         List all deployed stacks
-  aws-simple tag [options]          Tag a deployed stack
-  aws-simple clean-up [options]     Clean up old deployed stacks
-  aws-simple redeploy [options]     Redeploy the REST API
-  aws-simple flush-cache [options]  Flush the cache of the REST API
-
-Options:
-      --version  Show version number                                   [boolean]
-  -h, --help     Show help                                             [boolean]
-
-A Node.js interface for AWS that allows easy configuration and deployment of
-simple web apps.
-```
-
-### Create a stack using the CDK
-
-```
-aws-simple create [options]
-
-Create a stack using the CDK
-
-Options:
-      --version  Show version number                                   [boolean]
-  -h, --help     Show help                                             [boolean]
-
-Examples:
-  npx aws-simple create
-  npx cdk deploy --app 'npx aws-simple create'
-```
-
-### Upload files to S3
-
-```
-aws-simple upload [options]
-
-Upload files to S3
-
-Options:
-      --version  Show version number                                   [boolean]
-  -h, --help     Show help                                             [boolean]
-
-Examples:
-  npx aws-simple upload
-```
-
-### Start a local DEV server
-
-```
-aws-simple start [options]
-
-Start a local DEV server
-
-Options:
-      --version  Show version number                                   [boolean]
-  -h, --help     Show help                                             [boolean]
-      --port     The port to listen on if available, otherwise listen on a
-                 random port                            [number] [default: 3000]
-      --cache    Enable caching of successful caching-enabled Lambda function
-                 results per request URL              [boolean] [default: false]
-      --verbose  Enable logging of successful Lambda function results
-                                                      [boolean] [default: false]
-
-Examples:
-  npx aws-simple start
-  npx aws-simple start --port 3001 --cache --verbose
-```
-
-### List all deployed stacks
-
-```
-aws-simple list [options]
-
-List all deployed stacks
-
-Options:
-      --version  Show version number                                   [boolean]
-  -h, --help     Show help                                             [boolean]
-
-Examples:
-  npx aws-simple list
-```
-
-### Tag a deployed stack
-
-```
-aws-simple tag [options]
-
-Tag a deployed stack
-
-Options:
-      --version  Show version number                                   [boolean]
-  -h, --help     Show help                                             [boolean]
-      --add      The tags to add                           [array] [default: []]
-      --remove   The tags to remove                        [array] [default: []]
-      --yes      The confirmation message will automatically be answered with
-                 yes                                  [boolean] [default: false]
-
-Examples:
-  npx aws-simple tag --add latest release --remove prerelease
-  npx aws-simple tag --add foo=something bar="something else"
-  npx aws-simple tag --add prerelease --yes
-```
-
-### Clean up old deployed stacks
-
-```
-aws-simple clean-up [options]
-
-Clean up old deployed stacks
-
-Options:
-      --version  Show version number                                   [boolean]
-  -h, --help     Show help                                             [boolean]
-      --min-age  The minimum age (in days) of a stack for deletion
-                                                          [number] [default: 30]
-      --exclude  Tags that exclude a stack from deletion   [array] [default: []]
-      --yes      The confirmation message will automatically be answered with
-                 yes                                  [boolean] [default: false]
-
-Examples:
-  npx aws-simple clean-up
-  npx aws-simple clean-up --min-age 14 --exclude release prerelease --yes
-```
-
-### Redeploy the REST API
-
-```
-aws-simple redeploy [options]
-
-Redeploy the REST API
-
-Options:
-      --version  Show version number                                   [boolean]
-  -h, --help     Show help                                             [boolean]
-
-Examples:
-  npx aws-simple redeploy
-```
-
-### Flush the cache of the REST API
-
-```
-aws-simple flush-cache [options]
-
-Flush the cache of the REST API
-
-Options:
-      --version  Show version number                                   [boolean]
-  -h, --help     Show help                                             [boolean]
-
-Examples:
-  npx aws-simple flush-cache
-```
-
-## Development
-
-If you want to develop locally on this project, please make sure you have
-installed the latest `16.x` version of Node.js and the latest `7.x` version of
-npm. Please run the following commands in the order given to get started:
-
-```sh
-npm install
-npm run setup
-npm run ci
-```
-
-**Note:** This project uses [onecmd](https://github.com/clebert/onecmd). The
-configuration files are created using onecmd with the `npm run setup` command
-and hidden in VS Code.
-
----
-
-Copyright 2019-2021 Clemens Akens. All rights reserved.
-[MIT license](https://github.com/clebert/aws-simple/blob/master/LICENSE.md).
