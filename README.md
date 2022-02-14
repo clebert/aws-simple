@@ -201,7 +201,7 @@ exports.default = function (port) {
     hostedZoneName: `example.com`,
     routes: [
       {
-        type: `folder`,
+        type: `folder`, // <==
         publicPath: `/*`,
         path: `dist`,
 
@@ -363,10 +363,10 @@ exports.default = function (port) {
 };
 ```
 
-### Synthesization hook functions
+### Synthesization functions
 
-Hook functions can be used to implement advanced features. Below are two
-examples.
+Synthesization functions can be used to implement advanced features. Below are
+two examples.
 
 #### Example: Configure a firewall
 
