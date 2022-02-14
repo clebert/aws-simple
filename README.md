@@ -8,7 +8,7 @@ Production-ready AWS website deployment with minimal configuration.
 npm install aws-simple aws-cdk
 ```
 
-**Warning**: The `11.x` version is an entirely new implementation and is
+**Warning**: The current version is an entirely new implementation and is
 currently not yet tested in production. I will remove this warning as soon as I
 have enough experience with the latest version. Until then, I recommend using
 the old version for production environments:
@@ -191,6 +191,13 @@ exports.default = (port) => {
         type: `file`,
         publicPath: `/*`, // <== matches '/', '/foo', '/foo/bar'
         path: `dist/index.html`,
+      },
+      {
+        type: `function`,
+        httpMethod: `GET`,
+        publicPath: `/hello/*`, // <== matches '/hello', '/hello/world'
+        path: `dist/hello.js`,
+        functionName: `hello`,
       },
     ],
   };
