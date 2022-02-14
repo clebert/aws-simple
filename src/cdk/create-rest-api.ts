@@ -82,7 +82,7 @@ function getStageOptions(
   stackConfig: StackConfig,
   stack: Stack,
 ): aws_apigateway.StageOptions {
-  const {cachingEnabled, monitoring, throttling, routes} = stackConfig;
+  const {cachingEnabled, monitoring, routes} = stackConfig;
 
   const loggingLevel: aws_apigateway.MethodLoggingLevel =
     monitoring?.loggingEnabled
@@ -90,7 +90,12 @@ function getStageOptions(
       : aws_apigateway.MethodLoggingLevel.OFF;
 
   const methodOptions = routes.reduce((options, route) => {
-    const {httpMethod = `GET`, publicPath, cacheTtlInSeconds = 300} = route;
+    const {
+      httpMethod = `GET`,
+      publicPath,
+      throttling,
+      cacheTtlInSeconds = 300,
+    } = route;
 
     const methodPath =
       publicPath === `/`

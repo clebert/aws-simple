@@ -5,35 +5,29 @@ export interface StackConfig {
   readonly hostedZoneName: string;
   readonly aliasRecordName?: string;
   readonly cachingEnabled?: boolean;
-
-  readonly authentication?: {
-    readonly username: string;
-    readonly password: string;
-    readonly realm?: string;
-    /** Default: `300` seconds (if caching is enabled) */
-    readonly cacheTtlInSeconds?: number;
-  };
-
-  readonly monitoring?: {
-    readonly accessLoggingEnabled?: boolean;
-    readonly loggingEnabled?: boolean;
-    readonly metricsEnabled?: boolean;
-    readonly tracingEnabled?: boolean;
-  };
-
-  readonly throttling?: {
-    /** Default: `10000` requests per second */
-    readonly rateLimit: number;
-    /** Default: `5000` requests */
-    readonly burstLimit: number;
-  };
-
+  readonly authentication?: Authentication;
+  readonly monitoring?: Monitoring;
   readonly routes: readonly [Route, ...Route[]];
 
   readonly onSynthesize?: (constructs: {
     readonly stack: Stack;
     readonly restApi: aws_apigateway.RestApiBase;
   }) => void;
+}
+
+export interface Authentication {
+  readonly username: string;
+  readonly password: string;
+  readonly realm?: string;
+  /** Default: `300` seconds (if caching is enabled) */
+  readonly cacheTtlInSeconds?: number;
+}
+
+export interface Monitoring {
+  readonly accessLoggingEnabled?: boolean;
+  readonly loggingEnabled?: boolean;
+  readonly metricsEnabled?: boolean;
+  readonly tracingEnabled?: boolean;
 }
 
 export type Route = LambdaRoute | S3Route;
@@ -72,10 +66,18 @@ export interface S3Route extends RouteOptions {
 }
 
 export interface RouteOptions {
+  readonly throttling?: Throttling;
   /** Default: `300` seconds (if caching is enabled) */
   readonly cacheTtlInSeconds?: number;
   readonly authenticationEnabled?: boolean;
   readonly corsEnabled?: boolean;
+}
+
+export interface Throttling {
+  /** Default: `10000` requests per second */
+  readonly rateLimit: number;
+  /** Default: `5000` requests */
+  readonly burstLimit: number;
 }
 
 export function readStackConfig(port?: number): StackConfig {

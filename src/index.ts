@@ -5,7 +5,18 @@ import {deleteCommand} from './delete-command';
 import {flushCacheCommand} from './flush-cache-command';
 import {listCommand} from './list-command';
 import {purgeCommand} from './purge-command';
-import type {StackConfig, readStackConfig} from './read-stack-config';
+import type {
+  Authentication,
+  LambdaRequestParameter,
+  LambdaRoute,
+  Monitoring,
+  Route,
+  RouteOptions,
+  S3Route,
+  StackConfig,
+  Throttling,
+  readStackConfig,
+} from './read-stack-config';
 import {redeployCommand} from './redeploy-command';
 import {startCommand} from './start-command';
 import {synthesizeCommand} from './synthesize-command';
@@ -13,7 +24,18 @@ import {tagCommand} from './tag-command';
 import {uploadCommand} from './upload-command';
 import {print} from './utils/print';
 
-export type {StackConfig};
+export type {
+  Authentication,
+  LambdaRequestParameter,
+  LambdaRoute,
+  Monitoring,
+  Route,
+  RouteOptions,
+  S3Route,
+  StackConfig,
+  Throttling,
+};
+
 export type ConfigFileDefaultExport = typeof readStackConfig;
 
 (async () => {

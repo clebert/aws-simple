@@ -360,14 +360,37 @@ exports.default = function (port) {
 ### Throttling
 
 ```js
+// @ts-check
+
+/** @type {import('aws-simple').Throttling} */
+const throttling = {rateLimit: 100, burstLimit: 50};
+
+/** @type {import('aws-simple').ConfigFileDefaultExport} */
 exports.default = function (port) {
   return {
     hostedZoneName: `example.com`,
-    throttling: {
-      rateLimit: 10000, // <==
-      burstLimit: 5000, // <==
-    },
-    routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+    routes: [
+      {
+        type: `file`,
+        publicPath: `/`,
+        path: `dist/index.html`,
+        throttling, // <==
+      },
+      {
+        type: `folder`,
+        publicPath: `/*`,
+        path: `dist`,
+        throttling, // <==
+      },
+      {
+        type: `function`,
+        httpMethod: `GET`,
+        publicPath: `/hello`,
+        path: `dist/hello.js`,
+        functionName: `hello`,
+        throttling, // <==
+      },
+    ],
   };
 };
 ```
