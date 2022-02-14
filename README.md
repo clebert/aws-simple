@@ -189,12 +189,7 @@ exports.default = (port) => {
     routes: [
       {
         type: `file`,
-        publicPath: `/`,
-        path: `dist/index.html`,
-      },
-      {
-        type: `file`,
-        publicPath: `/*`, // <==
+        publicPath: `/*`, // <== matches '/', '/foo', '/foo/bar'
         path: `dist/index.html`,
       },
     ],
@@ -211,7 +206,7 @@ exports.default = (port) => {
     routes: [
       {
         type: `folder`, // <==
-        publicPath: `/*`,
+        publicPath: `/*`, // matches '/foo' and '/foo/bar' but not '/'
         path: `dist`,
 
         // Optional property:
