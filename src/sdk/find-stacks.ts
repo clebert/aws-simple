@@ -1,42 +1,49 @@
-import {CloudFormation} from 'aws-sdk';
-import type {AppConfig} from '../types';
-import {getAgeInDays} from '../utils/get-age-in-days';
-import {parseStackName} from '../utils/stack-name';
+import type {Stack} from '@aws-sdk/client-cloudformation';
+import {
+  CloudFormationClient,
+  DescribeStacksCommand,
+} from '@aws-sdk/client-cloudformation';
+import {getOutputValue} from './get-output-value';
+
+export interface FindStacksOptions {
+  readonly hostedZoneName: string;
+  readonly legacyAppName?: string;
+}
 
 export async function findStacks(
-  appConfig: AppConfig,
-  clientConfig: CloudFormation.ClientConfiguration,
-): Promise<CloudFormation.Stack[]> {
-  const stacks: CloudFormation.Stack[] = [];
+  options?: FindStacksOptions,
+): Promise<readonly Stack[]> {
+  const client = new CloudFormationClient({});
+  const stacks: Stack[] = [];
 
-  let stackDescriptions: CloudFormation.DescribeStacksOutput | undefined;
+  let nextToken: string | undefined;
 
   do {
-    stackDescriptions = await new CloudFormation(clientConfig)
-      .describeStacks({
-        NextToken: stackDescriptions && stackDescriptions.NextToken,
-      })
-      .promise();
-
-    if (stackDescriptions.Stacks) {
-      stacks.push(...stackDescriptions.Stacks);
-    }
-  } while (stackDescriptions.NextToken);
-
-  return stacks
-    .filter(({StackName}) => {
-      const parts = parseStackName(StackName);
-
-      return parts && parts.appName === appConfig.appName;
-    })
-    .filter(
-      ({DeletionTime, StackStatus}) =>
-        !DeletionTime ||
-        StackStatus === `ROLLBACK_COMPLETE` ||
-        StackStatus === `DELETE_FAILED`,
-    )
-    .sort(
-      (stack1, stack2) =>
-        getAgeInDays(stack1.CreationTime) - getAgeInDays(stack2.CreationTime),
+    const output = await client.send(
+      new DescribeStacksCommand({NextToken: nextToken}),
     );
+
+    if (output.Stacks) {
+      stacks.push(...output.Stacks);
+    }
+
+    nextToken = output.NextToken;
+  } while (nextToken);
+
+  const allStacks = stacks.filter(({StackName}) =>
+    StackName?.startsWith(`aws-simple`),
+  );
+
+  if (!options) {
+    return allStacks;
+  }
+
+  const {hostedZoneName, legacyAppName} = options;
+
+  return allStacks.filter(
+    (stack) =>
+      getOutputValue(stack, `HostedZoneName`) === hostedZoneName ||
+      (legacyAppName &&
+        stack.StackName?.startsWith(`aws-simple--${legacyAppName}--`)),
+  );
 }

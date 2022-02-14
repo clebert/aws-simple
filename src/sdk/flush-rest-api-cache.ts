@@ -1,13 +1,10 @@
-import type {CloudFormation} from 'aws-sdk';
-import {APIGateway} from 'aws-sdk';
-import {findStackOutput} from './find-stack-output';
+import {
+  APIGatewayClient,
+  FlushStageCacheCommand,
+} from '@aws-sdk/client-api-gateway';
 
-export async function flushRestApiCache(
-  clientConfig: CloudFormation.ClientConfiguration,
-  stack: CloudFormation.Stack,
-): Promise<void> {
-  const restApiId = findStackOutput(stack, `RestApiId`);
-  const apiGateway = new APIGateway(clientConfig);
+export async function flushRestApiCache(restApiId: string): Promise<void> {
+  const client = new APIGatewayClient({});
 
-  await apiGateway.flushStageCache({restApiId, stageName: `prod`}).promise();
+  await client.send(new FlushStageCacheCommand({restApiId, stageName: `prod`}));
 }

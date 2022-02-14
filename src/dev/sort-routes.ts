@@ -1,0 +1,9 @@
+import type {Route} from '../read-stack-config';
+
+export function sortRoutes<TRoute extends Pick<Route, 'publicPath'>>(
+  routes: readonly TRoute[],
+): readonly TRoute[] {
+  return [...routes].sort(({publicPath: a}, {publicPath: b}) =>
+    a.replace(`/*`, `/~`) > b.replace(`/*`, `/~`) ? 1 : -1,
+  );
+}

@@ -1,21 +1,13 @@
-import {CloudFormation} from 'aws-sdk';
-import type {AppConfig} from '../types';
-import {createStackName} from '../utils/stack-name';
+import type {Stack} from '@aws-sdk/client-cloudformation';
+import {findStacks} from './find-stacks';
 
-export async function findStack(
-  appConfig: AppConfig,
-  clientConfig: CloudFormation.ClientConfiguration,
-): Promise<CloudFormation.Stack> {
-  const stackName = createStackName(appConfig);
-
-  const result = await new CloudFormation(clientConfig)
-    .describeStacks({StackName: stackName})
-    .promise();
-
-  const stack = result.Stacks && result.Stacks[0];
+export async function findStack(stackName: string): Promise<Stack> {
+  const stack = (await findStacks()).find(
+    ({StackName}) => StackName === stackName,
+  );
 
   if (!stack) {
-    throw new Error(`Stack (${stackName}) not found.`);
+    throw new Error(`The stack cannot be found: ${stackName}`);
   }
 
   return stack;

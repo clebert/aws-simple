@@ -1,34 +1,25 @@
-import type {CloudFormation} from 'aws-sdk';
-import {APIGateway} from 'aws-sdk';
-import {findStackOutput} from './find-stack-output';
+import {
+  APIGatewayClient,
+  CreateDeploymentCommand,
+  UpdateStageCommand,
+} from '@aws-sdk/client-api-gateway';
 
-const stageName = `prod`;
+export async function redeployRestApi(restApiId: string): Promise<void> {
+  const client = new APIGatewayClient({});
 
-/**
- * https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-deployments.html
- */
-export async function redeployRestApi(
-  clientConfig: CloudFormation.ClientConfiguration,
-  stack: CloudFormation.Stack,
-): Promise<void> {
-  const restApiId = findStackOutput(stack, `RestApiId`);
-  const apiGateway = new APIGateway(clientConfig);
-
-  const deployment = await apiGateway
-    .createDeployment({
+  const {id} = await client.send(
+    new CreateDeploymentCommand({
       restApiId,
-      stageName,
-      description: `Triggered by the aws-simple redeploy command`,
-    })
-    .promise();
+      stageName: `prod`,
+      description: `aws-simple redeployment`,
+    }),
+  );
 
-  await apiGateway
-    .updateStage({
+  await client.send(
+    new UpdateStageCommand({
       restApiId,
-      stageName,
-      patchOperations: [
-        {op: `replace`, path: `/deploymentId`, value: deployment.id},
-      ],
-    })
-    .promise();
+      stageName: `prod`,
+      patchOperations: [{op: `replace`, path: `/deploymentId`, value: id}],
+    }),
+  );
 }

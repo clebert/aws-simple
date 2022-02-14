@@ -1,18 +1,28 @@
-import {CloudFormation} from 'aws-sdk';
+import {
+  CloudFormationClient,
+  DeleteStackCommand,
+  waitUntilStackDeleteComplete,
+} from '@aws-sdk/client-cloudformation';
+import {deleteBucket} from './delete-bucket';
+import {findStack} from './find-stack';
+import {getOutputValue} from './get-output-value';
 
-export async function deleteStack(
-  clientConfig: CloudFormation.ClientConfiguration,
-  stack: CloudFormation.Stack,
-): Promise<void> {
-  const cloudFormation = new CloudFormation(clientConfig);
-  const {StackName} = stack;
+export async function deleteStack(stackName: string): Promise<void> {
+  const client = new CloudFormationClient({});
 
-  await cloudFormation.deleteStack({StackName}).promise();
+  if (stackName.startsWith(`aws-simple--`)) {
+    const stack = await findStack(stackName);
+    const bucketName = getOutputValue(stack, `BucketName`);
 
-  await cloudFormation
-    .waitFor(`stackDeleteComplete`, {
-      StackName,
-      $waiter: {delay: 5, maxAttempts: 3600 / 5},
-    })
-    .promise();
+    if (bucketName) {
+      await deleteBucket(bucketName);
+    }
+  }
+
+  await client.send(new DeleteStackCommand({StackName: stackName}));
+
+  await waitUntilStackDeleteComplete(
+    {client, maxWaitTime: 600, minDelay: 30, maxDelay: 30},
+    {StackName: stackName},
+  );
 }
