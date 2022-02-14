@@ -30,23 +30,16 @@ export function addLambdaResource(
 
   const lambdaFunction = createLambdaFunction(stackConfig, route, stack);
 
-  const lambdaIntegration = new aws_apigateway.LambdaIntegration(
-    lambdaFunction,
-    {cacheKeyParameters},
-  );
+  const integration = new aws_apigateway.LambdaIntegration(lambdaFunction, {
+    cacheKeyParameters,
+  });
 
-  const resource = restApi.root.resourceForPath(
-    publicPath.replace(`/*`, `/{proxy+}`),
-  );
+  const corsOptions: aws_apigateway.CorsOptions = {
+    allowOrigins: aws_apigateway.Cors.ALL_ORIGINS,
+    allowCredentials: authenticationEnabled,
+  };
 
-  if (corsEnabled) {
-    resource.addCorsPreflight({
-      allowOrigins: aws_apigateway.Cors.ALL_ORIGINS,
-      allowCredentials: authenticationEnabled,
-    });
-  }
-
-  resource.addMethod(httpMethod, lambdaIntegration, {
+  const methodOptions: aws_apigateway.MethodOptions = {
     authorizationType: authenticationEnabled
       ? aws_apigateway.AuthorizationType.CUSTOM
       : aws_apigateway.AuthorizationType.NONE,
@@ -58,7 +51,27 @@ export function addLambdaResource(
       }),
       {} as Record<string, boolean>,
     ),
-  });
+  };
+
+  const resource = restApi.root.resourceForPath(publicPath.replace(`/*`, `/`));
+
+  if (corsEnabled) {
+    resource.addCorsPreflight(corsOptions);
+  }
+
+  resource.addMethod(httpMethod, integration, methodOptions);
+
+  if (publicPath.endsWith(`/*`)) {
+    const proxyResource = restApi.root.resourceForPath(
+      publicPath.replace(`/*`, `/{proxy+}`),
+    );
+
+    if (corsEnabled) {
+      proxyResource.addCorsPreflight(corsOptions);
+    }
+
+    proxyResource.addMethod(httpMethod, integration, methodOptions);
+  }
 
   return lambdaFunction;
 }

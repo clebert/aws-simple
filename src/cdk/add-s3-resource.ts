@@ -24,7 +24,7 @@ export function addS3Resource(
     );
   }
 
-  const s3Integration = new aws_apigateway.AwsIntegration({
+  const integration = new aws_apigateway.AwsIntegration({
     service: `s3`,
     path:
       type === `folder`
@@ -34,22 +34,36 @@ export function addS3Resource(
     options: getS3IntegrationOptions(route, bucketReadRole),
   });
 
-  const resource = restApi.root.resourceForPath(
-    publicPath.replace(`/*`, `/{proxy+}`),
-  );
+  const corsOptions: aws_apigateway.CorsOptions = {
+    allowOrigins: aws_apigateway.Cors.ALL_ORIGINS,
+    allowCredentials: authenticationEnabled,
+  };
 
-  if (corsEnabled) {
-    resource.addCorsPreflight({
-      allowOrigins: aws_apigateway.Cors.ALL_ORIGINS,
-      allowCredentials: authenticationEnabled,
-    });
+  const methodOptions = getS3MethodOptions(route, requestAuthorizer);
+
+  if (type === `file`) {
+    const resource = restApi.root.resourceForPath(
+      publicPath.replace(`/*`, `/`),
+    );
+
+    if (corsEnabled) {
+      resource.addCorsPreflight(corsOptions);
+    }
+
+    resource.addMethod(`GET`, integration, methodOptions);
   }
 
-  resource.addMethod(
-    `GET`,
-    s3Integration,
-    getS3MethodOptions(route, requestAuthorizer),
-  );
+  if (publicPath.endsWith(`/*`)) {
+    const proxyResource = restApi.root.resourceForPath(
+      publicPath.replace(`/*`, `/{proxy+}`),
+    );
+
+    if (corsEnabled) {
+      proxyResource.addCorsPreflight(corsOptions);
+    }
+
+    proxyResource.addMethod(`GET`, integration, methodOptions);
+  }
 }
 
 function getS3IntegrationOptions(

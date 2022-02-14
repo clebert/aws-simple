@@ -89,31 +89,43 @@ function getStageOptions(
       ? aws_apigateway.MethodLoggingLevel.INFO
       : aws_apigateway.MethodLoggingLevel.OFF;
 
-  const methodOptions = routes.reduce((options, route) => {
+  const methodOptionsByPath: Record<
+    string,
+    aws_apigateway.MethodDeploymentOptions
+  > = {};
+
+  for (const route of routes) {
     const {
+      type,
       httpMethod = `GET`,
       publicPath,
       throttling,
       cacheTtlInSeconds = 300,
     } = route;
 
-    const methodPath =
-      publicPath === `/`
-        ? `//${httpMethod}`
-        : join(publicPath.replace(`/*`, `/{proxy+}`), httpMethod);
-
-    return {
-      ...options,
-      [methodPath]: {
-        cachingEnabled: cachingEnabled && cacheTtlInSeconds > 0,
-        cacheTtl: Duration.seconds(cacheTtlInSeconds),
-        loggingLevel,
-        metricsEnabled: monitoring?.metricsEnabled,
-        throttlingBurstLimit: throttling?.burstLimit,
-        throttlingRateLimit: throttling?.rateLimit,
-      },
+    const methodOptions: aws_apigateway.MethodDeploymentOptions = {
+      cachingEnabled: cachingEnabled && cacheTtlInSeconds > 0,
+      cacheTtl: Duration.seconds(cacheTtlInSeconds),
+      loggingLevel,
+      metricsEnabled: monitoring?.metricsEnabled,
+      throttlingBurstLimit: throttling?.burstLimit,
+      throttlingRateLimit: throttling?.rateLimit,
     };
-  }, {} as Record<string, aws_apigateway.MethodDeploymentOptions>);
+
+    if (type !== `folder`) {
+      methodOptionsByPath[
+        publicPath === `/`
+          ? `//${httpMethod}`
+          : join(publicPath.replace(`/*`, `/`), httpMethod)
+      ] = methodOptions;
+    }
+
+    if (publicPath.endsWith(`/*`)) {
+      methodOptionsByPath[
+        join(publicPath.replace(`/*`, `/{proxy+}`), httpMethod)
+      ] = methodOptions;
+    }
+  }
 
   const domainName = getDomainName(stackConfig);
 
@@ -129,7 +141,7 @@ function getStageOptions(
 
   return {
     cacheClusterEnabled: cachingEnabled,
-    methodOptions,
+    methodOptions: methodOptionsByPath,
     accessLogDestination,
     loggingLevel,
     metricsEnabled: monitoring?.metricsEnabled,
