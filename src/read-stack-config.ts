@@ -1,5 +1,6 @@
 import {resolve} from 'path';
 import type {Stack, aws_apigateway, aws_lambda} from 'aws-cdk-lib';
+import {validateRoutes} from './utils/validate-routes';
 
 export interface StackConfig {
   readonly hostedZoneName: string;
@@ -97,5 +98,9 @@ export function readStackConfig(port?: number): StackConfig {
     );
   }
 
-  return defaultExport(port);
+  const stackConfig = defaultExport(port) as StackConfig;
+
+  validateRoutes(stackConfig.routes);
+
+  return stackConfig;
 }

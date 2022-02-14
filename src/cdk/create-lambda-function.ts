@@ -37,7 +37,7 @@ export function createLambdaFunction(
 
   if (uniqueFunctionName.length > 64) {
     throw new Error(
-      `The name of a Lambda function must not be longer than 64 characters.`,
+      `The unique name of a Lambda function must not be longer than 64 characters: ${uniqueFunctionName}`,
     );
   }
 

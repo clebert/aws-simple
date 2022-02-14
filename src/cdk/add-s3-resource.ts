@@ -12,12 +12,6 @@ export function addS3Resource(
 ): void {
   const {type, publicPath, path, authenticationEnabled, corsEnabled} = route;
 
-  if (type === `folder` && !publicPath.endsWith(`/*`)) {
-    throw new Error(
-      `The public path of an S3 folder route must end with "/*".`,
-    );
-  }
-
   if (authenticationEnabled && !requestAuthorizer) {
     throw new Error(
       `Authentication cannot be enabled because no authentication options are configured.`,
