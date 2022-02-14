@@ -8,6 +8,15 @@ Production-ready AWS website deployment with minimal configuration.
 npm install aws-simple aws-cdk
 ```
 
+**Warning**: The `11.x` version is an entirely new implementation and is
+currently not yet tested in production. I will remove this warning as soon as I
+have enough experience with the latest version. Until then, I recommend using
+the old version for production environments:
+
+```
+npm install aws-simple@10.0.3 aws-cdk
+```
+
 ## Getting started
 
 The following are the steps to deploy a website using `aws-simple` and the AWS
