@@ -117,7 +117,10 @@ function getS3MethodOptions(
     'method.response.header.Content-Type': true,
     ...corsResponseParameters,
     ...responseHeaderNames.reduce(
-      (parameters, headerName) => ({...parameters, [headerName]: true}),
+      (parameters, headerName) => ({
+        ...parameters,
+        [`method.response.header.${headerName}`]: true,
+      }),
       {} as Record<string, boolean>,
     ),
   };
