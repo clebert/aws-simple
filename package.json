@@ -1,7 +1,7 @@
 {
   "name": "aws-simple",
   "version": "10.0.3",
-  "description": "Production-ready AWS website deployment with minimal configuration and simulation using a local DEV server.",
+  "description": "Production-ready AWS website deployment with minimal configuration.",
   "license": "MIT",
   "author": "Clemens Akens",
   "types": "lib/index.d.ts",

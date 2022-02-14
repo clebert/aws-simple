@@ -1,7 +1,6 @@
 # aws-simple
 
-Production-ready AWS website deployment with minimal configuration and
-simulation using a local DEV server.
+Production-ready AWS website deployment with minimal configuration.
 
 ## Installation
 
@@ -9,7 +8,7 @@ simulation using a local DEV server.
 npm install aws-simple aws-cdk
 ```
 
-## Getting Started
+## Getting started
 
 The following are the steps to deploy a website using `aws-simple` and the AWS
 CDK.
@@ -43,7 +42,7 @@ under a particular domain. The required certificate is created automatically by
 ### 3. Create an AWS IAM user
 
 Create an AWS IAM user with programmatic access and an
-[AWS IAM policy](#aws-iam-policy) with sufficient permissions.
+[AWS IAM policy](#aws-iam-policy-example) with sufficient permissions.
 
 ### 4. Set the credentials
 
@@ -69,13 +68,361 @@ npx cdk bootstrap --app 'npx aws-simple synthesize'
 npx cdk deploy --app 'npx aws-simple synthesize' && npx aws-simple upload
 ```
 
-### 8. Optional: Start a local DEV server
+### 8. Optional: Start the local DEV server
 
 ```
 npx aws-simple start
 ```
 
-## AWS IAM Policy
+## CLI Help
+
+```
+Usage: aws-simple <command> [options]
+
+Commands:
+  aws-simple synthesize [options]   Synthesize the configured stack using the CDK.
+  aws-simple upload [options]       Upload all referenced files to the S3 bucket of the configured stack.
+  aws-simple list [options]         List all deployed stacks filtered by the specified hosted zone name.
+  aws-simple delete [options]       Delete the specified stack.
+  aws-simple tag [options]          Update the tags of the specified stack.
+  aws-simple purge [options]        Delete all expired stacks filtered by the specified hosted zone name.
+  aws-simple flush-cache [options]  Flush the REST API cache of the specified stack.
+  aws-simple redeploy [options]     Redeploy the REST API of the specified stack.
+  aws-simple start [options]        Start a local DEV server.
+
+Options:
+      --version  Show version number                                   [boolean]
+  -h, --help     Show help                                             [boolean]
+```
+
+## Configuration
+
+### Alias record name
+
+```js
+exports.default = function (port) {
+  return {
+    hostedZoneName: `example.com`,
+    aliasRecordName: `stage`, // <==
+    routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+  };
+};
+```
+
+An optional alias record name allows multiple website variants to be deployed
+and operated simultaneously. Example: `stage.example.com`, `test.example.com`
+
+Except for the specified hosted zone, the website variants do not share any
+infrastructure. For the management of multiple website variants, there are the
+following two CLI commands:
+
+- `aws-simple list [options]`
+- `aws-simple purge [options]`
+
+### S3 file routes
+
+```js
+exports.default = function (port) {
+  return {
+    hostedZoneName: `example.com`,
+    routes: [
+      {
+        type: `file`,
+        publicPath: `/`,
+        path: `dist/index.html`,
+
+        // Optional property:
+        responseHeaders: {'cache-control': `max-age=157680000`},
+      },
+    ],
+  };
+};
+```
+
+### Lambda function routes
+
+```js
+exports.default = function (port) {
+  return {
+    hostedZoneName: `example.com`,
+    routes: [
+      {
+        type: `function`,
+        httpMethod: `GET`,
+        publicPath: `/hello`,
+        path: `dist/hello.js`,
+        functionName: `hello`,
+
+        // Optional properties:
+        memorySize: 128,
+        timeoutInSeconds: 28,
+        environment: {FOO: `bar`},
+        requestParameters: {foo: {}, bar: {cacheKey: true, required: true}},
+      },
+    ],
+  };
+};
+```
+
+```js
+// hello.js
+exports.handler = async (event) => {
+  return {statusCode: 200, body: JSON.stringify({hello: 'world'})};
+};
+```
+
+### Wildcard file/function routes
+
+```js
+exports.default = function (port) {
+  return {
+    hostedZoneName: `example.com`,
+    routes: [
+      {type: `file`, publicPath: `/`, path: `dist/index.html`},
+      {type: `file`, publicPath: `/*`, path: `dist/index.html`}, // <==
+    ],
+  };
+};
+```
+
+### S3 folder routes
+
+```js
+exports.default = function (port) {
+  return {
+    hostedZoneName: `example.com`,
+    routes: [
+      {
+        type: `folder`,
+        publicPath: `/*`,
+        path: `dist`,
+
+        // Optional property:
+        responseHeaders: {'cache-control': `max-age=157680000`},
+      },
+    ],
+  };
+};
+```
+
+### Caching
+
+```js
+exports.default = function (port) {
+  return {
+    hostedZoneName: `example.com`,
+    cachingEnabled: true, // <==
+    routes: [
+      {
+        type: `file`,
+        publicPath: `/`,
+        path: `dist/index.html`,
+        cacheTtlInSeconds: 300, // <==
+      },
+      {
+        type: `folder`,
+        publicPath: `/*`,
+        path: `dist`,
+        cacheTtlInSeconds: 300, // <==
+      },
+      {
+        type: `function`,
+        httpMethod: `GET`,
+        publicPath: `/hello`,
+        path: `dist/hello.js`,
+        functionName: `hello`,
+        cacheTtlInSeconds: 300, // <==
+      },
+    ],
+  };
+};
+```
+
+### Authentication
+
+```js
+exports.default = function (port) {
+  return {
+    hostedZoneName: `example.com`,
+    authentication: {
+      username: `johndoe`,
+      password: `123456`,
+
+      // Optional properties:
+      cacheTtlInSeconds: 300,
+      realm: `foo`,
+    },
+    routes: [
+      {
+        type: `file`,
+        publicPath: `/`,
+        path: `dist/index.html`,
+        authenticationEnabled: true, // <==
+      },
+      {
+        type: `folder`,
+        publicPath: `/*`,
+        path: `dist`,
+        authenticationEnabled: true, // <==
+      },
+      {
+        type: `function`,
+        httpMethod: `GET`,
+        publicPath: `/hello`,
+        path: `dist/hello.js`,
+        functionName: `hello`,
+        authenticationEnabled: true, // <==
+      },
+    ],
+  };
+};
+```
+
+### CORS
+
+```js
+exports.default = function (port) {
+  return {
+    hostedZoneName: `example.com`,
+    routes: [
+      {
+        type: `file`,
+        publicPath: `/`,
+        path: `dist/index.html`,
+        corsEnabled: true, // <==
+      },
+      {
+        type: `folder`,
+        publicPath: `/*`,
+        path: `dist`,
+        corsEnabled: true, // <==
+      },
+      {
+        type: `function`,
+        httpMethod: `GET`,
+        publicPath: `/hello`,
+        path: `dist/hello.js`,
+        functionName: `hello`,
+        corsEnabled: true, // <==
+      },
+    ],
+  };
+};
+```
+
+```js
+// hello.js
+exports.handler = async (event) => {
+  return {
+    statusCode: 200,
+    body: JSON.stringify({hello: 'world'}),
+    headers: {'access-control-allow-origin': '*'},
+  };
+};
+```
+
+### Monitoring
+
+```js
+exports.default = function (port) {
+  return {
+    hostedZoneName: `example.com`,
+    monitoring: {
+      accessLoggingEnabled: true,
+      loggingEnabled: true,
+      metricsEnabled: true,
+      tracingEnabled: true,
+    },
+    routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+  };
+};
+```
+
+### Throttling
+
+```js
+exports.default = function (port) {
+  return {
+    hostedZoneName: `example.com`,
+    throttling: {
+      rateLimit: 10000,
+      burstLimit: 5000,
+    },
+    routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+  };
+};
+```
+
+### Synthesization hook functions
+
+Hook functions can be used to implement advanced features. Below are two
+examples.
+
+#### Example: Configure a firewall
+
+```js
+const {aws_wafv2} = require(`aws-cdk-lib`);
+
+exports.default = function (port) {
+  return {
+    hostedZoneName: `example.com`,
+    routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+
+    onSynthesize: ({stack, restApi}) => {
+      const myWebAclArn = `...`;
+
+      const webAclAssociation = new aws_wafv2.CfnWebACLAssociation(
+        stack,
+        `WebACLAssociation`,
+        {
+          // https://docs.aws.amazon.com/apigateway/latest/developerguide/arn-format-reference.html
+          resourceArn: `arn:aws:apigateway:${stack.region}::/restapis/${restApi.restApiId}/stages/prod`,
+          webAclArn: myWebAclArn,
+        },
+      );
+
+      webAclAssociation.node.addDependency(restApi);
+    },
+  };
+};
+```
+
+#### Example: Allow access to a secret in the AWS Secret Manager
+
+```js
+const {aws_iam} = require(`aws-cdk-lib`);
+
+exports.default = function (port) {
+  return {
+    hostedZoneName: `example.com`,
+    routes: [
+      {
+        type: `function`,
+        httpMethod: `GET`,
+        publicPath: `/hello`,
+        path: `dist/hello.js`,
+        functionName: `hello`,
+
+        onSynthesize: ({stack, restApi, lambdaFunction}) => {
+          const mySecretId = `...`;
+
+          const secretsManagerPolicyStatement = new aws_iam.PolicyStatement({
+            effect: aws_iam.Effect.ALLOW,
+            actions: [`secretsmanager:GetSecretValue`],
+            resources: [
+              `arn:aws:secretsmanager:${stack.region}:${stack.account}:secret:${mySecretId}`,
+            ],
+          });
+
+          lambdaFunction.addToRolePolicy(secretsManagerPolicyStatement);
+        },
+      },
+    ],
+  };
+};
+```
+
+## AWS IAM Policy Example
 
 ```json
 {
