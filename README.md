@@ -127,7 +127,7 @@ exports.default = function (port) {
     hostedZoneName: `example.com`,
     routes: [
       {
-        type: `file`,
+        type: `file`, // <==
         publicPath: `/`,
         path: `dist/index.html`,
 
@@ -147,7 +147,7 @@ exports.default = function (port) {
     hostedZoneName: `example.com`,
     routes: [
       {
-        type: `function`,
+        type: `function`, // <==
         httpMethod: `GET`,
         publicPath: `/hello`,
         path: `dist/hello.js`,
@@ -178,8 +178,16 @@ exports.default = function (port) {
   return {
     hostedZoneName: `example.com`,
     routes: [
-      {type: `file`, publicPath: `/`, path: `dist/index.html`},
-      {type: `file`, publicPath: `/*`, path: `dist/index.html`}, // <==
+      {
+        type: `file`,
+        publicPath: `/`,
+        path: `dist/index.html`,
+      },
+      {
+        type: `file`,
+        publicPath: `/*`, // <==
+        path: `dist/index.html`,
+      },
     ],
   };
 };
@@ -245,8 +253,8 @@ exports.default = function (port) {
   return {
     hostedZoneName: `example.com`,
     authentication: {
-      username: `johndoe`,
-      password: `123456`,
+      username: `johndoe`, // <==
+      password: `123456`, // <==
 
       // Optional properties:
       cacheTtlInSeconds: 300,
@@ -316,7 +324,9 @@ exports.handler = async (event) => {
   return {
     statusCode: 200,
     body: JSON.stringify({hello: 'world'}),
-    headers: {'access-control-allow-origin': '*'},
+    headers: {
+      'access-control-allow-origin': '*', // <==
+    },
   };
 };
 ```
@@ -328,10 +338,10 @@ exports.default = function (port) {
   return {
     hostedZoneName: `example.com`,
     monitoring: {
-      accessLoggingEnabled: true,
-      loggingEnabled: true,
-      metricsEnabled: true,
-      tracingEnabled: true,
+      accessLoggingEnabled: true, // <==
+      loggingEnabled: true, // <==
+      metricsEnabled: true, // <==
+      tracingEnabled: true, // <==
     },
     routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
   };
@@ -345,8 +355,8 @@ exports.default = function (port) {
   return {
     hostedZoneName: `example.com`,
     throttling: {
-      rateLimit: 10000,
-      burstLimit: 5000,
+      rateLimit: 10000, // <==
+      burstLimit: 5000, // <==
     },
     routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
   };
