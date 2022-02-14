@@ -1,6 +1,6 @@
 {
   "name": "aws-simple",
-  "version": "10.0.3",
+  "version": "11.0.0",
   "description": "Production-ready AWS website deployment with minimal configuration.",
   "license": "MIT",
   "author": "Clemens Akens",
