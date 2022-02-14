@@ -31,7 +31,7 @@ describes a website stack:
 // @ts-check
 
 /** @type {import('aws-simple').ConfigFileDefaultExport} */
-exports.default = function (port) {
+exports.default = (port) => {
   return {
     hostedZoneName: `example.com`,
     routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
@@ -109,7 +109,7 @@ Options:
 ### Alias record name
 
 ```js
-exports.default = function (port) {
+exports.default = (port) => {
   return {
     hostedZoneName: `example.com`,
     aliasRecordName: `stage`, // <==
@@ -131,7 +131,7 @@ following two CLI commands:
 ### S3 file routes
 
 ```js
-exports.default = function (port) {
+exports.default = (port) => {
   return {
     hostedZoneName: `example.com`,
     routes: [
@@ -151,7 +151,7 @@ exports.default = function (port) {
 ### Lambda function routes
 
 ```js
-exports.default = function (port) {
+exports.default = (port) => {
   return {
     hostedZoneName: `example.com`,
     routes: [
@@ -183,7 +183,7 @@ exports.handler = async (event) => {
 ### Wildcard file/function routes
 
 ```js
-exports.default = function (port) {
+exports.default = (port) => {
   return {
     hostedZoneName: `example.com`,
     routes: [
@@ -205,7 +205,7 @@ exports.default = function (port) {
 ### S3 folder routes
 
 ```js
-exports.default = function (port) {
+exports.default = (port) => {
   return {
     hostedZoneName: `example.com`,
     routes: [
@@ -225,7 +225,7 @@ exports.default = function (port) {
 ### Caching
 
 ```js
-exports.default = function (port) {
+exports.default = (port) => {
   return {
     hostedZoneName: `example.com`,
     cachingEnabled: true, // <==
@@ -258,7 +258,7 @@ exports.default = function (port) {
 ### Authentication
 
 ```js
-exports.default = function (port) {
+exports.default = (port) => {
   return {
     hostedZoneName: `example.com`,
     authentication: {
@@ -298,7 +298,7 @@ exports.default = function (port) {
 ### CORS
 
 ```js
-exports.default = function (port) {
+exports.default = (port) => {
   return {
     hostedZoneName: `example.com`,
     routes: [
@@ -343,7 +343,7 @@ exports.handler = async (event) => {
 ### Monitoring
 
 ```js
-exports.default = function (port) {
+exports.default = (port) => {
   return {
     hostedZoneName: `example.com`,
     monitoring: {
@@ -366,7 +366,7 @@ exports.default = function (port) {
 const throttling = {rateLimit: 100, burstLimit: 50};
 
 /** @type {import('aws-simple').ConfigFileDefaultExport} */
-exports.default = function (port) {
+exports.default = (port) => {
   return {
     hostedZoneName: `example.com`,
     routes: [
@@ -395,17 +395,17 @@ exports.default = function (port) {
 };
 ```
 
-### Synthesization functions
+### `onSynthesize` hooks
 
-Synthesization functions can be used to implement advanced features. Below are
-two examples.
+To implement advanced features, `onSynthesize` hooks can be used. Below are two
+examples.
 
 #### Example: Configure a firewall
 
 ```js
 const {aws_wafv2} = require(`aws-cdk-lib`);
 
-exports.default = function (port) {
+exports.default = (port) => {
   return {
     hostedZoneName: `example.com`,
     routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
@@ -434,7 +434,7 @@ exports.default = function (port) {
 ```js
 const {aws_iam} = require(`aws-cdk-lib`);
 
-exports.default = function (port) {
+exports.default = (port) => {
   return {
     hostedZoneName: `example.com`,
     routes: [
