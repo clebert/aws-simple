@@ -113,10 +113,12 @@ function getStageOptions(
     };
 
     if (type !== `folder`) {
+      const nonProxyPublicPath = publicPath.replace(`/*`, `/`);
+
       methodOptionsByPath[
-        publicPath === `/`
+        nonProxyPublicPath === `/`
           ? `//${httpMethod}`
-          : join(publicPath.replace(`/*`, `/`), httpMethod)
+          : join(nonProxyPublicPath, httpMethod)
       ] = methodOptions;
     }
 
