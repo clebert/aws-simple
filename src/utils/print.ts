@@ -1,3 +1,4 @@
+import {isatty} from 'tty';
 import {bold, gray, green, red, underline, yellow} from 'chalk';
 import prompts from 'prompts';
 
@@ -34,6 +35,10 @@ print.error = (text: string): void => {
 };
 
 print.confirmation = async (message: string): Promise<boolean> => {
+  if (!isatty(0)) {
+    throw new Error(`Please specify the --yes CLI option.`);
+  }
+
   if (printed) {
     console.log(``);
   }
