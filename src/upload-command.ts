@@ -83,7 +83,10 @@ export async function uploadCommand(args: UploadCommandArgs): Promise<void> {
   );
 
   if (rejectedResults.length > 0) {
-    print.error(...rejectedResults.map(({reason}) => String(reason)));
+    for (const {reason} of rejectedResults) {
+      print.error(String(reason));
+    }
+
     process.exit(1);
   } else {
     print.success(`All referenced files have been successfully uploaded.`);

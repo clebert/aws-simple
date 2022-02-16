@@ -17,30 +17,24 @@ print.paragraph = (text: string): void => {
   print(text);
 };
 
-print.info = (...lines: readonly (string | undefined)[]): void => {
-  print.paragraph(
-    gray(
-      `[${new Date().toLocaleTimeString()}] ${lines
-        .filter(Boolean)
-        .join(`\n`)}`,
-    ),
-  );
+print.timestamp = (text: string): void => {
+  print.paragraph(`[${new Date().toLocaleTimeString()}] ${text}`);
 };
 
-print.success = (...lines: readonly (string | undefined)[]): void => {
-  print.paragraph(green(lines.filter(Boolean).join(`\n`)));
+print.info = (text: string): void => {
+  print.paragraph(gray(text));
 };
 
-print.warning = (...lines: readonly (string | undefined)[]): void => {
-  print.paragraph(yellow(lines.filter(Boolean).join(`\n`)));
+print.success = (text: string): void => {
+  print.paragraph(green(text));
 };
 
-print.error = (...lines: readonly (string | undefined)[]): void => {
-  if (printed) {
-    console.error(``);
-  }
+print.warning = (text: string): void => {
+  print.paragraph(yellow(text));
+};
 
-  console.error(red(lines.filter(Boolean).join(`\n`)));
+print.error = (text: string): void => {
+  console.error(red(text));
 };
 
 print.confirmation = async (message: string): Promise<boolean> => {
