@@ -134,7 +134,7 @@ exports.default = () => ({
       publicPath: '/',
       path: 'dist/index.html',
 
-      // Optional property:
+      // optional property:
       responseHeaders: {'cache-control': 'max-age=157680000'},
     },
   ],
@@ -152,9 +152,9 @@ exports.default = () => ({
       httpMethod: 'GET',
       publicPath: '/hello',
       path: 'dist/hello.js',
-      functionName: 'hello',
+      functionName: 'hello', // must be unique per stack and as short as possible
 
-      // Optional properties:
+      // optional properties:
       memorySize: 128,
       timeoutInSeconds: 28,
       environment: {FOO: 'bar'},
@@ -205,7 +205,7 @@ exports.default = () => ({
       publicPath: '/*', // matches '/foo' and '/foo/bar' but not '/'
       path: 'dist',
 
-      // Optional property:
+      // optional property:
       responseHeaders: {'cache-control': 'max-age=157680000'},
     },
   ],
@@ -252,7 +252,7 @@ exports.default = () => ({
     username: 'johndoe', // <==
     password: '123456', // <==
 
-    // Optional properties:
+    // optional properties:
     cacheTtlInSeconds: 300,
     realm: 'foo',
   },
