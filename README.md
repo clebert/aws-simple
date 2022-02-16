@@ -31,12 +31,10 @@ describes a website stack:
 // @ts-check
 
 /** @type {import('aws-simple').ConfigFileDefaultExport} */
-exports.default = (port) => {
-  return {
-    hostedZoneName: 'example.com',
-    routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
-  };
-};
+exports.default = (port) => ({
+  hostedZoneName: 'example.com',
+  routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
+});
 ```
 
 The exported function optionally gets a DEV server `port` argument when called
@@ -108,13 +106,11 @@ Options:
 ### Alias record name
 
 ```js
-exports.default = (port) => {
-  return {
-    hostedZoneName: 'example.com',
-    aliasRecordName: 'stage', // <==
-    routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
-  };
-};
+exports.default = () => ({
+  hostedZoneName: 'example.com',
+  aliasRecordName: 'stage', // <==
+  routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
+});
 ```
 
 An optional alias record name allows multiple website variants to be deployed
@@ -130,232 +126,215 @@ following two CLI commands:
 ### S3 file routes
 
 ```js
-exports.default = (port) => {
-  return {
-    hostedZoneName: 'example.com',
-    routes: [
-      {
-        type: 'file', // <==
-        publicPath: '/',
-        path: 'dist/index.html',
+exports.default = () => ({
+  hostedZoneName: 'example.com',
+  routes: [
+    {
+      type: 'file', // <==
+      publicPath: '/',
+      path: 'dist/index.html',
 
-        // Optional property:
-        responseHeaders: {'cache-control': 'max-age=157680000'},
-      },
-    ],
-  };
-};
+      // Optional property:
+      responseHeaders: {'cache-control': 'max-age=157680000'},
+    },
+  ],
+});
 ```
 
 ### Lambda function routes
 
 ```js
-exports.default = (port) => {
-  return {
-    hostedZoneName: 'example.com',
-    routes: [
-      {
-        type: 'function', // <==
-        httpMethod: 'GET',
-        publicPath: '/hello',
-        path: 'dist/hello.js',
-        functionName: 'hello',
+exports.default = () => ({
+  hostedZoneName: 'example.com',
+  routes: [
+    {
+      type: 'function', // <==
+      httpMethod: 'GET',
+      publicPath: '/hello',
+      path: 'dist/hello.js',
+      functionName: 'hello',
 
-        // Optional properties:
-        memorySize: 128,
-        timeoutInSeconds: 28,
-        environment: {FOO: 'bar'},
-        requestParameters: {foo: {}, bar: {cacheKey: true, required: true}},
-      },
-    ],
-  };
-};
+      // Optional properties:
+      memorySize: 128,
+      timeoutInSeconds: 28,
+      environment: {FOO: 'bar'},
+      requestParameters: {foo: {}, bar: {cacheKey: true, required: true}},
+    },
+  ],
+});
 ```
 
 ```js
-// hello.js
-exports.handler = async (event) => {
-  return {statusCode: 200, body: JSON.stringify({hello: 'world'})};
-};
+// dist/hello.js
+exports.handler = async () => ({
+  statusCode: 200,
+  body: JSON.stringify({hello: 'world'}),
+});
 ```
 
 ### Wildcard file/function routes
 
 ```js
-exports.default = (port) => {
-  return {
-    hostedZoneName: 'example.com',
-    routes: [
-      {
-        type: 'file',
-        publicPath: '/*', // <== matches '/', '/foo', '/foo/bar'
-        path: 'dist/index.html',
-      },
-      {
-        type: 'function',
-        httpMethod: 'GET',
-        publicPath: '/hello/*', // <== matches '/hello', '/hello/world'
-        path: 'dist/hello.js',
-        functionName: 'hello',
-      },
-    ],
-  };
-};
+exports.default = () => ({
+  hostedZoneName: 'example.com',
+  routes: [
+    {
+      type: 'file',
+      publicPath: '/*', // <== matches '/', '/foo', '/foo/bar'
+      path: 'dist/index.html',
+    },
+    {
+      type: 'function',
+      httpMethod: 'GET',
+      publicPath: '/hello/*', // <== matches '/hello', '/hello/world'
+      path: 'dist/hello.js',
+      functionName: 'hello',
+    },
+  ],
+});
 ```
 
 ### S3 folder routes
 
 ```js
-exports.default = (port) => {
-  return {
-    hostedZoneName: 'example.com',
-    routes: [
-      {
-        type: 'folder', // <==
-        publicPath: '/*', // matches '/foo' and '/foo/bar' but not '/'
-        path: 'dist',
+exports.default = () => ({
+  hostedZoneName: 'example.com',
+  routes: [
+    {
+      type: 'folder', // <==
+      publicPath: '/*', // matches '/foo' and '/foo/bar' but not '/'
+      path: 'dist',
 
-        // Optional property:
-        responseHeaders: {'cache-control': 'max-age=157680000'},
-      },
-    ],
-  };
-};
+      // Optional property:
+      responseHeaders: {'cache-control': 'max-age=157680000'},
+    },
+  ],
+});
 ```
 
 ### Caching
 
 ```js
-exports.default = (port) => {
-  return {
-    hostedZoneName: 'example.com',
-    cachingEnabled: true, // <==
-    routes: [
-      {
-        type: 'file',
-        publicPath: '/',
-        path: 'dist/index.html',
-        cacheTtlInSeconds: 300, // <==
-      },
-      {
-        type: 'folder',
-        publicPath: '/*',
-        path: 'dist',
-        cacheTtlInSeconds: 300, // <==
-      },
-      {
-        type: 'function',
-        httpMethod: 'GET',
-        publicPath: '/hello',
-        path: 'dist/hello.js',
-        functionName: 'hello',
-        cacheTtlInSeconds: 300, // <==
-      },
-    ],
-  };
-};
+exports.default = () => ({
+  hostedZoneName: 'example.com',
+  cachingEnabled: true, // <==
+  routes: [
+    {
+      type: 'file',
+      publicPath: '/',
+      path: 'dist/index.html',
+      cacheTtlInSeconds: 300, // <==
+    },
+    {
+      type: 'folder',
+      publicPath: '/*',
+      path: 'dist',
+      cacheTtlInSeconds: 300, // <==
+    },
+    {
+      type: 'function',
+      httpMethod: 'GET',
+      publicPath: '/hello',
+      path: 'dist/hello.js',
+      functionName: 'hello',
+      cacheTtlInSeconds: 300, // <==
+    },
+  ],
+});
 ```
 
 ### Authentication
 
 ```js
-exports.default = (port) => {
-  return {
-    hostedZoneName: 'example.com',
-    authentication: {
-      username: 'johndoe', // <==
-      password: '123456', // <==
+exports.default = () => ({
+  hostedZoneName: 'example.com',
+  authentication: {
+    username: 'johndoe', // <==
+    password: '123456', // <==
 
-      // Optional properties:
-      cacheTtlInSeconds: 300,
-      realm: 'foo',
+    // Optional properties:
+    cacheTtlInSeconds: 300,
+    realm: 'foo',
+  },
+  routes: [
+    {
+      type: 'file',
+      publicPath: '/',
+      path: 'dist/index.html',
+      authenticationEnabled: true, // <==
     },
-    routes: [
-      {
-        type: 'file',
-        publicPath: '/',
-        path: 'dist/index.html',
-        authenticationEnabled: true, // <==
-      },
-      {
-        type: 'folder',
-        publicPath: '/*',
-        path: 'dist',
-        authenticationEnabled: true, // <==
-      },
-      {
-        type: 'function',
-        httpMethod: 'GET',
-        publicPath: '/hello',
-        path: 'dist/hello.js',
-        functionName: 'hello',
-        authenticationEnabled: true, // <==
-      },
-    ],
-  };
-};
+    {
+      type: 'folder',
+      publicPath: '/*',
+      path: 'dist',
+      authenticationEnabled: true, // <==
+    },
+    {
+      type: 'function',
+      httpMethod: 'GET',
+      publicPath: '/hello',
+      path: 'dist/hello.js',
+      functionName: 'hello',
+      authenticationEnabled: true, // <==
+    },
+  ],
+});
 ```
 
 ### CORS
 
 ```js
-exports.default = (port) => {
-  return {
-    hostedZoneName: 'example.com',
-    routes: [
-      {
-        type: 'file',
-        publicPath: '/',
-        path: 'dist/index.html',
-        corsEnabled: true, // <==
-      },
-      {
-        type: 'folder',
-        publicPath: '/*',
-        path: 'dist',
-        corsEnabled: true, // <==
-      },
-      {
-        type: 'function',
-        httpMethod: 'GET',
-        publicPath: '/hello',
-        path: 'dist/hello.js',
-        functionName: 'hello',
-        corsEnabled: true, // <==
-      },
-    ],
-  };
-};
+exports.default = () => ({
+  hostedZoneName: 'example.com',
+  routes: [
+    {
+      type: 'file',
+      publicPath: '/',
+      path: 'dist/index.html',
+      corsEnabled: true, // <==
+    },
+    {
+      type: 'folder',
+      publicPath: '/*',
+      path: 'dist',
+      corsEnabled: true, // <==
+    },
+    {
+      type: 'function',
+      httpMethod: 'GET',
+      publicPath: '/hello',
+      path: 'dist/hello.js',
+      functionName: 'hello',
+      corsEnabled: true, // <==
+    },
+  ],
+});
 ```
 
 ```js
-// hello.js
-exports.handler = async (event) => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify({hello: 'world'}),
-    headers: {
-      'access-control-allow-origin': '*', // <==
-    },
-  };
-};
+// dist/hello.js
+exports.handler = async () => ({
+  statusCode: 200,
+  body: JSON.stringify({hello: 'world'}),
+  headers: {
+    'access-control-allow-origin': '*', // <==
+  },
+});
 ```
 
 ### Monitoring
 
 ```js
-exports.default = (port) => {
-  return {
-    hostedZoneName: 'example.com',
-    monitoring: {
-      accessLoggingEnabled: true, // <==
-      loggingEnabled: true, // <==
-      metricsEnabled: true, // <==
-      tracingEnabled: true, // <==
-    },
-    routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
-  };
-};
+exports.default = () => ({
+  hostedZoneName: 'example.com',
+  monitoring: {
+    accessLoggingEnabled: true, // <==
+    loggingEnabled: true, // <==
+    metricsEnabled: true, // <==
+    tracingEnabled: true, // <==
+  },
+  routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
+});
 ```
 
 ### Throttling
@@ -367,57 +346,51 @@ exports.default = (port) => {
 const throttling = {rateLimit: 100, burstLimit: 50};
 
 /** @type {import('aws-simple').ConfigFileDefaultExport} */
-exports.default = (port) => {
-  return {
-    hostedZoneName: 'example.com',
-    routes: [
-      {
-        type: 'file',
-        publicPath: '/',
-        path: 'dist/index.html',
-        throttling, // <==
-      },
-      {
-        type: 'folder',
-        publicPath: '/*',
-        path: 'dist',
-        throttling, // <==
-      },
-      {
-        type: 'function',
-        httpMethod: 'GET',
-        publicPath: '/hello',
-        path: 'dist/hello.js',
-        functionName: 'hello',
-        throttling, // <==
-      },
-    ],
-  };
-};
+exports.default = () => ({
+  hostedZoneName: 'example.com',
+  routes: [
+    {
+      type: 'file',
+      publicPath: '/',
+      path: 'dist/index.html',
+      throttling, // <==
+    },
+    {
+      type: 'folder',
+      publicPath: '/*',
+      path: 'dist',
+      throttling, // <==
+    },
+    {
+      type: 'function',
+      httpMethod: 'GET',
+      publicPath: '/hello',
+      path: 'dist/hello.js',
+      functionName: 'hello',
+      throttling, // <==
+    },
+  ],
+});
 ```
 
 ### Tagging
 
 ```js
-exports.default = (port) => {
-  return {
-    hostedZoneName: 'example.com',
-    tags: {foo: 'bar', baz: 'qux'}, // <==
-    routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
-  };
-};
+exports.default = () => ({
+  hostedZoneName: 'example.com',
+  tags: {foo: 'bar', baz: 'qux'}, // <==
+  routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
+});
 ```
 
 ### Termination Protection
 
 ```js
-exports.default = (port) => {
-  return {
-    hostedZoneName: 'example.com',
-    terminationProtectionEnabled: true, // <==
-    routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
-  };
-};
+exports.default = () => ({
+  hostedZoneName: 'example.com',
+  terminationProtectionEnabled: true, // <==
+  routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
+});
 ```
 
 ### `onSynthesize` hooks
@@ -430,21 +403,19 @@ examples.
 ```js
 const {aws_wafv2} = require('aws-cdk-lib');
 
-exports.default = (port) => {
-  const myWebAclArn = '...';
+exports.default = () => ({
+  hostedZoneName: 'example.com',
+  routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
 
-  return {
-    hostedZoneName: 'example.com',
-    routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
+  onSynthesize: ({stack, restApi}) => {
+    const myWebAclArn = '...';
 
-    onSynthesize: ({stack, restApi}) => {
-      new aws_wafv2.CfnWebACLAssociation(stack, 'WebACLAssociation', {
-        resourceArn: restApi.deploymentStage.stageArn,
-        webAclArn: myWebAclArn,
-      });
-    },
-  };
-};
+    new aws_wafv2.CfnWebACLAssociation(stack, 'WebACLAssociation', {
+      resourceArn: restApi.deploymentStage.stageArn,
+      webAclArn: myWebAclArn,
+    });
+  },
+});
 ```
 
 #### Example: Allow access to a secret in the AWS Secret Manager
@@ -452,34 +423,32 @@ exports.default = (port) => {
 ```js
 const {aws_iam} = require('aws-cdk-lib');
 
-exports.default = (port) => {
-  return {
-    hostedZoneName: 'example.com',
-    routes: [
-      {
-        type: 'function',
-        httpMethod: 'GET',
-        publicPath: '/hello',
-        path: 'dist/hello.js',
-        functionName: 'hello',
+exports.default = () => ({
+  hostedZoneName: 'example.com',
+  routes: [
+    {
+      type: 'function',
+      httpMethod: 'GET',
+      publicPath: '/hello',
+      path: 'dist/hello.js',
+      functionName: 'hello',
 
-        onSynthesize: ({stack, restApi, lambdaFunction}) => {
-          const mySecretId = '...';
+      onSynthesize: ({stack, restApi, lambdaFunction}) => {
+        const mySecretId = '...';
 
-          const secretsManagerPolicyStatement = new aws_iam.PolicyStatement({
-            effect: aws_iam.Effect.ALLOW,
-            actions: ['secretsmanager:GetSecretValue'],
-            resources: [
-              `arn:aws:secretsmanager:${stack.region}:${stack.account}:secret:${mySecretId}`,
-            ],
-          });
+        const secretsManagerPolicyStatement = new aws_iam.PolicyStatement({
+          effect: aws_iam.Effect.ALLOW,
+          actions: ['secretsmanager:GetSecretValue'],
+          resources: [
+            `arn:aws:secretsmanager:${stack.region}:${stack.account}:secret:${mySecretId}`,
+          ],
+        });
 
-          lambdaFunction.addToRolePolicy(secretsManagerPolicyStatement);
-        },
+        lambdaFunction.addToRolePolicy(secretsManagerPolicyStatement);
       },
-    ],
-  };
-};
+    },
+  ],
+});
 ```
 
 ## AWS IAM Policy Example
