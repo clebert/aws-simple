@@ -20,7 +20,6 @@ import type {
 import {redeployCommand} from './redeploy-command';
 import {startCommand} from './start-command';
 import {synthesizeCommand} from './synthesize-command';
-import {tagCommand} from './tag-command';
 import {uploadCommand} from './upload-command';
 import {print} from './utils/print';
 
@@ -53,7 +52,6 @@ export type ConfigFileDefaultExport = typeof readStackConfig;
     uploadCommand,
     listCommand,
     deleteCommand,
-    tagCommand,
     purgeCommand,
     flushCacheCommand,
     redeployCommand,
@@ -79,10 +77,6 @@ export type ConfigFileDefaultExport = typeof readStackConfig;
     }
     case deleteCommand.commandName: {
       await deleteCommand(argv);
-      break;
-    }
-    case tagCommand.commandName: {
-      await tagCommand(argv);
       break;
     }
     case purgeCommand.commandName: {

@@ -93,7 +93,6 @@ Commands:
   aws-simple upload [options]       Upload all referenced files to the S3 bucket of the configured stack.
   aws-simple list [options]         List all deployed stacks filtered by the specified hosted zone name.
   aws-simple delete [options]       Delete the specified stack.
-  aws-simple tag [options]          Update the tags of the specified stack.
   aws-simple purge [options]        Delete all expired stacks filtered by the specified hosted zone name.
   aws-simple flush-cache [options]  Flush the REST API cache of the specified stack.
   aws-simple redeploy [options]     Redeploy the REST API of the specified stack.
@@ -393,6 +392,18 @@ exports.default = (port) => {
         throttling, // <==
       },
     ],
+  };
+};
+```
+
+### Tagging
+
+```js
+exports.default = (port) => {
+  return {
+    hostedZoneName: `example.com`,
+    tags: {foo: 'bar', baz: 'qux'}, // <==
+    routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
   };
 };
 ```
