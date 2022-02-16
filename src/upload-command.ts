@@ -25,7 +25,8 @@ const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
 
 export async function uploadCommand(args: UploadCommandArgs): Promise<void> {
   const stackConfig = readStackConfig();
-  const stackName = getStackName(getDomainName(stackConfig));
+  const domainName = getDomainName(stackConfig);
+  const stackName = getStackName(domainName);
 
   print.warning(`Stack: ${stackName}`);
 
@@ -89,7 +90,9 @@ export async function uploadCommand(args: UploadCommandArgs): Promise<void> {
 
     process.exit(1);
   } else {
-    print.success(`All referenced files have been successfully uploaded.`);
+    print.success(
+      `All referenced files have been successfully uploaded and are available at the following URL: https://${domainName}`,
+    );
   }
 }
 
