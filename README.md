@@ -77,7 +77,7 @@ npx cdk bootstrap --app 'npx aws-simple synthesize'
 npx cdk deploy --app 'npx aws-simple synthesize' && npx aws-simple upload
 ```
 
-### 8. Optional: Start the local DEV server
+### 8. Optional: Start a local DEV server
 
 ```
 npx aws-simple start
