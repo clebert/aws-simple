@@ -337,6 +337,14 @@ exports.default = () => ({
 });
 ```
 
+```js
+exports.default = () => ({
+  hostedZoneName: 'example.com',
+  monitoring: true, // <== shorthand form
+  routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
+});
+```
+
 ### Throttling
 
 ```js

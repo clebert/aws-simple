@@ -85,7 +85,7 @@ function getStageOptions(
   const {cachingEnabled, monitoring, routes} = stackConfig;
 
   const loggingLevel: aws_apigateway.MethodLoggingLevel =
-    monitoring?.loggingEnabled
+    monitoring === true || monitoring?.loggingEnabled
       ? aws_apigateway.MethodLoggingLevel.INFO
       : aws_apigateway.MethodLoggingLevel.OFF;
 
@@ -107,7 +107,7 @@ function getStageOptions(
       cachingEnabled: cachingEnabled && cacheTtlInSeconds > 0,
       cacheTtl: Duration.seconds(cacheTtlInSeconds),
       loggingLevel,
-      metricsEnabled: monitoring?.metricsEnabled,
+      metricsEnabled: monitoring === true || monitoring?.metricsEnabled,
       throttlingBurstLimit: throttling?.burstLimit,
       throttlingRateLimit: throttling?.rateLimit,
     };
@@ -131,23 +131,24 @@ function getStageOptions(
 
   const domainName = getDomainName(stackConfig);
 
-  const accessLogDestination = monitoring?.accessLoggingEnabled
-    ? new aws_apigateway.LogGroupLogDestination(
-        new aws_logs.LogGroup(stack, `AccessLogGroup`, {
-          logGroupName: `/aws/apigateway/accessLogs/${domainName}`,
-          retention: aws_logs.RetentionDays.TWO_WEEKS,
-          removalPolicy: RemovalPolicy.DESTROY,
-        }),
-      )
-    : undefined;
+  const accessLogDestination =
+    monitoring === true || monitoring?.accessLoggingEnabled
+      ? new aws_apigateway.LogGroupLogDestination(
+          new aws_logs.LogGroup(stack, `AccessLogGroup`, {
+            logGroupName: `/aws/apigateway/accessLogs/${domainName}`,
+            retention: aws_logs.RetentionDays.TWO_WEEKS,
+            removalPolicy: RemovalPolicy.DESTROY,
+          }),
+        )
+      : undefined;
 
   return {
     cacheClusterEnabled: cachingEnabled,
     methodOptions: methodOptionsByPath,
     accessLogDestination,
     loggingLevel,
-    metricsEnabled: monitoring?.metricsEnabled,
-    tracingEnabled: monitoring?.tracingEnabled,
+    metricsEnabled: monitoring === true || monitoring?.metricsEnabled,
+    tracingEnabled: monitoring === true || monitoring?.tracingEnabled,
   };
 }
 

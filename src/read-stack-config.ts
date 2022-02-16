@@ -8,7 +8,7 @@ export interface StackConfig {
   readonly cachingEnabled?: boolean;
   readonly terminationProtectionEnabled?: boolean;
   readonly authentication?: Authentication;
-  readonly monitoring?: Monitoring;
+  readonly monitoring?: true | Monitoring;
   readonly tags?: Readonly<Record<string, string>>;
   readonly routes: readonly [Route, ...Route[]];
 
