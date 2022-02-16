@@ -1,0 +1,56 @@
+{
+  "root": true,
+  "extends": ["prettier"],
+  "plugins": ["@typescript-eslint", "eslint-plugin-import", "markdown"],
+  "env": {"es2021": true},
+  "rules": {
+    "complexity": "error",
+    "curly": "error",
+    "eqeqeq": ["error", "always", {"null": "ignore"}],
+    "import/no-extraneous-dependencies": "error",
+    "import/order": [
+      "error",
+      {
+        "alphabetize": {"order": "asc"},
+        "newlines-between": "never",
+        "warnOnUnassignedImports": true
+      }
+    ],
+    "no-shadow": "error",
+    "object-shorthand": "error",
+    "prefer-const": "error",
+    "quotes": ["error", "backtick"],
+    "sort-imports": [
+      "error",
+      {"ignoreDeclarationSort": true, "ignoreMemberSort": false}
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["**/*.md"],
+      "processor": "markdown/markdown"
+    },
+    {
+      "files": ["**/*.md/*.js"],
+      "rules": {"quotes": ["error", "single"]}
+    },
+    {
+      "files": ["**/*.ts"],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {"project": "tsconfig.json"},
+      "rules": {
+        "@typescript-eslint/await-thenable": "error",
+        "@typescript-eslint/consistent-type-imports": [
+          "error",
+          {"prefer": "type-imports"}
+        ],
+        "@typescript-eslint/no-floating-promises": "error",
+        "@typescript-eslint/no-shadow": ["error", {"hoist": "all"}],
+        "@typescript-eslint/promise-function-async": "error",
+        "@typescript-eslint/quotes": ["error", "backtick"],
+        "@typescript-eslint/require-await": "error",
+        "quotes": "off"
+      }
+    }
+  ]
+}
