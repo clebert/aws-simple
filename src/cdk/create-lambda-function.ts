@@ -1,4 +1,4 @@
-import {basename, dirname, extname} from 'path';
+import {basename, dirname, extname, join} from 'path';
 import type {Stack} from 'aws-cdk-lib';
 import {Duration, aws_lambda, aws_logs} from 'aws-cdk-lib';
 import type {LambdaRoute, StackConfig} from '../read-stack-config';
@@ -15,6 +15,7 @@ export function createLambdaFunction(
 ): aws_lambda.FunctionBase {
   const {
     httpMethod,
+    publicPath,
     path,
     functionName,
     memorySize = 128,
@@ -48,7 +49,10 @@ export function createLambdaFunction(
       functionName: uniqueFunctionName,
       code: aws_lambda.Code.fromAsset(dirname(path)),
       handler: `${basename(path, extname(path))}.handler`,
-      description: domainName,
+      description: `${functionName} => ${httpMethod} ${join(
+        domainName,
+        publicPath,
+      )}`,
       memorySize,
       environment,
       timeout: Duration.seconds(timeoutInSeconds),
