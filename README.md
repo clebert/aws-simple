@@ -408,6 +408,18 @@ exports.default = (port) => {
 };
 ```
 
+### Termination Protection
+
+```js
+exports.default = (port) => {
+  return {
+    hostedZoneName: `example.com`,
+    terminationProtectionEnabled: true, // <==
+    routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+  };
+};
+```
+
 ### `onSynthesize` hooks
 
 To implement advanced features, `onSynthesize` hooks can be used. Below are two

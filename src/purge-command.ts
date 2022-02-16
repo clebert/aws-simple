@@ -1,3 +1,4 @@
+import type {Stack} from '@aws-sdk/client-cloudformation';
 import type yargs from 'yargs';
 import {readStackConfig} from './read-stack-config';
 import {deleteStack} from './sdk/delete-stack';
@@ -67,35 +68,33 @@ export async function purgeCommand(args: PurgeCommandArgs): Promise<void> {
   print.warning(`Hosted zone: ${hostedZoneName}`);
   print.info(`Searching all expired stacks...`);
 
-  const stacks = (await findStacks({hostedZoneName, legacyAppName}))
-    .filter(({CreationTime}) => getAgeInDays(CreationTime!) >= minAgeInDays)
-    .filter(({Tags = []}) =>
-      Tags.every(({Key}) => !tagKeysToExclude.includes(Key!)),
-    );
+  const expiredStacks = (
+    await findStacks({hostedZoneName, legacyAppName})
+  ).filter((stack) => isExpired(stack, minAgeInDays, tagKeysToExclude));
 
-  if (stacks.length === 0) {
+  if (expiredStacks.length === 0) {
     print.success(`No expired stacks found.`);
 
     return;
   }
 
-  for (const stack of stacks) {
+  for (const {StackName, StackStatus, CreationTime} of expiredStacks) {
     print.listItem(0, {
       type: `entry`,
       key: `Expired stack`,
-      value: stack.StackName!,
+      value: StackName!,
     });
 
     print.listItem(1, {
       type: `entry`,
       key: `Status`,
-      value: stack.StackStatus!,
+      value: StackStatus!,
     });
 
     print.listItem(1, {
       type: `entry`,
       key: `Created`,
-      value: getFormattedAgeInDays(stack.CreationTime!),
+      value: getFormattedAgeInDays(CreationTime!),
     });
   }
 
@@ -114,7 +113,7 @@ export async function purgeCommand(args: PurgeCommandArgs): Promise<void> {
   print.info(`Deleting all expired stacks...`);
 
   const results = await Promise.allSettled(
-    stacks.map(async ({StackName}) => deleteStack(StackName!)),
+    expiredStacks.map(async ({StackName}) => deleteStack(StackName!)),
   );
 
   const rejectedResults = results.filter(
@@ -135,3 +134,35 @@ export async function purgeCommand(args: PurgeCommandArgs): Promise<void> {
 purgeCommand.commandName = commandName;
 purgeCommand.description = `Delete all expired stacks filtered by the specified hosted zone name.`;
 purgeCommand.builder = builder;
+
+function isExpired(
+  stack: Stack,
+  minAgeInDays: number,
+  tagKeysToExclude: readonly string[],
+): boolean {
+  const {
+    StackStatus,
+    CreationTime,
+    DeletionTime,
+    Tags,
+    EnableTerminationProtection,
+  } = stack;
+
+  if (getAgeInDays(CreationTime!) < minAgeInDays) {
+    return false;
+  }
+
+  if (
+    DeletionTime &&
+    StackStatus !== `ROLLBACK_COMPLETE` &&
+    StackStatus !== `DELETE_FAILED`
+  ) {
+    return false;
+  }
+
+  if (Tags?.some(({Key}) => tagKeysToExclude.includes(Key!))) {
+    return false;
+  }
+
+  return !EnableTerminationProtection;
+}
