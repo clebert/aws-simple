@@ -18,6 +18,7 @@ const plugins = [
   std.vscode({showFilesInEditor: false}),
   {
     setup: () => [
+      std.eslint.configFile.merge(() => ({rules: {curly: `error`}})),
       std.typescript.configFile.merge(() => ({
         compilerOptions: {
           lib: [`dom`],
