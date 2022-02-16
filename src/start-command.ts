@@ -79,7 +79,9 @@ export async function startCommand(args: StartCommandArgs): Promise<void> {
     print.success(`The DEV server has been started: http://localhost:${port}`);
 
     const listener = (changedPath: string): void => {
-      print.timestamp(`A file change has been detected: ${changedPath}`);
+      print.info(
+        `[${new Date().toLocaleTimeString()}] A file change has been detected: ${changedPath}`,
+      );
 
       const changedLambdaRoutes = routes.filter(
         (route): route is LambdaRoute =>

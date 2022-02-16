@@ -17,10 +17,6 @@ print.paragraph = (text: string): void => {
   print(text);
 };
 
-print.timestamp = (text: string): void => {
-  print.paragraph(`[${new Date().toLocaleTimeString()}] ${text}`);
-};
-
 print.info = (text: string): void => {
   print.paragraph(gray(text));
 };
