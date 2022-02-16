@@ -1,6 +1,6 @@
 {
   "name": "aws-simple",
-  "version": "13.1.1",
+  "version": "14.0.0",
   "description": "Production-ready AWS website deployment with minimal configuration.",
   "repository": {
     "type": "git",
