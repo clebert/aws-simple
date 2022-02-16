@@ -134,7 +134,7 @@ function getStageOptions(
   const accessLogDestination = monitoring?.accessLoggingEnabled
     ? new aws_apigateway.LogGroupLogDestination(
         new aws_logs.LogGroup(stack, `AccessLogGroup`, {
-          logGroupName: `/aws/apigateway/accessLogs/${domainName}}`,
+          logGroupName: `/aws/apigateway/accessLogs/${domainName}`,
           retention: aws_logs.RetentionDays.TWO_WEEKS,
           removalPolicy: RemovalPolicy.DESTROY,
         }),
