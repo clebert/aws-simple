@@ -1,33 +1,21 @@
 import {isatty} from 'tty';
-import {bold, gray, green, red, underline, yellow} from 'chalk';
+import {bold, gray, green, red, yellow} from 'chalk';
 import prompts from 'prompts';
 
-let printed = false;
-
 export function print(text: string): void {
-  printed = true;
-
   console.log(text);
 }
 
-print.paragraph = (text: string): void => {
-  if (printed) {
-    console.log(``);
-  }
-
-  print(text);
-};
-
 print.info = (text: string): void => {
-  print.paragraph(gray(text));
+  print(gray(text));
 };
 
 print.success = (text: string): void => {
-  print.paragraph(green(text));
+  print(green(text));
 };
 
 print.warning = (text: string): void => {
-  print.paragraph(yellow(text));
+  print(yellow(text));
 };
 
 print.error = (text: string): void => {
@@ -38,12 +26,6 @@ print.confirmation = async (message: string): Promise<boolean> => {
   if (!isatty(0)) {
     throw new Error(`Please specify the --yes CLI option.`);
   }
-
-  if (printed) {
-    console.log(``);
-  }
-
-  printed = true;
 
   const {result} = await prompts({type: `confirm`, name: `result`, message});
 
@@ -68,21 +50,13 @@ print.listItem = (
   let text =
     typeof item === `string`
       ? `• ${item}`
-      : indentationLevel === 0
-      ? item.type === `entry`
-        ? `• ${underline(bold(item.key))}: ${item.value}`
-        : `• ${underline(bold(item.text))}:`
       : item.type === `entry`
       ? `• ${bold(item.key)}: ${item.value}`
-      : `• ${bold(item.text)}:`;
+      : `• ${bold(item.text)}`;
 
-  if (indentationLevel === 0) {
-    print.paragraph(text);
-  } else {
-    for (let i = 0; i < indentationLevel; i += 1) {
-      text = `  ${text}`;
-    }
-
-    print(text);
+  for (let i = 0; i < indentationLevel; i += 1) {
+    text = `  ${text}`;
   }
+
+  print(text);
 };

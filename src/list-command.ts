@@ -80,9 +80,8 @@ export async function listCommand(args: ListCommandArgs): Promise<void> {
 
   for (const stack of stacks) {
     print.listItem(0, {
-      type: `entry`,
-      key: `Deployed stack`,
-      value: stack.StackName!,
+      type: `headline`,
+      text: stack.StackName!,
     });
 
     print.listItem(1, {
