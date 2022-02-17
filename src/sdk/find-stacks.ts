@@ -3,6 +3,7 @@ import {
   CloudFormationClient,
   DescribeStacksCommand,
 } from '@aws-sdk/client-cloudformation';
+import {findStack} from './find-stack';
 import {getOutputValue} from './get-output-value';
 
 export interface FindStacksOptions {
@@ -30,20 +31,33 @@ export async function findStacks(
     nextToken = output.NextToken;
   } while (nextToken);
 
-  const allStacks = stacks.filter(({StackName}) =>
-    StackName?.startsWith(`aws-simple`),
+  return Promise.all(
+    stacks
+      .filter((stack) => isMatchingStack(stack, options))
+      // For some reason `stack.EnableTerminationProtection` is always
+      // `undefined`. Describing a single stack instead, does return the correct
+      // value (true or false) for `EnableTerminationProtection`.
+      .map(async ({StackName}) => findStack(StackName!)),
   );
+}
+
+function isMatchingStack(
+  stack: Stack,
+  options: FindStacksOptions | undefined,
+): boolean {
+  if (!stack.StackName?.startsWith(`aws-simple`)) {
+    return false;
+  }
 
   if (!options) {
-    return allStacks;
+    return true;
   }
 
   const {hostedZoneName, legacyAppName} = options;
 
-  return allStacks.filter(
-    (stack) =>
-      getOutputValue(stack, `HostedZoneName`) === hostedZoneName ||
+  return Boolean(
+    getOutputValue(stack, `HostedZoneName`) === hostedZoneName ||
       (legacyAppName &&
-        stack.StackName?.startsWith(`aws-simple--${legacyAppName}--`)),
+        stack.StackName.startsWith(`aws-simple--${legacyAppName}--`)),
   );
 }
