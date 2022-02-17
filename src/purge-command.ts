@@ -143,7 +143,7 @@ function isExpired(
     StackStatus,
     CreationTime,
     DeletionTime,
-    Tags = [],
+    Tags,
     EnableTerminationProtection,
   } = stack;
 
@@ -159,7 +159,7 @@ function isExpired(
     return false;
   }
 
-  if (Tags.some((tag) => isTagExcluded(excludedTags, tag))) {
+  if (Tags?.some((tag) => isTagExcluded(excludedTags, tag))) {
     return false;
   }
 
