@@ -1,5 +1,6 @@
 import type yargs from 'yargs';
 import {readStackConfig} from './read-stack-config';
+import {findStack} from './sdk/find-stack';
 import {findStacks} from './sdk/find-stacks';
 import {getFormattedAgeInDays} from './utils/get-formatted-age-in-days';
 import {print} from './utils/print';
@@ -101,6 +102,17 @@ export async function listCommand(args: ListCommandArgs): Promise<void> {
       type: `entry`,
       key: `Updated`,
       value: getFormattedAgeInDays(stack.LastUpdatedTime!),
+    });
+
+    // For some reason `stack.EnableTerminationProtection` is always
+    // `undefined`. Describing a single stack instead, does return the correct
+    // value (true or false) for `EnableTerminationProtection`.
+    const {EnableTerminationProtection} = await findStack(stack.StackName!);
+
+    print.listItem(1, {
+      type: `entry`,
+      key: `Termination protection`,
+      value: EnableTerminationProtection ? `Enabled` : `Disabled`,
     });
 
     if (stack.Tags && stack.Tags?.length > 0) {
