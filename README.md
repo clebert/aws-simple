@@ -134,7 +134,7 @@ exports.default = () => ({
       publicPath: '/',
       path: 'dist/index.html',
 
-      // optional property:
+      // optional
       responseHeaders: {'cache-control': 'max-age=157680000'},
     },
   ],
@@ -154,9 +154,9 @@ exports.default = () => ({
       path: 'dist/hello.js',
       functionName: 'hello', // must be unique per stack and as short as possible
 
-      // optional properties:
-      memorySize: 128,
-      timeoutInSeconds: 28,
+      // optional
+      memorySize: 1769, // default: `128` MB
+      timeoutInSeconds: 3, // default: `28` seconds (this is the maximum timeout)
       environment: {FOO: 'bar'},
       requestParameters: {foo: {}, bar: {cacheKey: true, required: true}},
     },
@@ -205,7 +205,7 @@ exports.default = () => ({
       publicPath: '/*', // matches '/foo' and '/foo/bar' but not '/'
       path: 'dist',
 
-      // optional property:
+      // optional
       responseHeaders: {'cache-control': 'max-age=157680000'},
     },
   ],
@@ -223,13 +223,13 @@ exports.default = () => ({
       type: 'file',
       publicPath: '/',
       path: 'dist/index.html',
-      cacheTtlInSeconds: 300, // <==
+      cacheTtlInSeconds: 3600, // default: `300` seconds (if caching is enabled)
     },
     {
       type: 'folder',
       publicPath: '/*',
       path: 'dist',
-      cacheTtlInSeconds: 300, // <==
+      cacheTtlInSeconds: 3600, // default: `300` seconds (if caching is enabled)
     },
     {
       type: 'function',
@@ -237,7 +237,7 @@ exports.default = () => ({
       publicPath: '/hello',
       path: 'dist/hello.js',
       functionName: 'hello',
-      cacheTtlInSeconds: 300, // <==
+      cacheTtlInSeconds: 3600, // default: `300` seconds (if caching is enabled)
     },
   ],
 });
@@ -252,8 +252,8 @@ exports.default = () => ({
     username: 'johndoe', // <==
     password: '123456', // <==
 
-    // optional properties:
-    cacheTtlInSeconds: 300,
+    // optional
+    cacheTtlInSeconds: 3600, // default: `300` seconds (if caching is enabled)
     realm: 'foo',
   },
   routes: [
@@ -351,7 +351,10 @@ exports.default = () => ({
 // @ts-check
 
 /** @type {import('aws-simple').Throttling} */
-const throttling = {rateLimit: 100, burstLimit: 50};
+const throttling = {
+  rateLimit: 100, // default: `10000` requests per second
+  burstLimit: 50, // default: `5000` requests
+};
 
 /** @type {import('aws-simple').ConfigFileDefaultExport} */
 exports.default = () => ({
