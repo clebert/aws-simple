@@ -1,4 +1,4 @@
-import type {Stack} from '@aws-sdk/client-cloudformation';
+import type {Stack, Tag} from '@aws-sdk/client-cloudformation';
 import type yargs from 'yargs';
 import {readStackConfig} from './read-stack-config';
 import {deleteStack} from './sdk/delete-stack';
@@ -11,7 +11,7 @@ export interface PurgeCommandArgs {
   readonly hostedZoneName: string | undefined;
   readonly legacyAppName: string | undefined;
   readonly minAge: number;
-  readonly excludeTags: readonly string[];
+  readonly excludedTags: readonly string[];
   readonly yes: boolean;
 }
 
@@ -39,18 +39,21 @@ const builder: yargs.BuilderCallback<{}, {}> = (argv) =>
     .default(`min-age`, 14)
 
     .describe(
-      `exclude-tags`,
+      `excluded-tags`,
       `Tags that prevent a deployed stack from being considered expired`,
     )
-    .array(`exclude-tags`)
-    .default(`exclude-tags`, [])
+    .array(`excluded-tags`)
+    .default(`excluded-tags`, [])
 
     .describe(`yes`, `Confirm the deletion of all expired stacks automatically`)
     .boolean(`yes`)
     .default(`yes`, false)
 
     .example(`npx $0 ${commandName}`, ``)
-    .example(`npx $0 ${commandName} --min-age 14 --exclude-tags foo bar`, ``)
+    .example(
+      `npx $0 ${commandName} --min-age 14 --excluded-tags foo=true bar`,
+      ``,
+    )
     .example(`npx $0 ${commandName} --hosted-zone-name example.com`, ``)
     .example(`npx $0 ${commandName} --legacy-app-name example`, ``)
     .example(`npx $0 ${commandName} --yes`, ``);
@@ -59,18 +62,14 @@ export async function purgeCommand(args: PurgeCommandArgs): Promise<void> {
   const hostedZoneName =
     args.hostedZoneName || readStackConfig().hostedZoneName;
 
-  const {
-    legacyAppName,
-    minAge: minAgeInDays,
-    excludeTags: tagKeysToExclude,
-  } = args;
+  const {legacyAppName, minAge: minAgeInDays, excludedTags} = args;
 
   print.warning(`Hosted zone: ${hostedZoneName}`);
   print.info(`Searching all expired stacks...`);
 
   const expiredStacks = (
     await findStacks({hostedZoneName, legacyAppName})
-  ).filter((stack) => isExpired(stack, minAgeInDays, tagKeysToExclude));
+  ).filter((stack) => isExpired(stack, minAgeInDays, excludedTags));
 
   if (expiredStacks.length === 0) {
     print.success(`No expired stacks found.`);
@@ -138,7 +137,7 @@ purgeCommand.builder = builder;
 function isExpired(
   stack: Stack,
   minAgeInDays: number,
-  tagKeysToExclude: readonly string[],
+  excludedTags: readonly string[],
 ): boolean {
   const {
     StackStatus,
@@ -160,9 +159,20 @@ function isExpired(
     return false;
   }
 
-  if (Tags?.some(({Key}) => tagKeysToExclude.includes(Key!))) {
+  if (Tags?.some((tag) => isTagExcluded(excludedTags, tag))) {
     return false;
   }
 
   return !EnableTerminationProtection;
+}
+
+function isTagExcluded(
+  excludedTags: readonly string[],
+  {Key, Value}: Tag,
+): boolean {
+  return excludedTags.some((excludedTag) =>
+    excludedTag.includes(`=`)
+      ? excludedTag === `${Key}=${Value}`
+      : excludedTag === Key,
+  );
 }
