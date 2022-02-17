@@ -49,7 +49,7 @@ export function createLambdaFunction(
       functionName: uniqueFunctionName,
       code: aws_lambda.Code.fromAsset(dirname(path)),
       handler: `${basename(path, extname(path))}.handler`,
-      description: `${functionName} => ${httpMethod} ${join(
+      description: `${functionName} => ${httpMethod} https://${join(
         domainName,
         publicPath,
       )}`,

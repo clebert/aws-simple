@@ -38,7 +38,7 @@ export function createRestApi(
   );
 
   const restApi = new aws_apigateway.RestApi(stack, `RestApi`, {
-    description: domainName,
+    description: `https://${domainName}`,
     endpointTypes: [aws_apigateway.EndpointType.REGIONAL],
     restApiName: `${getNormalizedName(domainName)}-${getHash(domainName)}`,
     domainName: {

@@ -28,7 +28,7 @@ export function createRequestAuthorizer(
           dirname(require.resolve(`./request-authorizer`)),
         ),
         handler: `index.handler`,
-        description: domainName,
+        description: `https://${domainName}`,
         environment: {
           USERNAME: authentication.username,
           PASSWORD: authentication.password,
