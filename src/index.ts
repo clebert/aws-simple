@@ -38,64 +38,24 @@ export type {
 export type ConfigFileDefaultExport = typeof readStackConfig;
 
 (async () => {
-  let cli = yargs
+  await yargs
     .usage(`Usage: $0 <command> [options]`)
     .help(`h`)
     .alias(`h`, `help`)
+    .epilogue(require(`../package.json`).description)
     .detectLocale(false)
     .demandCommand()
-    .epilogue(require(`../package.json`).description)
-    .strict();
-
-  for (const {commandName, description, builder} of [
-    synthesizeCommand,
-    uploadCommand,
-    listCommand,
-    deleteCommand,
-    purgeCommand,
-    flushCacheCommand,
-    redeployCommand,
-    startCommand,
-  ]) {
-    cli = cli.command(`${commandName} [options]`, description, builder);
-  }
-
-  const argv = cli.argv as any;
-
-  switch (argv._[0]) {
-    case synthesizeCommand.commandName: {
-      synthesizeCommand();
-      break;
-    }
-    case uploadCommand.commandName: {
-      await uploadCommand(argv);
-      break;
-    }
-    case listCommand.commandName: {
-      await listCommand(argv);
-      break;
-    }
-    case deleteCommand.commandName: {
-      await deleteCommand(argv);
-      break;
-    }
-    case purgeCommand.commandName: {
-      await purgeCommand(argv);
-      break;
-    }
-    case flushCacheCommand.commandName: {
-      await flushCacheCommand(argv);
-      break;
-    }
-    case redeployCommand.commandName: {
-      await redeployCommand(argv);
-      break;
-    }
-    case startCommand.commandName: {
-      await startCommand(argv);
-      break;
-    }
-  }
+    .command(synthesizeCommand)
+    .command(uploadCommand)
+    .command(listCommand)
+    .command(deleteCommand)
+    .command(purgeCommand)
+    .command(flushCacheCommand)
+    .command(redeployCommand)
+    .command(startCommand)
+    .strict()
+    .fail(false)
+    .parseAsync();
 })().catch((error) => {
   print.error(String(error));
   process.exit(1);

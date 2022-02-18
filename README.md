@@ -81,13 +81,14 @@ npx cdk deploy --app 'npx aws-simple synthesize' && npx aws-simple upload
 npx aws-simple start
 ```
 
-## CLI Help
+## CLI Usage
 
 ```
 Usage: aws-simple <command> [options]
 
 Commands:
   aws-simple synthesize [options]   Synthesize the configured stack using the CDK.
+                                                                [aliases: synth]
   aws-simple upload [options]       Upload all referenced files to the S3 bucket of the configured stack.
   aws-simple list [options]         List all deployed stacks filtered by the specified hosted zone name.
   aws-simple delete [options]       Delete the specified stack.
