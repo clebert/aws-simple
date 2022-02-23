@@ -137,7 +137,7 @@ function getS3MethodOptions(
     authorizationType: authenticationEnabled
       ? aws_apigateway.AuthorizationType.CUSTOM
       : aws_apigateway.AuthorizationType.NONE,
-    authorizer: requestAuthorizer,
+    authorizer: authenticationEnabled ? requestAuthorizer : undefined,
     methodResponses: [
       {statusCode: `200`, responseParameters},
       {statusCode: `404`, responseParameters: corsResponseParameters},

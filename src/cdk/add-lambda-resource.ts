@@ -43,7 +43,7 @@ export function addLambdaResource(
     authorizationType: authenticationEnabled
       ? aws_apigateway.AuthorizationType.CUSTOM
       : aws_apigateway.AuthorizationType.NONE,
-    authorizer: requestAuthorizer,
+    authorizer: authenticationEnabled ? requestAuthorizer : undefined,
     requestParameters: Object.entries(requestParameters ?? {}).reduce(
       (parameters, [parameterName, {required = false}]) => ({
         ...parameters,
