@@ -72,7 +72,7 @@ npx cdk deploy --app 'npx aws-simple synthesize' && npx aws-simple upload
 npx aws-simple start
 ```
 
-## CLI Usage
+## CLI usage
 
 ```
 Usage: aws-simple <command> [options]
@@ -386,7 +386,7 @@ exports.default = () => ({
 });
 ```
 
-### Termination Protection
+### Termination protection
 
 ```js
 exports.default = () => ({
@@ -401,7 +401,7 @@ exports.default = () => ({
 To implement advanced features, `onSynthesize` hooks can be used. Below are two
 examples.
 
-#### Example: Configure a firewall
+#### Configuring a firewall
 
 ```js
 const {aws_wafv2} = require('aws-cdk-lib');
@@ -421,7 +421,34 @@ exports.default = () => ({
 });
 ```
 
-#### Example: Allow access to a secret in the AWS Secret Manager
+#### Allowing a Lambda function read-only access to S3 buckets
+
+```js
+const {aws_iam} = require('aws-cdk-lib');
+
+exports.default = () => ({
+  hostedZoneName: 'example.com',
+  routes: [
+    {
+      type: 'function',
+      httpMethod: 'GET',
+      publicPath: '/hello',
+      path: 'dist/hello.js',
+      functionName: 'hello',
+
+      onSynthesize: ({stack, restApi, lambdaFunction}) => {
+        lambdaFunction.role.addManagedPolicy(
+          aws_iam.ManagedPolicy.fromAwsManagedPolicyName(
+            'AmazonS3ReadOnlyAccess',
+          ),
+        );
+      },
+    },
+  ],
+});
+```
+
+#### Allowing a Lambda function to access a secret in the AWS Secret Manager
 
 ```js
 const {aws_iam} = require('aws-cdk-lib');
@@ -454,7 +481,7 @@ exports.default = () => ({
 });
 ```
 
-## AWS IAM Policy Example
+## AWS IAM policy example
 
 ```json
 {
