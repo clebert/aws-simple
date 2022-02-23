@@ -3,7 +3,7 @@ import type {Stack, aws_apigateway, aws_lambda} from 'aws-cdk-lib';
 import {validateRoutes} from './utils/validate-routes';
 
 export interface StackConfig {
-  readonly hostedZoneName: string;
+  readonly hostedZoneName?: string;
   readonly aliasRecordName?: string;
   readonly cachingEnabled?: boolean;
   readonly terminationProtectionEnabled?: boolean;
@@ -101,10 +101,6 @@ export function readStackConfig(port?: number): StackConfig {
   }
 
   const stackConfig = defaultExport(port) as StackConfig;
-
-  if (!stackConfig.hostedZoneName) {
-    throw new Error(`Undefined hosted zone name.`);
-  }
 
   validateRoutes(stackConfig.routes);
 

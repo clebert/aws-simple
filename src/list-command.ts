@@ -47,22 +47,29 @@ export const listCommand: CommandModule<
       ]),
 
   handler: async (args): Promise<void> => {
-    const hostedZoneName =
-      args.hostedZoneName || readStackConfig().hostedZoneName;
-
     const {legacyAppName, all, short} = args;
 
+    const hostedZoneName = all
+      ? undefined
+      : args.hostedZoneName || readStackConfig().hostedZoneName;
+
+    if (!hostedZoneName && !all) {
+      throw new Error(
+        `Please specify either a hosted zone name or the --all option.`,
+      );
+    }
+
     if (!short) {
-      if (!all) {
+      if (hostedZoneName) {
         print.warning(`Hosted zone: ${hostedZoneName}`);
       }
 
       print.info(`Searching all deployed stacks...`);
     }
 
-    const stacks = all
-      ? await findStacks()
-      : await findStacks({hostedZoneName, legacyAppName});
+    const stacks = hostedZoneName
+      ? await findStacks({hostedZoneName, legacyAppName})
+      : await findStacks();
 
     if (stacks.length === 0) {
       if (!short) {

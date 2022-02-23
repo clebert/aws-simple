@@ -60,6 +60,10 @@ export const purgeCommand: CommandModule<
     const hostedZoneName =
       args.hostedZoneName || readStackConfig().hostedZoneName;
 
+    if (!hostedZoneName) {
+      throw new Error(`Please specify a hosted zone name.`);
+    }
+
     const {legacyAppName, minAge: minAgeInDays, excludedTags} = args;
 
     print.warning(`Hosted zone: ${hostedZoneName}`);

@@ -19,17 +19,21 @@ export function createRestApi(
   stackConfig: StackConfig,
   stack: Stack,
 ): aws_apigateway.RestApiBase {
+  const {hostedZoneName, aliasRecordName} = stackConfig;
+
+  if (!hostedZoneName) {
+    throw new Error(`The hosted zone cannot be looked up without a name.`);
+  }
+
   const hostedZone = aws_route53.HostedZone.fromLookup(
     stack,
     `HostedZoneLookup`,
-    {domainName: stackConfig.hostedZoneName},
+    {domainName: hostedZoneName},
   );
 
-  new CfnOutput(stack, `HostedZoneNameOutput`, {
-    value: stackConfig.hostedZoneName,
-  });
+  new CfnOutput(stack, `HostedZoneNameOutput`, {value: hostedZoneName});
 
-  const domainName = getDomainName(stackConfig);
+  const domainName = getDomainName({hostedZoneName, aliasRecordName});
 
   const certificate = new aws_certificatemanager.DnsValidatedCertificate(
     stack,
@@ -50,7 +54,7 @@ export function createRestApi(
     disableExecuteApiEndpoint: true,
     binaryMediaTypes: [`*/*`],
     minimumCompressionSize: 150,
-    deployOptions: getStageOptions(stackConfig, stack),
+    deployOptions: getStageOptions(stackConfig, stack, domainName),
   });
 
   const recordTarget = aws_route53.RecordTarget.fromAlias(
@@ -59,13 +63,13 @@ export function createRestApi(
 
   new aws_route53.ARecord(stack, `ARecord`, {
     zone: hostedZone,
-    recordName: stackConfig.aliasRecordName,
+    recordName: aliasRecordName,
     target: recordTarget,
   }).node.addDependency(restApi);
 
   new aws_route53.AaaaRecord(stack, `AaaaRecord`, {
     zone: hostedZone,
-    recordName: stackConfig.aliasRecordName,
+    recordName: aliasRecordName,
     target: recordTarget,
   }).node.addDependency(restApi);
 
@@ -81,6 +85,7 @@ export function createRestApi(
 function getStageOptions(
   stackConfig: StackConfig,
   stack: Stack,
+  domainName: string,
 ): aws_apigateway.StageOptions {
   const {cachingEnabled, monitoring, routes} = stackConfig;
 
@@ -128,8 +133,6 @@ function getStageOptions(
       ] = methodOptions;
     }
   }
-
-  const domainName = getDomainName(stackConfig);
 
   const accessLogDestination =
     monitoring === true || monitoring?.accessLoggingEnabled
