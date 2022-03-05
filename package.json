@@ -25,7 +25,7 @@
     "prepare": "run-s setup",
     "release": "npm version",
     "postrelease": "git push --follow-tags",
-    "setup": "node onecfg.js",
+    "setup": "node onecfg.mjs",
     "start": "node ./lib/index.js",
     "test": "jest --silent"
   },
@@ -45,7 +45,7 @@
     "yargs": "^17.3.1"
   },
   "devDependencies": {
-    "@onecfg/clebert": "^1.0.1",
+    "@onecfg/standard": "^1.1.0",
     "@swc/core": "^1.2.143",
     "@swc/jest": "^0.2.17",
     "@types/aws-lambda": "^8.10.92",
@@ -65,7 +65,6 @@
     "eslint-plugin-markdown": "^2.2.1",
     "jest": "^27.5.1",
     "npm-run-all": "^4.1.5",
-    "onecfg": "^2.0.0",
     "prettier": "^2.5.1",
     "typescript": "^4.5.5"
   },

@@ -1,0 +1,39 @@
+// @ts-check
+
+import {
+  editorconfig,
+  eslint,
+  git,
+  github,
+  javascript,
+  jest,
+  node,
+  npm,
+  prettier,
+  swc,
+  typescript,
+  vscode,
+} from '@onecfg/standard';
+import {onecfg} from 'onecfg';
+
+onecfg(
+  ...editorconfig(),
+  ...eslint(),
+  ...git(),
+  ...github({branches: [`master`]}),
+  ...javascript({ecmaVersion: `es2021`, moduleType: `commonjs`}),
+  ...jest(),
+  ...node({nodeVersion: `16`}),
+  ...npm(),
+  ...prettier(),
+  ...swc(),
+
+  ...typescript({
+    declaration: true,
+    outDir: `lib`,
+    sourceMap: true,
+    lib: [`DOM`],
+  }),
+
+  ...vscode({includeAllFiles: true}),
+);
