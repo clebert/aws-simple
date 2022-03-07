@@ -1,4 +1,4 @@
-import {sortRoutes} from './sort-routes';
+import {sortRoutes} from './sort-routes.js';
 
 describe(`sortRoutes()`, () => {
   test(`returns the given routes sorted by specificity`, () => {

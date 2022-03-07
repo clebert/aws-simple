@@ -1,8 +1,8 @@
 import type {CommandModule} from 'yargs';
-import {readStackConfig} from './read-stack-config';
-import {findStacks} from './sdk/find-stacks';
-import {getFormattedAgeInDays} from './utils/get-formatted-age-in-days';
-import {print} from './utils/print';
+import {readStackConfig} from './read-stack-config.js';
+import {findStacks} from './sdk/find-stacks.js';
+import {getFormattedAgeInDays} from './utils/get-formatted-age-in-days.js';
+import {print} from './utils/print.js';
 
 const commandName = `list`;
 
@@ -51,7 +51,7 @@ export const listCommand: CommandModule<
 
     const hostedZoneName = all
       ? undefined
-      : args.hostedZoneName || readStackConfig().hostedZoneName;
+      : args.hostedZoneName || (await readStackConfig()).hostedZoneName;
 
     if (!hostedZoneName && !all) {
       throw new Error(

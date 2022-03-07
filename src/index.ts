@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
 import yargs from 'yargs';
-import {deleteCommand} from './delete-command';
-import {flushCacheCommand} from './flush-cache-command';
-import {listCommand} from './list-command';
-import {purgeCommand} from './purge-command';
+import {hideBin} from 'yargs/helpers';
+import {deleteCommand} from './delete-command.js';
+import {flushCacheCommand} from './flush-cache-command.js';
+import {listCommand} from './list-command.js';
+import {purgeCommand} from './purge-command.js';
 import type {
   Authentication,
   LambdaRequestParameter,
@@ -15,13 +16,12 @@ import type {
   S3Route,
   StackConfig,
   Throttling,
-  readStackConfig,
-} from './read-stack-config';
-import {redeployCommand} from './redeploy-command';
-import {startCommand} from './start-command';
-import {synthesizeCommand} from './synthesize-command';
-import {uploadCommand} from './upload-command';
-import {print} from './utils/print';
+} from './read-stack-config.js';
+import {redeployCommand} from './redeploy-command.js';
+import {startCommand} from './start-command.js';
+import {synthesizeCommand} from './synthesize-command.js';
+import {uploadCommand} from './upload-command.js';
+import {print} from './utils/print.js';
 
 export type {
   Authentication,
@@ -35,14 +35,16 @@ export type {
   Throttling,
 };
 
-export type ConfigFileDefaultExport = typeof readStackConfig;
+export type ConfigFileDefaultExport = (port?: number) => StackConfig;
 
 (async () => {
-  await yargs
+  await yargs(hideBin(process.argv))
     .usage(`Usage: $0 <command> [options]`)
     .help(`h`)
     .alias(`h`, `help`)
-    .epilogue(require(`../package.json`).description)
+    .epilogue(
+      `Production-ready AWS website deployment with minimal configuration.`,
+    )
     .detectLocale(false)
     .demandCommand()
     .command(synthesizeCommand)

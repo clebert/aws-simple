@@ -1,4 +1,4 @@
-import {getNormalizedName} from './get-normalized-name';
+import {getNormalizedName} from './get-normalized-name.js';
 
 describe(`getNormalizedName()`, () => {
   test(`returns a normalized name`, () => {

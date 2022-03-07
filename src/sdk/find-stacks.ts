@@ -3,8 +3,8 @@ import {
   CloudFormationClient,
   DescribeStacksCommand,
 } from '@aws-sdk/client-cloudformation';
-import {findStack} from './find-stack';
-import {getOutputValue} from './get-output-value';
+import {findStack} from './find-stack.js';
+import {getOutputValue} from './get-output-value.js';
 
 export interface FindStacksOptions {
   readonly hostedZoneName: string;

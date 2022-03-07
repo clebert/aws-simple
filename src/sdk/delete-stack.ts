@@ -3,9 +3,9 @@ import {
   DeleteStackCommand,
   waitUntilStackDeleteComplete,
 } from '@aws-sdk/client-cloudformation';
-import {deleteBucket} from './delete-bucket';
-import {findStack} from './find-stack';
-import {getOutputValue} from './get-output-value';
+import {deleteBucket} from './delete-bucket.js';
+import {findStack} from './find-stack.js';
+import {getOutputValue} from './get-output-value.js';
 
 export async function deleteStack(stackName: string): Promise<void> {
   const client = new CloudFormationClient({});

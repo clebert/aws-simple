@@ -1,6 +1,6 @@
 import {resolve} from 'path';
 import type {Stack, aws_apigateway, aws_lambda} from 'aws-cdk-lib';
-import {validateRoutes} from './utils/validate-routes';
+import {validateRoutes} from './utils/validate-routes.js';
 
 export interface StackConfig {
   readonly hostedZoneName?: string;
@@ -83,24 +83,24 @@ export interface Throttling {
   readonly burstLimit: number;
 }
 
-export function readStackConfig(port?: number): StackConfig {
-  let defaultExport;
+export async function readStackConfig(port?: number): Promise<StackConfig> {
+  let module;
 
-  const path = resolve(`aws-simple.config.js`);
+  const path = resolve(`aws-simple.config.mjs`);
 
   try {
-    defaultExport = require(path).default;
+    module = await import(path);
   } catch (error) {
     throw new Error(`The config file cannot be read: ${path}`);
   }
 
-  if (typeof defaultExport !== `function`) {
+  if (typeof module.default !== `function`) {
     throw new Error(
       `The config file does not have a valid default export: ${path}`,
     );
   }
 
-  const stackConfig = defaultExport(port) as StackConfig;
+  const stackConfig = module.default(port) as StackConfig;
 
   validateRoutes(stackConfig.routes);
 

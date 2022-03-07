@@ -1,11 +1,11 @@
 import type {CommandModule} from 'yargs';
-import {readStackConfig} from './read-stack-config';
-import {findStack} from './sdk/find-stack';
-import {flushRestApiCache} from './sdk/flush-rest-api-cache';
-import {getOutputValue} from './sdk/get-output-value';
-import {getDomainName} from './utils/get-domain-name';
-import {getStackName} from './utils/get-stack-name';
-import {print} from './utils/print';
+import {readStackConfig} from './read-stack-config.js';
+import {findStack} from './sdk/find-stack.js';
+import {flushRestApiCache} from './sdk/flush-rest-api-cache.js';
+import {getOutputValue} from './sdk/get-output-value.js';
+import {getDomainName} from './utils/get-domain-name.js';
+import {getStackName} from './utils/get-stack-name.js';
+import {print} from './utils/print.js';
 
 const commandName = `flush-cache`;
 
@@ -35,7 +35,7 @@ export const flushCacheCommand: CommandModule<
 
   handler: async (args): Promise<void> => {
     const stackName =
-      args.stackName || getStackName(getDomainName(readStackConfig()));
+      args.stackName || getStackName(getDomainName(await readStackConfig()));
 
     print.warning(`Stack: ${stackName}`);
 

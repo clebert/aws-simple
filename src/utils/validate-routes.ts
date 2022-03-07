@@ -1,5 +1,5 @@
-import type {Route} from '../read-stack-config';
-import {getNormalizedName} from './get-normalized-name';
+import type {Route} from '../read-stack-config.js';
+import {getNormalizedName} from './get-normalized-name.js';
 
 export function validateRoutes(routes: readonly Route[]): void {
   const existingPublicPaths = new Set<string>();

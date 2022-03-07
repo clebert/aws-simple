@@ -1,9 +1,9 @@
 import {dirname} from 'path';
 import type {Stack} from 'aws-cdk-lib';
 import {Duration, aws_apigateway, aws_lambda, aws_logs} from 'aws-cdk-lib';
-import type {StackConfig} from '../read-stack-config';
-import {getDomainName} from '../utils/get-domain-name';
-import {getHash} from '../utils/get-hash';
+import type {StackConfig} from '../read-stack-config.js';
+import {getDomainName} from '../utils/get-domain-name.js';
+import {getHash} from '../utils/get-hash.js';
 
 export function createRequestAuthorizer(
   stackConfig: StackConfig,

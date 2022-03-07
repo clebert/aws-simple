@@ -1,5 +1,5 @@
 import {isatty} from 'tty';
-import {bold, gray, green, red, yellow} from 'chalk';
+import chalk from 'chalk';
 import prompts from 'prompts';
 
 export function print(text: string): void {
@@ -7,19 +7,19 @@ export function print(text: string): void {
 }
 
 print.info = (text: string): void => {
-  print(gray(text));
+  print(chalk.gray(text));
 };
 
 print.success = (text: string): void => {
-  print(green(text));
+  print(chalk.green(text));
 };
 
 print.warning = (text: string): void => {
-  print(yellow(text));
+  print(chalk.yellow(text));
 };
 
 print.error = (text: string): void => {
-  console.error(red(text));
+  console.error(chalk.red(text));
 };
 
 print.confirmation = async (message: string): Promise<boolean> => {
@@ -51,8 +51,8 @@ print.listItem = (
     typeof item === `string`
       ? `• ${item}`
       : item.type === `entry`
-      ? `• ${bold(item.key)}: ${item.value}`
-      : `• ${bold(item.text)}`;
+      ? `• ${chalk.bold(item.key)}: ${item.value}`
+      : `• ${chalk.bold(item.text)}`;
 
   for (let i = 0; i < indentationLevel; i += 1) {
     text = `  ${text}`;

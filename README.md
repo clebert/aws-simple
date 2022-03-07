@@ -15,14 +15,14 @@ CDK.
 
 ### 1. Create a config file
 
-Create a config file named `aws-simple.config.js`, which exports a function that
-describes a website stack:
+Create a config file named `aws-simple.config.mjs`, which exports a function
+that describes a website stack:
 
 ```js
 // @ts-check
 
 /** @type {import('aws-simple').ConfigFileDefaultExport} */
-exports.default = (port) => ({
+export default (port) => ({
   hostedZoneName: 'example.com',
   routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
 });
@@ -98,7 +98,7 @@ Options:
 ### Alias record name
 
 ```js
-exports.default = () => ({
+export default () => ({
   hostedZoneName: 'example.com',
   aliasRecordName: 'stage', // <==
   routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
@@ -118,7 +118,7 @@ following two CLI commands:
 ### S3 file routes
 
 ```js
-exports.default = () => ({
+export default () => ({
   hostedZoneName: 'example.com',
   routes: [
     {
@@ -136,7 +136,7 @@ exports.default = () => ({
 ### Lambda function routes
 
 ```js
-exports.default = () => ({
+export default () => ({
   hostedZoneName: 'example.com',
   routes: [
     {
@@ -167,7 +167,7 @@ exports.handler = async () => ({
 ### Wildcard file/function routes
 
 ```js
-exports.default = () => ({
+export default () => ({
   hostedZoneName: 'example.com',
   routes: [
     {
@@ -189,7 +189,7 @@ exports.default = () => ({
 ### S3 folder routes
 
 ```js
-exports.default = () => ({
+export default () => ({
   hostedZoneName: 'example.com',
   routes: [
     {
@@ -207,7 +207,7 @@ exports.default = () => ({
 ### Caching
 
 ```js
-exports.default = () => ({
+export default () => ({
   hostedZoneName: 'example.com',
   cachingEnabled: true, // <==
   routes: [
@@ -238,7 +238,7 @@ exports.default = () => ({
 ### Authentication
 
 ```js
-exports.default = () => ({
+export default () => ({
   hostedZoneName: 'example.com',
   authentication: {
     username: 'johndoe', // <==
@@ -276,7 +276,7 @@ exports.default = () => ({
 ### CORS
 
 ```js
-exports.default = () => ({
+export default () => ({
   hostedZoneName: 'example.com',
   routes: [
     {
@@ -317,7 +317,7 @@ exports.handler = async () => ({
 ### Monitoring
 
 ```js
-exports.default = () => ({
+export default () => ({
   hostedZoneName: 'example.com',
   monitoring: {
     accessLoggingEnabled: true, // <==
@@ -330,7 +330,7 @@ exports.default = () => ({
 ```
 
 ```js
-exports.default = () => ({
+export default () => ({
   hostedZoneName: 'example.com',
   monitoring: true, // <== shorthand form
   routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
@@ -349,7 +349,7 @@ const throttling = {
 };
 
 /** @type {import('aws-simple').ConfigFileDefaultExport} */
-exports.default = () => ({
+export default () => ({
   hostedZoneName: 'example.com',
   routes: [
     {
@@ -379,7 +379,7 @@ exports.default = () => ({
 ### Tagging
 
 ```js
-exports.default = () => ({
+export default () => ({
   hostedZoneName: 'example.com',
   tags: {foo: 'bar', baz: 'qux'}, // <==
   routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
@@ -389,7 +389,7 @@ exports.default = () => ({
 ### Termination protection
 
 ```js
-exports.default = () => ({
+export default () => ({
   hostedZoneName: 'example.com',
   terminationProtectionEnabled: true, // <==
   routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
@@ -404,9 +404,9 @@ examples.
 #### Configuring a firewall
 
 ```js
-const {aws_wafv2} = require('aws-cdk-lib');
+import {aws_wafv2} from 'aws-cdk-lib';
 
-exports.default = () => ({
+export default () => ({
   hostedZoneName: 'example.com',
   routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
 
@@ -424,9 +424,9 @@ exports.default = () => ({
 #### Allowing a Lambda function read-only access to S3 buckets
 
 ```js
-const {aws_iam} = require('aws-cdk-lib');
+import {aws_iam} from 'aws-cdk-lib';
 
-exports.default = () => ({
+export default () => ({
   hostedZoneName: 'example.com',
   routes: [
     {
@@ -451,9 +451,9 @@ exports.default = () => ({
 #### Allowing a Lambda function to access a secret in the AWS Secret Manager
 
 ```js
-const {aws_iam} = require('aws-cdk-lib');
+import {aws_iam} from 'aws-cdk-lib';
 
-exports.default = () => ({
+export default () => ({
   hostedZoneName: 'example.com',
   routes: [
     {

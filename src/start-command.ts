@@ -7,14 +7,14 @@ import getPort from 'get-port';
 import * as lambdaLocal from 'lambda-local';
 import mkdirp from 'mkdirp';
 import type {CommandModule} from 'yargs';
-import {createLambdaRequestHandler} from './dev/create-lambda-request-handler';
-import {getRouterMatcher} from './dev/get-router-matcher';
-import {registerS3Route} from './dev/register-s3-route';
-import {removeAllRoutes} from './dev/remove-all-routes';
-import {sortRoutes} from './dev/sort-routes';
-import type {LambdaRoute} from './read-stack-config';
-import {readStackConfig} from './read-stack-config';
-import {print} from './utils/print';
+import {createLambdaRequestHandler} from './dev/create-lambda-request-handler.js';
+import {getRouterMatcher} from './dev/get-router-matcher.js';
+import {registerS3Route} from './dev/register-s3-route.js';
+import {removeAllRoutes} from './dev/remove-all-routes.js';
+import {sortRoutes} from './dev/sort-routes.js';
+import type {LambdaRoute} from './read-stack-config.js';
+import {readStackConfig} from './read-stack-config.js';
+import {print} from './utils/print.js';
 
 const commandName = `start`;
 
@@ -42,7 +42,7 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
     app.use(express.json());
     app.use(compression({threshold: 150}));
 
-    const stackConfig = readStackConfig(port);
+    const stackConfig = await readStackConfig(port);
     const routes = sortRoutes(stackConfig.routes);
 
     const lambdaCaches = new WeakMap<

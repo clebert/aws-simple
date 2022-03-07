@@ -1,6 +1,6 @@
 import express from 'express';
-import type {ExpressAppPrivateApi} from './remove-all-routes';
-import {removeAllRoutes} from './remove-all-routes';
+import type {ExpressAppPrivateApi} from './remove-all-routes.js';
+import {removeAllRoutes} from './remove-all-routes.js';
 
 describe(`removeAllRoutes()`, () => {
   test(`uses a private Express API, which still behaves as expected`, () => {

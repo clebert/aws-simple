@@ -1,4 +1,4 @@
-import {getAgeInDays} from './get-age-in-days';
+import {getAgeInDays} from './get-age-in-days.js';
 
 describe(`getAgeInDays()`, () => {
   test(`returns the age in days`, () => {

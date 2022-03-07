@@ -1,12 +1,12 @@
 import type {CommandModule} from 'yargs';
-import {readStackConfig} from './read-stack-config';
-import {findStack} from './sdk/find-stack';
-import {getOutputValue} from './sdk/get-output-value';
-import {uploadFile} from './sdk/upload-file';
-import {getDomainName} from './utils/get-domain-name';
-import {getFilePaths} from './utils/get-file-paths';
-import {getStackName} from './utils/get-stack-name';
-import {print} from './utils/print';
+import {readStackConfig} from './read-stack-config.js';
+import {findStack} from './sdk/find-stack.js';
+import {getOutputValue} from './sdk/get-output-value.js';
+import {uploadFile} from './sdk/upload-file.js';
+import {getDomainName} from './utils/get-domain-name.js';
+import {getFilePaths} from './utils/get-file-paths.js';
+import {getStackName} from './utils/get-stack-name.js';
+import {print} from './utils/print.js';
 
 const commandName = `upload`;
 
@@ -24,7 +24,7 @@ export const uploadCommand: CommandModule<{}, {readonly yes: boolean}> = {
       .example([[`npx $0 ${commandName}`], [`npx $0 ${commandName} --yes`]]),
 
   handler: async (args): Promise<void> => {
-    const stackConfig = readStackConfig();
+    const stackConfig = await readStackConfig();
     const domainName = getDomainName(stackConfig);
     const stackName = getStackName(domainName);
 

@@ -1,4 +1,4 @@
-import type {Route} from '../read-stack-config';
+import type {Route} from '../read-stack-config.js';
 
 export function sortRoutes<TRoute extends Pick<Route, 'publicPath'>>(
   routes: readonly TRoute[],

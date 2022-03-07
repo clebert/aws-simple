@@ -1,9 +1,9 @@
 import type {CommandModule} from 'yargs';
-import {readStackConfig} from './read-stack-config';
-import {deleteStack} from './sdk/delete-stack';
-import {getDomainName} from './utils/get-domain-name';
-import {getStackName} from './utils/get-stack-name';
-import {print} from './utils/print';
+import {readStackConfig} from './read-stack-config.js';
+import {deleteStack} from './sdk/delete-stack.js';
+import {getDomainName} from './utils/get-domain-name.js';
+import {getStackName} from './utils/get-stack-name.js';
+import {print} from './utils/print.js';
 
 const commandName = `delete`;
 
@@ -33,7 +33,7 @@ export const deleteCommand: CommandModule<
 
   handler: async (args): Promise<void> => {
     const stackName =
-      args.stackName || getStackName(getDomainName(readStackConfig()));
+      args.stackName || getStackName(getDomainName(await readStackConfig()));
 
     print.warning(`Stack: ${stackName}`);
 
