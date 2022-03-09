@@ -6,6 +6,7 @@ import {deleteCommand} from './delete-command.js';
 import {flushCacheCommand} from './flush-cache-command.js';
 import {listCommand} from './list-command.js';
 import {purgeCommand} from './purge-command.js';
+import {redeployCommand} from './redeploy-command.js';
 import type {
   Authentication,
   LambdaRequestParameter,
@@ -16,8 +17,7 @@ import type {
   S3Route,
   StackConfig,
   Throttling,
-} from './read-stack-config.js';
-import {redeployCommand} from './redeploy-command.js';
+} from './stack-config.js';
 import {startCommand} from './start-command.js';
 import {synthesizeCommand} from './synthesize-command.js';
 import {uploadCommand} from './upload-command.js';

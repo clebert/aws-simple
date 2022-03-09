@@ -1,4 +1,4 @@
-import type {LambdaRoute, S3Route} from '../read-stack-config.js';
+import type {LambdaRoute, S3Route} from '../stack-config.js';
 import {validateRoutes} from './validate-routes.js';
 
 const lambdaRoute: Omit<LambdaRoute, 'publicPath' | 'functionName'> = {

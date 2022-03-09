@@ -1,7 +1,7 @@
 import {join} from 'path';
 import type {aws_iam, aws_s3} from 'aws-cdk-lib';
 import {aws_apigateway} from 'aws-cdk-lib';
-import type {S3Route} from '../read-stack-config.js';
+import type {S3Route} from '../stack-config.js';
 
 export function addS3Resource(
   route: S3Route,

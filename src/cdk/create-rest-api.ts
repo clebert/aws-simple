@@ -10,7 +10,7 @@ import {
   aws_route53,
   aws_route53_targets,
 } from 'aws-cdk-lib';
-import type {StackConfig} from '../read-stack-config.js';
+import type {StackConfig} from '../stack-config.js';
 import {getDomainName} from '../utils/get-domain-name.js';
 import {getHash} from '../utils/get-hash.js';
 import {getNormalizedName} from '../utils/get-normalized-name.js';

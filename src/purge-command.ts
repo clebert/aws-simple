@@ -1,11 +1,11 @@
 import type {Stack, Tag} from '@aws-sdk/client-cloudformation';
 import type {CommandModule} from 'yargs';
-import {readStackConfig} from './read-stack-config.js';
 import {deleteStack} from './sdk/delete-stack.js';
 import {findStacks} from './sdk/find-stacks.js';
 import {getAgeInDays} from './utils/get-age-in-days.js';
 import {getFormattedAgeInDays} from './utils/get-formatted-age-in-days.js';
 import {print} from './utils/print.js';
+import {readStackConfig} from './utils/read-stack-config.js';
 
 const commandName = `purge`;
 

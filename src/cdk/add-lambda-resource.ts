@@ -1,6 +1,6 @@
 import type {Stack, aws_lambda} from 'aws-cdk-lib';
 import {aws_apigateway} from 'aws-cdk-lib';
-import type {LambdaRoute, StackConfig} from '../read-stack-config.js';
+import type {LambdaRoute, StackConfig} from '../stack-config.js';
 import {createLambdaFunction} from './create-lambda-function.js';
 
 export function addLambdaResource(

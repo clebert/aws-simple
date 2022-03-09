@@ -6,7 +6,7 @@ import {createBucket} from './cdk/create-bucket.js';
 import {createRequestAuthorizer} from './cdk/create-request-authorizer.js';
 import {createRestApi} from './cdk/create-rest-api.js';
 import {createStack} from './cdk/create-stack.js';
-import {readStackConfig} from './read-stack-config.js';
+import {readStackConfig} from './utils/read-stack-config.js';
 
 const commandName = `synthesize`;
 

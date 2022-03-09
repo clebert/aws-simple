@@ -12,9 +12,9 @@ import {getRouterMatcher} from './dev/get-router-matcher.js';
 import {registerS3Route} from './dev/register-s3-route.js';
 import {removeAllRoutes} from './dev/remove-all-routes.js';
 import {sortRoutes} from './dev/sort-routes.js';
-import type {LambdaRoute} from './read-stack-config.js';
-import {readStackConfig} from './read-stack-config.js';
+import type {LambdaRoute} from './stack-config.js';
 import {print} from './utils/print.js';
+import {readStackConfig} from './utils/read-stack-config.js';
 
 const commandName = `start`;
 
