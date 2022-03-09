@@ -1,6 +1,7 @@
 import {resolve} from 'path';
 import type {StackConfig} from '../stack-config.js';
 import {validateRoutes} from './validate-routes.js';
+import {validateStackConfig} from './validate-stack-config.js';
 
 export async function readStackConfig(port?: number): Promise<StackConfig> {
   let module;
@@ -19,7 +20,7 @@ export async function readStackConfig(port?: number): Promise<StackConfig> {
     );
   }
 
-  const stackConfig = module.default(port) as StackConfig;
+  const stackConfig = validateStackConfig(module.default(port));
 
   validateRoutes(stackConfig.routes);
 
