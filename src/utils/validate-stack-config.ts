@@ -99,6 +99,10 @@ const stackConfigStruct: Describe<
     ]),
   ),
   tags: optional(record(nonempty(string()), nonempty(string()))),
-  routes: size(array(union([lambdaRouteStruct, s3RouteStruct])), 1),
+  routes: size(
+    array(union([lambdaRouteStruct, s3RouteStruct])),
+    1,
+    Number.MAX_SAFE_INTEGER,
+  ),
   onSynthesize: optional(func()),
 });
