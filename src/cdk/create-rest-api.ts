@@ -38,7 +38,7 @@ export function createRestApi(
   const certificate = new aws_certificatemanager.DnsValidatedCertificate(
     stack,
     `DnsValidatedCertificate`,
-    {domainName, hostedZone},
+    {domainName, hostedZone, cleanupRoute53Records: true},
   );
 
   const restApi = new aws_apigateway.RestApi(stack, `RestApi`, {
