@@ -398,7 +398,7 @@ export default () => ({
 
 ### Source maps
 
-#### Enabling source maps for Lambda functions on AWS
+#### Enabling source maps for a Lambda function on AWS
 
 ```js
 export default () => ({
