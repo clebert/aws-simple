@@ -396,6 +396,32 @@ export default () => ({
 });
 ```
 
+### Source maps
+
+#### Enabling source maps for Lambda functions on AWS
+
+```js
+export default () => ({
+  hostedZoneName: 'example.com',
+  routes: [
+    {
+      type: 'function',
+      httpMethod: 'GET',
+      publicPath: '/hello',
+      path: 'dist/hello.js',
+      functionName: 'hello',
+      environment: {NODE_OPTIONS: '--enable-source-maps'}, // <==
+    },
+  ],
+});
+```
+
+#### Enabling source maps for a local DEV Server
+
+```
+node --enable-source-maps $(npm bin)/aws-simple start
+```
+
 ### `onSynthesize` hooks
 
 To implement advanced features, `onSynthesize` hooks can be used. Below are two
