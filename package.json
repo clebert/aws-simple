@@ -46,7 +46,7 @@
     "yargs": "^17.3.1"
   },
   "devDependencies": {
-    "@onecfg/standard": "^2.2.0",
+    "@onecfg/standard": "^3.0.0",
     "@swc/core": "^1.2.151",
     "@swc/jest": "^0.2.20",
     "@types/aws-lambda": "^8.10.93",
