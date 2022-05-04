@@ -38,6 +38,36 @@ describe(`validateRoutes()`, () => {
       {...s3FolderRoute, publicPath: `/*`},
       {...lambdaRoute, publicPath: `/`, functionName: `foo`},
     ]);
+
+    validateRoutes([
+      {
+        ...lambdaRoute,
+        publicPath: `/`,
+        httpMethod: `GET`,
+        functionName: `foo`,
+      },
+      {
+        ...lambdaRoute,
+        publicPath: `/`,
+        httpMethod: `POST`,
+        functionName: `bar`,
+      },
+    ]);
+
+    validateRoutes([
+      {
+        ...lambdaRoute,
+        publicPath: `/*`,
+        httpMethod: `GET`,
+        functionName: `foo`,
+      },
+      {
+        ...lambdaRoute,
+        publicPath: `/`,
+        httpMethod: `POST`,
+        functionName: `bar`,
+      },
+    ]);
   });
 
   test(`throws an error`, () => {
@@ -46,49 +76,70 @@ describe(`validateRoutes()`, () => {
         {...s3FileRoute, publicPath: `/`},
         {...s3FileRoute, publicPath: `/*`},
       ]),
-    ).toThrow(new Error(`A public path must be unique: /`));
+    ).toThrow(new Error(`A public path must be unique per HTTP method: GET /`));
 
     expect(() =>
       validateRoutes([
         {...s3FileRoute, publicPath: `/*`},
         {...s3FileRoute, publicPath: `/`},
       ]),
-    ).toThrow(new Error(`A public path must be unique: /`));
+    ).toThrow(new Error(`A public path must be unique per HTTP method: GET /`));
 
     expect(() =>
       validateRoutes([
         {...lambdaRoute, publicPath: `/`, functionName: `foo`},
         {...lambdaRoute, publicPath: `/*`, functionName: `bar`},
       ]),
-    ).toThrow(new Error(`A public path must be unique: /`));
+    ).toThrow(new Error(`A public path must be unique per HTTP method: GET /`));
 
     expect(() =>
       validateRoutes([
         {...lambdaRoute, publicPath: `/*`, functionName: `foo`},
         {...lambdaRoute, publicPath: `/`, functionName: `bar`},
       ]),
-    ).toThrow(new Error(`A public path must be unique: /`));
+    ).toThrow(new Error(`A public path must be unique per HTTP method: GET /`));
+
+    expect(() =>
+      validateRoutes([
+        {
+          ...lambdaRoute,
+          publicPath: `/`,
+          functionName: `foo`,
+          httpMethod: `POST`,
+        },
+        {
+          ...lambdaRoute,
+          publicPath: `/`,
+          functionName: `bar`,
+          httpMethod: `POST`,
+        },
+      ]),
+    ).toThrow(
+      new Error(`A public path must be unique per HTTP method: POST /`),
+    );
 
     expect(() =>
       validateRoutes([
         {...s3FileRoute, publicPath: `/`},
         {...lambdaRoute, publicPath: `/*`, functionName: `foo`},
       ]),
-    ).toThrow(new Error(`A public path must be unique: /`));
+    ).toThrow(new Error(`A public path must be unique per HTTP method: GET /`));
 
     expect(() =>
       validateRoutes([
         {...lambdaRoute, publicPath: `/`, functionName: `foo`},
         {...s3FileRoute, publicPath: `/*`},
       ]),
-    ).toThrow(new Error(`A public path must be unique: /`));
+    ).toThrow(new Error(`A public path must be unique per HTTP method: GET /`));
 
     expect(() =>
       validateRoutes([
         {...s3FileRoute, publicPath: `/foo`},
         {...s3FileRoute, publicPath: `/foo/*`},
       ]),
-    ).toThrow(new Error(`A public path must be unique: /foo`));
+    ).toThrow(
+      new Error(`A public path must be unique per HTTP method: GET /foo`),
+    );
 
     expect(() =>
       validateRoutes([{...s3FileRoute, publicPath: `/foo/`}]),
