@@ -11,6 +11,7 @@ export async function readStackConfig(port?: number): Promise<StackConfig> {
   try {
     module = await import(path);
   } catch (error) {
+    console.error(error);
     throw new Error(`The config file cannot be read: ${path}`);
   }
 
