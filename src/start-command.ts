@@ -41,6 +41,7 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
     app.use(express.text());
     app.use(express.json());
     app.use(compression({threshold: 150}));
+    app.set(`etag`, false);
 
     const stackConfig = await readStackConfig(port);
     const routes = sortRoutes(stackConfig.routes);
