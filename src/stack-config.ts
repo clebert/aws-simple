@@ -1,4 +1,5 @@
 import type {Stack, aws_apigateway, aws_lambda} from 'aws-cdk-lib';
+import type {Express} from 'express';
 
 export interface StackConfig {
   readonly hostedZoneName?: string;
@@ -14,6 +15,8 @@ export interface StackConfig {
     readonly stack: Stack;
     readonly restApi: aws_apigateway.RestApiBase;
   }) => void;
+
+  readonly devServer?: DevServerOptions;
 }
 
 export interface Authentication {
@@ -79,4 +82,8 @@ export interface Throttling {
   readonly rateLimit: number;
   /** Default: `5000` requests */
   readonly burstLimit: number;
+}
+
+export interface DevServerOptions {
+  readonly onStart?: (app: Express) => void;
 }

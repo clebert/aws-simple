@@ -44,7 +44,8 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
     app.set(`etag`, false);
 
     const stackConfig = await readStackConfig(port);
-    const routes = sortRoutes(stackConfig.routes);
+
+    stackConfig.devServer?.onStart?.(app);
 
     const lambdaCaches = new WeakMap<
       LambdaRoute,
@@ -52,6 +53,8 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
     >();
 
     lambdaLocal.getLogger().level = `error`;
+
+    const routes = sortRoutes(stackConfig.routes);
 
     for (const route of routes) {
       if (route.type === `function`) {
