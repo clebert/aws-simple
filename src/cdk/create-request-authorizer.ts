@@ -1,4 +1,5 @@
-import {dirname} from 'path';
+import {dirname, join} from 'path';
+import {fileURLToPath} from 'url';
 import type {Stack} from 'aws-cdk-lib';
 import {Duration, aws_apigateway, aws_lambda, aws_logs} from 'aws-cdk-lib';
 import type {StackConfig} from '../stack-config.js';
@@ -25,7 +26,7 @@ export function createRequestAuthorizer(
       {
         functionName,
         code: aws_lambda.Code.fromAsset(
-          dirname(require.resolve(`./request-authorizer`)),
+          join(dirname(fileURLToPath(import.meta.url)), `request-authorizer`),
         ),
         handler: `index.handler`,
         description: `https://${domainName}`,

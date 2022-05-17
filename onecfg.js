@@ -14,7 +14,7 @@ import {
   typescript,
   vscode,
 } from '@onecfg/standard';
-import {onecfg} from 'onecfg';
+import {mergeContent, onecfg} from 'onecfg';
 
 onecfg(
   ...editorconfig(),
@@ -40,4 +40,15 @@ onecfg(
   }),
 
   ...vscode({showAllFilesInEditor: false}),
+
+  mergeContent(eslint.configFile, {
+    overrides: [
+      {
+        files: [`src/cdk/request-authorizer/*`],
+        parserOptions: {
+          project: `src/cdk/request-authorizer/tsconfig.json`,
+        },
+      },
+    ],
+  }),
 );

@@ -17,9 +17,10 @@
     "lib"
   ],
   "scripts": {
-    "ci": "run-p compile format:check lint test",
+    "ci": "run-p compile compile:request-authorizer format:check lint test",
     "compile": "tsc --incremental --pretty",
     "postcompile": "chmod +x lib/index.js",
+    "compile:request-authorizer": "tsc --pretty --project src/cdk/request-authorizer",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
