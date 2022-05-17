@@ -10,9 +10,12 @@ export function createRequestAuthorizer(
   stackConfig: StackConfig,
   stack: Stack,
 ): aws_apigateway.IAuthorizer | undefined {
-  const {authentication} = stackConfig;
+  const {authentication, routes} = stackConfig;
 
-  if (!authentication) {
+  if (
+    !authentication ||
+    routes.every(({authenticationEnabled}) => !authenticationEnabled)
+  ) {
     return;
   }
 
