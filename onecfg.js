@@ -39,5 +39,5 @@ onecfg(
     lib: [`DOM`],
   }),
 
-  ...vscode({showFilesInEditor: false}),
+  ...vscode({showAllFilesInEditor: false}),
 );
