@@ -70,9 +70,10 @@ const s3RouteStruct: Describe<S3Route> = object({
 });
 
 const stackConfigStruct: Describe<
-  Omit<StackConfig, 'routes' | 'onSynthesize'> & {
+  Omit<StackConfig, 'routes' | 'onSynthesize' | 'onStart'> & {
     routes: any[];
     onSynthesize?: Function;
+    onStart?: Function;
   }
 > = object({
   hostedZoneName: optional(nonempty(string())),
@@ -105,4 +106,5 @@ const stackConfigStruct: Describe<
     Number.MAX_SAFE_INTEGER,
   ),
   onSynthesize: optional(func()),
+  onStart: optional(func()),
 });
