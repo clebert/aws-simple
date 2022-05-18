@@ -507,9 +507,7 @@ export default () => ({
 });
 ```
 
-### DEV server customizations
-
-#### `onStart` hook
+### `onStart` hook
 
 The `onStart` hook can be used to customize the DEV server's
 [Express app](https://expressjs.com/en/5x/api.html#app), e.g. to configure a
@@ -521,19 +519,19 @@ import {createProxyMiddleware} from 'http-proxy-middleware';
 export default () => ({
   hostedZoneName: 'example.com',
   routes: [{type: 'file', publicPath: '/', path: 'dist/index.html'}],
-  devServer: {
-    onStart: (app) => {
-      app.use(
-        '/some-external-api',
-        createProxyMiddleware({
-          target: 'http://www.example.org',
-          changeOrigin: true,
-        }),
-      );
-    },
+  onStart: (app) => {
+    app.use(
+      '/some-external-api',
+      createProxyMiddleware({
+        target: 'http://www.example.org',
+        changeOrigin: true,
+      }),
+    );
   },
 });
 ```
+
+Note: The `onStart` hook is called before the routes are registered.
 
 ## AWS IAM policy example
 

@@ -16,7 +16,7 @@ export interface StackConfig {
     readonly restApi: aws_apigateway.RestApiBase;
   }) => void;
 
-  readonly devServer?: DevServerOptions;
+  readonly onStart?: (app: Express) => void;
 }
 
 export interface Authentication {
@@ -82,8 +82,4 @@ export interface Throttling {
   readonly rateLimit: number;
   /** Default: `5000` requests */
   readonly burstLimit: number;
-}
-
-export interface DevServerOptions {
-  readonly onStart?: (app: Express) => void;
 }

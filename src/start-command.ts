@@ -45,7 +45,7 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
 
     const stackConfig = await readStackConfig(port);
 
-    stackConfig.devServer?.onStart?.(app);
+    stackConfig.onStart?.(app);
 
     const lambdaCaches = new WeakMap<
       LambdaRoute,
