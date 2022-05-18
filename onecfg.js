@@ -41,6 +41,10 @@ onecfg(
 
   ...vscode({showAllFilesInEditor: false}),
 
+  mergeContent(typescript.configFile, {
+    exclude: [`src/cdk/request-authorizer/*`],
+  }),
+
   mergeContent(eslint.configFile, {
     overrides: [
       {
