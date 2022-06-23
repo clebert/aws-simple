@@ -1,11 +1,8 @@
-// @ts-check
-
 import {
   editorconfig,
   eslint,
   git,
   github,
-  javascript,
   jest,
   node,
   npm,
@@ -14,34 +11,37 @@ import {
   typescript,
   vscode,
 } from '@onecfg/standard';
-import {mergeContent, onecfg} from 'onecfg';
+import {mergeContent, writeFiles} from 'onecfg';
 
-onecfg(
+const target = `es2022`;
+
+writeFiles(
   ...editorconfig(),
   ...eslint(),
   ...git(),
-  ...github({branches: [`master`]}),
 
-  ...javascript({
-    target: {ecmaVersion: `es2021`, moduleType: `es2020`, node: true},
+  ...github({
+    branches: [`master`],
+    additionalCiScripts: [`compile:emit:request-authorizer`],
   }),
 
   ...jest(),
   ...node({nodeVersion: `16`}),
   ...npm(),
   ...prettier(),
-  ...swc(),
+  ...swc({target}),
+  ...typescript({target, emit: true}),
+  ...vscode({includeFilesInExplorer: false}),
 
-  ...typescript({
-    declaration: true,
-    outDir: `lib`,
-    sourceMap: true,
-    lib: [`DOM`],
+  mergeContent(npm.packageFile, {
+    scripts: {
+      'postcompile:emit': `chmod +x lib/index.js`,
+      'compile:emit:request-authorizer': `tsc --pretty --project src/cdk/request-authorizer`,
+      'start': `node ./lib/index.js`,
+    },
   }),
 
-  ...vscode({showAllFilesInEditor: false}),
-
-  mergeContent(typescript.configFile, {
+  mergeContent(typescript.emitConfigFile, {
     exclude: [`src/cdk/request-authorizer/*`],
   }),
 
@@ -49,9 +49,11 @@ onecfg(
     overrides: [
       {
         files: [`src/cdk/request-authorizer/*`],
-        parserOptions: {
-          project: `src/cdk/request-authorizer/tsconfig.json`,
-        },
+        parserOptions: {project: `src/cdk/request-authorizer/tsconfig.json`},
+      },
+      {
+        files: [`**/*.md/*.js`],
+        rules: {'import/no-commonjs': `off`},
       },
     ],
   }),

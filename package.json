@@ -17,18 +17,19 @@
     "lib"
   ],
   "scripts": {
-    "ci": "run-p compile compile:request-authorizer format:check lint test",
-    "compile": "tsc --incremental --pretty",
-    "postcompile": "chmod +x lib/index.js",
-    "compile:request-authorizer": "tsc --pretty --project src/cdk/request-authorizer",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint": "eslint .",
     "prepare": "node onecfg.js",
+    "ci": "run-p compile:check compile:emit format:check lint test compile:emit:request-authorizer",
+    "compile:check": "tsc --pretty",
+    "compile:emit": "tsc --pretty --project tsconfig.emit.json",
+    "postcompile:emit": "chmod +x lib/index.js",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "lint": "eslint .",
+    "test": "jest --silent --passWithNoTests",
     "release": "npm version",
     "postrelease": "git push --follow-tags",
-    "start": "node ./lib/index.js",
-    "test": "jest --silent"
+    "compile:emit:request-authorizer": "tsc --pretty --project src/cdk/request-authorizer",
+    "start": "node ./lib/index.js"
   },
   "dependencies": {
     "@aws-sdk/client-api-gateway": "^3.116.0",
@@ -43,11 +44,11 @@
     "mime-types": "^2.1.35",
     "mkdirp": "^1.0.4",
     "prompts": "^2.4.2",
-    "superstruct": "^0.16.0",
+    "superstruct": "^0.15.4",
     "yargs": "^17.5.1"
   },
   "devDependencies": {
-    "@onecfg/standard": "^4.0.0",
+    "@onecfg/standard": "^6.4.0",
     "@swc/core": "^1.2.204",
     "@swc/jest": "^0.2.21",
     "@types/aws-lambda": "^8.10.101",

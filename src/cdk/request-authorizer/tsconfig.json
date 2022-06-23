@@ -1,6 +1,6 @@
 {
-  "extends": "../../../tsconfig.json",
+  "extends": "../../../tsconfig.emit.json",
   "include": ["index.ts"],
   "exclude": [],
-  "compilerOptions": {"module": "CommonJS"}
+  "compilerOptions": {"module": "CommonJS", "incremental": false}
 }

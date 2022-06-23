@@ -7,9 +7,10 @@ coverage
 node_modules
 .prettierrc.json
 .prettierignore
+.swc
 .swcrc
 tsconfig.json
-tsconfig.tsbuildinfo
+tsconfig.emit.json
+tsconfig.emit.tsbuildinfo
 lib
-.vscode/extensions.json
-.vscode/settings.json
+.vscode
