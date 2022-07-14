@@ -43,7 +43,8 @@ export function createLambdaRequestHandler(
           },
         }));
 
-      const {headers, statusCode, body, isBase64Encoded} = result;
+      const {headers, multiValueHeaders, statusCode, body, isBase64Encoded} =
+        result;
 
       if (cachedResult) {
         print.info(`Cache hit for Lambda request handler: ${functionName}`);
@@ -56,8 +57,19 @@ export function createLambdaRequestHandler(
       }
 
       if (headers) {
-        for (const key of Object.keys(headers)) {
-          res.set(key, String(headers[key]));
+        for (const [key, value] of Object.entries(headers)) {
+          res.set(key, String(value));
+        }
+      }
+
+      if (multiValueHeaders) {
+        for (const [key, values] of Object.entries(multiValueHeaders)) {
+          // Using `set` instead of `append` here because the API Gateway docs
+          // define: "If you specify values for both headers and
+          // multiValueHeaders, API Gateway merges them into a single list. If
+          // the same key-value pair is specified in both, only the values from
+          // multiValueHeaders will appear in the merged list."
+          res.set(key, values.map(String));
         }
       }
 
