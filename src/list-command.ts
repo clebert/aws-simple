@@ -13,6 +13,7 @@ export const listCommand: CommandModule<
     readonly 'legacy-app-name': string | undefined;
     readonly 'all': boolean;
     readonly 'short': boolean;
+    readonly 'json': boolean;
   }
 > = {
   command: `${commandName} [options]`,
@@ -38,16 +39,22 @@ export const listCommand: CommandModule<
         boolean: true,
         default: false,
       })
+      .options(`json`, {
+        describe: `Give the output in JSON format for scripts`,
+        boolean: true,
+        default: false,
+      })
       .example([
         [`npx $0 ${commandName}`],
         [`npx $0 ${commandName} --hosted-zone-name example.com`],
         [`npx $0 ${commandName} --legacy-app-name example`],
         [`npx $0 ${commandName} --all`],
         [`npx $0 ${commandName} --short`],
+        [`npx $0 ${commandName} --json`],
       ]),
 
   handler: async (args): Promise<void> => {
-    const {legacyAppName, all, short} = args;
+    const {legacyAppName, all, short, json} = args;
 
     const hostedZoneName = all
       ? undefined
@@ -59,7 +66,7 @@ export const listCommand: CommandModule<
       );
     }
 
-    if (!short) {
+    if (!short && !json) {
       if (hostedZoneName) {
         print.warning(`Hosted zone: ${hostedZoneName}`);
       }
@@ -72,7 +79,7 @@ export const listCommand: CommandModule<
       : await findStacks();
 
     if (stacks.length === 0) {
-      if (!short) {
+      if (!short && !json) {
         print.warning(`No deployed stacks found.`);
       }
 
@@ -83,6 +90,22 @@ export const listCommand: CommandModule<
       for (const {StackName} of stacks) {
         print(StackName!);
       }
+
+      return;
+    }
+
+    if (json) {
+      const jsonOutput = stacks.map((stack) => ({
+        stackName: stack.StackName,
+        status: stack.StackStatus,
+        created: stack.CreationTime?.getTime(),
+        updated: stack.LastUpdatedTime?.getTime(),
+        terminationProtection: stack.EnableTerminationProtection,
+        tags:
+          stack.Tags?.map(({Key, Value}) => ({key: Key, value: Value})) ?? [],
+      }));
+
+      print(JSON.stringify(jsonOutput));
 
       return;
     }
