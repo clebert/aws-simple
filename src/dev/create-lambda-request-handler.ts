@@ -16,6 +16,12 @@ export function createLambdaRequestHandler(
     try {
       const cachedResult = cache?.get(req.url);
 
+      const requestBody = req.body
+        ? typeof req.body === `string`
+          ? req.body
+          : JSON.stringify(req.body)
+        : null;
+
       const result =
         cachedResult ||
         (await lambdaLocal.execute({
@@ -35,11 +41,8 @@ export function createLambdaRequestHandler(
             },
             path: req.path,
             httpMethod: req.method,
-            body: req.body
-              ? typeof req.body === `string`
-                ? req.body
-                : JSON.stringify(req.body)
-              : null,
+            body: requestBody && Buffer.from(requestBody).toString(`base64`),
+            isBase64Encoded: Boolean(requestBody),
           },
         }));
 
