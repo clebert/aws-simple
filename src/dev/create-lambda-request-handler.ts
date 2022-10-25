@@ -16,11 +16,8 @@ export function createLambdaRequestHandler(
     try {
       const cachedResult = cache?.get(req.url);
 
-      const requestBody = req.body
-        ? typeof req.body === `string`
-          ? req.body
-          : JSON.stringify(req.body)
-        : null;
+      const requestBody =
+        typeof req.body === `string` && req.body ? req.body : null;
 
       const result =
         cachedResult ||

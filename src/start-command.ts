@@ -38,8 +38,7 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
     const port = await getPort({port: args.port});
     const app = express();
 
-    app.use(express.text());
-    app.use(express.json());
+    app.use(express.text({type: `*/*`}));
     app.use(compression({threshold: 150}));
     app.set(`etag`, false);
 
