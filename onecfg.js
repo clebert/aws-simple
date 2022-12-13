@@ -31,6 +31,7 @@ writeFiles(
   ...prettier(),
   ...swc({target}),
   ...typescript({target, emit: true}),
+  ...typescript.mergeCompilerOptions({noErrorTruncation: true}),
   ...vscode({includeFilesInExplorer: false}),
 
   mergeContent(npm.packageFile, {

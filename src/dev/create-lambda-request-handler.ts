@@ -1,7 +1,7 @@
 import type {APIGatewayProxyResult} from 'aws-lambda';
 import type express from 'express';
 import * as lambdaLocal from 'lambda-local';
-import type {LambdaRoute} from '../stack-config.js';
+import type {LambdaRoute} from '../read-stack-config.js';
 import {print} from '../utils/print.js';
 import {getQueryStringParameters} from './get-querystring-parameters.js';
 import {getRequestHeaders} from './get-request-headers.js';

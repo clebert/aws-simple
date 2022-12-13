@@ -1,11 +1,11 @@
 import type {CommandModule} from 'yargs';
+import {readStackConfig} from './read-stack-config.js';
 import {findStack} from './sdk/find-stack.js';
 import {getOutputValue} from './sdk/get-output-value.js';
 import {redeployRestApi} from './sdk/redeploy-rest-api.js';
 import {getDomainName} from './utils/get-domain-name.js';
 import {getStackName} from './utils/get-stack-name.js';
 import {print} from './utils/print.js';
-import {readStackConfig} from './utils/read-stack-config.js';
 
 const commandName = `redeploy`;
 

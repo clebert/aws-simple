@@ -1,3 +1,4 @@
+import {describe, expect, test} from '@jest/globals';
 import {getNormalizedName} from './get-normalized-name.js';
 
 describe(`getNormalizedName()`, () => {

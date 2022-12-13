@@ -1,7 +1,7 @@
 import {resolve} from 'path';
 import type {Express} from 'express';
 import express from 'express';
-import type {S3Route} from '../stack-config.js';
+import type {S3Route} from '../read-stack-config.js';
 
 export function registerS3Route(app: Express, route: S3Route): void {
   const {type, publicPath, path, corsEnabled} = route;

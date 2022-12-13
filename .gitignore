@@ -10,6 +10,7 @@ node_modules
 .swc
 .swcrc
 tsconfig.json
+tsconfig.eslint.json
 tsconfig.emit.json
 tsconfig.emit.tsbuildinfo
 lib
