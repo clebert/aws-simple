@@ -13,7 +13,6 @@ export const purgeCommand: CommandModule<
   {},
   {
     readonly 'hosted-zone-name': string | undefined;
-    readonly 'legacy-app-name': string | undefined;
     readonly 'min-age': number;
     readonly 'excluded-tags': readonly (string | number)[];
     readonly 'yes': boolean;
@@ -26,10 +25,6 @@ export const purgeCommand: CommandModule<
     argv
       .options(`hosted-zone-name`, {
         describe: `An optional hosted zone name, if not specified it will be determined from the config file`,
-        string: true,
-      })
-      .options(`legacy-app-name`, {
-        describe: `An optional app name to identify legacy stacks`,
         string: true,
       })
       .options(`min-age`, {
@@ -50,7 +45,6 @@ export const purgeCommand: CommandModule<
       .example([
         [`npx $0 ${commandName}`],
         [`npx $0 ${commandName} --hosted-zone-name example.com`],
-        [`npx $0 ${commandName} --legacy-app-name example`],
         [`npx $0 ${commandName} --min-age 14`],
         [`npx $0 ${commandName} --excluded-tags foo=true bar`],
         [`npx $0 ${commandName} --yes`],
@@ -64,14 +58,12 @@ export const purgeCommand: CommandModule<
       throw new Error(`Please specify a hosted zone name.`);
     }
 
-    const {legacyAppName, minAge: minAgeInDays, excludedTags} = args;
+    const {minAge: minAgeInDays, excludedTags} = args;
 
     print.warning(`Hosted zone: ${hostedZoneName}`);
     print.info(`Searching all expired stacks...`);
 
-    const expiredStacks = (
-      await findStacks({hostedZoneName, legacyAppName})
-    ).filter((stack) =>
+    const expiredStacks = (await findStacks(hostedZoneName)).filter((stack) =>
       isExpired(stack, minAgeInDays, excludedTags.map(String)),
     );
 

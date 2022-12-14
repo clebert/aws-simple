@@ -3,11 +3,6 @@ import {
   ListStackResourcesCommand,
 } from '@aws-sdk/client-cloudformation';
 
-export interface FindStacksOptions {
-  readonly hostedZoneName: string;
-  readonly legacyAppName?: string;
-}
-
 export async function findStackResourceIds(
   stackName: string,
 ): Promise<readonly string[]> {

@@ -6,13 +6,8 @@ import {
 import {findStack} from './find-stack.js';
 import {getOutputValue} from './get-output-value.js';
 
-export interface FindStacksOptions {
-  readonly hostedZoneName: string;
-  readonly legacyAppName?: string;
-}
-
 export async function findStacks(
-  options?: FindStacksOptions,
+  hostedZoneName?: string,
 ): Promise<readonly Stack[]> {
   const client = new CloudFormationClient({});
   const stacks: Stack[] = [];
@@ -33,7 +28,7 @@ export async function findStacks(
 
   return Promise.all(
     stacks
-      .filter((stack) => isMatchingStack(stack, options))
+      .filter((stack) => isMatchingStack(stack, hostedZoneName))
       // For some reason `stack.EnableTerminationProtection` is always
       // `undefined`. Describing a single stack instead, does return the correct
       // value (true or false) for `EnableTerminationProtection`.
@@ -43,21 +38,15 @@ export async function findStacks(
 
 function isMatchingStack(
   stack: Stack,
-  options: FindStacksOptions | undefined,
+  hostedZoneName: string | undefined,
 ): boolean {
   if (!stack.StackName?.startsWith(`aws-simple`)) {
     return false;
   }
 
-  if (!options) {
+  if (!hostedZoneName) {
     return true;
   }
 
-  const {hostedZoneName, legacyAppName} = options;
-
-  return Boolean(
-    getOutputValue(stack, `HostedZoneName`) === hostedZoneName ||
-      (legacyAppName &&
-        stack.StackName.startsWith(`aws-simple--${legacyAppName}--`)),
-  );
+  return getOutputValue(stack, `HostedZoneName`) === hostedZoneName;
 }

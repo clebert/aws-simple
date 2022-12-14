@@ -10,7 +10,6 @@ export const listCommand: CommandModule<
   {},
   {
     readonly 'hosted-zone-name': string | undefined;
-    readonly 'legacy-app-name': string | undefined;
     readonly 'all': boolean;
     readonly 'short': boolean;
     readonly 'json': boolean;
@@ -23,10 +22,6 @@ export const listCommand: CommandModule<
     argv
       .options(`hosted-zone-name`, {
         describe: `An optional hosted zone name, if not specified it will be determined from the config file`,
-        string: true,
-      })
-      .options(`legacy-app-name`, {
-        describe: `An optional app name to identify legacy stacks`,
         string: true,
       })
       .options(`all`, {
@@ -47,14 +42,13 @@ export const listCommand: CommandModule<
       .example([
         [`npx $0 ${commandName}`],
         [`npx $0 ${commandName} --hosted-zone-name example.com`],
-        [`npx $0 ${commandName} --legacy-app-name example`],
         [`npx $0 ${commandName} --all`],
         [`npx $0 ${commandName} --short`],
         [`npx $0 ${commandName} --json`],
       ]),
 
   handler: async (args): Promise<void> => {
-    const {legacyAppName, all, short, json} = args;
+    const {all, short, json} = args;
 
     const hostedZoneName = all
       ? undefined
@@ -74,9 +68,7 @@ export const listCommand: CommandModule<
       print.info(`Searching all deployed stacks...`);
     }
 
-    const stacks = hostedZoneName
-      ? await findStacks({hostedZoneName, legacyAppName})
-      : await findStacks();
+    const stacks = await findStacks(hostedZoneName);
 
     if (stacks.length === 0) {
       if (!short && !json) {
