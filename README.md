@@ -81,6 +81,7 @@ Commands:
   aws-simple synthesize [options]   Synthesize the configured stack using the CDK.  [aliases: synth]
   aws-simple upload [options]       Upload all referenced files to the S3 bucket of the configured stack.
   aws-simple list [options]         List all deployed stacks filtered by the specified hosted zone name.
+  aws-simple tag [options]          Update the tags of the specified stack.
   aws-simple delete [options]       Delete the specified stack.
   aws-simple purge [options]        Delete all expired stacks filtered by the specified hosted zone name.
   aws-simple flush-cache [options]  Flush the REST API cache of the specified stack.

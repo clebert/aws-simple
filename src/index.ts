@@ -16,6 +16,7 @@ import type {
 import {redeployCommand} from './redeploy-command.js';
 import {startCommand} from './start-command.js';
 import {synthesizeCommand} from './synthesize-command.js';
+import {tagCommand} from './tag-command.js';
 import {uploadCommand} from './upload-command.js';
 import {print} from './utils/print.js';
 
@@ -38,6 +39,7 @@ export type ConfigFileDefaultExport = (port?: number) => StackConfig;
     .command(synthesizeCommand)
     .command(uploadCommand)
     .command(listCommand)
+    .command(tagCommand)
     .command(deleteCommand)
     .command(purgeCommand)
     .command(flushCacheCommand)
