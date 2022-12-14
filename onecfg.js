@@ -26,7 +26,7 @@ writeFiles(
   }),
 
   ...jest(),
-  ...node({nodeVersion: `16`}),
+  ...node({nodeVersion: `18`}),
   ...npm(),
   ...prettier(),
   ...swc({target}),

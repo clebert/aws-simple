@@ -37,7 +37,7 @@ export function createRequestAuthorizer(
           USERNAME: authentication.username,
           PASSWORD: authentication.password,
         },
-        runtime: aws_lambda.Runtime.NODEJS_16_X,
+        runtime: aws_lambda.Runtime.NODEJS_18_X,
         tracing: aws_lambda.Tracing.PASS_THROUGH,
         logRetention: aws_logs.RetentionDays.TWO_WEEKS,
       },
