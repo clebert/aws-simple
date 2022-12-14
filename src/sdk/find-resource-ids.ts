@@ -3,7 +3,7 @@ import {
   ListStackResourcesCommand,
 } from '@aws-sdk/client-cloudformation';
 
-export async function findStackResourceIds(
+export async function findResourceIds(
   stackName: string,
 ): Promise<readonly string[]> {
   const client = new CloudFormationClient({});

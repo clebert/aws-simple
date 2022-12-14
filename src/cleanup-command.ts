@@ -1,8 +1,8 @@
 import {APIGatewayClient, GetAccountCommand} from '@aws-sdk/client-api-gateway';
 import type {CommandModule} from 'yargs';
 import {deleteRole} from './sdk/delete-role.js';
+import {findResourceIds} from './sdk/find-resource-ids.js';
 import {findRoles} from './sdk/find-roles.js';
-import {findStackResourceIds} from './sdk/find-stack-resource-ids.js';
 import {findStacks} from './sdk/find-stacks.js';
 import {print} from './utils/print.js';
 
@@ -29,7 +29,7 @@ export const cleanupCommand: CommandModule<{}, {readonly yes: boolean}> = {
 
     for (const stack of stacks) {
       if (stack.StackName) {
-        const resourceIds = await findStackResourceIds(stack.StackName);
+        const resourceIds = await findResourceIds(stack.StackName);
 
         for (const resourceId of resourceIds) {
           allResourceIds.add(resourceId);
