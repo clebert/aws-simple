@@ -2,6 +2,7 @@
 
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
+import {cleanupCommand} from './cleanup-command.js';
 import {deleteCommand} from './delete-command.js';
 import {flushCacheCommand} from './flush-cache-command.js';
 import {listCommand} from './list-command.js';
@@ -22,7 +23,9 @@ export type {LambdaRoute, Route, S3Route, StackConfig};
 export type ConfigFileDefaultExport = (port?: number) => StackConfig;
 
 (async () => {
-  await yargs(hideBin(process.argv))
+  const argv = yargs(hideBin(process.argv));
+
+  await argv
     .usage(`Usage: $0 <command> [options]`)
     .help(`h`)
     .alias(`h`, `help`)
@@ -30,6 +33,7 @@ export type ConfigFileDefaultExport = (port?: number) => StackConfig;
       `Production-ready AWS website deployment with minimal configuration.`,
     )
     .detectLocale(false)
+    .wrap(null)
     .demandCommand()
     .command(synthesizeCommand)
     .command(uploadCommand)
@@ -38,6 +42,7 @@ export type ConfigFileDefaultExport = (port?: number) => StackConfig;
     .command(purgeCommand)
     .command(flushCacheCommand)
     .command(redeployCommand)
+    .command(cleanupCommand)
     .command(startCommand)
     .strict()
     .fail(false)
