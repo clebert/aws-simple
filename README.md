@@ -611,6 +611,28 @@ Note: The `onStart` hook is called before the routes are registered.
       "Effect": "Allow",
       "Action": "apigateway:DELETE",
       "Resource": "arn:aws:apigateway:*::/restapis/*/stages/prod/cache/data"
+    },
+    {
+      "Sid": "AwsSimple7",
+      "Effect": "Allow",
+      "Action": "apigateway:GET",
+      "Resource": "arn:aws:apigateway:*::/account"
+    },
+    {
+      "Sid": "AwsSimple8",
+      "Effect": "Allow",
+      "Action": "iam:ListRoles",
+      "Resource": "arn:aws:iam::*:role/"
+    },
+    {
+      "Sid": "AwsSimple9",
+      "Effect": "Allow",
+      "Action": [
+        "iam:ListAttachedRolePolicies",
+        "iam:DetachRolePolicy",
+        "iam:DeleteRole"
+      ],
+      "Resource": "arn:aws:iam::*:role/aws-simple-*"
     }
   ]
 }
