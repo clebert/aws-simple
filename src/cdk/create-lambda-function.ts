@@ -50,6 +50,8 @@ export function createLambdaFunction(
     );
   }
 
+  const {monitoring} = stackConfig;
+
   return new aws_lambda.Function(
     stack,
     `Function${getHash(uniqueFunctionName)}`,
@@ -66,6 +68,10 @@ export function createLambdaFunction(
       timeout: Duration.seconds(timeoutInSeconds),
       runtime: aws_lambda.Runtime.NODEJS_18_X,
       tracing: aws_lambda.Tracing.PASS_THROUGH,
+      insightsVersion:
+        monitoring === true || monitoring?.lambdaInsightsEnabled
+          ? aws_lambda.LambdaInsightsVersion.VERSION_1_0_229_0
+          : undefined,
       logRetention: aws_logs.RetentionDays.TWO_WEEKS,
       role: lambdaServiceRole,
     },

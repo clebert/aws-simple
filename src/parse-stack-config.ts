@@ -90,6 +90,7 @@ const StackConfigSchema = DomainNamePartsSchema.extend({
       z.literal(true),
       z.object({
         accessLoggingEnabled: z.boolean().optional(),
+        lambdaInsightsEnabled: z.boolean().optional(),
         loggingEnabled: z.boolean().optional(),
         metricsEnabled: z.boolean().optional(),
         tracingEnabled: z.boolean().optional(),
