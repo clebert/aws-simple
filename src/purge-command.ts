@@ -107,19 +107,24 @@ export const purgeCommand: CommandModule<
 
     print.info(`Deleting all expired stacks...`);
 
-    const results = await Promise.allSettled(
-      expiredStacks.map(async ({StackName}) => deleteStack(StackName!)),
-    );
+    let aStackFailedToBeDeleted = false;
 
-    const rejectedResults = results.filter(
-      (result): result is PromiseRejectedResult => result.status === `rejected`,
-    );
+    for (const {StackName} of expiredStacks) {
+      print.info(`Deleting expired stack ${StackName}...`);
 
-    if (rejectedResults.length > 0) {
-      for (const {reason} of rejectedResults) {
-        print.error(String(reason));
+      try {
+        await deleteStack(StackName!);
+        print.info(`Successfully deleted expired stack ${StackName}.`);
+      } catch (error) {
+        aStackFailedToBeDeleted = true;
+
+        print.error(
+          `Failed to delete expired stack ${StackName}. ${String(error)}`,
+        );
       }
+    }
 
+    if (aStackFailedToBeDeleted) {
       process.exit(1);
     } else {
       print.success(`All expired stacks have been successfully deleted.`);
