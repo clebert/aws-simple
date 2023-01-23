@@ -5,7 +5,7 @@ Production-ready AWS website deployment with minimal configuration.
 ## Installation
 
 ```
-npm install aws-simple aws-cdk
+npm install aws-simple aws-cdk aws-cdk-lib
 ```
 
 ## Getting started
