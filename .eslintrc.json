@@ -110,7 +110,7 @@
   },
   "plugins": [
     "@typescript-eslint",
-    "eslint-plugin-import",
+    "import",
     "markdown"
   ],
   "root": true,
