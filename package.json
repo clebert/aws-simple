@@ -17,7 +17,6 @@
     "lib"
   ],
   "scripts": {
-    "prepare": "node onecfg.js",
     "ci": "run-p compile:check compile:emit format:check lint test compile:emit:request-authorizer",
     "compile:check": "tsc",
     "compile:emit": "tsc --project tsconfig.emit.json",
@@ -50,7 +49,6 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.2.2",
-    "@onecfg/standard": "^8.0.0",
     "@swc/core": "^1.3.22",
     "@swc/jest": "^0.2.24",
     "@types/aws-lambda": "^8.10.109",

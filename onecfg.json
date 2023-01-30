@@ -1,0 +1,40 @@
+{
+  "extends": [
+    "https://raw.githubusercontent.com/clebert/onecfg-rust/main/example/editorconfig.json",
+    "https://raw.githubusercontent.com/clebert/onecfg-rust/main/example/eslint.json",
+    "https://raw.githubusercontent.com/clebert/onecfg-rust/main/example/git.json",
+    "https://raw.githubusercontent.com/clebert/onecfg-rust/main/example/jest.json",
+    "https://raw.githubusercontent.com/clebert/onecfg-rust/main/example/node.json",
+    "https://raw.githubusercontent.com/clebert/onecfg-rust/main/example/prettier.json",
+    "https://raw.githubusercontent.com/clebert/onecfg-rust/main/example/swc.json",
+    "https://raw.githubusercontent.com/clebert/onecfg-rust/main/example/typescript.emit.json",
+    "https://raw.githubusercontent.com/clebert/onecfg-rust/main/example/typescript.eslint.json",
+    "https://raw.githubusercontent.com/clebert/onecfg-rust/main/example/typescript.json",
+    "https://raw.githubusercontent.com/clebert/onecfg-rust/main/example/vscode.json"
+  ],
+  "patches": {
+    ".eslintrc.json": [
+      {
+        "value": {
+          "overrides": [
+            {
+              "files": ["src/cdk/request-authorizer/*"],
+              "parserOptions": {
+                "project": "src/cdk/request-authorizer/tsconfig.json"
+              }
+            },
+            {
+              "files": ["**/*.md/*.js"],
+              "rules": {"import/no-commonjs": "off"}
+            }
+          ]
+        }
+      }
+    ],
+    "tsconfig.emit.json": [
+      {
+        "value": {"exclude": ["src/cdk/request-authorizer/*"]}
+      }
+    ]
+  }
+}

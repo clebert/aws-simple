@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "incremental": true,
+    "inlineSources": true,
+    "outDir": "lib",
+    "rootDir": "src",
+    "sourceMap": true
+  },
+  "exclude": [
+    "src/cdk/request-authorizer/*"
+  ],
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "src/**/*"
+  ]
+}

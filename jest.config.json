@@ -1,0 +1,28 @@
+{
+  "clearMocks": true,
+  "collectCoverage": true,
+  "coverageThreshold": {
+    "global": {
+      "branches": 100,
+      "functions": 100,
+      "lines": 100,
+      "statements": 100
+    }
+  },
+  "extensionsToTreatAsEsm": [
+    ".ts",
+    ".tsx"
+  ],
+  "moduleNameMapper": {
+    "^(\\.{1,2}/.*)\\.js$": "$1"
+  },
+  "restoreMocks": true,
+  "testMatch": [
+    "**/src/**/*.test.{ts,tsx}"
+  ],
+  "transform": {
+    "^.+\\.tsx?$": [
+      "@swc/jest"
+    ]
+  }
+}

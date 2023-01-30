@@ -1,0 +1,13 @@
+/.eslintrc.json
+/.prettierrc.json
+/.swcrc
+/.vscode/extensions.json
+/.vscode/settings.json
+/coverage
+/jest.config.json
+/lib
+/package-lock.json
+/tsconfig.base.json
+/tsconfig.emit.json
+/tsconfig.eslint.json
+/tsconfig.json
