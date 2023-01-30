@@ -1,4 +1,7 @@
 {
+  "extends": [
+    "prettier"
+  ],
   "overrides": [
     {
       "files": [
@@ -14,45 +17,6 @@
       ],
       "rules": {
         "import/no-commonjs": "off"
-      }
-    },
-    {
-      "files": [
-        "**/*.cjs"
-      ],
-      "parserOptions": {
-        "sourceType": "script"
-      },
-      "rules": {
-        "import/extensions": "off",
-        "import/no-commonjs": "off",
-        "no-restricted-globals": "off"
-      }
-    },
-    {
-      "files": [
-        "**/*.mjs"
-      ],
-      "parserOptions": {
-        "sourceType": "module"
-      }
-    },
-    {
-      "files": [
-        "**/*.md"
-      ],
-      "processor": "markdown/markdown"
-    },
-    {
-      "files": [
-        "**/*.md/*.js",
-        "**/*.md/*.jsx"
-      ],
-      "rules": {
-        "quotes": [
-          "error",
-          "single"
-        ]
       }
     },
     {
@@ -95,6 +59,45 @@
         "@typescript-eslint/require-await": "error",
         "no-shadow": "off",
         "quotes": "off"
+      }
+    },
+    {
+      "files": [
+        "**/*.cjs"
+      ],
+      "parserOptions": {
+        "sourceType": "script"
+      },
+      "rules": {
+        "import/extensions": "off",
+        "import/no-commonjs": "off",
+        "no-restricted-globals": "off"
+      }
+    },
+    {
+      "files": [
+        "**/*.mjs"
+      ],
+      "parserOptions": {
+        "sourceType": "module"
+      }
+    },
+    {
+      "files": [
+        "**/*.md"
+      ],
+      "processor": "markdown/markdown"
+    },
+    {
+      "files": [
+        "**/*.md/*.js",
+        "**/*.md/*.jsx"
+      ],
+      "rules": {
+        "quotes": [
+          "error",
+          "single"
+        ]
       }
     }
   ],
