@@ -34,5 +34,14 @@
   "editor.rulers": [
     80
   ],
+  "json.schemaDownload.enable": true,
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "onecfg*.json"
+      ],
+      "url": "https://raw.githubusercontent.com/clebert/onecfg-rust/main/schema.json"
+    }
+  ],
   "typescript.tsdk": "node_modules/typescript/lib"
 }
