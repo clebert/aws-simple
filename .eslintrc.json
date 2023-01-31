@@ -109,9 +109,9 @@
     "sourceType": "module"
   },
   "plugins": [
-    "@typescript-eslint",
     "import",
-    "markdown"
+    "markdown",
+    "@typescript-eslint"
   ],
   "root": true,
   "rules": {
