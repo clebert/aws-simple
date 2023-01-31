@@ -1,6 +1,5 @@
 {
   "recommendations": [
-    "bodil.prettier-toml",
     "dbaeumer.vscode-eslint",
     "editorconfig.editorconfig",
     "eg2.vscode-npm-script",
