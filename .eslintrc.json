@@ -44,22 +44,6 @@
     },
     {
       "files": [
-        "src/cdk/request-authorizer/*"
-      ],
-      "parserOptions": {
-        "project": "src/cdk/request-authorizer/tsconfig.json"
-      }
-    },
-    {
-      "files": [
-        "**/*.md/*.js"
-      ],
-      "rules": {
-        "import/no-commonjs": "off"
-      }
-    },
-    {
-      "files": [
         "src/**/*.ts",
         "src/**/*.tsx"
       ],
@@ -98,6 +82,22 @@
         "@typescript-eslint/require-await": "error",
         "no-shadow": "off",
         "quotes": "off"
+      }
+    },
+    {
+      "files": [
+        "src/cdk/request-authorizer/*"
+      ],
+      "parserOptions": {
+        "project": "src/cdk/request-authorizer/tsconfig.json"
+      }
+    },
+    {
+      "files": [
+        "**/*.md/*.js"
+      ],
+      "rules": {
+        "import/no-commonjs": "off"
       }
     }
   ],
