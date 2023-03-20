@@ -1,4 +1,5 @@
 /.prettierrc.json
+/LICENSE*
 /.eslintrc.json
 /coverage
 /jest.config.json
