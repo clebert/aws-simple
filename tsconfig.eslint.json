@@ -3,9 +3,9 @@
     "./tsconfig.base.json"
   ],
   "include": [
-    "src/**/*.cts",
-    "src/**/*.mts",
-    "src/**/*.ts",
-    "src/**/*.tsx"
+    "**/*.cts",
+    "**/*.mts",
+    "**/*.ts",
+    "**/*.tsx"
   ]
 }
