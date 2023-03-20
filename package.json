@@ -24,7 +24,7 @@
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
     "lint": "eslint .",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest --silent --passWithNoTests",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --silent",
     "release": "npm version",
     "postrelease": "git push --follow-tags",
     "start": "node ./lib/index.js"
