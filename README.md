@@ -1,6 +1,6 @@
 # aws-simple
 
-Production-ready AWS website deployment with minimal configuration.
+> Production-ready AWS website deployment with minimal configuration.
 
 ## Installation
 
