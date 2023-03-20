@@ -8,7 +8,9 @@
     "coverage",
     "lib"
   ],
-  "extends": "./tsconfig.base.json",
+  "extends": [
+    "./tsconfig.base.json"
+  ],
   "include": [
     "**/*"
   ]

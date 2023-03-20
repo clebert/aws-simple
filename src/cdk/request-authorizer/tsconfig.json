@@ -1,6 +1,0 @@
-{
-  "extends": "../../../tsconfig.emit.json",
-  "include": ["index.ts"],
-  "exclude": [],
-  "compilerOptions": {"module": "CommonJS", "incremental": false}
-}

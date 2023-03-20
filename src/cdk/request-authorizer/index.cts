@@ -4,7 +4,7 @@ import type {
   Handler,
 } from 'aws-lambda';
 
-export const handler: Handler<
+const handler: Handler<
   APIGatewayRequestAuthorizerEvent,
   APIGatewayAuthorizerResult
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -35,6 +35,8 @@ export const handler: Handler<
     },
   };
 };
+
+exports.handler = handler;
 
 function getHeaderValue(
   headers: Record<string, string | undefined> = {},

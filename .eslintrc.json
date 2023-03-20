@@ -5,7 +5,8 @@
   "overrides": [
     {
       "files": [
-        "**/*.cjs"
+        "**/*.cjs",
+        "**/*.md/*.cjs"
       ],
       "parserOptions": {
         "sourceType": "script"
@@ -32,18 +33,8 @@
     },
     {
       "files": [
-        "**/*.md/*.js",
-        "**/*.md/*.jsx"
-      ],
-      "rules": {
-        "quotes": [
-          "error",
-          "single"
-        ]
-      }
-    },
-    {
-      "files": [
+        "src/**/*.cts",
+        "src/**/*.mts",
         "src/**/*.ts",
         "src/**/*.tsx"
       ],
@@ -86,18 +77,13 @@
     },
     {
       "files": [
-        "src/cdk/request-authorizer/*"
-      ],
-      "parserOptions": {
-        "project": "src/cdk/request-authorizer/tsconfig.json"
-      }
-    },
-    {
-      "files": [
-        "**/*.md/*.js"
+        "src/**/*.cts"
       ],
       "rules": {
-        "import/no-commonjs": "off"
+        "@typescript-eslint/no-require-imports": "off",
+        "import/extensions": "off",
+        "import/no-commonjs": "off",
+        "no-restricted-globals": "off"
       }
     }
   ],
