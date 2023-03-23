@@ -35,6 +35,8 @@
     ".editorconfig": true,
     ".eslintignore": true,
     ".eslintrc.json": true,
+    ".github": true,
+    ".github/workflows/ci.yml": true,
     ".gitignore": true,
     ".node-version": true,
     ".prettierignore": true,

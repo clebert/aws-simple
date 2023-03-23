@@ -1,28 +1,23 @@
-name: CI
-on:
-  push:
-  pull_request:
-  release:
-    types:
-      - published
 jobs:
-  ci:
+  CI:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: .node-version
-      - name: Install dependencies
-        uses: bahmutov/npm-install@v1
-      - name: Run CI checks
-        run: npm run ci
-      - name: Publish to npm
-        if: ${{ github.event_name == 'release' }}
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        run: |
-          npm config set //registry.npmjs.org/:_authToken $NPM_AUTH_TOKEN
-          npm publish
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version-file: .node-version
+    - uses: bahmutov/npm-install@v1
+    - run: npm run ci
+    - env:
+        NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      if: ${{ github.event_name == 'release' }}
+      run: npm config set //registry.npmjs.org/:_authToken $NPM_AUTH_TOKEN
+    - if: ${{ github.event_name == 'release' }}
+      run: npm publish
+name: CI
+on:
+  pull_request: {}
+  push: {}
+  release:
+    types:
+    - published

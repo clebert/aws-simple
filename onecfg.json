@@ -5,6 +5,8 @@
     "https://raw.githubusercontent.com/clebert/onecfg-lib/main/lib/onecfg-git.json",
     "https://raw.githubusercontent.com/clebert/onecfg-lib/main/lib/onecfg-jest.json",
     "https://raw.githubusercontent.com/clebert/onecfg-lib/main/lib/onecfg-node.json",
+    "https://raw.githubusercontent.com/clebert/onecfg-lib/main/lib/onecfg-node-github.json",
+    "https://raw.githubusercontent.com/clebert/onecfg-lib/main/lib/onecfg-npm-github.json",
     "https://raw.githubusercontent.com/clebert/onecfg-lib/main/lib/onecfg-prettier.json",
     "https://raw.githubusercontent.com/clebert/onecfg-lib/main/lib/onecfg-swc.json",
     "https://raw.githubusercontent.com/clebert/onecfg-lib/main/lib/onecfg-typescript.json",
