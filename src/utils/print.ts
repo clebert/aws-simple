@@ -1,6 +1,6 @@
-import {isatty} from 'tty';
 import chalk from 'chalk';
 import prompts from 'prompts';
+import {isatty} from 'tty';
 
 export function print(text: string): void {
   console.log(text);

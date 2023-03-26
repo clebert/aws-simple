@@ -1,4 +1,5 @@
 import type {Stack} from 'aws-cdk-lib';
+
 import {CfnOutput, RemovalPolicy, aws_s3} from 'aws-cdk-lib';
 
 export function createBucket(stack: Stack): aws_s3.IBucket {

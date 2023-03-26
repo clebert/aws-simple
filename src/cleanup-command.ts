@@ -1,10 +1,11 @@
-import {APIGatewayClient, GetAccountCommand} from '@aws-sdk/client-api-gateway';
 import type {CommandModule} from 'yargs';
+
 import {deleteRole} from './sdk/delete-role.js';
 import {findResourceIds} from './sdk/find-resource-ids.js';
 import {findRoles} from './sdk/find-roles.js';
 import {findStacks} from './sdk/find-stacks.js';
 import {print} from './utils/print.js';
+import {APIGatewayClient, GetAccountCommand} from '@aws-sdk/client-api-gateway';
 
 const commandName = `cleanup`;
 

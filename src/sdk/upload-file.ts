@@ -1,7 +1,7 @@
-import {lstat, readFile} from 'fs/promises';
-import {isAbsolute} from 'path';
 import {PutObjectCommand, S3Client} from '@aws-sdk/client-s3';
+import {lstat, readFile} from 'fs/promises';
 import {lookup} from 'mime-types';
+import {isAbsolute} from 'path';
 
 export async function uploadFile(
   bucketName: string,

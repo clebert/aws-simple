@@ -1,5 +1,5 @@
-import {describe, expect, test} from '@jest/globals';
 import {sortRoutes} from './sort-routes.js';
+import {describe, expect, test} from '@jest/globals';
 
 describe(`sortRoutes()`, () => {
   test(`returns the given routes sorted by specificity`, () => {

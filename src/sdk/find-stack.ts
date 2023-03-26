@@ -1,4 +1,5 @@
 import type {Stack} from '@aws-sdk/client-cloudformation';
+
 import {
   CloudFormationClient,
   DescribeStacksCommand,

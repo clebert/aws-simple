@@ -1,5 +1,5 @@
-import {describe, expect, test} from '@jest/globals';
 import {getAgeInDays} from './get-age-in-days.js';
+import {describe, expect, test} from '@jest/globals';
 
 describe(`getAgeInDays()`, () => {
   test(`returns the age in days`, () => {

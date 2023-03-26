@@ -1,4 +1,5 @@
 import type {Stack, aws_s3} from 'aws-cdk-lib';
+
 import {aws_iam} from 'aws-cdk-lib';
 
 export function createBucketReadRole(

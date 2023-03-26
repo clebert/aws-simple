@@ -1,24 +1,25 @@
 #!/usr/bin/env node
 
-import yargs from 'yargs';
-import {hideBin} from 'yargs/helpers';
-import {cleanupCommand} from './cleanup-command.js';
-import {deleteCommand} from './delete-command.js';
-import {flushCacheCommand} from './flush-cache-command.js';
-import {listCommand} from './list-command.js';
-import {purgeCommand} from './purge-command.js';
 import type {
   LambdaRoute,
   Route,
   S3Route,
   StackConfig,
 } from './read-stack-config.js';
+
+import {cleanupCommand} from './cleanup-command.js';
+import {deleteCommand} from './delete-command.js';
+import {flushCacheCommand} from './flush-cache-command.js';
+import {listCommand} from './list-command.js';
+import {purgeCommand} from './purge-command.js';
 import {redeployCommand} from './redeploy-command.js';
 import {startCommand} from './start-command.js';
 import {synthesizeCommand} from './synthesize-command.js';
 import {tagCommand} from './tag-command.js';
 import {uploadCommand} from './upload-command.js';
 import {print} from './utils/print.js';
+import yargs from 'yargs';
+import {hideBin} from 'yargs/helpers';
 
 export type {LambdaRoute, Route, S3Route, StackConfig};
 export type ConfigFileDefaultExport = (port?: number) => StackConfig;

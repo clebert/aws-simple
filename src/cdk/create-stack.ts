@@ -1,7 +1,8 @@
-import {App, Stack} from 'aws-cdk-lib';
 import type {StackConfig} from '../read-stack-config.js';
+
 import {getDomainName} from '../utils/get-domain-name.js';
 import {getStackName} from '../utils/get-stack-name.js';
+import {App, Stack} from 'aws-cdk-lib';
 
 const {CDK_DEFAULT_ACCOUNT: account, CDK_DEFAULT_REGION: region} = process.env;
 

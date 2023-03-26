@@ -1,5 +1,5 @@
-import {describe, expect, test} from '@jest/globals';
 import {getNormalizedName} from './get-normalized-name.js';
+import {describe, expect, test} from '@jest/globals';
 
 describe(`getNormalizedName()`, () => {
   test(`returns a normalized name`, () => {

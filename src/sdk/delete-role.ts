@@ -1,4 +1,5 @@
 import type {ListAttachedRolePoliciesCommandOutput} from '@aws-sdk/client-iam';
+
 import {
   DeleteRoleCommand,
   DetachRolePolicyCommand,

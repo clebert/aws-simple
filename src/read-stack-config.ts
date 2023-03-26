@@ -1,9 +1,10 @@
-import {resolve} from 'path';
-import {pathToFileURL} from 'url';
 import type {Stack, aws_apigateway, aws_lambda} from 'aws-cdk-lib';
 import type {Express} from 'express';
-import {z} from 'zod';
+
 import {validateRoutes} from './utils/validate-routes.js';
+import {resolve} from 'path';
+import {pathToFileURL} from 'url';
+import {z} from 'zod';
 
 export type StackConfig = Omit<
   z.TypeOf<typeof StackConfigSchema>,

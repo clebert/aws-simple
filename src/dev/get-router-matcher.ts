@@ -1,5 +1,5 @@
-import type {Express, IRouterMatcher} from 'express';
 import type {LambdaRoute} from '../read-stack-config.js';
+import type {Express, IRouterMatcher} from 'express';
 
 export function getRouterMatcher(
   app: Express,

@@ -1,6 +1,7 @@
-import {describe, expect, test} from '@jest/globals';
 import type {LambdaRoute, S3Route} from '../read-stack-config.js';
+
 import {validateRoutes} from './validate-routes.js';
+import {describe, expect, test} from '@jest/globals';
 
 const lambdaRoute: Omit<LambdaRoute, 'publicPath' | 'functionName'> = {
   type: `function`,

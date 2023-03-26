@@ -1,20 +1,21 @@
-import {dirname} from 'path';
+import type {LambdaRoute} from './read-stack-config.js';
 import type {APIGatewayProxyResult} from 'aws-lambda';
+import type {CommandModule} from 'yargs';
+
+import {createLambdaRequestHandler} from './dev/create-lambda-request-handler.js';
+import {getRouterMatcher} from './dev/get-router-matcher.js';
+import {registerS3Route} from './dev/register-s3-route.js';
+import {removeAllRoutes} from './dev/remove-all-routes.js';
+import {sortRoutes} from './dev/sort-routes.js';
+import {readStackConfig} from './read-stack-config.js';
+import {print} from './utils/print.js';
 import {watch} from 'chokidar';
 import compression from 'compression';
 import express from 'express';
 import getPort from 'get-port';
 import * as lambdaLocal from 'lambda-local';
 import mkdirp from 'mkdirp';
-import type {CommandModule} from 'yargs';
-import {createLambdaRequestHandler} from './dev/create-lambda-request-handler.js';
-import {getRouterMatcher} from './dev/get-router-matcher.js';
-import {registerS3Route} from './dev/register-s3-route.js';
-import {removeAllRoutes} from './dev/remove-all-routes.js';
-import {sortRoutes} from './dev/sort-routes.js';
-import type {LambdaRoute} from './read-stack-config.js';
-import {readStackConfig} from './read-stack-config.js';
-import {print} from './utils/print.js';
+import {dirname} from 'path';
 
 const commandName = `start`;
 

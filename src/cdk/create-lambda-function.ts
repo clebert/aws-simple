@@ -1,10 +1,11 @@
-import {basename, dirname, extname, join} from 'path';
-import type {Stack} from 'aws-cdk-lib';
-import {Duration, aws_lambda, aws_logs} from 'aws-cdk-lib';
 import type {LambdaRoute, StackConfig} from '../read-stack-config.js';
+import type {Stack} from 'aws-cdk-lib';
+
 import {getDomainName} from '../utils/get-domain-name.js';
 import {getHash} from '../utils/get-hash.js';
 import {getNormalizedName} from '../utils/get-normalized-name.js';
+import {Duration, aws_lambda, aws_logs} from 'aws-cdk-lib';
+import {basename, dirname, extname, join} from 'path';
 
 const maxTimeoutInSeconds = 28;
 

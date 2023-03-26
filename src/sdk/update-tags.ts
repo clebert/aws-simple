@@ -1,8 +1,8 @@
+import {findStack} from './find-stack.js';
 import {
   CloudFormationClient,
   UpdateStackCommand,
 } from '@aws-sdk/client-cloudformation';
-import {findStack} from './find-stack.js';
 
 export interface UpdateTagsOptions {
   readonly stackName: string;
