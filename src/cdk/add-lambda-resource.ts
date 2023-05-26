@@ -1,6 +1,7 @@
 import type {LambdaRoute, StackConfig} from '../read-stack-config.js';
 import type {Stack, aws_lambda} from 'aws-cdk-lib';
 
+import {addCorsPreflight} from './add-cors-preflight.js';
 import {createLambdaFunction} from './create-lambda-function.js';
 import {aws_apigateway} from 'aws-cdk-lib';
 
@@ -35,11 +36,6 @@ export function addLambdaResource(
     cacheKeyParameters,
   });
 
-  const corsOptions: aws_apigateway.CorsOptions = {
-    allowOrigins: aws_apigateway.Cors.ALL_ORIGINS,
-    allowCredentials: authenticationEnabled,
-  };
-
   const methodOptions: aws_apigateway.MethodOptions = {
     authorizationType: authenticationEnabled
       ? aws_apigateway.AuthorizationType.CUSTOM
@@ -57,7 +53,7 @@ export function addLambdaResource(
   const resource = restApi.root.resourceForPath(publicPath.replace(`/*`, `/`));
 
   if (corsEnabled) {
-    resource.addCorsPreflight(corsOptions);
+    addCorsPreflight(resource, {authenticationEnabled});
   }
 
   resource.addMethod(httpMethod, integration, methodOptions);
@@ -68,7 +64,7 @@ export function addLambdaResource(
     );
 
     if (corsEnabled) {
-      proxyResource.addCorsPreflight(corsOptions);
+      addCorsPreflight(proxyResource, {authenticationEnabled});
     }
 
     proxyResource.addMethod(httpMethod, integration, methodOptions);
