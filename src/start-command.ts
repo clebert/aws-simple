@@ -14,7 +14,7 @@ import compression from 'compression';
 import express from 'express';
 import getPort from 'get-port';
 import * as lambdaLocal from 'lambda-local';
-import mkdirp from 'mkdirp';
+import {mkdirp} from 'mkdirp';
 import {dirname} from 'path';
 
 const commandName = `start`;

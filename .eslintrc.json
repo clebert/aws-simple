@@ -34,7 +34,6 @@
     {
       "files": [
         "**/*.cts",
-        "**/*.mts",
         "**/*.ts",
         "**/*.tsx"
       ],
@@ -95,7 +94,6 @@
     {
       "files": [
         "**/*.md/*.cts",
-        "**/*.md/*.mts",
         "**/*.md/*.ts",
         "**/*.md/*.tsx"
       ],
@@ -159,8 +157,11 @@
           [
             "builtin",
             "external",
+            "internal",
             "parent",
-            "sibling"
+            "sibling",
+            "index",
+            "object"
           ]
         ],
         "newlines-between": "always",

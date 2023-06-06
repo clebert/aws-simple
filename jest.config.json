@@ -13,16 +13,26 @@
     ".ts",
     ".tsx"
   ],
+  "moduleFileExtensions": [
+    "js",
+    "mjs",
+    "cjs",
+    "cts",
+    "jsx",
+    "ts",
+    "tsx",
+    "json",
+    "node"
+  ],
   "moduleNameMapper": {
-    "^(\\.{1,2}/.*)\\.js$": "$1"
+    "^(\\.{1,2}/.*)\\.c?js$": "$1"
   },
   "restoreMocks": true,
   "testMatch": [
-    "**/src/**/*.test.{ts,tsx}"
+    "**/src/**/*.test.{cts,ts,tsx}"
   ],
   "transform": {
-    "^.+\\.tsx?$": [
-      "@swc/jest"
-    ]
+    "^.+\\.cts$": "@swc/jest",
+    "^.+\\.tsx?$": "@swc/jest"
   }
 }
