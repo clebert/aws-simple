@@ -1,10 +1,10 @@
 {
-  "name": "aws-simple",
+  "name": "@adac-de/aws-simple",
   "version": "18.0.3",
   "description": "Production-ready AWS website deployment with minimal configuration.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/clebert/aws-simple.git"
+    "url": "https://github.com/ADAC-de/aws-simple.git"
   },
   "license": "MIT",
   "author": "Clemens Akens",

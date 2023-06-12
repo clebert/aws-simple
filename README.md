@@ -1,3 +1,29 @@
+## Fork of [aws-simple](https://github.com/clebert/aws-simple) published as an additional package containing following additional features:
+
+- use [runl](https://github.com/janro1/runl) instead of lambda local including
+  debug support
+- `certificateArn` config to specify wildcart ssl certificate instead of
+  creating a new certificate for each environment
+
+```
+export default () => ({
+  hostedZoneName: `example.com`,
+  certificateArn: `arn:aws:acm:eu-central-1:.....`, // <==
+  routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+});
+```
+
+- `corsAllowHeaders` config to allow extending the Access-Control-Allow-Headers
+  response header
+
+```
+export default () => ({
+  hostedZoneName: `example.com`,
+  corsAllowHeaders: `['<header-name>']`, // <==
+  routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+});
+```
+
 # aws-simple
 
 > Production-ready AWS website deployment with minimal configuration.
