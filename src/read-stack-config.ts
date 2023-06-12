@@ -59,6 +59,7 @@ const LambdaRouteSchema = z.object({
   authenticationEnabled: z.boolean().optional(),
   corsEnabled: z.boolean().optional(),
   onSynthesize: z.function().optional(),
+  debugPort: z.number().optional(),
 });
 
 const S3RouteSchema = z.object({

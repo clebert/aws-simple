@@ -1,19 +1,13 @@
-import type {LambdaRoute} from './read-stack-config.js';
-import type {APIGatewayProxyResult} from 'aws-lambda';
 import type {CommandModule} from 'yargs';
 
-import {createLambdaRequestHandler} from './dev/create-lambda-request-handler.js';
-import {getRouterMatcher} from './dev/get-router-matcher.js';
+import {registerLambdaRoute} from './dev/register-lambda-route.js';
 import {registerS3Route} from './dev/register-s3-route.js';
-import {removeAllRoutes} from './dev/remove-all-routes.js';
 import {sortRoutes} from './dev/sort-routes.js';
 import {readStackConfig} from './read-stack-config.js';
 import {print} from './utils/print.js';
-import {watch} from 'chokidar';
 import compression from 'compression';
 import express from 'express';
 import getPort from 'get-port';
-import * as lambdaLocal from 'lambda-local';
 import {mkdirp} from 'mkdirp';
 import {dirname} from 'path';
 
@@ -47,31 +41,11 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
 
     stackConfig.onStart?.(app);
 
-    const lambdaCaches = new WeakMap<
-      LambdaRoute,
-      Map<string, APIGatewayProxyResult>
-    >();
-
-    lambdaLocal.getLogger().level = `error`;
-
     const routes = sortRoutes(stackConfig.routes);
 
     for (const route of routes) {
       if (route.type === `function`) {
-        const {cacheTtlInSeconds = 300} = route;
-
-        if (stackConfig.cachingEnabled && cacheTtlInSeconds > 0) {
-          print.info(
-            `Setting up cache for Lambda request handler: ${route.functionName}`,
-          );
-
-          lambdaCaches.set(route, new Map());
-        }
-
-        getRouterMatcher(app, route.httpMethod)(
-          route.publicPath,
-          createLambdaRequestHandler(route, lambdaCaches.get(route)),
-        );
+        registerLambdaRoute(app, route);
       } else {
         registerS3Route(app, route);
       }
@@ -84,48 +58,9 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
         `The DEV server has been started: http://localhost:${port}`,
       );
 
-      const listener = (changedPath: string): void => {
-        print.info(
-          `[${new Date().toLocaleTimeString()}] A file change has been detected: ${changedPath}`,
-        );
-
-        const changedLambdaRoutes = routes.filter(
-          (route): route is LambdaRoute =>
-            route.type === `function` && route.path === changedPath,
-        );
-
-        for (const route of changedLambdaRoutes) {
-          const {cacheTtlInSeconds = 300} = route;
-
-          if (stackConfig.cachingEnabled && cacheTtlInSeconds > 0) {
-            print.info(
-              `Flushing cache for Lambda request handler: ${route.functionName}`,
-            );
-
-            lambdaCaches.set(route, new Map());
-          }
-        }
-
-        removeAllRoutes(app);
-
-        for (const route of routes) {
-          if (route.type === `function`) {
-            getRouterMatcher(app, route.httpMethod)(
-              route.publicPath,
-              createLambdaRequestHandler(route, lambdaCaches.get(route)),
-            );
-          } else {
-            registerS3Route(app, route);
-          }
-        }
-      };
-
       for (const path of paths) {
         mkdirp.sync(dirname(path));
       }
-
-      watch(paths, {ignoreInitial: true}).on(`add`, listener);
-      watch(paths).on(`change`, listener);
     });
   },
 };

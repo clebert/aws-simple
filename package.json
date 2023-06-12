@@ -39,10 +39,10 @@
     "compression": "^1.7.4",
     "express": "^4.18.2",
     "get-port": "^7.0.0",
-    "lambda-local": "^2.0.3",
     "mime-types": "^2.1.35",
     "mkdirp": "^3.0.1",
     "prompts": "^2.4.2",
+    "runl": "^0.7.0",
     "yargs": "^17.7.2",
     "zod": "^3.21.4"
   },
