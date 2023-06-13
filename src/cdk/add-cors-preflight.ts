@@ -2,6 +2,7 @@ import {aws_apigateway} from 'aws-cdk-lib';
 
 export interface AddCorsPreflightOptions {
   readonly authenticationEnabled?: boolean;
+  readonly corsAllowHeaders?: string[];
 }
 
 /**
@@ -28,7 +29,9 @@ export function addCorsPreflight(
   const integrationResponse: aws_apigateway.IntegrationResponse = {
     statusCode: `204`,
     responseParameters: {
-      'method.response.header.Access-Control-Allow-Headers': `'${aws_apigateway.Cors.DEFAULT_HEADERS}'`,
+      'method.response.header.Access-Control-Allow-Headers': `'${aws_apigateway.Cors.DEFAULT_HEADERS.concat(
+        options.corsAllowHeaders || [],
+      )}'`,
       'method.response.header.Access-Control-Allow-Methods': `'${aws_apigateway.Cors.ALL_METHODS}'`,
       'method.response.header.Access-Control-Allow-Origin': `'${aws_apigateway.Cors.ALL_ORIGINS}'`,
     },

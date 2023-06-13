@@ -18,6 +18,7 @@ export function addLambdaResource(
     requestParameters,
     authenticationEnabled,
     corsEnabled,
+    corsAllowHeaders,
   } = route;
 
   if (authenticationEnabled && !requestAuthorizer) {
@@ -53,7 +54,7 @@ export function addLambdaResource(
   const resource = restApi.root.resourceForPath(publicPath.replace(`/*`, `/`));
 
   if (corsEnabled) {
-    addCorsPreflight(resource, {authenticationEnabled});
+    addCorsPreflight(resource, {authenticationEnabled, corsAllowHeaders});
   }
 
   resource.addMethod(httpMethod, integration, methodOptions);
