@@ -47,6 +47,7 @@ export function createRestApi(
     description: `https://${domainName}`,
     endpointTypes: [aws_apigateway.EndpointType.REGIONAL],
     restApiName: `${getNormalizedName(domainName)}-${getHash(domainName)}`,
+    cloudWatchRole: false,
     domainName: {
       endpointType: aws_apigateway.EndpointType.REGIONAL,
       domainName,
