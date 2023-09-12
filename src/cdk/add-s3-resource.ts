@@ -1,6 +1,7 @@
 import type {S3Route} from '../read-stack-config.js';
 import type {aws_iam, aws_s3} from 'aws-cdk-lib';
 
+import {addCorsPreflight} from './add-cors-preflight.js';
 import {aws_apigateway} from 'aws-cdk-lib';
 import {join} from 'path';
 
@@ -29,11 +30,6 @@ export function addS3Resource(
     options: getS3IntegrationOptions(route, bucketReadRole),
   });
 
-  const corsOptions: aws_apigateway.CorsOptions = {
-    allowOrigins: aws_apigateway.Cors.ALL_ORIGINS,
-    allowCredentials: authenticationEnabled,
-  };
-
   const methodOptions = getS3MethodOptions(route, requestAuthorizer);
 
   if (type === `file`) {
@@ -42,7 +38,7 @@ export function addS3Resource(
     );
 
     if (corsEnabled) {
-      resource.addCorsPreflight(corsOptions);
+      addCorsPreflight(resource, {authenticationEnabled});
     }
 
     resource.addMethod(`GET`, integration, methodOptions);
@@ -54,7 +50,7 @@ export function addS3Resource(
     );
 
     if (corsEnabled) {
-      proxyResource.addCorsPreflight(corsOptions);
+      addCorsPreflight(proxyResource, {authenticationEnabled});
     }
 
     proxyResource.addMethod(`GET`, integration, methodOptions);
