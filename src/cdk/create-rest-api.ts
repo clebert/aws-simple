@@ -8,6 +8,7 @@ import {
   CfnOutput,
   Duration,
   RemovalPolicy,
+  Size,
   aws_apigateway,
   aws_certificatemanager,
   aws_logs,
@@ -58,7 +59,7 @@ export function createRestApi(
     },
     disableExecuteApiEndpoint: true,
     binaryMediaTypes: [`*/*`],
-    minimumCompressionSize: 150,
+    minCompressionSize: Size.bytes(150),
     deployOptions: getStageOptions(stackConfig, stack, domainName),
   });
 
