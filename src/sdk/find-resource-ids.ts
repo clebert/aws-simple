@@ -1,6 +1,6 @@
 import {
   CloudFormationClient,
-  ListStackResourcesCommand,
+  paginateListStackResources,
 } from '@aws-sdk/client-cloudformation';
 
 export async function findResourceIds(
@@ -9,16 +9,12 @@ export async function findResourceIds(
   const client = new CloudFormationClient({});
   const resourceIds: string[] = [];
 
-  let nextToken: string | undefined;
+  const paginator = paginateListStackResources(
+    {client},
+    {StackName: stackName},
+  );
 
-  do {
-    const output = await client.send(
-      new ListStackResourcesCommand({
-        StackName: stackName,
-        NextToken: nextToken,
-      }),
-    );
-
+  for await (const output of paginator) {
     if (output.StackResourceSummaries) {
       for (const {PhysicalResourceId} of output.StackResourceSummaries) {
         if (PhysicalResourceId) {
@@ -26,9 +22,7 @@ export async function findResourceIds(
         }
       }
     }
-
-    nextToken = output.NextToken;
-  } while (nextToken);
+  }
 
   return resourceIds;
 }
