@@ -1,7 +1,4 @@
-export interface DomainNameParts {
-  readonly hostedZoneName?: string;
-  readonly aliasRecordName?: string;
-}
+import type {DomainNameParts} from '../parse-domain-name-parts.js';
 
 export function getDomainName(parts: DomainNameParts): string {
   const {hostedZoneName, aliasRecordName} = parts;

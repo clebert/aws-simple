@@ -1,5 +1,6 @@
 import type {CommandModule} from 'yargs';
 
+import {parseStackConfig} from './parse-stack-config.js';
 import {readStackConfig} from './read-stack-config.js';
 import {findStack} from './sdk/find-stack.js';
 import {getOutputValue} from './sdk/get-output-value.js';
@@ -25,7 +26,7 @@ export const uploadCommand: CommandModule<{}, {readonly yes: boolean}> = {
       .example([[`npx $0 ${commandName}`], [`npx $0 ${commandName} --yes`]]),
 
   handler: async (args): Promise<void> => {
-    const stackConfig = await readStackConfig();
+    const stackConfig = parseStackConfig(await readStackConfig());
     const domainName = getDomainName(stackConfig);
     const stackName = getStackName(domainName);
 

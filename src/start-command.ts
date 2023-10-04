@@ -1,4 +1,4 @@
-import type {LambdaRoute} from './read-stack-config.js';
+import type {LambdaRoute} from './parse-stack-config.js';
 import type {APIGatewayProxyResult} from 'aws-lambda';
 import type {CommandModule} from 'yargs';
 
@@ -7,6 +7,7 @@ import {getRouterMatcher} from './dev/get-router-matcher.js';
 import {registerS3Route} from './dev/register-s3-route.js';
 import {removeAllRoutes} from './dev/remove-all-routes.js';
 import {sortRoutes} from './dev/sort-routes.js';
+import {parseStackConfig} from './parse-stack-config.js';
 import {readStackConfig} from './read-stack-config.js';
 import {print} from './utils/print.js';
 import {watch} from 'chokidar';
@@ -43,7 +44,7 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
     app.use(compression({threshold: 150}));
     app.set(`etag`, false);
 
-    const stackConfig = await readStackConfig(port);
+    const stackConfig = parseStackConfig(await readStackConfig(port));
 
     stackConfig.onStart?.(app);
 

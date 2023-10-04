@@ -1,4 +1,4 @@
-import type {StackConfig} from '../read-stack-config.js';
+import type {StackConfig} from '../parse-stack-config.js';
 import type {Stack} from 'aws-cdk-lib';
 
 import {getDomainName} from '../utils/get-domain-name.js';

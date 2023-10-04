@@ -1,4 +1,4 @@
-import type {LambdaRoute, StackConfig} from '../read-stack-config.js';
+import type {LambdaRoute, StackConfig} from '../parse-stack-config.js';
 import type {Stack, aws_lambda} from 'aws-cdk-lib';
 
 import {addCorsPreflight} from './add-cors-preflight.js';

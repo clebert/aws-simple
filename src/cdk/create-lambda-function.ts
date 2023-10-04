@@ -1,4 +1,4 @@
-import type {LambdaRoute, StackConfig} from '../read-stack-config.js';
+import type {LambdaRoute, StackConfig} from '../parse-stack-config.js';
 import type {Stack} from 'aws-cdk-lib';
 
 import {getDomainName} from '../utils/get-domain-name.js';

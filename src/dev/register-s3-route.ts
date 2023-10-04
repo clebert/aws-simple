@@ -1,4 +1,4 @@
-import type {S3Route} from '../read-stack-config.js';
+import type {S3Route} from '../parse-stack-config.js';
 import type {Express} from 'express';
 
 import express from 'express';

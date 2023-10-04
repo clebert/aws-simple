@@ -5,7 +5,7 @@ import type {
   Route,
   S3Route,
   StackConfig,
-} from './read-stack-config.js';
+} from './parse-stack-config.js';
 
 import {cleanupCommand} from './cleanup-command.js';
 import {deleteCommand} from './delete-command.js';

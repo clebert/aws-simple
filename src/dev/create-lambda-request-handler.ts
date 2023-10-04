@@ -1,4 +1,4 @@
-import type {LambdaRoute} from '../read-stack-config.js';
+import type {LambdaRoute} from '../parse-stack-config.js';
 import type {APIGatewayProxyResult} from 'aws-lambda';
 import type express from 'express';
 

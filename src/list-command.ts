@@ -1,5 +1,6 @@
 import type {CommandModule} from 'yargs';
 
+import {parseDomainNameParts} from './parse-domain-name-parts.js';
 import {readStackConfig} from './read-stack-config.js';
 import {findStacks} from './sdk/find-stacks.js';
 import {getFormattedAgeInDays} from './utils/get-formatted-age-in-days.js';
@@ -53,7 +54,8 @@ export const listCommand: CommandModule<
 
     const hostedZoneName = all
       ? undefined
-      : args.hostedZoneName || (await readStackConfig()).hostedZoneName;
+      : args.hostedZoneName ||
+        parseDomainNameParts(await readStackConfig()).hostedZoneName;
 
     if (!hostedZoneName && !all) {
       throw new Error(
