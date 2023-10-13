@@ -4,6 +4,7 @@ import {addLambdaResource} from './cdk/add-lambda-resource.js';
 import {addS3Resource} from './cdk/add-s3-resource.js';
 import {createBucketReadRole} from './cdk/create-bucket-read-role.js';
 import {createBucket} from './cdk/create-bucket.js';
+import {createLambdaServiceRole} from './cdk/create-lambda-service-role.js';
 import {createRequestAuthorizer} from './cdk/create-request-authorizer.js';
 import {createRestApi} from './cdk/create-rest-api.js';
 import {createStack} from './cdk/create-stack.js';
@@ -31,26 +32,25 @@ export const synthesizeCommand: CommandModule<{}, {}> = {
     const bucket = createBucket(stack);
     const bucketReadRole = createBucketReadRole(stack, bucket);
     const requestAuthorizer = createRequestAuthorizer(stackConfig, stack);
+    const lambdaServiceRole = createLambdaServiceRole(stack);
 
     for (const route of stackConfig.routes) {
       if (route.type === `function`) {
-        const lambdaFunction = addLambdaResource(
-          stackConfig,
-          route,
-          stack,
-          restApi,
+        const lambdaFunction = addLambdaResource(stackConfig, route, {
+          lambdaServiceRole,
           requestAuthorizer,
-        );
+          restApi,
+          stack,
+        });
 
         route.onSynthesize?.({stack, restApi, lambdaFunction});
       } else {
-        addS3Resource(
-          route,
-          restApi,
+        addS3Resource(route, {
           bucket,
           bucketReadRole,
           requestAuthorizer,
-        );
+          restApi,
+        });
       }
     }
 
