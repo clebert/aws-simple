@@ -1,17 +1,25 @@
+import type {LambdaFunctionConstructDependencies} from './create-lambda-function.js';
 import type {LambdaRoute, StackConfig} from '../parse-stack-config.js';
-import type {Stack, aws_lambda} from 'aws-cdk-lib';
+import type {aws_lambda} from 'aws-cdk-lib';
 
 import {addCorsPreflight} from './add-cors-preflight.js';
 import {createLambdaFunction} from './create-lambda-function.js';
 import {aws_apigateway} from 'aws-cdk-lib';
 
+export interface LambdaResourceConstructDependencies
+  extends LambdaFunctionConstructDependencies {
+  readonly requestAuthorizer: aws_apigateway.IAuthorizer | undefined;
+  readonly restApi: aws_apigateway.RestApiBase;
+}
+
 export function addLambdaResource(
   stackConfig: StackConfig,
   route: LambdaRoute,
-  stack: Stack,
-  restApi: aws_apigateway.RestApiBase,
-  requestAuthorizer: aws_apigateway.IAuthorizer | undefined,
+  constructDependencies: LambdaResourceConstructDependencies,
 ): aws_lambda.FunctionBase {
+  const {lambdaServiceRole, requestAuthorizer, restApi, stack} =
+    constructDependencies;
+
   const {
     httpMethod,
     publicPath,
@@ -30,7 +38,10 @@ export function addLambdaResource(
     .filter(([, {cacheKey}]) => cacheKey)
     .map(([parameterName]) => `method.request.querystring.${parameterName}`);
 
-  const lambdaFunction = createLambdaFunction(stackConfig, route, stack);
+  const lambdaFunction = createLambdaFunction(stackConfig, route, {
+    lambdaServiceRole,
+    stack,
+  });
 
   const integration = new aws_apigateway.LambdaIntegration(lambdaFunction, {
     cacheKeyParameters,

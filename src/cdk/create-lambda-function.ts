@@ -1,5 +1,5 @@
 import type {LambdaRoute, StackConfig} from '../parse-stack-config.js';
-import type {Stack} from 'aws-cdk-lib';
+import type {Stack, aws_iam} from 'aws-cdk-lib';
 
 import {getDomainName} from '../utils/get-domain-name.js';
 import {getHash} from '../utils/get-hash.js';
@@ -7,13 +7,20 @@ import {getNormalizedName} from '../utils/get-normalized-name.js';
 import {Duration, aws_lambda, aws_logs} from 'aws-cdk-lib';
 import {basename, dirname, extname, join} from 'path';
 
+export interface LambdaFunctionConstructDependencies {
+  readonly lambdaServiceRole: aws_iam.IRole;
+  readonly stack: Stack;
+}
+
 const maxTimeoutInSeconds = 28;
 
 export function createLambdaFunction(
   stackConfig: StackConfig,
   route: LambdaRoute,
-  stack: Stack,
+  constructDependencies: LambdaFunctionConstructDependencies,
 ): aws_lambda.FunctionBase {
+  const {lambdaServiceRole, stack} = constructDependencies;
+
   const {
     httpMethod,
     publicPath,
@@ -60,6 +67,7 @@ export function createLambdaFunction(
       runtime: aws_lambda.Runtime.NODEJS_18_X,
       tracing: aws_lambda.Tracing.PASS_THROUGH,
       logRetention: aws_logs.RetentionDays.TWO_WEEKS,
+      role: lambdaServiceRole,
     },
   );
 }

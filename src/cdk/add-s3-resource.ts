@@ -5,13 +5,20 @@ import {addCorsPreflight} from './add-cors-preflight.js';
 import {aws_apigateway} from 'aws-cdk-lib';
 import {join} from 'path';
 
+export interface S3ResourceConstructDependencies {
+  readonly bucket: aws_s3.IBucket;
+  readonly bucketReadRole: aws_iam.IRole;
+  readonly requestAuthorizer: aws_apigateway.IAuthorizer | undefined;
+  readonly restApi: aws_apigateway.RestApiBase;
+}
+
 export function addS3Resource(
   route: S3Route,
-  restApi: aws_apigateway.RestApiBase,
-  bucket: aws_s3.IBucket,
-  bucketReadRole: aws_iam.IRole,
-  requestAuthorizer: aws_apigateway.IAuthorizer | undefined,
+  constructDependencies: S3ResourceConstructDependencies,
 ): void {
+  const {bucket, bucketReadRole, requestAuthorizer, restApi} =
+    constructDependencies;
+
   const {type, publicPath, path, authenticationEnabled, corsEnabled} = route;
 
   if (authenticationEnabled && !requestAuthorizer) {
