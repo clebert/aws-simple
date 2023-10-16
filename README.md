@@ -322,6 +322,7 @@ export default () => ({
   hostedZoneName: `example.com`,
   monitoring: {
     accessLoggingEnabled: true, // <==
+    lambdaInsightsEnabled: true, // <==
     loggingEnabled: true, // <==
     metricsEnabled: true, // <==
     tracingEnabled: true, // <==
