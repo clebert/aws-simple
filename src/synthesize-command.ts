@@ -7,6 +7,7 @@ import {createBucket} from './cdk/create-bucket.js';
 import {createRequestAuthorizer} from './cdk/create-request-authorizer.js';
 import {createRestApi} from './cdk/create-rest-api.js';
 import {createStack} from './cdk/create-stack.js';
+import {parseStackConfig} from './parse-stack-config.js';
 import {readStackConfig} from './read-stack-config.js';
 
 const commandName = `synthesize`;
@@ -24,7 +25,7 @@ export const synthesizeCommand: CommandModule<{}, {}> = {
     ]),
 
   handler: async (): Promise<void> => {
-    const stackConfig = await readStackConfig();
+    const stackConfig = parseStackConfig(await readStackConfig());
     const stack = createStack(stackConfig);
     const restApi = createRestApi(stackConfig, stack);
     const bucket = createBucket(stack);

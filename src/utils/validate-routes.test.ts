@@ -1,4 +1,4 @@
-import type {LambdaRoute, S3Route} from '../read-stack-config.js';
+import type {LambdaRoute, S3Route} from '../parse-stack-config.js';
 
 import {validateRoutes} from './validate-routes.js';
 import {describe, expect, test} from '@jest/globals';

@@ -1,4 +1,4 @@
-import type {Route} from '../read-stack-config.js';
+import type {Route} from '../parse-stack-config.js';
 
 import {getNormalizedName} from './get-normalized-name.js';
 

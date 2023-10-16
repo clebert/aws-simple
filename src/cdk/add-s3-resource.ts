@@ -1,4 +1,4 @@
-import type {S3Route} from '../read-stack-config.js';
+import type {S3Route} from '../parse-stack-config.js';
 import type {aws_iam, aws_s3} from 'aws-cdk-lib';
 
 import {addCorsPreflight} from './add-cors-preflight.js';

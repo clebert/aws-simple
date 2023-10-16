@@ -1,6 +1,7 @@
 import type {Stack, Tag} from '@aws-sdk/client-cloudformation';
 import type {CommandModule} from 'yargs';
 
+import {parseDomainNameParts} from './parse-domain-name-parts.js';
 import {readStackConfig} from './read-stack-config.js';
 import {deleteStack} from './sdk/delete-stack.js';
 import {findStacks} from './sdk/find-stacks.js';
@@ -53,7 +54,8 @@ export const purgeCommand: CommandModule<
 
   handler: async (args): Promise<void> => {
     const hostedZoneName =
-      args.hostedZoneName || (await readStackConfig()).hostedZoneName;
+      args.hostedZoneName ||
+      parseDomainNameParts(await readStackConfig()).hostedZoneName;
 
     if (!hostedZoneName) {
       throw new Error(`Please specify a hosted zone name.`);
