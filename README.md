@@ -10,13 +10,12 @@ npm install aws-simple aws-cdk
 
 ## Getting started
 
-The following are the steps to deploy a website using `aws-simple` and the AWS
-CDK.
+The following are the steps to deploy a website using `aws-simple` and the AWS CDK.
 
 ### 1. Create a config file
 
-Create a config file named `aws-simple.config.mjs`, which exports a function
-that describes a website stack:
+Create a config file named `aws-simple.config.mjs`, which exports a function that describes a
+website stack:
 
 ```js
 // @ts-check
@@ -28,31 +27,28 @@ export default (port) => ({
 });
 ```
 
-The exported function optionally gets a DEV server `port` argument when called
-in the context of the `aws-simple start [options]` CLI command.
+The exported function optionally gets a DEV server `port` argument when called in the context of the
+`aws-simple start [options]` CLI command.
 
 ### 2. Create a public hosted zone on AWS Route 53
 
-Create a **public** hosted zone on AWS Route 53 to make a website available
-under a particular domain. The required certificate is created automatically by
-`aws-simple` during deployment.
+Create a **public** hosted zone on AWS Route 53 to make a website available under a particular
+domain. The required certificate is created automatically by `aws-simple` during deployment.
 
 ### 3. Create an AWS IAM user
 
-Create an AWS IAM user with programmatic access and an
-[AWS IAM policy](#aws-iam-policy-example) with sufficient permissions.
+Create an AWS IAM user with programmatic access and an [AWS IAM policy](#aws-iam-policy-example)
+with sufficient permissions.
 
 ### 4. Set the credentials
 
-Set the credentials of the AWS IAM user using the two environment variables,
-`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. Alternatively, the credentials
-are retrieved using the AWS profile.
+Set the credentials of the AWS IAM user using the two environment variables, `AWS_ACCESS_KEY_ID` and
+`AWS_SECRET_ACCESS_KEY`. Alternatively, the credentials are retrieved using the AWS profile.
 
 ### 5. Set the AWS region
 
-Set the AWS region using either the environment variable `AWS_REGION` or
-`AWS_DEFAULT_REGION` evaluated in the specified order. Alternatively, the region
-is retrieved using the AWS profile.
+Set the AWS region using either the environment variable `AWS_REGION` or `AWS_DEFAULT_REGION`
+evaluated in the specified order. Alternatively, the region is retrieved using the AWS profile.
 
 ### 6. Bootstrap the AWS environment
 
@@ -106,12 +102,11 @@ export default () => ({
 });
 ```
 
-An optional alias record name allows multiple website variants to be deployed
-and operated simultaneously. Example: `stage.example.com`, `test.example.com`
+An optional alias record name allows multiple website variants to be deployed and operated
+simultaneously. Example: `stage.example.com`, `test.example.com`
 
-Except for the specified hosted zone, the website variants do not share any
-infrastructure. For the management of multiple website variants, there are the
-following two CLI commands:
+Except for the specified hosted zone, the website variants do not share any infrastructure. For the
+management of multiple website variants, there are the following two CLI commands:
 
 - `aws-simple list [options]`
 - `aws-simple purge [options]`
@@ -426,8 +421,7 @@ node --enable-source-maps $(npm bin)/aws-simple start
 
 ### `onSynthesize` hooks
 
-To implement advanced features, `onSynthesize` hooks can be used. Below are two
-examples.
+To implement advanced features, `onSynthesize` hooks can be used. Below are two examples.
 
 #### Configuring a firewall
 
@@ -466,9 +460,7 @@ export default () => ({
 
       onSynthesize: ({stack, restApi, lambdaFunction}) => {
         lambdaFunction.role.addManagedPolicy(
-          aws_iam.ManagedPolicy.fromAwsManagedPolicyName(
-            `AmazonS3ReadOnlyAccess`,
-          ),
+          aws_iam.ManagedPolicy.fromAwsManagedPolicyName(`AmazonS3ReadOnlyAccess`),
         );
       },
     },
@@ -512,8 +504,7 @@ export default () => ({
 ### `onStart` hook
 
 The `onStart` hook can be used to customize the DEV server's
-[Express app](https://expressjs.com/en/5x/api.html#app), e.g. to configure a
-proxy middleware:
+[Express app](https://expressjs.com/en/5x/api.html#app), e.g. to configure a proxy middleware:
 
 ```js
 import {createProxyMiddleware} from 'http-proxy-middleware';
@@ -628,11 +619,7 @@ Note: The `onStart` hook is called before the routes are registered.
     {
       "Sid": "AwsSimple9",
       "Effect": "Allow",
-      "Action": [
-        "iam:ListAttachedRolePolicies",
-        "iam:DetachRolePolicy",
-        "iam:DeleteRole"
-      ],
+      "Action": ["iam:ListAttachedRolePolicies", "iam:DetachRolePolicy", "iam:DeleteRole"],
       "Resource": "arn:aws:iam::*:role/aws-simple-*"
     }
   ]

@@ -16,9 +16,7 @@ export function addS3Resource(
   route: S3Route,
   constructDependencies: S3ResourceConstructDependencies,
 ): void {
-  const {bucket, bucketReadRole, requestAuthorizer, restApi} =
-    constructDependencies;
-
+  const {bucket, bucketReadRole, requestAuthorizer, restApi} = constructDependencies;
   const {type, publicPath, path, authenticationEnabled, corsEnabled} = route;
 
   if (authenticationEnabled && !requestAuthorizer) {
@@ -30,9 +28,7 @@ export function addS3Resource(
   const integration = new aws_apigateway.AwsIntegration({
     service: `s3`,
     path:
-      type === `folder`
-        ? join(bucket.bucketName, path, `{proxy}`)
-        : join(bucket.bucketName, path),
+      type === `folder` ? join(bucket.bucketName, path, `{proxy}`) : join(bucket.bucketName, path),
     integrationHttpMethod: `GET`,
     options: getS3IntegrationOptions(route, bucketReadRole),
   });
@@ -40,9 +36,7 @@ export function addS3Resource(
   const methodOptions = getS3MethodOptions(route, requestAuthorizer);
 
   if (type === `file`) {
-    const resource = restApi.root.resourceForPath(
-      publicPath.replace(`/*`, `/`),
-    );
+    const resource = restApi.root.resourceForPath(publicPath.replace(`/*`, `/`));
 
     if (corsEnabled) {
       addCorsPreflight(resource, {authenticationEnabled});
@@ -52,9 +46,7 @@ export function addS3Resource(
   }
 
   if (publicPath.endsWith(`/*`)) {
-    const proxyResource = restApi.root.resourceForPath(
-      publicPath.replace(`/*`, `/{proxy+}`),
-    );
+    const proxyResource = restApi.root.resourceForPath(publicPath.replace(`/*`, `/{proxy+}`));
 
     if (corsEnabled) {
       addCorsPreflight(proxyResource, {authenticationEnabled});
@@ -106,9 +98,7 @@ function getS3IntegrationOptions(
       },
     ],
     requestParameters:
-      type === `folder`
-        ? {'integration.request.path.proxy': `method.request.path.proxy`}
-        : {},
+      type === `folder` ? {'integration.request.path.proxy': `method.request.path.proxy`} : {},
     cacheKeyParameters: type === `folder` ? [`method.request.path.proxy`] : [],
   };
 }
@@ -147,7 +137,6 @@ function getS3MethodOptions(
       {statusCode: `404`, responseParameters: corsResponseParameters},
       {statusCode: `500`, responseParameters: corsResponseParameters},
     ],
-    requestParameters:
-      type === `folder` ? {'method.request.path.proxy': true} : {},
+    requestParameters: type === `folder` ? {'method.request.path.proxy': true} : {},
   };
 }

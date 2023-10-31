@@ -54,8 +54,7 @@ export const purgeCommand: CommandModule<
 
   handler: async (args): Promise<void> => {
     const hostedZoneName =
-      args.hostedZoneName ||
-      parseDomainNameParts(await readStackConfig()).hostedZoneName;
+      args.hostedZoneName || parseDomainNameParts(await readStackConfig()).hostedZoneName;
 
     if (!hostedZoneName) {
       throw new Error(`Please specify a hosted zone name.`);
@@ -99,9 +98,7 @@ export const purgeCommand: CommandModule<
     if (args.yes) {
       print.warning(`All expired stacks will be deleted automatically.`);
     } else {
-      const confirmed = await print.confirmation(
-        `Confirm to delete all expired stacks.`,
-      );
+      const confirmed = await print.confirmation(`Confirm to delete all expired stacks.`);
 
       if (!confirmed) {
         return;
@@ -121,9 +118,7 @@ export const purgeCommand: CommandModule<
       } catch (error) {
         aStackFailedToBeDeleted = true;
 
-        print.error(
-          `Failed to delete expired stack ${StackName}. ${String(error)}`,
-        );
+        print.error(`Failed to delete expired stack ${StackName}. ${String(error)}`);
       }
     }
 
@@ -135,28 +130,14 @@ export const purgeCommand: CommandModule<
   },
 };
 
-function isExpired(
-  stack: Stack,
-  minAgeInDays: number,
-  excludedTags: readonly string[],
-): boolean {
-  const {
-    StackStatus,
-    CreationTime,
-    DeletionTime,
-    Tags,
-    EnableTerminationProtection,
-  } = stack;
+function isExpired(stack: Stack, minAgeInDays: number, excludedTags: readonly string[]): boolean {
+  const {StackStatus, CreationTime, DeletionTime, Tags, EnableTerminationProtection} = stack;
 
   if (getAgeInDays(CreationTime!) < minAgeInDays) {
     return false;
   }
 
-  if (
-    DeletionTime &&
-    StackStatus !== `ROLLBACK_COMPLETE` &&
-    StackStatus !== `DELETE_FAILED`
-  ) {
+  if (DeletionTime && StackStatus !== `ROLLBACK_COMPLETE` && StackStatus !== `DELETE_FAILED`) {
     return false;
   }
 
@@ -167,13 +148,8 @@ function isExpired(
   return !EnableTerminationProtection;
 }
 
-function isTagExcluded(
-  excludedTags: readonly string[],
-  {Key, Value}: Tag,
-): boolean {
+function isTagExcluded(excludedTags: readonly string[], {Key, Value}: Tag): boolean {
   return excludedTags.some((excludedTag) =>
-    excludedTag.includes(`=`)
-      ? excludedTag === `${Key}=${Value}`
-      : excludedTag === Key,
+    excludedTag.includes(`=`) ? excludedTag === `${Key}=${Value}` : excludedTag === Key,
   );
 }

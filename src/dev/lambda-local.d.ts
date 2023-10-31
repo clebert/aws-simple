@@ -1,9 +1,5 @@
 declare module 'lambda-local' {
-  import type {
-    APIGatewayProxyEvent,
-    ProxyHandler,
-    ProxyResult,
-  } from 'aws-lambda';
+  import type {APIGatewayProxyEvent, ProxyHandler, ProxyResult} from 'aws-lambda';
   import type {Logger} from 'winston';
 
   type DeepPartial<T> = {[K in keyof T]?: DeepPartial<T[K]>};
@@ -18,10 +14,7 @@ declare module 'lambda-local' {
     readonly verboseLevel?: 3 | 2 | 1 | 0;
   }
 
-  export function execute(
-    options: LambdaLocalExecuteOptions,
-  ): Promise<ProxyResult>;
-
+  export function execute(options: LambdaLocalExecuteOptions): Promise<ProxyResult>;
   export function getLogger(): Logger;
   export function setLogger(logger: Logger): void;
 }

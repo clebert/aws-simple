@@ -14,6 +14,9 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -29,7 +32,7 @@
   },
   "editor.formatOnSave": true,
   "editor.rulers": [
-    80
+    100
   ],
   "files.exclude": {
     ".editorconfig": true,
@@ -45,6 +48,7 @@
     ".vscode": true,
     ".vscode/extensions.json": true,
     ".vscode/settings.json": true,
+    "ci.sh": true,
     "jest.config.json": true,
     "tsconfig.base.json": true,
     "tsconfig.emit.json": true,

@@ -20,23 +20,17 @@ export function validateRoutes(routes: readonly Route[]): void {
       const httpMethodPublicPath = `${httpMethod} ${publicPath}`;
 
       if (existingHttpMethodPublicPaths.has(httpMethodPublicPath)) {
-        throw new Error(
-          `A public path must be unique per HTTP method: ${httpMethodPublicPath}`,
-        );
+        throw new Error(`A public path must be unique per HTTP method: ${httpMethodPublicPath}`);
       }
 
       existingHttpMethodPublicPaths.add(httpMethodPublicPath);
 
       if (publicPath !== `/` && publicPath.endsWith(`/`)) {
-        throw new Error(
-          `A public path other than root must not end with a slash: ${publicPath}`,
-        );
+        throw new Error(`A public path other than root must not end with a slash: ${publicPath}`);
       }
 
       if (/\/\*.+/.test(publicPath)) {
-        throw new Error(
-          `A public path may contain a wildcard only at the end: ${publicPath}`,
-        );
+        throw new Error(`A public path may contain a wildcard only at the end: ${publicPath}`);
       }
 
       if (route.type === `folder` && !publicPath.endsWith(`/*`)) {
@@ -50,9 +44,7 @@ export function validateRoutes(routes: readonly Route[]): void {
       const functionName = getNormalizedName(route.functionName);
 
       if (existingFunctionNames.has(functionName)) {
-        throw new Error(
-          `A normalized function name must be unique: ${functionName}`,
-        );
+        throw new Error(`A normalized function name must be unique: ${functionName}`);
       }
 
       existingFunctionNames.add(functionName);

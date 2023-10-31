@@ -3,10 +3,7 @@ import type {Request} from 'express';
 
 export function getQueryStringParameters(
   req: Request,
-): Pick<
-  APIGatewayProxyEvent,
-  'queryStringParameters' | 'multiValueQueryStringParameters'
-> {
+): Pick<APIGatewayProxyEvent, 'queryStringParameters' | 'multiValueQueryStringParameters'> {
   const queryStringParameters: Record<string, string> = {};
   const multiValueQueryStringParameters: Record<string, string[]> = {};
 
@@ -23,8 +20,5 @@ export function getQueryStringParameters(
 }
 
 function isStringArray(value: unknown): value is string[] {
-  return (
-    Array.isArray(value) &&
-    value.every((element) => typeof element === `string`)
-  );
+  return Array.isArray(value) && value.every((element) => typeof element === `string`);
 }

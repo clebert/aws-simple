@@ -116,9 +116,7 @@ describe(`validateRoutes()`, () => {
           httpMethod: `POST`,
         },
       ]),
-    ).toThrow(
-      new Error(`A public path must be unique per HTTP method: POST /`),
-    );
+    ).toThrow(new Error(`A public path must be unique per HTTP method: POST /`));
 
     expect(() =>
       validateRoutes([
@@ -139,32 +137,18 @@ describe(`validateRoutes()`, () => {
         {...s3FileRoute, publicPath: `/foo`},
         {...s3FileRoute, publicPath: `/foo/*`},
       ]),
-    ).toThrow(
-      new Error(`A public path must be unique per HTTP method: GET /foo`),
+    ).toThrow(new Error(`A public path must be unique per HTTP method: GET /foo`));
+
+    expect(() => validateRoutes([{...s3FileRoute, publicPath: `/foo/`}])).toThrow(
+      new Error(`A public path other than root must not end with a slash: /foo/`),
     );
 
-    expect(() =>
-      validateRoutes([{...s3FileRoute, publicPath: `/foo/`}]),
-    ).toThrow(
-      new Error(
-        `A public path other than root must not end with a slash: /foo/`,
-      ),
+    expect(() => validateRoutes([{...s3FileRoute, publicPath: `/foo/*/bar`}])).toThrow(
+      new Error(`A public path may contain a wildcard only at the end: /foo/*/bar`),
     );
 
-    expect(() =>
-      validateRoutes([{...s3FileRoute, publicPath: `/foo/*/bar`}]),
-    ).toThrow(
-      new Error(
-        `A public path may contain a wildcard only at the end: /foo/*/bar`,
-      ),
-    );
-
-    expect(() =>
-      validateRoutes([{...s3FolderRoute, publicPath: `/foo`}]),
-    ).toThrow(
-      new Error(
-        `A public path of an S3 folder route must end with a wildcard: /foo`,
-      ),
+    expect(() => validateRoutes([{...s3FolderRoute, publicPath: `/foo`}])).toThrow(
+      new Error(`A public path of an S3 folder route must end with a wildcard: /foo`),
     );
 
     expect(() =>

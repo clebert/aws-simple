@@ -1,11 +1,6 @@
 #!/usr/bin/env node
 
-import type {
-  LambdaRoute,
-  Route,
-  S3Route,
-  StackConfig,
-} from './parse-stack-config.js';
+import type {LambdaRoute, Route, S3Route, StackConfig} from './parse-stack-config.js';
 
 import {cleanupCommand} from './cleanup-command.js';
 import {deleteCommand} from './delete-command.js';
@@ -31,9 +26,7 @@ export type ConfigFileDefaultExport = (port?: number) => StackConfig;
     .usage(`Usage: $0 <command> [options]`)
     .help(`h`)
     .alias(`h`, `help`)
-    .epilogue(
-      `Production-ready AWS website deployment with minimal configuration.`,
-    )
+    .epilogue(`Production-ready AWS website deployment with minimal configuration.`)
     .detectLocale(false)
     .wrap(null)
     .demandCommand()

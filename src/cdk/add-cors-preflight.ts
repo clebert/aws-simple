@@ -35,9 +35,8 @@ export function addCorsPreflight(
   };
 
   if (options.authenticationEnabled) {
-    methodResponse.responseParameters![
-      `method.response.header.Access-Control-Allow-Credentials`
-    ] = true;
+    methodResponse.responseParameters![`method.response.header.Access-Control-Allow-Credentials`] =
+      true;
 
     integrationResponse.responseParameters![
       `method.response.header.Access-Control-Allow-Credentials`

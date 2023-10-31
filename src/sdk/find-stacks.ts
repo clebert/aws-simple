@@ -2,16 +2,11 @@ import type {Stack} from '@aws-sdk/client-cloudformation';
 
 import {findStack} from './find-stack.js';
 import {getOutputValue} from './get-output-value.js';
-import {
-  CloudFormationClient,
-  paginateDescribeStacks,
-} from '@aws-sdk/client-cloudformation';
+import {CloudFormationClient, paginateDescribeStacks} from '@aws-sdk/client-cloudformation';
 
 type NamedStack = Stack & {StackName: string};
 
-export async function findStacks(
-  hostedZoneName?: string,
-): Promise<readonly Stack[]> {
+export async function findStacks(hostedZoneName?: string): Promise<readonly Stack[]> {
   const client = new CloudFormationClient({});
   const stacks: NamedStack[] = [];
   const paginator = paginateDescribeStacks({client}, {});
@@ -35,10 +30,7 @@ export async function findStacks(
   );
 }
 
-function isMatchingStack(
-  stack: Stack,
-  hostedZoneName: string | undefined,
-): stack is NamedStack {
+function isMatchingStack(stack: Stack, hostedZoneName: string | undefined): stack is NamedStack {
   if (!stack.StackName?.startsWith(`aws-simple`)) {
     return false;
   }

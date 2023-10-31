@@ -35,19 +35,14 @@ export const deleteCommand: CommandModule<
 
   handler: async (args): Promise<void> => {
     const stackName =
-      args.stackName ||
-      getStackName(
-        getDomainName(parseDomainNameParts(await readStackConfig())),
-      );
+      args.stackName || getStackName(getDomainName(parseDomainNameParts(await readStackConfig())));
 
     print.warning(`Stack: ${stackName}`);
 
     if (args.yes) {
       print.warning(`The specified stack will be deleted automatically.`);
     } else {
-      const confirmed = await print.confirmation(
-        `Confirm to delete the specified stack.`,
-      );
+      const confirmed = await print.confirmation(`Confirm to delete the specified stack.`);
 
       if (!confirmed) {
         return;

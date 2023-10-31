@@ -21,10 +21,7 @@ export type StackConfig = Omit<
 
 export type Route = LambdaRoute | S3Route;
 
-export type LambdaRoute = Omit<
-  z.TypeOf<typeof LambdaRouteSchema>,
-  'onSynthesize'
-> & {
+export type LambdaRoute = Omit<z.TypeOf<typeof LambdaRouteSchema>, 'onSynthesize'> & {
   readonly onSynthesize?: (constructs: {
     readonly stack: Stack;
     readonly restApi: aws_apigateway.RestApiBase;
@@ -51,9 +48,7 @@ const LambdaRouteSchema = z.object({
       }),
     )
     .optional(),
-  throttling: z
-    .object({rateLimit: z.number(), burstLimit: z.number()})
-    .optional(),
+  throttling: z.object({rateLimit: z.number(), burstLimit: z.number()}).optional(),
   cacheTtlInSeconds: z.number().int().min(0).max(3600).optional(),
   authenticationEnabled: z.boolean().optional(),
   corsEnabled: z.boolean().optional(),
@@ -66,9 +61,7 @@ const S3RouteSchema = z.object({
   publicPath: z.string(),
   path: z.string(),
   responseHeaders: z.record(z.string()).optional(),
-  throttling: z
-    .object({rateLimit: z.number(), burstLimit: z.number()})
-    .optional(),
+  throttling: z.object({rateLimit: z.number(), burstLimit: z.number()}).optional(),
   cacheTtlInSeconds: z.number().int().min(0).max(3600).optional(),
   authenticationEnabled: z.boolean().optional(),
   corsEnabled: z.boolean().optional(),

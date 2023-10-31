@@ -17,8 +17,7 @@ export function createLambdaRequestHandler(
     try {
       const cachedResult = cache?.get(req.url);
 
-      const requestBody =
-        typeof req.body === `string` && req.body ? req.body : null;
+      const requestBody = typeof req.body === `string` && req.body ? req.body : null;
 
       const result =
         cachedResult ||
@@ -44,8 +43,7 @@ export function createLambdaRequestHandler(
           },
         }));
 
-      const {headers, multiValueHeaders, statusCode, body, isBase64Encoded} =
-        result;
+      const {headers, multiValueHeaders, statusCode, body, isBase64Encoded} = result;
 
       if (cachedResult) {
         print.info(`Cache hit for Lambda request handler: ${functionName}`);

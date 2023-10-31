@@ -37,17 +37,12 @@ export const flushCacheCommand: CommandModule<
 
   handler: async (args): Promise<void> => {
     const stackName =
-      args.stackName ||
-      getStackName(
-        getDomainName(parseDomainNameParts(await readStackConfig())),
-      );
+      args.stackName || getStackName(getDomainName(parseDomainNameParts(await readStackConfig())));
 
     print.warning(`Stack: ${stackName}`);
 
     if (args.yes) {
-      print.warning(
-        `The REST API cache of the specified stack will be flushed automatically.`,
-      );
+      print.warning(`The REST API cache of the specified stack will be flushed automatically.`);
     } else {
       const confirmed = await print.confirmation(
         `Confirm to flush the REST API cache of the specified stack.`,

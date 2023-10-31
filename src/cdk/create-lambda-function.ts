@@ -40,9 +40,10 @@ export function createLambdaFunction(
   const domainName = getDomainName(stackConfig);
 
   // Example: POST-foo-bar-baz-1234567
-  const uniqueFunctionName = `${httpMethod}-${getNormalizedName(
+  const uniqueFunctionName = `${httpMethod}-${getNormalizedName(functionName)}-${getHash(
     functionName,
-  )}-${getHash(functionName, domainName)}`;
+    domainName,
+  )}`;
 
   if (uniqueFunctionName.length > 64) {
     throw new Error(
@@ -52,28 +53,21 @@ export function createLambdaFunction(
 
   const {monitoring} = stackConfig;
 
-  return new aws_lambda.Function(
-    stack,
-    `Function${getHash(uniqueFunctionName)}`,
-    {
-      functionName: uniqueFunctionName,
-      code: aws_lambda.Code.fromAsset(dirname(path)),
-      handler: `${basename(path, extname(path))}.handler`,
-      description: `${functionName} => ${httpMethod} https://${join(
-        domainName,
-        publicPath,
-      )}`,
-      memorySize,
-      environment,
-      timeout: Duration.seconds(timeoutInSeconds),
-      runtime: aws_lambda.Runtime.NODEJS_18_X,
-      tracing: aws_lambda.Tracing.PASS_THROUGH,
-      insightsVersion:
-        monitoring === true || monitoring?.lambdaInsightsEnabled
-          ? aws_lambda.LambdaInsightsVersion.VERSION_1_0_229_0
-          : undefined,
-      logRetention: aws_logs.RetentionDays.TWO_WEEKS,
-      role: lambdaServiceRole,
-    },
-  );
+  return new aws_lambda.Function(stack, `Function${getHash(uniqueFunctionName)}`, {
+    functionName: uniqueFunctionName,
+    code: aws_lambda.Code.fromAsset(dirname(path)),
+    handler: `${basename(path, extname(path))}.handler`,
+    description: `${functionName} => ${httpMethod} https://${join(domainName, publicPath)}`,
+    memorySize,
+    environment,
+    timeout: Duration.seconds(timeoutInSeconds),
+    runtime: aws_lambda.Runtime.NODEJS_18_X,
+    tracing: aws_lambda.Tracing.PASS_THROUGH,
+    insightsVersion:
+      monitoring === true || monitoring?.lambdaInsightsEnabled
+        ? aws_lambda.LambdaInsightsVersion.VERSION_1_0_229_0
+        : undefined,
+    logRetention: aws_logs.RetentionDays.TWO_WEEKS,
+    role: lambdaServiceRole,
+  });
 }

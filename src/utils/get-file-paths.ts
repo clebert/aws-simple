@@ -1,9 +1,7 @@
 import {lstat, readdir} from 'fs/promises';
 import {join} from 'path';
 
-export async function getFilePaths(
-  directoryPath: string,
-): Promise<readonly string[]> {
+export async function getFilePaths(directoryPath: string): Promise<readonly string[]> {
   if (!(await lstat(directoryPath)).isDirectory()) {
     throw new Error(`The path does not refer to a directory: ${directoryPath}`);
   }

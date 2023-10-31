@@ -14,9 +14,7 @@ export async function readStackConfig(port?: number): Promise<unknown> {
   }
 
   if (typeof module.default !== `function`) {
-    throw new Error(
-      `The config file does not have a valid default export: ${path}`,
-    );
+    throw new Error(`The config file does not have a valid default export: ${path}`);
   }
 
   return module.default(port);

@@ -31,9 +31,7 @@ export async function deleteRole(roleName: string): Promise<void> {
   } while (output.Marker);
 
   for (const policyArn of policyArns) {
-    await client.send(
-      new DetachRolePolicyCommand({RoleName: roleName, PolicyArn: policyArn}),
-    );
+    await client.send(new DetachRolePolicyCommand({RoleName: roleName, PolicyArn: policyArn}));
   }
 
   await client.send(new DeleteRoleCommand({RoleName: roleName}));

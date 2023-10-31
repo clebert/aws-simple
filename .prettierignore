@@ -1,10 +1,10 @@
 /.prettierrc.json
 /LICENSE*
 /.eslintrc.json
+/.github/workflows/ci.yml
 /coverage
 /jest.config.json
 /package-lock.json
-/.github/workflows/ci.yml
 /.swcrc
 /tsconfig.base.json
 /tsconfig.json

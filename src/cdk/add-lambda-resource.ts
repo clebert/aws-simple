@@ -6,8 +6,7 @@ import {addCorsPreflight} from './add-cors-preflight.js';
 import {createLambdaFunction} from './create-lambda-function.js';
 import {aws_apigateway} from 'aws-cdk-lib';
 
-export interface LambdaResourceConstructDependencies
-  extends LambdaFunctionConstructDependencies {
+export interface LambdaResourceConstructDependencies extends LambdaFunctionConstructDependencies {
   readonly requestAuthorizer: aws_apigateway.IAuthorizer | undefined;
   readonly restApi: aws_apigateway.RestApiBase;
 }
@@ -17,16 +16,8 @@ export function addLambdaResource(
   route: LambdaRoute,
   constructDependencies: LambdaResourceConstructDependencies,
 ): aws_lambda.FunctionBase {
-  const {lambdaServiceRole, requestAuthorizer, restApi, stack} =
-    constructDependencies;
-
-  const {
-    httpMethod,
-    publicPath,
-    requestParameters,
-    authenticationEnabled,
-    corsEnabled,
-  } = route;
+  const {lambdaServiceRole, requestAuthorizer, restApi, stack} = constructDependencies;
+  const {httpMethod, publicPath, requestParameters, authenticationEnabled, corsEnabled} = route;
 
   if (authenticationEnabled && !requestAuthorizer) {
     throw new Error(
@@ -70,9 +61,7 @@ export function addLambdaResource(
   resource.addMethod(httpMethod, integration, methodOptions);
 
   if (publicPath.endsWith(`/*`)) {
-    const proxyResource = restApi.root.resourceForPath(
-      publicPath.replace(`/*`, `/{proxy+}`),
-    );
+    const proxyResource = restApi.root.resourceForPath(publicPath.replace(`/*`, `/{proxy+}`));
 
     if (corsEnabled) {
       addCorsPreflight(proxyResource, {authenticationEnabled});

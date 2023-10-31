@@ -31,10 +31,7 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
         number: true,
         default: 3000,
       })
-      .example([
-        [`npx $0 ${commandName}`],
-        [`npx $0 ${commandName} --port 3001`],
-      ]),
+      .example([[`npx $0 ${commandName}`], [`npx $0 ${commandName} --port 3001`]]),
 
   handler: async (args): Promise<void> => {
     const port = await getPort({port: args.port});
@@ -48,10 +45,7 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
 
     stackConfig.onStart?.(app);
 
-    const lambdaCaches = new WeakMap<
-      LambdaRoute,
-      Map<string, APIGatewayProxyResult>
-    >();
+    const lambdaCaches = new WeakMap<LambdaRoute, Map<string, APIGatewayProxyResult>>();
 
     lambdaLocal.getLogger().level = `error`;
 
@@ -62,9 +56,7 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
         const {cacheTtlInSeconds = 300} = route;
 
         if (stackConfig.cachingEnabled && cacheTtlInSeconds > 0) {
-          print.info(
-            `Setting up cache for Lambda request handler: ${route.functionName}`,
-          );
+          print.info(`Setting up cache for Lambda request handler: ${route.functionName}`);
 
           lambdaCaches.set(route, new Map());
         }
@@ -81,9 +73,7 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
     const paths = routes.map(({path}) => path);
 
     app.listen(port, () => {
-      print.success(
-        `The DEV server has been started: http://localhost:${port}`,
-      );
+      print.success(`The DEV server has been started: http://localhost:${port}`);
 
       const listener = (changedPath: string): void => {
         print.info(
@@ -91,17 +81,14 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
         );
 
         const changedLambdaRoutes = routes.filter(
-          (route): route is LambdaRoute =>
-            route.type === `function` && route.path === changedPath,
+          (route): route is LambdaRoute => route.type === `function` && route.path === changedPath,
         );
 
         for (const route of changedLambdaRoutes) {
           const {cacheTtlInSeconds = 300} = route;
 
           if (stackConfig.cachingEnabled && cacheTtlInSeconds > 0) {
-            print.info(
-              `Flushing cache for Lambda request handler: ${route.functionName}`,
-            );
+            print.info(`Flushing cache for Lambda request handler: ${route.functionName}`);
 
             lambdaCaches.set(route, new Map());
           }

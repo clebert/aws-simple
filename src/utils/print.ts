@@ -43,10 +43,7 @@ export interface ListHeadline {
   readonly text: string;
 }
 
-print.listItem = (
-  indentationLevel: 0 | 1 | 2,
-  item: ListEntry | ListHeadline | string,
-): void => {
+print.listItem = (indentationLevel: 0 | 1 | 2, item: ListEntry | ListHeadline | string): void => {
   let text =
     typeof item === `string`
       ? `• ${item}`

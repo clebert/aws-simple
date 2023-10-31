@@ -37,17 +37,12 @@ export const redeployCommand: CommandModule<
 
   handler: async (args): Promise<void> => {
     const stackName =
-      args.stackName ||
-      getStackName(
-        getDomainName(parseDomainNameParts(await readStackConfig())),
-      );
+      args.stackName || getStackName(getDomainName(parseDomainNameParts(await readStackConfig())));
 
     print.warning(`Stack: ${stackName}`);
 
     if (args.yes) {
-      print.warning(
-        `The REST API of the specified stack will be redeployed automatically.`,
-      );
+      print.warning(`The REST API of the specified stack will be redeployed automatically.`);
     } else {
       const confirmed = await print.confirmation(
         `Confirm to redeploy the REST API of the specified stack.`,

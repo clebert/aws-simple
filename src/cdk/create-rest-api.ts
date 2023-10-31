@@ -17,35 +17,25 @@ import {
 } from 'aws-cdk-lib';
 import {join} from 'path';
 
-export function createRestApi(
-  stackConfig: StackConfig,
-  stack: Stack,
-): aws_apigateway.RestApiBase {
+export function createRestApi(stackConfig: StackConfig, stack: Stack): aws_apigateway.RestApiBase {
   const {hostedZoneName, aliasRecordName} = stackConfig;
 
   if (!hostedZoneName) {
     throw new Error(`The hosted zone cannot be looked up without a name.`);
   }
 
-  const hostedZone = aws_route53.HostedZone.fromLookup(
-    stack,
-    `HostedZoneLookup`,
-    {domainName: hostedZoneName},
-  );
+  const hostedZone = aws_route53.HostedZone.fromLookup(stack, `HostedZoneLookup`, {
+    domainName: hostedZoneName,
+  });
 
   new CfnOutput(stack, `HostedZoneNameOutput`, {value: hostedZoneName});
 
   const domainName = getDomainName({hostedZoneName, aliasRecordName});
 
-  const certificate = new aws_certificatemanager.Certificate(
-    stack,
-    `Certificate`,
-    {
-      domainName,
-      validation:
-        aws_certificatemanager.CertificateValidation.fromDns(hostedZone),
-    },
-  );
+  const certificate = new aws_certificatemanager.Certificate(stack, `Certificate`, {
+    domainName,
+    validation: aws_certificatemanager.CertificateValidation.fromDns(hostedZone),
+  });
 
   const restApi = new aws_apigateway.RestApi(stack, `RestApi`, {
     description: `https://${domainName}`,
@@ -100,19 +90,10 @@ function getStageOptions(
       ? aws_apigateway.MethodLoggingLevel.INFO
       : aws_apigateway.MethodLoggingLevel.OFF;
 
-  const methodOptionsByPath: Record<
-    string,
-    aws_apigateway.MethodDeploymentOptions
-  > = {};
+  const methodOptionsByPath: Record<string, aws_apigateway.MethodDeploymentOptions> = {};
 
   for (const route of routes) {
-    const {
-      type,
-      httpMethod = `GET`,
-      publicPath,
-      throttling,
-      cacheTtlInSeconds = 300,
-    } = route;
+    const {type, httpMethod = `GET`, publicPath, throttling, cacheTtlInSeconds = 300} = route;
 
     const methodOptions: aws_apigateway.MethodDeploymentOptions = {
       cachingEnabled: cachingEnabled && cacheTtlInSeconds > 0,
@@ -127,16 +108,12 @@ function getStageOptions(
       const nonProxyPublicPath = publicPath.replace(`/*`, `/`);
 
       methodOptionsByPath[
-        nonProxyPublicPath === `/`
-          ? `//${httpMethod}`
-          : join(nonProxyPublicPath, httpMethod)
+        nonProxyPublicPath === `/` ? `//${httpMethod}` : join(nonProxyPublicPath, httpMethod)
       ] = methodOptions;
     }
 
     if (publicPath.endsWith(`/*`)) {
-      methodOptionsByPath[
-        join(publicPath.replace(`/*`, `/{proxy+}`), httpMethod)
-      ] = methodOptions;
+      methodOptionsByPath[join(publicPath.replace(`/*`, `/{proxy+}`), httpMethod)] = methodOptions;
     }
   }
 
@@ -189,9 +166,7 @@ function setUnauthorizedGatewayResponse(
     type: aws_apigateway.ResponseType.UNAUTHORIZED,
     responseHeaders: {
       ...corsResponseHeaders,
-      'gatewayresponse.header.WWW-Authenticate': realm
-        ? `'Basic realm=${realm}'`
-        : `'Basic'`,
+      'gatewayresponse.header.WWW-Authenticate': realm ? `'Basic realm=${realm}'` : `'Basic'`,
     },
     templates: {
       'application/json': `{"message":$context.error.messageString}`,

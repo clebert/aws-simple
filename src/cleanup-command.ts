@@ -66,9 +66,7 @@ export const cleanupCommand: CommandModule<{}, {readonly yes: boolean}> = {
     }
 
     if (args.yes) {
-      print.warning(
-        `The found account-wide resources will be deleted automatically.`,
-      );
+      print.warning(`The found account-wide resources will be deleted automatically.`);
     } else {
       const confirmed = await print.confirmation(
         `Confirm to delete the found account-wide resources.`,
@@ -96,9 +94,7 @@ export const cleanupCommand: CommandModule<{}, {readonly yes: boolean}> = {
 
       process.exit(1);
     } else {
-      print.success(
-        `The found account-wide resources have been successfully deleted.`,
-      );
+      print.success(`The found account-wide resources have been successfully deleted.`);
     }
   },
 };

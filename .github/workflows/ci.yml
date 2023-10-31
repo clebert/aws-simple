@@ -2,12 +2,12 @@ jobs:
   CI:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: actions/setup-node@v3
       with:
         node-version-file: .node-version
     - uses: bahmutov/npm-install@v1
-    - run: npm run ci
+    - run: bash ./ci.sh
     - env:
         NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
       if: ${{ github.event_name == 'release' }}

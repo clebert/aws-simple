@@ -1,8 +1,5 @@
 import {findStack} from './find-stack.js';
-import {
-  CloudFormationClient,
-  UpdateStackCommand,
-} from '@aws-sdk/client-cloudformation';
+import {CloudFormationClient, UpdateStackCommand} from '@aws-sdk/client-cloudformation';
 
 export interface UpdateTagsOptions {
   readonly stackName: string;
@@ -16,9 +13,7 @@ export async function updateTags(options: UpdateTagsOptions): Promise<void> {
   const client = new CloudFormationClient({});
 
   const tagObjects = [
-    ...(stack.Tags ?? []).filter(({Key}) =>
-      tagsToAdd.every(([key]) => key !== Key),
-    ),
+    ...(stack.Tags ?? []).filter(({Key}) => tagsToAdd.every(([key]) => key !== Key)),
     ...tagsToAdd.map(([key, value]) => ({Key: key, Value: value || `true`})),
   ].filter(({Key}) => Key && !tagKeysToRemove.includes(Key));
 

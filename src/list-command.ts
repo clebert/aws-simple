@@ -54,13 +54,10 @@ export const listCommand: CommandModule<
 
     const hostedZoneName = all
       ? undefined
-      : args.hostedZoneName ||
-        parseDomainNameParts(await readStackConfig()).hostedZoneName;
+      : args.hostedZoneName || parseDomainNameParts(await readStackConfig()).hostedZoneName;
 
     if (!hostedZoneName && !all) {
-      throw new Error(
-        `Please specify either a hosted zone name or the --all option.`,
-      );
+      throw new Error(`Please specify either a hosted zone name or the --all option.`);
     }
 
     if (!short && !json) {
@@ -96,8 +93,7 @@ export const listCommand: CommandModule<
         created: stack.CreationTime?.getTime(),
         updated: stack.LastUpdatedTime?.getTime(),
         terminationProtection: stack.EnableTerminationProtection,
-        tags:
-          stack.Tags?.map(({Key, Value}) => ({key: Key, value: Value})) ?? [],
+        tags: stack.Tags?.map(({Key, Value}) => ({key: Key, value: Value})) ?? [],
       }));
 
       print(JSON.stringify(jsonOutput));

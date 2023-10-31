@@ -3,10 +3,7 @@ import {lstat, readFile} from 'fs/promises';
 import {lookup} from 'mime-types';
 import {isAbsolute} from 'path';
 
-export async function uploadFile(
-  bucketName: string,
-  path: string,
-): Promise<void> {
+export async function uploadFile(bucketName: string, path: string): Promise<void> {
   if (!(await lstat(path)).isFile()) {
     throw new Error(`The path does not refer to a file: ${path}`);
   }

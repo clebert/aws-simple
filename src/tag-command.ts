@@ -54,10 +54,7 @@ export const tagCommand: CommandModule<
 
   handler: async (args): Promise<void> => {
     const stackName =
-      args.stackName ||
-      getStackName(
-        getDomainName(parseDomainNameParts(await readStackConfig())),
-      );
+      args.stackName || getStackName(getDomainName(parseDomainNameParts(await readStackConfig())));
 
     print.warning(`Stack: ${stackName}`);
 
@@ -81,9 +78,7 @@ export const tagCommand: CommandModule<
       tagKeysToRemove: args.remove.map((arg) => arg.toString()),
     });
 
-    print.success(
-      `The tags of the specified stack have been successfully updated.`,
-    );
+    print.success(`The tags of the specified stack have been successfully updated.`);
   },
 };
 
