@@ -1,5 +1,5 @@
-import {lstat, readdir} from 'fs/promises';
-import {join} from 'path';
+import { lstat, readdir } from 'fs/promises';
+import { join } from 'path';
 
 export async function getFilePaths(directoryPath: string): Promise<readonly string[]> {
   if (!(await lstat(directoryPath)).isDirectory()) {

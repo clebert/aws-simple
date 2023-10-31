@@ -1,17 +1,17 @@
-import type {LambdaRoute} from '../parse-stack-config.js';
-import type {APIGatewayProxyResult} from 'aws-lambda';
+import type { LambdaRoute } from '../parse-stack-config.js';
+import type { APIGatewayProxyResult } from 'aws-lambda';
 import type express from 'express';
 
-import {getQueryStringParameters} from './get-querystring-parameters.js';
-import {getRequestHeaders} from './get-request-headers.js';
-import {print} from '../utils/print.js';
+import { getQueryStringParameters } from './get-querystring-parameters.js';
+import { getRequestHeaders } from './get-request-headers.js';
+import { print } from '../utils/print.js';
 import * as lambdaLocal from 'lambda-local';
 
 export function createLambdaRequestHandler(
   route: LambdaRoute,
   cache: Map<string, APIGatewayProxyResult> | undefined,
 ): express.RequestHandler {
-  const {path, functionName, timeoutInSeconds = 28, environment} = route;
+  const { path, functionName, timeoutInSeconds = 28, environment } = route;
 
   return async (req, res) => {
     try {
@@ -43,7 +43,7 @@ export function createLambdaRequestHandler(
           },
         }));
 
-      const {headers, multiValueHeaders, statusCode, body, isBase64Encoded} = result;
+      const { headers, multiValueHeaders, statusCode, body, isBase64Encoded } = result;
 
       if (cachedResult) {
         print.info(`Cache hit for Lambda request handler: ${functionName}`);

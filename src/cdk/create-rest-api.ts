@@ -1,9 +1,9 @@
-import type {StackConfig} from '../parse-stack-config.js';
-import type {Stack} from 'aws-cdk-lib';
+import type { StackConfig } from '../parse-stack-config.js';
+import type { Stack } from 'aws-cdk-lib';
 
-import {getDomainName} from '../utils/get-domain-name.js';
-import {getHash} from '../utils/get-hash.js';
-import {getNormalizedName} from '../utils/get-normalized-name.js';
+import { getDomainName } from '../utils/get-domain-name.js';
+import { getHash } from '../utils/get-hash.js';
+import { getNormalizedName } from '../utils/get-normalized-name.js';
 import {
   CfnOutput,
   Duration,
@@ -15,10 +15,10 @@ import {
   aws_route53,
   aws_route53_targets,
 } from 'aws-cdk-lib';
-import {join} from 'path';
+import { join } from 'path';
 
 export function createRestApi(stackConfig: StackConfig, stack: Stack): aws_apigateway.RestApiBase {
-  const {hostedZoneName, aliasRecordName} = stackConfig;
+  const { hostedZoneName, aliasRecordName } = stackConfig;
 
   if (!hostedZoneName) {
     throw new Error(`The hosted zone cannot be looked up without a name.`);
@@ -28,9 +28,9 @@ export function createRestApi(stackConfig: StackConfig, stack: Stack): aws_apiga
     domainName: hostedZoneName,
   });
 
-  new CfnOutput(stack, `HostedZoneNameOutput`, {value: hostedZoneName});
+  new CfnOutput(stack, `HostedZoneNameOutput`, { value: hostedZoneName });
 
-  const domainName = getDomainName({hostedZoneName, aliasRecordName});
+  const domainName = getDomainName({ hostedZoneName, aliasRecordName });
 
   const certificate = new aws_certificatemanager.Certificate(stack, `Certificate`, {
     domainName,
@@ -83,7 +83,7 @@ function getStageOptions(
   stack: Stack,
   domainName: string,
 ): aws_apigateway.StageOptions {
-  const {cachingEnabled, monitoring, routes} = stackConfig;
+  const { cachingEnabled, monitoring, routes } = stackConfig;
 
   const loggingLevel: aws_apigateway.MethodLoggingLevel =
     monitoring === true || monitoring?.loggingEnabled
@@ -93,7 +93,7 @@ function getStageOptions(
   const methodOptionsByPath: Record<string, aws_apigateway.MethodDeploymentOptions> = {};
 
   for (const route of routes) {
-    const {type, httpMethod = `GET`, publicPath, throttling, cacheTtlInSeconds = 300} = route;
+    const { type, httpMethod = `GET`, publicPath, throttling, cacheTtlInSeconds = 300 } = route;
 
     const methodOptions: aws_apigateway.MethodDeploymentOptions = {
       cachingEnabled: cachingEnabled && cacheTtlInSeconds > 0,
@@ -143,7 +143,7 @@ function setUnauthorizedGatewayResponse(
   stack: Stack,
   restApi: aws_apigateway.RestApiBase,
 ): void {
-  const {authentication} = stackConfig;
+  const { authentication } = stackConfig;
 
   if (!authentication) {
     return;
@@ -159,7 +159,7 @@ function setUnauthorizedGatewayResponse(
       }
     : {};
 
-  const {realm} = authentication;
+  const { realm } = authentication;
 
   new aws_apigateway.GatewayResponse(stack, `UnauthorizedGatewayResponse`, {
     restApi,

@@ -1,11 +1,11 @@
-import type {LambdaRoute, StackConfig} from '../parse-stack-config.js';
-import type {Stack, aws_iam} from 'aws-cdk-lib';
+import type { LambdaRoute, StackConfig } from '../parse-stack-config.js';
+import type { Stack, aws_iam } from 'aws-cdk-lib';
 
-import {getDomainName} from '../utils/get-domain-name.js';
-import {getHash} from '../utils/get-hash.js';
-import {getNormalizedName} from '../utils/get-normalized-name.js';
-import {Duration, aws_lambda, aws_logs} from 'aws-cdk-lib';
-import {basename, dirname, extname, join} from 'path';
+import { getDomainName } from '../utils/get-domain-name.js';
+import { getHash } from '../utils/get-hash.js';
+import { getNormalizedName } from '../utils/get-normalized-name.js';
+import { Duration, aws_lambda, aws_logs } from 'aws-cdk-lib';
+import { basename, dirname, extname, join } from 'path';
 
 export interface LambdaFunctionConstructDependencies {
   readonly lambdaServiceRole: aws_iam.IRole;
@@ -19,7 +19,7 @@ export function createLambdaFunction(
   route: LambdaRoute,
   constructDependencies: LambdaFunctionConstructDependencies,
 ): aws_lambda.FunctionBase {
-  const {lambdaServiceRole, stack} = constructDependencies;
+  const { lambdaServiceRole, stack } = constructDependencies;
 
   const {
     httpMethod,
@@ -51,7 +51,7 @@ export function createLambdaFunction(
     );
   }
 
-  const {monitoring} = stackConfig;
+  const { monitoring } = stackConfig;
 
   return new aws_lambda.Function(stack, `Function${getHash(uniqueFunctionName)}`, {
     functionName: uniqueFunctionName,

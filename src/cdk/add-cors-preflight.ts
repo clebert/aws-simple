@@ -1,4 +1,4 @@
-import {aws_apigateway} from 'aws-cdk-lib';
+import { aws_apigateway } from 'aws-cdk-lib';
 
 export interface AddCorsPreflightOptions {
   readonly authenticationEnabled?: boolean;
@@ -46,10 +46,10 @@ export function addCorsPreflight(
   resource.addMethod(
     `OPTIONS`,
     new aws_apigateway.MockIntegration({
-      requestTemplates: {'application/json': `{ statusCode: 200 }`},
+      requestTemplates: { 'application/json': `{ statusCode: 200 }` },
       contentHandling: aws_apigateway.ContentHandling.CONVERT_TO_TEXT,
       integrationResponses: [integrationResponse],
     }),
-    {methodResponses: [methodResponse]},
+    { methodResponses: [methodResponse] },
   );
 }

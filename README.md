@@ -23,7 +23,7 @@ website stack:
 /** @type {import('aws-simple').ConfigFileDefaultExport} */
 export default (port) => ({
   hostedZoneName: `example.com`,
-  routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+  routes: [{ type: `file`, publicPath: `/`, path: `dist/index.html` }],
 });
 ```
 
@@ -98,7 +98,7 @@ Options:
 export default () => ({
   hostedZoneName: `example.com`,
   aliasRecordName: `stage`, // <==
-  routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+  routes: [{ type: `file`, publicPath: `/`, path: `dist/index.html` }],
 });
 ```
 
@@ -123,7 +123,7 @@ export default () => ({
       path: `dist/index.html`,
 
       // optional
-      responseHeaders: {'cache-control': `max-age=157680000`},
+      responseHeaders: { 'cache-control': `max-age=157680000` },
     },
   ],
 });
@@ -145,8 +145,8 @@ export default () => ({
       // optional
       memorySize: 1769, // default: `128` MB
       timeoutInSeconds: 3, // default: `28` seconds (this is the maximum timeout)
-      environment: {FOO: `bar`},
-      requestParameters: {foo: {}, bar: {cacheKey: true, required: true}},
+      environment: { FOO: `bar` },
+      requestParameters: { foo: {}, bar: { cacheKey: true, required: true } },
     },
   ],
 });
@@ -156,7 +156,7 @@ export default () => ({
 // dist/hello.js
 exports.handler = async () => ({
   statusCode: 200,
-  body: JSON.stringify({hello: `world`}),
+  body: JSON.stringify({ hello: `world` }),
 });
 ```
 
@@ -194,7 +194,7 @@ export default () => ({
       path: `dist`,
 
       // optional
-      responseHeaders: {'cache-control': `max-age=157680000`},
+      responseHeaders: { 'cache-control': `max-age=157680000` },
     },
   ],
 });
@@ -303,7 +303,7 @@ export default () => ({
 // dist/hello.js
 exports.handler = async () => ({
   statusCode: 200,
-  body: JSON.stringify({hello: `world`}),
+  body: JSON.stringify({ hello: `world` }),
   headers: {
     'access-control-allow-origin': `*`, // <==
   },
@@ -322,7 +322,7 @@ export default () => ({
     metricsEnabled: true, // <==
     tracingEnabled: true, // <==
   },
-  routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+  routes: [{ type: `file`, publicPath: `/`, path: `dist/index.html` }],
 });
 ```
 
@@ -330,7 +330,7 @@ export default () => ({
 export default () => ({
   hostedZoneName: `example.com`,
   monitoring: true, // <== shorthand form
-  routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+  routes: [{ type: `file`, publicPath: `/`, path: `dist/index.html` }],
 });
 ```
 
@@ -378,8 +378,8 @@ export default () => ({
 ```js
 export default () => ({
   hostedZoneName: `example.com`,
-  tags: {foo: `bar`, baz: `qux`}, // <==
-  routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+  tags: { foo: `bar`, baz: `qux` }, // <==
+  routes: [{ type: `file`, publicPath: `/`, path: `dist/index.html` }],
 });
 ```
 
@@ -389,7 +389,7 @@ export default () => ({
 export default () => ({
   hostedZoneName: `example.com`,
   terminationProtectionEnabled: true, // <==
-  routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+  routes: [{ type: `file`, publicPath: `/`, path: `dist/index.html` }],
 });
 ```
 
@@ -407,7 +407,7 @@ export default () => ({
       publicPath: `/hello`,
       path: `dist/hello.js`,
       functionName: `hello`,
-      environment: {NODE_OPTIONS: `--enable-source-maps`}, // <==
+      environment: { NODE_OPTIONS: `--enable-source-maps` }, // <==
     },
   ],
 });
@@ -426,13 +426,13 @@ To implement advanced features, `onSynthesize` hooks can be used. Below are two 
 #### Configuring a firewall
 
 ```js
-import {aws_wafv2} from 'aws-cdk-lib';
+import { aws_wafv2 } from 'aws-cdk-lib';
 
 export default () => ({
   hostedZoneName: `example.com`,
-  routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+  routes: [{ type: `file`, publicPath: `/`, path: `dist/index.html` }],
 
-  onSynthesize: ({stack, restApi}) => {
+  onSynthesize: ({ stack, restApi }) => {
     const myWebAclArn = `...`;
 
     new aws_wafv2.CfnWebACLAssociation(stack, `WebACLAssociation`, {
@@ -446,7 +446,7 @@ export default () => ({
 #### Allowing a Lambda function read-only access to S3 buckets
 
 ```js
-import {aws_iam} from 'aws-cdk-lib';
+import { aws_iam } from 'aws-cdk-lib';
 
 export default () => ({
   hostedZoneName: `example.com`,
@@ -458,7 +458,7 @@ export default () => ({
       path: `dist/hello.js`,
       functionName: `hello`,
 
-      onSynthesize: ({stack, restApi, lambdaFunction}) => {
+      onSynthesize: ({ stack, restApi, lambdaFunction }) => {
         lambdaFunction.role.addManagedPolicy(
           aws_iam.ManagedPolicy.fromAwsManagedPolicyName(`AmazonS3ReadOnlyAccess`),
         );
@@ -471,7 +471,7 @@ export default () => ({
 #### Allowing a Lambda function to access a secret in the AWS Secret Manager
 
 ```js
-import {aws_iam} from 'aws-cdk-lib';
+import { aws_iam } from 'aws-cdk-lib';
 
 export default () => ({
   hostedZoneName: `example.com`,
@@ -483,7 +483,7 @@ export default () => ({
       path: `dist/hello.js`,
       functionName: `hello`,
 
-      onSynthesize: ({stack, restApi, lambdaFunction}) => {
+      onSynthesize: ({ stack, restApi, lambdaFunction }) => {
         const mySecretId = `...`;
 
         const secretsManagerPolicyStatement = new aws_iam.PolicyStatement({
@@ -507,11 +507,11 @@ The `onStart` hook can be used to customize the DEV server's
 [Express app](https://expressjs.com/en/5x/api.html#app), e.g. to configure a proxy middleware:
 
 ```js
-import {createProxyMiddleware} from 'http-proxy-middleware';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
 export default () => ({
   hostedZoneName: `example.com`,
-  routes: [{type: `file`, publicPath: `/`, path: `dist/index.html`}],
+  routes: [{ type: `file`, publicPath: `/`, path: `dist/index.html` }],
   onStart: (app) => {
     app.use(
       `/some-external-api`,

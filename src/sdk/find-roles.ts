@@ -1,6 +1,6 @@
-import type {ListRolesCommandOutput, Role} from '@aws-sdk/client-iam';
+import type { ListRolesCommandOutput, Role } from '@aws-sdk/client-iam';
 
-import {IAMClient, ListRolesCommand} from '@aws-sdk/client-iam';
+import { IAMClient, ListRolesCommand } from '@aws-sdk/client-iam';
 
 export async function findRoles(): Promise<Role[]> {
   const roles: Role[] = [];
@@ -8,7 +8,7 @@ export async function findRoles(): Promise<Role[]> {
   let output: ListRolesCommandOutput | undefined;
 
   do {
-    output = await client.send(new ListRolesCommand({Marker: output?.Marker}));
+    output = await client.send(new ListRolesCommand({ Marker: output?.Marker }));
 
     if (output.Roles) {
       roles.push(...output.Roles);

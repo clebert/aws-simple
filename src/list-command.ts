@@ -1,10 +1,10 @@
-import type {CommandModule} from 'yargs';
+import type { CommandModule } from 'yargs';
 
-import {parseDomainNameParts} from './parse-domain-name-parts.js';
-import {readStackConfig} from './read-stack-config.js';
-import {findStacks} from './sdk/find-stacks.js';
-import {getFormattedAgeInDays} from './utils/get-formatted-age-in-days.js';
-import {print} from './utils/print.js';
+import { parseDomainNameParts } from './parse-domain-name-parts.js';
+import { readStackConfig } from './read-stack-config.js';
+import { findStacks } from './sdk/find-stacks.js';
+import { getFormattedAgeInDays } from './utils/get-formatted-age-in-days.js';
+import { print } from './utils/print.js';
 
 const commandName = `list`;
 
@@ -50,7 +50,7 @@ export const listCommand: CommandModule<
       ]),
 
   handler: async (args): Promise<void> => {
-    const {all, short, json} = args;
+    const { all, short, json } = args;
 
     const hostedZoneName = all
       ? undefined
@@ -79,7 +79,7 @@ export const listCommand: CommandModule<
     }
 
     if (short) {
-      for (const {StackName} of stacks) {
+      for (const { StackName } of stacks) {
         print(StackName!);
       }
 
@@ -93,7 +93,7 @@ export const listCommand: CommandModule<
         created: stack.CreationTime?.getTime(),
         updated: stack.LastUpdatedTime?.getTime(),
         terminationProtection: stack.EnableTerminationProtection,
-        tags: stack.Tags?.map(({Key, Value}) => ({key: Key, value: Value})) ?? [],
+        tags: stack.Tags?.map(({ Key, Value }) => ({ key: Key, value: Value })) ?? [],
       }));
 
       print(JSON.stringify(jsonOutput));
@@ -132,10 +132,10 @@ export const listCommand: CommandModule<
       });
 
       if (stack.Tags && stack.Tags?.length > 0) {
-        print.listItem(1, {type: `headline`, text: `Tags`});
+        print.listItem(1, { type: `headline`, text: `Tags` });
 
-        for (const {Key, Value} of stack.Tags) {
-          print.listItem(2, {type: `entry`, key: Key!, value: Value!});
+        for (const { Key, Value } of stack.Tags) {
+          print.listItem(2, { type: `entry`, key: Key!, value: Value! });
         }
       }
     }

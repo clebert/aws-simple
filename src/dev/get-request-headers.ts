@@ -1,5 +1,5 @@
-import type {APIGatewayProxyEvent} from 'aws-lambda';
-import type {Request} from 'express';
+import type { APIGatewayProxyEvent } from 'aws-lambda';
+import type { Request } from 'express';
 
 export function getRequestHeaders(
   req: Request,
@@ -16,5 +16,5 @@ export function getRequestHeaders(
     }
   }
 
-  return {headers, multiValueHeaders};
+  return { headers, multiValueHeaders };
 }

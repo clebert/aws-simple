@@ -1,10 +1,10 @@
-import type {LambdaFunctionConstructDependencies} from './create-lambda-function.js';
-import type {LambdaRoute, StackConfig} from '../parse-stack-config.js';
-import type {aws_lambda} from 'aws-cdk-lib';
+import type { LambdaFunctionConstructDependencies } from './create-lambda-function.js';
+import type { LambdaRoute, StackConfig } from '../parse-stack-config.js';
+import type { aws_lambda } from 'aws-cdk-lib';
 
-import {addCorsPreflight} from './add-cors-preflight.js';
-import {createLambdaFunction} from './create-lambda-function.js';
-import {aws_apigateway} from 'aws-cdk-lib';
+import { addCorsPreflight } from './add-cors-preflight.js';
+import { createLambdaFunction } from './create-lambda-function.js';
+import { aws_apigateway } from 'aws-cdk-lib';
 
 export interface LambdaResourceConstructDependencies extends LambdaFunctionConstructDependencies {
   readonly requestAuthorizer: aws_apigateway.IAuthorizer | undefined;
@@ -16,8 +16,8 @@ export function addLambdaResource(
   route: LambdaRoute,
   constructDependencies: LambdaResourceConstructDependencies,
 ): aws_lambda.FunctionBase {
-  const {lambdaServiceRole, requestAuthorizer, restApi, stack} = constructDependencies;
-  const {httpMethod, publicPath, requestParameters, authenticationEnabled, corsEnabled} = route;
+  const { lambdaServiceRole, requestAuthorizer, restApi, stack } = constructDependencies;
+  const { httpMethod, publicPath, requestParameters, authenticationEnabled, corsEnabled } = route;
 
   if (authenticationEnabled && !requestAuthorizer) {
     throw new Error(
@@ -26,7 +26,7 @@ export function addLambdaResource(
   }
 
   const cacheKeyParameters = Object.entries(requestParameters ?? {})
-    .filter(([, {cacheKey}]) => cacheKey)
+    .filter(([, { cacheKey }]) => cacheKey)
     .map(([parameterName]) => `method.request.querystring.${parameterName}`);
 
   const lambdaFunction = createLambdaFunction(stackConfig, route, {
@@ -44,7 +44,7 @@ export function addLambdaResource(
       : aws_apigateway.AuthorizationType.NONE,
     authorizer: authenticationEnabled ? requestAuthorizer : undefined,
     requestParameters: Object.entries(requestParameters ?? {}).reduce(
-      (parameters, [parameterName, {required = false}]) => ({
+      (parameters, [parameterName, { required = false }]) => ({
         ...parameters,
         [`method.request.querystring.${parameterName}`]: required,
       }),
@@ -55,7 +55,7 @@ export function addLambdaResource(
   const resource = restApi.root.resourceForPath(publicPath.replace(`/*`, `/`));
 
   if (corsEnabled) {
-    addCorsPreflight(resource, {authenticationEnabled});
+    addCorsPreflight(resource, { authenticationEnabled });
   }
 
   resource.addMethod(httpMethod, integration, methodOptions);
@@ -64,7 +64,7 @@ export function addLambdaResource(
     const proxyResource = restApi.root.resourceForPath(publicPath.replace(`/*`, `/{proxy+}`));
 
     if (corsEnabled) {
-      addCorsPreflight(proxyResource, {authenticationEnabled});
+      addCorsPreflight(proxyResource, { authenticationEnabled });
     }
 
     proxyResource.addMethod(httpMethod, integration, methodOptions);

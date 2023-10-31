@@ -1,6 +1,6 @@
-import type {Stack} from 'aws-cdk-lib';
+import type { Stack } from 'aws-cdk-lib';
 
-import {aws_iam} from 'aws-cdk-lib';
+import { aws_iam } from 'aws-cdk-lib';
 
 export function createLambdaServiceRole(stack: Stack): aws_iam.IRole {
   return new aws_iam.Role(stack, `LambdaServiceRole`, {

@@ -1,5 +1,5 @@
-import {resolve} from 'path';
-import {pathToFileURL} from 'url';
+import { resolve } from 'path';
+import { pathToFileURL } from 'url';
 
 export async function readStackConfig(port?: number): Promise<unknown> {
   let module;

@@ -1,5 +1,5 @@
-import type {APIGatewayProxyEvent} from 'aws-lambda';
-import type {Request} from 'express';
+import type { APIGatewayProxyEvent } from 'aws-lambda';
+import type { Request } from 'express';
 
 export function getQueryStringParameters(
   req: Request,
@@ -16,7 +16,7 @@ export function getQueryStringParameters(
     }
   }
 
-  return {queryStringParameters, multiValueQueryStringParameters};
+  return { queryStringParameters, multiValueQueryStringParameters };
 }
 
 function isStringArray(value: unknown): value is string[] {

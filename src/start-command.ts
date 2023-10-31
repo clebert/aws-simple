@@ -1,26 +1,26 @@
-import type {LambdaRoute} from './parse-stack-config.js';
-import type {APIGatewayProxyResult} from 'aws-lambda';
-import type {CommandModule} from 'yargs';
+import type { LambdaRoute } from './parse-stack-config.js';
+import type { APIGatewayProxyResult } from 'aws-lambda';
+import type { CommandModule } from 'yargs';
 
-import {createLambdaRequestHandler} from './dev/create-lambda-request-handler.js';
-import {getRouterMatcher} from './dev/get-router-matcher.js';
-import {registerS3Route} from './dev/register-s3-route.js';
-import {removeAllRoutes} from './dev/remove-all-routes.js';
-import {sortRoutes} from './dev/sort-routes.js';
-import {parseStackConfig} from './parse-stack-config.js';
-import {readStackConfig} from './read-stack-config.js';
-import {print} from './utils/print.js';
-import {watch} from 'chokidar';
+import { createLambdaRequestHandler } from './dev/create-lambda-request-handler.js';
+import { getRouterMatcher } from './dev/get-router-matcher.js';
+import { registerS3Route } from './dev/register-s3-route.js';
+import { removeAllRoutes } from './dev/remove-all-routes.js';
+import { sortRoutes } from './dev/sort-routes.js';
+import { parseStackConfig } from './parse-stack-config.js';
+import { readStackConfig } from './read-stack-config.js';
+import { print } from './utils/print.js';
+import { watch } from 'chokidar';
 import compression from 'compression';
 import express from 'express';
 import getPort from 'get-port';
 import * as lambdaLocal from 'lambda-local';
-import {mkdirp} from 'mkdirp';
-import {dirname} from 'path';
+import { mkdirp } from 'mkdirp';
+import { dirname } from 'path';
 
 const commandName = `start`;
 
-export const startCommand: CommandModule<{}, {readonly port: number}> = {
+export const startCommand: CommandModule<{}, { readonly port: number }> = {
   command: `${commandName} [options]`,
   describe: `Start a local DEV server.`,
 
@@ -34,11 +34,11 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
       .example([[`npx $0 ${commandName}`], [`npx $0 ${commandName} --port 3001`]]),
 
   handler: async (args): Promise<void> => {
-    const port = await getPort({port: args.port});
+    const port = await getPort({ port: args.port });
     const app = express();
 
-    app.use(express.text({type: `*/*`}));
-    app.use(compression({threshold: 150}));
+    app.use(express.text({ type: `*/*` }));
+    app.use(compression({ threshold: 150 }));
     app.set(`etag`, false);
 
     const stackConfig = parseStackConfig(await readStackConfig(port));
@@ -53,7 +53,7 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
 
     for (const route of routes) {
       if (route.type === `function`) {
-        const {cacheTtlInSeconds = 300} = route;
+        const { cacheTtlInSeconds = 300 } = route;
 
         if (stackConfig.cachingEnabled && cacheTtlInSeconds > 0) {
           print.info(`Setting up cache for Lambda request handler: ${route.functionName}`);
@@ -70,7 +70,7 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
       }
     }
 
-    const paths = routes.map(({path}) => path);
+    const paths = routes.map(({ path }) => path);
 
     app.listen(port, () => {
       print.success(`The DEV server has been started: http://localhost:${port}`);
@@ -85,7 +85,7 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
         );
 
         for (const route of changedLambdaRoutes) {
-          const {cacheTtlInSeconds = 300} = route;
+          const { cacheTtlInSeconds = 300 } = route;
 
           if (stackConfig.cachingEnabled && cacheTtlInSeconds > 0) {
             print.info(`Flushing cache for Lambda request handler: ${route.functionName}`);
@@ -112,7 +112,7 @@ export const startCommand: CommandModule<{}, {readonly port: number}> = {
         mkdirp.sync(dirname(path));
       }
 
-      watch(paths, {ignoreInitial: true}).on(`add`, listener);
+      watch(paths, { ignoreInitial: true }).on(`add`, listener);
       watch(paths).on(`change`, listener);
     });
   },

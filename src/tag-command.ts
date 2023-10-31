@@ -1,11 +1,11 @@
-import type {CommandModule} from 'yargs';
+import type { CommandModule } from 'yargs';
 
-import {parseDomainNameParts} from './parse-domain-name-parts.js';
-import {readStackConfig} from './read-stack-config.js';
-import {updateTags} from './sdk/update-tags.js';
-import {getDomainName} from './utils/get-domain-name.js';
-import {getStackName} from './utils/get-stack-name.js';
-import {print} from './utils/print.js';
+import { parseDomainNameParts } from './parse-domain-name-parts.js';
+import { readStackConfig } from './read-stack-config.js';
+import { updateTags } from './sdk/update-tags.js';
+import { getDomainName } from './utils/get-domain-name.js';
+import { getStackName } from './utils/get-stack-name.js';
+import { print } from './utils/print.js';
 
 const commandName = `tag`;
 

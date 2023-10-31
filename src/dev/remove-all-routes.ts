@@ -1,5 +1,5 @@
 export interface ExpressAppPrivateApi {
-  _router?: {stack: {route?: object}[]};
+  _router?: { stack: { route?: object }[] };
 }
 
 export function removeAllRoutes(app: ExpressAppPrivateApi): void {

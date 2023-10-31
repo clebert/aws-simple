@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import { z } from 'zod';
 
 export type DomainNameParts = z.TypeOf<typeof DomainNamePartsSchema>;
 

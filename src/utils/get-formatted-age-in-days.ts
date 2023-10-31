@@ -1,4 +1,4 @@
-import {getAgeInDays} from './get-age-in-days.js';
+import { getAgeInDays } from './get-age-in-days.js';
 
 export function getFormattedAgeInDays(date: Date): string {
   const ageInDays = getAgeInDays(date);

@@ -1,13 +1,13 @@
-import type {Stack, Tag} from '@aws-sdk/client-cloudformation';
-import type {CommandModule} from 'yargs';
+import type { Stack, Tag } from '@aws-sdk/client-cloudformation';
+import type { CommandModule } from 'yargs';
 
-import {parseDomainNameParts} from './parse-domain-name-parts.js';
-import {readStackConfig} from './read-stack-config.js';
-import {deleteStack} from './sdk/delete-stack.js';
-import {findStacks} from './sdk/find-stacks.js';
-import {getAgeInDays} from './utils/get-age-in-days.js';
-import {getFormattedAgeInDays} from './utils/get-formatted-age-in-days.js';
-import {print} from './utils/print.js';
+import { parseDomainNameParts } from './parse-domain-name-parts.js';
+import { readStackConfig } from './read-stack-config.js';
+import { deleteStack } from './sdk/delete-stack.js';
+import { findStacks } from './sdk/find-stacks.js';
+import { getAgeInDays } from './utils/get-age-in-days.js';
+import { getFormattedAgeInDays } from './utils/get-formatted-age-in-days.js';
+import { print } from './utils/print.js';
 
 const commandName = `purge`;
 
@@ -60,7 +60,7 @@ export const purgeCommand: CommandModule<
       throw new Error(`Please specify a hosted zone name.`);
     }
 
-    const {minAge: minAgeInDays, excludedTags} = args;
+    const { minAge: minAgeInDays, excludedTags } = args;
 
     print.warning(`Hosted zone: ${hostedZoneName}`);
     print.info(`Searching all expired stacks...`);
@@ -75,7 +75,7 @@ export const purgeCommand: CommandModule<
       return;
     }
 
-    for (const {StackName, StackStatus, CreationTime} of expiredStacks) {
+    for (const { StackName, StackStatus, CreationTime } of expiredStacks) {
       print.listItem(0, {
         type: `entry`,
         key: `Expired stack`,
@@ -109,7 +109,7 @@ export const purgeCommand: CommandModule<
 
     let aStackFailedToBeDeleted = false;
 
-    for (const {StackName} of expiredStacks) {
+    for (const { StackName } of expiredStacks) {
       print.info(`Deleting expired stack ${StackName}...`);
 
       try {
@@ -131,7 +131,7 @@ export const purgeCommand: CommandModule<
 };
 
 function isExpired(stack: Stack, minAgeInDays: number, excludedTags: readonly string[]): boolean {
-  const {StackStatus, CreationTime, DeletionTime, Tags, EnableTerminationProtection} = stack;
+  const { StackStatus, CreationTime, DeletionTime, Tags, EnableTerminationProtection } = stack;
 
   if (getAgeInDays(CreationTime!) < minAgeInDays) {
     return false;
@@ -148,7 +148,7 @@ function isExpired(stack: Stack, minAgeInDays: number, excludedTags: readonly st
   return !EnableTerminationProtection;
 }
 
-function isTagExcluded(excludedTags: readonly string[], {Key, Value}: Tag): boolean {
+function isTagExcluded(excludedTags: readonly string[], { Key, Value }: Tag): boolean {
   return excludedTags.some((excludedTag) =>
     excludedTag.includes(`=`) ? excludedTag === `${Key}=${Value}` : excludedTag === Key,
   );

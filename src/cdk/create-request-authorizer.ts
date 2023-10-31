@@ -1,19 +1,19 @@
-import type {StackConfig} from '../parse-stack-config.js';
-import type {Stack} from 'aws-cdk-lib';
+import type { StackConfig } from '../parse-stack-config.js';
+import type { Stack } from 'aws-cdk-lib';
 
-import {getDomainName} from '../utils/get-domain-name.js';
-import {getHash} from '../utils/get-hash.js';
-import {Duration, aws_apigateway, aws_lambda, aws_logs} from 'aws-cdk-lib';
-import {dirname, join} from 'path';
-import {fileURLToPath} from 'url';
+import { getDomainName } from '../utils/get-domain-name.js';
+import { getHash } from '../utils/get-hash.js';
+import { Duration, aws_apigateway, aws_lambda, aws_logs } from 'aws-cdk-lib';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
 export function createRequestAuthorizer(
   stackConfig: StackConfig,
   stack: Stack,
 ): aws_apigateway.IAuthorizer | undefined {
-  const {authentication, routes} = stackConfig;
+  const { authentication, routes } = stackConfig;
 
-  if (!authentication || routes.every(({authenticationEnabled}) => !authenticationEnabled)) {
+  if (!authentication || routes.every(({ authenticationEnabled }) => !authenticationEnabled)) {
     return;
   }
 

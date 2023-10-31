@@ -1,7 +1,7 @@
-import type {ExpressAppPrivateApi} from './remove-all-routes.js';
+import type { ExpressAppPrivateApi } from './remove-all-routes.js';
 
-import {removeAllRoutes} from './remove-all-routes.js';
-import {describe, expect, jest, test} from '@jest/globals';
+import { removeAllRoutes } from './remove-all-routes.js';
+import { describe, expect, jest, test } from '@jest/globals';
 import express from 'express';
 
 describe(`removeAllRoutes()`, () => {

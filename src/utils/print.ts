@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import prompts from 'prompts';
-import {isatty} from 'tty';
+import { isatty } from 'tty';
 
 export function print(text: string): void {
   console.log(text);
@@ -27,7 +27,7 @@ print.confirmation = async (message: string): Promise<boolean> => {
     throw new Error(`Please specify the --yes CLI option.`);
   }
 
-  const {result} = await prompts({type: `confirm`, name: `result`, message});
+  const { result } = await prompts({ type: `confirm`, name: `result`, message });
 
   return result;
 };

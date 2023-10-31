@@ -1,15 +1,15 @@
-import type {CommandModule} from 'yargs';
+import type { CommandModule } from 'yargs';
 
-import {addLambdaResource} from './cdk/add-lambda-resource.js';
-import {addS3Resource} from './cdk/add-s3-resource.js';
-import {createBucketReadRole} from './cdk/create-bucket-read-role.js';
-import {createBucket} from './cdk/create-bucket.js';
-import {createLambdaServiceRole} from './cdk/create-lambda-service-role.js';
-import {createRequestAuthorizer} from './cdk/create-request-authorizer.js';
-import {createRestApi} from './cdk/create-rest-api.js';
-import {createStack} from './cdk/create-stack.js';
-import {parseStackConfig} from './parse-stack-config.js';
-import {readStackConfig} from './read-stack-config.js';
+import { addLambdaResource } from './cdk/add-lambda-resource.js';
+import { addS3Resource } from './cdk/add-s3-resource.js';
+import { createBucketReadRole } from './cdk/create-bucket-read-role.js';
+import { createBucket } from './cdk/create-bucket.js';
+import { createLambdaServiceRole } from './cdk/create-lambda-service-role.js';
+import { createRequestAuthorizer } from './cdk/create-request-authorizer.js';
+import { createRestApi } from './cdk/create-rest-api.js';
+import { createStack } from './cdk/create-stack.js';
+import { parseStackConfig } from './parse-stack-config.js';
+import { readStackConfig } from './read-stack-config.js';
 
 const commandName = `synthesize`;
 
@@ -43,7 +43,7 @@ export const synthesizeCommand: CommandModule<{}, {}> = {
           stack,
         });
 
-        route.onSynthesize?.({stack, restApi, lambdaFunction});
+        route.onSynthesize?.({ stack, restApi, lambdaFunction });
       } else {
         addS3Resource(route, {
           bucket,
@@ -54,6 +54,6 @@ export const synthesizeCommand: CommandModule<{}, {}> = {
       }
     }
 
-    stackConfig.onSynthesize?.({stack, restApi});
+    stackConfig.onSynthesize?.({ stack, restApi });
   },
 };

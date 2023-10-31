@@ -1,4 +1,4 @@
-import type {ListAttachedRolePoliciesCommandOutput} from '@aws-sdk/client-iam';
+import type { ListAttachedRolePoliciesCommandOutput } from '@aws-sdk/client-iam';
 
 import {
   DeleteRoleCommand,
@@ -22,7 +22,7 @@ export async function deleteRole(roleName: string): Promise<void> {
     );
 
     if (output.AttachedPolicies) {
-      for (const {PolicyArn} of output.AttachedPolicies) {
+      for (const { PolicyArn } of output.AttachedPolicies) {
         if (PolicyArn) {
           policyArns.push(PolicyArn);
         }
@@ -31,8 +31,8 @@ export async function deleteRole(roleName: string): Promise<void> {
   } while (output.Marker);
 
   for (const policyArn of policyArns) {
-    await client.send(new DetachRolePolicyCommand({RoleName: roleName, PolicyArn: policyArn}));
+    await client.send(new DetachRolePolicyCommand({ RoleName: roleName, PolicyArn: policyArn }));
   }
 
-  await client.send(new DeleteRoleCommand({RoleName: roleName}));
+  await client.send(new DeleteRoleCommand({ RoleName: roleName }));
 }

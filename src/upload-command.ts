@@ -1,18 +1,18 @@
-import type {CommandModule} from 'yargs';
+import type { CommandModule } from 'yargs';
 
-import {parseStackConfig} from './parse-stack-config.js';
-import {readStackConfig} from './read-stack-config.js';
-import {findStack} from './sdk/find-stack.js';
-import {getOutputValue} from './sdk/get-output-value.js';
-import {uploadFile} from './sdk/upload-file.js';
-import {getDomainName} from './utils/get-domain-name.js';
-import {getFilePaths} from './utils/get-file-paths.js';
-import {getStackName} from './utils/get-stack-name.js';
-import {print} from './utils/print.js';
+import { parseStackConfig } from './parse-stack-config.js';
+import { readStackConfig } from './read-stack-config.js';
+import { findStack } from './sdk/find-stack.js';
+import { getOutputValue } from './sdk/get-output-value.js';
+import { uploadFile } from './sdk/upload-file.js';
+import { getDomainName } from './utils/get-domain-name.js';
+import { getFilePaths } from './utils/get-file-paths.js';
+import { getStackName } from './utils/get-stack-name.js';
+import { print } from './utils/print.js';
 
 const commandName = `upload`;
 
-export const uploadCommand: CommandModule<{}, {readonly yes: boolean}> = {
+export const uploadCommand: CommandModule<{}, { readonly yes: boolean }> = {
   command: `${commandName} [options]`,
   describe: `Upload all referenced files to the S3 bucket of the configured stack.`,
 
@@ -49,7 +49,7 @@ export const uploadCommand: CommandModule<{}, {readonly yes: boolean}> = {
       return;
     }
 
-    print.listItem(0, {type: `headline`, text: `Referenced files`});
+    print.listItem(0, { type: `headline`, text: `Referenced files` });
 
     for (const filePath of filePaths) {
       print.listItem(1, filePath);
@@ -86,7 +86,7 @@ export const uploadCommand: CommandModule<{}, {readonly yes: boolean}> = {
     );
 
     if (rejectedResults.length > 0) {
-      for (const {reason} of rejectedResults) {
+      for (const { reason } of rejectedResults) {
         print.error(String(reason));
       }
 

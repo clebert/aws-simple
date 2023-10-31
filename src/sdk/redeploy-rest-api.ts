@@ -7,7 +7,7 @@ import {
 export async function redeployRestApi(restApiId: string): Promise<void> {
   const client = new APIGatewayClient({});
 
-  const {id} = await client.send(
+  const { id } = await client.send(
     new CreateDeploymentCommand({
       restApiId,
       stageName: `prod`,
@@ -19,7 +19,7 @@ export async function redeployRestApi(restApiId: string): Promise<void> {
     new UpdateStageCommand({
       restApiId,
       stageName: `prod`,
-      patchOperations: [{op: `replace`, path: `/deploymentId`, value: id}],
+      patchOperations: [{ op: `replace`, path: `/deploymentId`, value: id }],
     }),
   );
 }

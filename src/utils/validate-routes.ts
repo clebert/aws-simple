@@ -1,6 +1,6 @@
-import type {Route} from '../parse-stack-config.js';
+import type { Route } from '../parse-stack-config.js';
 
-import {getNormalizedName} from './get-normalized-name.js';
+import { getNormalizedName } from './get-normalized-name.js';
 
 export function validateRoutes(routes: readonly Route[]): void {
   const existingHttpMethodPublicPaths = new Set<string>();

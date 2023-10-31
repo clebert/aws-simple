@@ -1,15 +1,15 @@
-import type {CommandModule} from 'yargs';
+import type { CommandModule } from 'yargs';
 
-import {deleteRole} from './sdk/delete-role.js';
-import {findResourceIds} from './sdk/find-resource-ids.js';
-import {findRoles} from './sdk/find-roles.js';
-import {findStacks} from './sdk/find-stacks.js';
-import {print} from './utils/print.js';
-import {APIGatewayClient, GetAccountCommand} from '@aws-sdk/client-api-gateway';
+import { deleteRole } from './sdk/delete-role.js';
+import { findResourceIds } from './sdk/find-resource-ids.js';
+import { findRoles } from './sdk/find-roles.js';
+import { findStacks } from './sdk/find-stacks.js';
+import { print } from './utils/print.js';
+import { APIGatewayClient, GetAccountCommand } from '@aws-sdk/client-api-gateway';
 
 const commandName = `cleanup`;
 
-export const cleanupCommand: CommandModule<{}, {readonly yes: boolean}> = {
+export const cleanupCommand: CommandModule<{}, { readonly yes: boolean }> = {
   command: `${commandName} [options]`,
   describe: `Deletes unused account-wide resources created by aws-simple.`,
 
@@ -39,7 +39,7 @@ export const cleanupCommand: CommandModule<{}, {readonly yes: boolean}> = {
     }
 
     const client = new APIGatewayClient({});
-    const {cloudwatchRoleArn} = await client.send(new GetAccountCommand({}));
+    const { cloudwatchRoleArn } = await client.send(new GetAccountCommand({}));
 
     const roleNames = (await findRoles())
       .filter(
@@ -88,7 +88,7 @@ export const cleanupCommand: CommandModule<{}, {readonly yes: boolean}> = {
     );
 
     if (rejectedResults.length > 0) {
-      for (const {reason} of rejectedResults) {
+      for (const { reason } of rejectedResults) {
         print.error(String(reason));
       }
 

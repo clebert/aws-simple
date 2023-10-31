@@ -1,5 +1,5 @@
-import {findStack} from './find-stack.js';
-import {CloudFormationClient, UpdateStackCommand} from '@aws-sdk/client-cloudformation';
+import { findStack } from './find-stack.js';
+import { CloudFormationClient, UpdateStackCommand } from '@aws-sdk/client-cloudformation';
 
 export interface UpdateTagsOptions {
   readonly stackName: string;
@@ -8,14 +8,14 @@ export interface UpdateTagsOptions {
 }
 
 export async function updateTags(options: UpdateTagsOptions): Promise<void> {
-  const {stackName, tagsToAdd, tagKeysToRemove} = options;
+  const { stackName, tagsToAdd, tagKeysToRemove } = options;
   const stack = await findStack(stackName);
   const client = new CloudFormationClient({});
 
   const tagObjects = [
-    ...(stack.Tags ?? []).filter(({Key}) => tagsToAdd.every(([key]) => key !== Key)),
-    ...tagsToAdd.map(([key, value]) => ({Key: key, Value: value || `true`})),
-  ].filter(({Key}) => Key && !tagKeysToRemove.includes(Key));
+    ...(stack.Tags ?? []).filter(({ Key }) => tagsToAdd.every(([key]) => key !== Key)),
+    ...tagsToAdd.map(([key, value]) => ({ Key: key, Value: value || `true` })),
+  ].filter(({ Key }) => Key && !tagKeysToRemove.includes(Key));
 
   await client.send(
     new UpdateStackCommand({

@@ -1,9 +1,9 @@
-import type {Stack, aws_apigateway, aws_lambda} from 'aws-cdk-lib';
-import type {Express} from 'express';
+import type { Stack, aws_apigateway, aws_lambda } from 'aws-cdk-lib';
+import type { Express } from 'express';
 
-import {DomainNamePartsSchema} from './parse-domain-name-parts.js';
-import {validateRoutes} from './utils/validate-routes.js';
-import {z} from 'zod';
+import { DomainNamePartsSchema } from './parse-domain-name-parts.js';
+import { validateRoutes } from './utils/validate-routes.js';
+import { z } from 'zod';
 
 export type StackConfig = Omit<
   z.TypeOf<typeof StackConfigSchema>,
@@ -48,7 +48,7 @@ const LambdaRouteSchema = z.object({
       }),
     )
     .optional(),
-  throttling: z.object({rateLimit: z.number(), burstLimit: z.number()}).optional(),
+  throttling: z.object({ rateLimit: z.number(), burstLimit: z.number() }).optional(),
   cacheTtlInSeconds: z.number().int().min(0).max(3600).optional(),
   authenticationEnabled: z.boolean().optional(),
   corsEnabled: z.boolean().optional(),
@@ -61,7 +61,7 @@ const S3RouteSchema = z.object({
   publicPath: z.string(),
   path: z.string(),
   responseHeaders: z.record(z.string()).optional(),
-  throttling: z.object({rateLimit: z.number(), burstLimit: z.number()}).optional(),
+  throttling: z.object({ rateLimit: z.number(), burstLimit: z.number() }).optional(),
   cacheTtlInSeconds: z.number().int().min(0).max(3600).optional(),
   authenticationEnabled: z.boolean().optional(),
   corsEnabled: z.boolean().optional(),

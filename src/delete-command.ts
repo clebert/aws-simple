@@ -1,17 +1,17 @@
-import type {CommandModule} from 'yargs';
+import type { CommandModule } from 'yargs';
 
-import {parseDomainNameParts} from './parse-domain-name-parts.js';
-import {readStackConfig} from './read-stack-config.js';
-import {deleteStack} from './sdk/delete-stack.js';
-import {getDomainName} from './utils/get-domain-name.js';
-import {getStackName} from './utils/get-stack-name.js';
-import {print} from './utils/print.js';
+import { parseDomainNameParts } from './parse-domain-name-parts.js';
+import { readStackConfig } from './read-stack-config.js';
+import { deleteStack } from './sdk/delete-stack.js';
+import { getDomainName } from './utils/get-domain-name.js';
+import { getStackName } from './utils/get-stack-name.js';
+import { print } from './utils/print.js';
 
 const commandName = `delete`;
 
 export const deleteCommand: CommandModule<
   {},
-  {readonly 'stack-name': string | undefined; readonly 'yes': boolean}
+  { readonly 'stack-name': string | undefined; readonly 'yes': boolean }
 > = {
   command: `${commandName} [options]`,
   describe: `Delete the specified stack.`,

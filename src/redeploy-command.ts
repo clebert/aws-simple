@@ -1,19 +1,19 @@
-import type {CommandModule} from 'yargs';
+import type { CommandModule } from 'yargs';
 
-import {parseDomainNameParts} from './parse-domain-name-parts.js';
-import {readStackConfig} from './read-stack-config.js';
-import {findStack} from './sdk/find-stack.js';
-import {getOutputValue} from './sdk/get-output-value.js';
-import {redeployRestApi} from './sdk/redeploy-rest-api.js';
-import {getDomainName} from './utils/get-domain-name.js';
-import {getStackName} from './utils/get-stack-name.js';
-import {print} from './utils/print.js';
+import { parseDomainNameParts } from './parse-domain-name-parts.js';
+import { readStackConfig } from './read-stack-config.js';
+import { findStack } from './sdk/find-stack.js';
+import { getOutputValue } from './sdk/get-output-value.js';
+import { redeployRestApi } from './sdk/redeploy-rest-api.js';
+import { getDomainName } from './utils/get-domain-name.js';
+import { getStackName } from './utils/get-stack-name.js';
+import { print } from './utils/print.js';
 
 const commandName = `redeploy`;
 
 export const redeployCommand: CommandModule<
   {},
-  {readonly 'stack-name': string | undefined; readonly 'yes': boolean}
+  { readonly 'stack-name': string | undefined; readonly 'yes': boolean }
 > = {
   command: `${commandName} [options]`,
   describe: `Redeploy the REST API of the specified stack.`,
