@@ -11,8 +11,8 @@ export function validateRoutes(routes: readonly Route[]): void {
       route.type === `folder`
         ? [route.publicPath]
         : route.publicPath.endsWith(`/*`)
-        ? [route.publicPath, route.publicPath.replace(`/*`, ``) || `/`]
-        : [route.publicPath];
+          ? [route.publicPath, route.publicPath.replace(`/*`, ``) || `/`]
+          : [route.publicPath];
 
     const httpMethod = route.type === `function` ? route.httpMethod : `GET`;
 

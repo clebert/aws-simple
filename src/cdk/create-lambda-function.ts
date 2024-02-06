@@ -61,7 +61,7 @@ export function createLambdaFunction(
     memorySize,
     environment,
     timeout: Duration.seconds(timeoutInSeconds),
-    runtime: aws_lambda.Runtime.NODEJS_18_X,
+    runtime: aws_lambda.Runtime.NODEJS_20_X,
     tracing: aws_lambda.Tracing.PASS_THROUGH,
     insightsVersion:
       monitoring === true || monitoring?.lambdaInsightsEnabled

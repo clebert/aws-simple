@@ -48,8 +48,8 @@ print.listItem = (indentationLevel: 0 | 1 | 2, item: ListEntry | ListHeadline | 
     typeof item === `string`
       ? `• ${item}`
       : item.type === `entry`
-      ? `• ${chalk.bold(item.key)}: ${item.value}`
-      : `• ${chalk.bold(item.text)}`;
+        ? `• ${chalk.bold(item.key)}: ${item.value}`
+        : `• ${chalk.bold(item.text)}`;
 
   for (let i = 0; i < indentationLevel; i += 1) {
     text = `  ${text}`;
