@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "declaration": true,
+    "composite": true,
     "incremental": true,
     "inlineSources": true,
     "outDir": "lib",

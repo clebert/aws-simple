@@ -26,7 +26,8 @@
       {
         "value": {
           "compilerOptions": {
-            "exactOptionalPropertyTypes": false
+            "exactOptionalPropertyTypes": false,
+            "skipLibCheck": true
           }
         }
       }

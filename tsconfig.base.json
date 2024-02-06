@@ -18,6 +18,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "pretty": true,
+    "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
     "verbatimModuleSyntax": true
