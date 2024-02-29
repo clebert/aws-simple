@@ -1,10 +1,10 @@
 import type { LambdaRoute, StackConfig } from '../parse-stack-config.js';
-import type { Stack, aws_iam } from 'aws-cdk-lib';
+import type { Stack } from 'aws-cdk-lib';
 
 import { getDomainName } from '../utils/get-domain-name.js';
 import { getHash } from '../utils/get-hash.js';
 import { getNormalizedName } from '../utils/get-normalized-name.js';
-import { Duration, aws_lambda, aws_logs } from 'aws-cdk-lib';
+import { Duration, aws_ec2, aws_efs, aws_iam, aws_lambda, aws_logs } from 'aws-cdk-lib';
 import { basename, dirname, extname, join } from 'path';
 
 export interface LambdaFunctionConstructDependencies {
@@ -29,6 +29,7 @@ export function createLambdaFunction(
     memorySize = 128,
     timeoutInSeconds = maxTimeoutInSeconds,
     environment,
+    filesystem,
   } = route;
 
   if (timeoutInSeconds > maxTimeoutInSeconds) {
@@ -53,7 +54,37 @@ export function createLambdaFunction(
 
   const { monitoring } = stackConfig;
 
-  return new aws_lambda.Function(stack, `Function${getHash(uniqueFunctionName)}`, {
+  const filesystemProps = filesystem
+    ? {
+        vpc: aws_ec2.Vpc.fromLookup(stack, `Vpc${getHash(uniqueFunctionName)}`, {
+          vpcId: filesystem.vpcId,
+        }),
+        filesystem: aws_lambda.FileSystem.fromEfsAccessPoint(
+          aws_efs.AccessPoint.fromAccessPointAttributes(
+            stack,
+            `AccessPoint${getHash(uniqueFunctionName)}`,
+            {
+              accessPointId: filesystem.accessPointId,
+              fileSystem: aws_efs.FileSystem.fromFileSystemAttributes(
+                stack,
+                `FileSystem${getHash(uniqueFunctionName)}`,
+                {
+                  fileSystemId: filesystem.fileSystemId,
+                  securityGroup: aws_ec2.SecurityGroup.fromSecurityGroupId(
+                    stack,
+                    `SecurityGroup${getHash(uniqueFunctionName)}`,
+                    filesystem.securityGroupId,
+                  ),
+                },
+              ),
+            },
+          ),
+          filesystem.mountPath,
+        ),
+      }
+    : undefined;
+
+  const fn = new aws_lambda.Function(stack, `Function${getHash(uniqueFunctionName)}`, {
     functionName: uniqueFunctionName,
     code: aws_lambda.Code.fromAsset(dirname(path)),
     handler: `${basename(path, extname(path))}.handler`,
@@ -69,5 +100,22 @@ export function createLambdaFunction(
         : undefined,
     logRetention: aws_logs.RetentionDays.TWO_WEEKS,
     role: lambdaServiceRole,
+    ...filesystemProps,
   });
+
+  if (filesystem) {
+    fn.addToRolePolicy(
+      new aws_iam.PolicyStatement({
+        effect: aws_iam.Effect.ALLOW,
+        actions: [
+          `ec2:DescribeNetworkInterfaces`,
+          `ec2:CreateNetworkInterface`,
+          `ec2:DeleteNetworkInterface`,
+        ],
+        resources: [`*`],
+      }),
+    );
+  }
+
+  return fn;
 }
