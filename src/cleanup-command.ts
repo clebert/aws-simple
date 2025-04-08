@@ -1,3 +1,4 @@
+import type { Role } from '@aws-sdk/client-iam';
 import type { CommandModule } from 'yargs';
 
 import { deleteRole } from './sdk/delete-role.js';
@@ -8,6 +9,9 @@ import { print } from './utils/print.js';
 import { APIGatewayClient, GetAccountCommand } from '@aws-sdk/client-api-gateway';
 
 const commandName = `cleanup`;
+const regionTagName = `aws-simple-region`;
+
+const { CDK_DEFAULT_REGION: region } = process.env;
 
 export const cleanupCommand: CommandModule<{}, { readonly yes: boolean }> = {
   command: `${commandName} [options]`,
@@ -41,6 +45,16 @@ export const cleanupCommand: CommandModule<{}, { readonly yes: boolean }> = {
     const client = new APIGatewayClient({});
     const { cloudwatchRoleArn } = await client.send(new GetAccountCommand({}));
 
+    const filterByRegion = (role: Role): boolean => {
+      const regionTag = role.Tags?.find((tag) => tag.Key === regionTagName);
+      if (regionTag) {
+        print.info(`TODO: DELETE before mergin, region tag found: ${regionTag.Value} : ${region}`);
+        return regionTag.Value === region;
+      }
+      print.info(`TODO: DELETE before merging, region tag not found: ${regionTag} : ${region}`);
+      return true;
+    };
+
     const roleNames = (await findRoles())
       .filter(
         (role) =>
@@ -49,6 +63,7 @@ export const cleanupCommand: CommandModule<{}, { readonly yes: boolean }> = {
           role.Arn !== cloudwatchRoleArn &&
           !allResourceIds.has(role.RoleName),
       )
+      .filter(filterByRegion)
       .map((role) => role.RoleName!);
 
     if (roleNames.length === 0) {
