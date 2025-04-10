@@ -9,6 +9,7 @@ const { CDK_DEFAULT_ACCOUNT: account, CDK_DEFAULT_REGION: region } = process.env
 
 export function createStack(stackConfig: StackConfig): Stack {
   const { terminationProtectionEnabled = false, tags = {} } = stackConfig;
+
   if (region) {
     tags[regionTagName] = region;
   }
