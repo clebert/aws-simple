@@ -106,7 +106,7 @@ export const cleanupCommand: CommandModule<{}, { readonly yes: boolean }> = {
 
       process.exit(1);
     } else {
-      print.success(`The found resources for for region ${region} have been successfully deleted.`);
+      print.success(`The found resources for region ${region} have been successfully deleted.`);
     }
   },
 };
