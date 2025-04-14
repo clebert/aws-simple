@@ -1,29 +1,34 @@
+import type { Role } from '@aws-sdk/client-iam';
 import type { CommandModule } from 'yargs';
 
 import { deleteRole } from './sdk/delete-role.js';
 import { findResourceIds } from './sdk/find-resource-ids.js';
 import { findRoles } from './sdk/find-roles.js';
 import { findStacks } from './sdk/find-stacks.js';
+import { regionTagName } from './utils/constants.js';
 import { print } from './utils/print.js';
 import { APIGatewayClient, GetAccountCommand } from '@aws-sdk/client-api-gateway';
 
 const commandName = `cleanup`;
 
+const region = process.env[`AWS_REGION`] || process.env[`AWS_DEFAULT_REGION`];
+
 export const cleanupCommand: CommandModule<{}, { readonly yes: boolean }> = {
   command: `${commandName} [options]`,
-  describe: `Deletes unused account-wide resources created by aws-simple.`,
+  describe: `Deletes unused resources created by aws-simple for same region using new default region tag. 
+              If resource does not contain this tag, it will be deleted even if other regions are using it.`,
 
   builder: (argv) =>
     argv
       .options(`yes`, {
-        describe: `Confirm the deletion of unused account-wide resources`,
+        describe: `Confirm the deletion of unused resources for region: ${region}`,
         boolean: true,
         default: false,
       })
       .example([[`npx $0 ${commandName}`], [`npx $0 ${commandName} --yes`]]),
 
   handler: async (args): Promise<void> => {
-    print.info(`Searching unused account-wide resources...`);
+    print.info(`Searching unused resources for region ${region}...`);
 
     const stacks = await findStacks();
     const allResourceIds = new Set<string>();
@@ -41,6 +46,12 @@ export const cleanupCommand: CommandModule<{}, { readonly yes: boolean }> = {
     const client = new APIGatewayClient({});
     const { cloudwatchRoleArn } = await client.send(new GetAccountCommand({}));
 
+    const filterByRegion = (role: Role): boolean => {
+      const regionTag = role.Tags?.find((tag) => tag.Key === regionTagName);
+
+      return regionTag ? regionTag.Value === region : true;
+    };
+
     const roleNames = (await findRoles())
       .filter(
         (role) =>
@@ -49,10 +60,11 @@ export const cleanupCommand: CommandModule<{}, { readonly yes: boolean }> = {
           role.Arn !== cloudwatchRoleArn &&
           !allResourceIds.has(role.RoleName),
       )
+      .filter(filterByRegion)
       .map((role) => role.RoleName!);
 
     if (roleNames.length === 0) {
-      print.success(`No unused account-wide resources found.`);
+      print.success(`No unused unused resources for region ${region} found.`);
 
       return;
     }
@@ -66,10 +78,10 @@ export const cleanupCommand: CommandModule<{}, { readonly yes: boolean }> = {
     }
 
     if (args.yes) {
-      print.warning(`The found account-wide resources will be deleted automatically.`);
+      print.warning(`The found resources for region ${region} will be deleted automatically.`);
     } else {
       const confirmed = await print.confirmation(
-        `Confirm to delete the found account-wide resources.`,
+        `Confirm to delete the found resources for region ${region}.`,
       );
 
       if (!confirmed) {
@@ -77,7 +89,7 @@ export const cleanupCommand: CommandModule<{}, { readonly yes: boolean }> = {
       }
     }
 
-    print.info(`Deleting the found account-wide resources...`);
+    print.info(`Deleting the found resources for region ${region}...`);
 
     const results = await Promise.allSettled(
       roleNames.map(async (roleName) => deleteRole(roleName)),
@@ -94,7 +106,7 @@ export const cleanupCommand: CommandModule<{}, { readonly yes: boolean }> = {
 
       process.exit(1);
     } else {
-      print.success(`The found account-wide resources have been successfully deleted.`);
+      print.success(`The found resources for for region ${region} have been successfully deleted.`);
     }
   },
 };
