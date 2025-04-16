@@ -5,6 +5,7 @@ import { deleteRole } from './sdk/delete-role.js';
 import { findResourceIds } from './sdk/find-resource-ids.js';
 import { findRoles } from './sdk/find-roles.js';
 import { findStacks } from './sdk/find-stacks.js';
+import { getTagsForRole } from './sdk/get-tags-for-role.js';
 import { regionTagName } from './utils/constants.js';
 import { print } from './utils/print.js';
 import { APIGatewayClient, GetAccountCommand } from '@aws-sdk/client-api-gateway';
@@ -46,22 +47,25 @@ export const cleanupCommand: CommandModule<{}, { readonly yes: boolean }> = {
     const client = new APIGatewayClient({});
     const { cloudwatchRoleArn } = await client.send(new GetAccountCommand({}));
 
+    const roles = (await findRoles()).filter(
+      (role) =>
+        role.RoleName?.startsWith(`aws-simple-`) &&
+        role.Arn?.includes(`RestApiCloudWatchRole`) &&
+        role.Arn !== cloudwatchRoleArn &&
+        !allResourceIds.has(role.RoleName),
+    );
+
+    for (const role of roles) {
+      role.Tags = await getTagsForRole(role.RoleName);
+    }
+
     const filterByRegion = (role: Role): boolean => {
       const regionTag = role.Tags?.find((tag) => tag.Key === regionTagName);
 
       return regionTag ? regionTag.Value === region : true;
     };
 
-    const roleNames = (await findRoles())
-      .filter(
-        (role) =>
-          role.RoleName?.startsWith(`aws-simple-`) &&
-          role.Arn?.includes(`RestApiCloudWatchRole`) &&
-          role.Arn !== cloudwatchRoleArn &&
-          !allResourceIds.has(role.RoleName),
-      )
-      .filter(filterByRegion)
-      .map((role) => role.RoleName!);
+    const roleNames = roles.filter(filterByRegion).map((role) => role.RoleName!);
 
     if (roleNames.length === 0) {
       print.success(`No unused unused resources for region ${region} found.`);
