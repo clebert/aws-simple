@@ -144,6 +144,7 @@ export default () => ({
 
       // optional
       memorySize: 1769, // default: `128` MB
+      lambdaRuntime: `22.x`, // default `20.x`
       timeoutInSeconds: 3, // default: `28` seconds (this is the maximum timeout)
       environment: { FOO: `bar` },
       requestParameters: { foo: {}, bar: { cacheKey: true, required: true } },
