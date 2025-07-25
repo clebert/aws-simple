@@ -1,17 +1,6 @@
 {
-  "compilerOptions": {
-    "checkJs": true,
-    "noEmit": true,
-    "resolveJsonModule": true
-  },
-  "exclude": [
-    "coverage",
-    "lib"
-  ],
-  "extends": [
-    "./tsconfig.base.json"
-  ],
-  "include": [
-    "**/*"
-  ]
+  "compilerOptions": { "checkJs": true, "noEmit": true },
+  "exclude": ["coverage", "lib"],
+  "extends": ["./tsconfig.base.json"],
+  "include": ["**/*"]
 }

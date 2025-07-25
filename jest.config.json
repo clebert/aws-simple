@@ -1,28 +1,13 @@
 {
   "clearMocks": true,
   "collectCoverage": true,
-  "extensionsToTreatAsEsm": [
-    ".ts",
-    ".tsx"
-  ],
-  "moduleFileExtensions": [
-    "js",
-    "mjs",
-    "cjs",
-    "cts",
-    "jsx",
-    "ts",
-    "tsx",
-    "json",
-    "node"
-  ],
+  "extensionsToTreatAsEsm": [".ts", ".tsx"],
+  "moduleFileExtensions": ["js", "mjs", "cjs", "cts", "jsx", "ts", "tsx", "json", "node"],
   "moduleNameMapper": {
     "^(\\.{1,2}/.*)\\.c?js$": "$1"
   },
   "restoreMocks": true,
-  "testMatch": [
-    "**/src/**/*.test.{cts,ts,tsx}"
-  ],
+  "testMatch": ["**/src/**/*.test.{cts,ts,tsx}"],
   "transform": {
     "^.+\\.cts$": "@swc/jest",
     "^.+\\.tsx?$": "@swc/jest"

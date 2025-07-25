@@ -1,16 +1,10 @@
 {
   "compilerOptions": {
-    "composite": true,
-    "incremental": true,
     "inlineSources": true,
     "outDir": "lib",
     "rootDir": "src",
     "sourceMap": true
   },
-  "extends": [
-    "./tsconfig.base.json"
-  ],
-  "include": [
-    "src/**/*"
-  ]
+  "extends": ["./tsconfig.base.json"],
+  "include": ["src/**/*"]
 }
