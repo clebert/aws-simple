@@ -4,7 +4,7 @@ import type { Stack } from 'aws-cdk-lib';
 import { getDomainName } from '../utils/get-domain-name.js';
 import { getHash } from '../utils/get-hash.js';
 import { getNormalizedName } from '../utils/get-normalized-name.js';
-import { mapLambdaRuntime } from '../utils/lambda-runtime.js';
+import { mapLambdaRuntime } from '../utils/map-lambda-runtime.js';
 import { Duration, aws_ec2, aws_efs, aws_iam, aws_lambda, aws_logs } from 'aws-cdk-lib';
 import { basename, dirname, extname, join } from 'path';
 
@@ -85,8 +85,6 @@ export function createLambdaFunction(
       }
     : undefined;
 
-  const runtime = mapLambdaRuntime(route.lambdaRuntime);
-
   const fn = new aws_lambda.Function(stack, `Function${getHash(uniqueFunctionName)}`, {
     functionName: uniqueFunctionName,
     code: aws_lambda.Code.fromAsset(dirname(path)),
@@ -95,7 +93,7 @@ export function createLambdaFunction(
     memorySize,
     environment,
     timeout: Duration.seconds(timeoutInSeconds),
-    runtime,
+    runtime: mapLambdaRuntime(route.lambdaRuntime),
     tracing: aws_lambda.Tracing.PASS_THROUGH,
     insightsVersion:
       monitoring === true || monitoring?.lambdaInsightsEnabled
