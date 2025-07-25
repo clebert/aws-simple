@@ -31,6 +31,9 @@ export type LambdaRoute = Omit<z.TypeOf<typeof LambdaRouteSchema>, 'onSynthesize
 
 export type S3Route = z.TypeOf<typeof S3RouteSchema>;
 
+const LambdaRuntimeSchema = z.enum([`20.x`, `22.x`, `LATEST`]).optional();
+export type LambdaRuntime = z.TypeOf<typeof LambdaRuntimeSchema>;
+
 const LambdaRouteSchema = z.object({
   type: z.literal(`function`),
   httpMethod: z.enum([`DELETE`, `GET`, `HEAD`, `PATCH`, `POST`, `PUT`]),
@@ -38,6 +41,7 @@ const LambdaRouteSchema = z.object({
   path: z.string(),
   functionName: z.string(),
   memorySize: z.number().optional(),
+  lambdaRuntime: LambdaRuntimeSchema,
   timeoutInSeconds: z.number().int().min(0).max(28).optional(),
   environment: z.record(z.string()).optional(),
   requestParameters: z
