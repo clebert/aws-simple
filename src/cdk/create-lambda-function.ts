@@ -55,25 +55,27 @@ export function createLambdaFunction(
 
   const { monitoring } = stackConfig;
 
+  const uniqueFunctionNameHash = getHash(uniqueFunctionName);
+
   const filesystemProps = filesystem
     ? {
-        vpc: aws_ec2.Vpc.fromLookup(stack, `Vpc${getHash(uniqueFunctionName)}`, {
+        vpc: aws_ec2.Vpc.fromLookup(stack, `Vpc${uniqueFunctionNameHash}`, {
           vpcId: filesystem.vpcId,
         }),
         filesystem: aws_lambda.FileSystem.fromEfsAccessPoint(
           aws_efs.AccessPoint.fromAccessPointAttributes(
             stack,
-            `AccessPoint${getHash(uniqueFunctionName)}`,
+            `AccessPoint${uniqueFunctionNameHash}`,
             {
               accessPointId: filesystem.accessPointId,
               fileSystem: aws_efs.FileSystem.fromFileSystemAttributes(
                 stack,
-                `FileSystem${getHash(uniqueFunctionName)}`,
+                `FileSystem${uniqueFunctionNameHash}`,
                 {
                   fileSystemId: filesystem.fileSystemId,
                   securityGroup: aws_ec2.SecurityGroup.fromSecurityGroupId(
                     stack,
-                    `SecurityGroup${getHash(uniqueFunctionName)}`,
+                    `SecurityGroup${uniqueFunctionNameHash}`,
                     filesystem.securityGroupId,
                   ),
                 },
@@ -85,7 +87,12 @@ export function createLambdaFunction(
       }
     : undefined;
 
-  const fn = new aws_lambda.Function(stack, `Function${getHash(uniqueFunctionName)}`, {
+  const logGroup = new aws_logs.LogGroup(stack, `LogGroup${uniqueFunctionNameHash}`, {
+    retention: aws_logs.RetentionDays.TWO_WEEKS,
+    logGroupName: `/aws/lambda/${uniqueFunctionName}`,
+  });
+
+  const fn = new aws_lambda.Function(stack, `Function${uniqueFunctionNameHash}`, {
     functionName: uniqueFunctionName,
     code: aws_lambda.Code.fromAsset(dirname(path)),
     handler: `${basename(path, extname(path))}.handler`,
@@ -99,7 +106,7 @@ export function createLambdaFunction(
       monitoring === true || monitoring?.lambdaInsightsEnabled
         ? aws_lambda.LambdaInsightsVersion.VERSION_1_0_229_0
         : undefined,
-    logRetention: aws_logs.RetentionDays.TWO_WEEKS,
+    logGroup,
     role: lambdaServiceRole,
     ...filesystemProps,
   });
