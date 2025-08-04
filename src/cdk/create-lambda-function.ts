@@ -1,5 +1,5 @@
 import type { LambdaRoute, StackConfig } from '../parse-stack-config.js';
-import type { Stack } from 'aws-cdk-lib';
+import { type Stack, RemovalPolicy } from 'aws-cdk-lib';
 
 import { getDomainName } from '../utils/get-domain-name.js';
 import { getHash } from '../utils/get-hash.js';
@@ -90,6 +90,7 @@ export function createLambdaFunction(
   const logGroup = new aws_logs.LogGroup(stack, `LogGroup${uniqueFunctionNameHash}`, {
     retention: aws_logs.RetentionDays.TWO_WEEKS,
     logGroupName: `/aws/lambda/${uniqueFunctionName}`,
+    removalPolicy: RemovalPolicy.DESTROY,
   });
 
   const fn = new aws_lambda.Function(stack, `Function${uniqueFunctionNameHash}`, {
