@@ -23,7 +23,7 @@ export function createRequestAuthorizer(
 
   const logGroup = new aws_logs.LogGroup(stack, `LogGroup${functionNameHash}`, {
     retention: aws_logs.RetentionDays.TWO_WEEKS,
-    logGroupName: `/aws/lambda/${functionNameHash}`,
+    logGroupName: `/aws/lambda/${functionName}`,
     removalPolicy: RemovalPolicy.DESTROY,
   });
 
