@@ -12,7 +12,7 @@ import { readStackConfig } from './read-stack-config.js';
 import { print } from './utils/print.js';
 import { watch } from 'chokidar';
 import compression from 'compression';
-import express from 'express';
+import express, { type Express } from 'express';
 import getPort from 'get-port';
 import * as lambdaLocal from 'lambda-local';
 import { mkdirp } from 'mkdirp';
@@ -119,7 +119,7 @@ export const startCommand: CommandModule<{}, { readonly port: number }> = {
     });
   },
 };
-function routeOptionsRequestsForCors(routes: readonly Route[], app) {
+function routeOptionsRequestsForCors(routes: readonly Route[], app: Express) {
   const corsEnabledMethodsByRoute = routes.reduce((corsEnabledMethodsByRoute, route) => {
     if (route.corsEnabled && route.httpMethod) {
       print.info(`CORS is enabled for route: ${route.publicPath} with method: ${route.httpMethod}`);
