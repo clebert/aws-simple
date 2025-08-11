@@ -124,8 +124,9 @@ function routeOptionsRequestsForCors(routes: readonly Route[], app: Express) {
     if (route.corsEnabled && route.httpMethod) {
       print.info(`CORS is enabled for route: ${route.publicPath} with method: ${route.httpMethod}`);
 
-      if (!corsEnabledMethodsByRoute.has(route.publicPath)) {
-        corsEnabledMethodsByRoute.set(route.publicPath, [route.httpMethod]);
+      const existingMethods = corsEnabledMethodsByRoute.get(route.publicPath);
+      if (existingMethods) {
+        existingMethods.push(route.httpMethod);
       } else {
         corsEnabledMethodsByRoute.set(route.publicPath, [route.httpMethod]);
       }
