@@ -1,4 +1,4 @@
-import type { LambdaRoute } from './parse-stack-config.js';
+import type { LambdaRoute, Route } from './parse-stack-config.js';
 import type { APIGatewayProxyResult } from 'aws-lambda';
 import type { CommandModule } from 'yargs';
 
@@ -50,6 +50,8 @@ export const startCommand: CommandModule<{}, { readonly port: number }> = {
     lambdaLocal.getLogger().level = `error`;
 
     const routes = sortRoutes(stackConfig.routes);
+
+    routeOptionsRequestsForCors(routes, app);
 
     for (const route of routes) {
       if (route.type === `function`) {
@@ -117,3 +119,27 @@ export const startCommand: CommandModule<{}, { readonly port: number }> = {
     });
   },
 };
+function routeOptionsRequestsForCors(routes: readonly Route[], app) {
+  const corsEnabledMethodsByRoute = routes.reduce((corsEnabledMethodsByRoute, route) => {
+    if (route.corsEnabled && route.httpMethod) {
+      print.info(`CORS is enabled for route: ${route.publicPath} with method: ${route.httpMethod}`);
+
+      if (!corsEnabledMethodsByRoute.has(route.publicPath)) {
+        corsEnabledMethodsByRoute.set(route.publicPath, [route.httpMethod]);
+      } else {
+        corsEnabledMethodsByRoute.set(route.publicPath, [route.httpMethod]);
+      }
+    }
+    return corsEnabledMethodsByRoute;
+  }, new Map<string, string[]>());
+  corsEnabledMethodsByRoute.forEach((methods, path) => {
+    print.info(`Setting up CORS for path: ${path} with methods: ${methods.join(`, `)}`);
+
+    app.options(path, (_req, res) => {
+      res.header(`Access-Control-Allow-Origin`, `*`);
+      res.header(`Access-Control-Allow-Methods`, methods.join(`, `));
+      res.header(`Access-Control-Allow-Headers`, `Content-Type, Authorization`);
+      res.sendStatus(204);
+    });
+  });
+}
