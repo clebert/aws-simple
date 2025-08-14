@@ -17,6 +17,7 @@ import getPort from 'get-port';
 import * as lambdaLocal from 'lambda-local';
 import { mkdirp } from 'mkdirp';
 import { dirname } from 'path';
+import { routeOptionsRequestsForCors } from './route-options-requests-for-cors.js';
 
 const commandName = `start`;
 
@@ -50,6 +51,8 @@ export const startCommand: CommandModule<{}, { readonly port: number }> = {
     lambdaLocal.getLogger().level = `error`;
 
     const routes = sortRoutes(stackConfig.routes);
+
+    routeOptionsRequestsForCors(routes, app);
 
     for (const route of routes) {
       if (route.type === `function`) {
