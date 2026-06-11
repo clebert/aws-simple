@@ -18,7 +18,7 @@ import {
 import { join } from 'path';
 
 export function createRestApi(stackConfig: StackConfig, stack: Stack): aws_apigateway.RestApiBase {
-  const { hostedZoneName, aliasRecordName } = stackConfig;
+  const { hostedZoneName, aliasRecordName, certificateArn } = stackConfig;
 
   if (!hostedZoneName) {
     throw new Error(`The hosted zone cannot be looked up without a name.`);
@@ -32,10 +32,16 @@ export function createRestApi(stackConfig: StackConfig, stack: Stack): aws_apiga
 
   const domainName = getDomainName({ hostedZoneName, aliasRecordName });
 
-  const certificate = new aws_certificatemanager.Certificate(stack, `Certificate`, {
-    domainName,
-    validation: aws_certificatemanager.CertificateValidation.fromDns(hostedZone),
-  });
+  const certificate = certificateArn
+    ? aws_certificatemanager.Certificate.fromCertificateArn(
+        stack,
+        'ImportedCertificate',
+        certificateArn,
+      )
+    : new aws_certificatemanager.Certificate(stack, 'Certificate', {
+        domainName,
+        validation: aws_certificatemanager.CertificateValidation.fromDns(hostedZone),
+      });
 
   const restApi = new aws_apigateway.RestApi(stack, `RestApi`, {
     description: `https://${domainName}`,

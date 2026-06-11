@@ -10,23 +10,41 @@ import { createRestApi } from './cdk/create-rest-api.js';
 import { createStack } from './cdk/create-stack.js';
 import { parseStackConfig } from './parse-stack-config.js';
 import { readStackConfig } from './read-stack-config.js';
+import { createCertificate } from './sdk/create-certificate.js';
 
 const commandName = `synthesize`;
 
-export const synthesizeCommand: CommandModule<{}, {}> = {
+export const synthesizeCommand: CommandModule<{}, { certificateWorkAround?: boolean }> = {
   command: `${commandName} [options]`,
   aliases: [`synth`],
   describe: `Synthesize the configured stack using the CDK.`,
 
-  builder: (argv) =>
+  builder: (argv) => {
+    argv.option(`certificateWorkAround`, {
+      alias: `c`,
+      type: `boolean`,
+      default: false,
+      describe: `Enable the certificate work-around.`,
+    });
     argv.example([
       [`npx cdk bootstrap --app 'npx $0 ${commandName}'`],
       [`npx cdk deploy --app 'npx $0 ${commandName}'`],
       [`npx cdk diff --app 'npx $0 ${commandName}'`],
-    ]),
+    ]);
 
-  handler: async (): Promise<void> => {
-    const stackConfig = parseStackConfig(await readStackConfig());
+    return argv;
+  },
+
+  handler: async (args: { certificateWorkAround?: boolean }): Promise<void> => {
+    const parsedStackConfig = parseStackConfig(await readStackConfig());
+
+    const stackConfig = args.certificateWorkAround
+      ? {
+          ...parsedStackConfig,
+          certificateArn: await createCertificate(parsedStackConfig),
+        }
+      : parsedStackConfig;
+
     const stack = createStack(stackConfig);
     const restApi = createRestApi(stackConfig, stack);
     const bucket = createBucket(stack);

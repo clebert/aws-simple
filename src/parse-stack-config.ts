@@ -10,6 +10,7 @@ export type StackConfig = Omit<
   'routes' | 'onSynthesize' | 'onStart'
 > & {
   readonly routes: Route[];
+  readonly certificateArn?: string;
 
   readonly onSynthesize?: (constructs: {
     readonly stack: Stack;
